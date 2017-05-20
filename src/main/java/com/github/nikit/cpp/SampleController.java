@@ -2,9 +2,6 @@ package com.github.nikit.cpp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.EmbeddedServletContainerAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.WebMvcAutoConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -13,7 +10,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Created by nik on 20.05.17.
  */
 
-//@ImportAutoConfiguration//(classes={EmbeddedServletContainerAutoConfiguration.class, WebMvcAutoConfiguration.class})
 @EnableAutoConfiguration
 @Controller
 public class SampleController {
