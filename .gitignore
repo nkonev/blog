@@ -1,0 +1,17 @@
+!.gitignore
+bin
+target
+.settings
+.metadata
+.classpath
+.project
+.idea
+*.iml
+out
+gen
+build
+#gradle
+.gradle
+gradlew*
+classes
+
