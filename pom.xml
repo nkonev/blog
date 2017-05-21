@@ -66,7 +66,7 @@
                             <goal>repackage</goal>
                         </goals>
                         <configuration>
-                            <mainClass>com.github.nikit.cpp.SampleController</mainClass>
+                            <mainClass>com.github.nikit.cpp.Launcher</mainClass>
                         </configuration>
                     </execution>
                 </executions>
@@ -79,6 +79,25 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.9.0</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+            <version>2.4.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
         </dependency>
 
         <dependency>
