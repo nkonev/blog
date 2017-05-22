@@ -56,7 +56,7 @@ public class AutocompleteService {
 
     public List<String> autocomplete(final String prefix, int count) {
         final List<String> results = new ArrayList<>();
-        final int grab = 42;
+        final int grab = Constants.STEP;
         Long start = redisTemplate.opsForZSet().rank(Constants.KEY, prefix);
         if (start==null) {
             return new ArrayList<>();

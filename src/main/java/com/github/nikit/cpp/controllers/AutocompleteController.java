@@ -35,7 +35,7 @@ public class AutocompleteController {
 
     @RequestMapping("/autocomplete")
     public List<String> autocomplete(String prefix) throws IOException {
-        return autocompleteService.autocomplete(prefix, 50);
+        return autocompleteService.autocomplete(prefix, Constants.COUNT);
     }
 
 }
