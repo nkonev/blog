@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -30,6 +31,11 @@ public class AutocompleteController {
     @RequestMapping("/repopulate")
     public void repopulate() throws IOException {
         autocompleteService.repopulate();
+    }
+
+    @RequestMapping("/autocomplete")
+    public List<String> autocomplete(String prefix) throws IOException {
+        return autocompleteService.autocomplete(prefix, 50);
     }
 
 }

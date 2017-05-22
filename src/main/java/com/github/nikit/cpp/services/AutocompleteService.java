@@ -13,7 +13,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -47,8 +49,35 @@ public class AutocompleteService {
                 String prefix = line.substring(0, l);
                 redisTemplate.opsForZSet().add(Constants.KEY, prefix, 0);
             }
-            redisTemplate.opsForZSet().add(Constants.KEY, line+ Constants.STOP_SYMBOL, 0);
+            redisTemplate.opsForZSet().add(Constants.KEY, line+Constants.STOP_SYMBOL, 0);
         }
         // LOGGER.info("{}", list);
+    }
+
+    public List<String> autocomplete(final String prefix, int count) {
+        final List<String> results = new ArrayList<>();
+        final int grab = 42;
+        Long start = redisTemplate.opsForZSet().rank(Constants.KEY, prefix);
+        if (start==null) {
+            return new ArrayList<>();
+        }
+        while(results.size()!=count){
+            Set<String> range = redisTemplate.opsForZSet().range(Constants.KEY,start,start+grab-1);
+            start += grab;
+            if (range==null || range.isEmpty()){
+                break;
+            }
+            for (final String entry: range) {
+                int minlen = Math.min(entry.length(), prefix.length());
+                if (!entry.substring(0, minlen).equals(prefix.substring(0, minlen))){
+                    count = results.size();
+                    break;
+                }
+                if (entry.endsWith(Constants.STOP_SYMBOL) && results.size() != count){
+                    results.add(entry.substring(0, entry.length() > 1 ? entry.length()-1 : entry.length()));
+                }
+            }
+        }
+        return results;
     }
 }
