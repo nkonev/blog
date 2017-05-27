@@ -1,0 +1,37 @@
+= RESTful Checklist API Guide
+Nikita Konev;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:operation-curl-request-title: Example request
+:operation-http-response-title: Example response
+
+[[overview]]
+= Overview
+
+
+This document available at http://127.0.0.1:8080/docs/index.html
+
+https://raw.githubusercontent.com/spring-projects/spring-restdocs/v1.2.1.RELEASE/samples/rest-notes-spring-data-rest/src/main/asciidoc/api-guide.adoc
+
+==== Example request
+include::{snippets}/autocomplete/curl-request.adoc[]
+include::{snippets}/autocomplete/http-request.adoc[]
+
+==== Example response
+include::{snippets}/autocomplete/http-response.adoc[]
+
+==== Building
+
+----
+./mvnw clean test package site
+----
+
+==== Run
+
+----
+java -jar target/checklist-1.0-SNAPSHOT.jar
+----

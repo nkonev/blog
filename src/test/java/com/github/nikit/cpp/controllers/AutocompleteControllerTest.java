@@ -5,6 +5,7 @@ import com.github.nikit.cpp.Constants;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.hasItems;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -20,7 +21,8 @@ public class AutocompleteControllerTest extends AbstractTestRunner {
 
         mockMvc.perform(post(Constants.Uls.AUTOCOMPLETE).param("prefix", "Un"))
                 .andExpect(status().isOk())
-                    .andExpect(jsonPath("$", hasItems("United Arab Emirates", "United Kingdom", "United States")))
+                .andExpect(jsonPath("$", hasItems("United Arab Emirates", "United Kingdom", "United States")))
+                .andDo(document("autocomplete"))
         ;
     }
 }
