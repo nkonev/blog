@@ -28,12 +28,12 @@ public class AutocompleteController {
         return redisTemplate.opsForZSet().range(Constants.KEY, 0, -1);
     }
 
-    @RequestMapping("/repopulate")
+    @RequestMapping(Constants.Uls.REPOPULATE)
     public void repopulate() throws IOException {
         autocompleteService.repopulate();
     }
 
-    @RequestMapping("/autocomplete")
+    @RequestMapping(Constants.Uls.AUTOCOMPLETE)
     public List<String> autocomplete(String prefix) throws IOException {
         return autocompleteService.autocomplete(prefix, Constants.COUNT);
     }
