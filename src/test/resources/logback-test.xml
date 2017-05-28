@@ -9,7 +9,7 @@
         </encoder>
     </appender>
 
-    <logger name="org.springframework.test.web.servlet.result" level="DEBUG"/>
+    <logger name="org.springframework.test.web.servlet.result" level="INFO"/>
 
     <root level="INFO">
         <appender-ref ref="stdout"/>

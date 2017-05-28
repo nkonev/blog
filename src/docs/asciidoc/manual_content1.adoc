@@ -1,0 +1,9 @@
+=== Some manual external examples
+
+==== Example request
+include::{snippets}/autocompleteManual/curl-request.adoc[]
+include::{snippets}/autocompleteManual/http-request.adoc[]
+
+==== Example response
+include::{snippets}/autocompleteManual/http-response.adoc[]
+

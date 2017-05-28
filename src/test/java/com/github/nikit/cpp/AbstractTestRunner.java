@@ -17,11 +17,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(
-        classes = {Launcher.class},
+        classes = {Launcher.class, SwaggerConfig.class},
         webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT
 )
 @AutoConfigureMockMvc(printOnlyOnFailure = false, print = MockMvcPrint.LOG_DEBUG)
-@AutoConfigureRestDocs(outputDir = "target/generated-snippets")
+@AutoConfigureRestDocs(outputDir = TestConstants.RESTDOCS_SNIPPETS_DIR)
 public abstract class AbstractTestRunner {
 
     @Autowired

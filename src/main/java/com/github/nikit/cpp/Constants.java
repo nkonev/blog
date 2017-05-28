@@ -10,7 +10,12 @@ public class Constants {
     public static final int COUNT = 50;
 
     public static class Uls {
+        public static final String API = "/api";
         public static final String REPOPULATE = "/repopulate";
         public static final String AUTOCOMPLETE = "/autocomplete";
+    }
+
+    public static class Swagger {
+        public static final String AUTOCOMPLETE = "autocompletePost";
     }
 }
