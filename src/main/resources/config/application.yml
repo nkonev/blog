@@ -2,9 +2,6 @@ logging.level.: INFO
 #logging.level.org.springframework.security: DEBUG
 #logging.level.org.springframework.session: DEBUG
 #logging.level.org.springframework.security.web: DEBUG
-#logging.level.co.fishtracker.admin.panel.controllers: DEBUG
-#logging.level.co.fishtracker.catalogue.service.ProductService: DEBUG
-#logging.level.co.fishtracker.catalogue.service.ProductItemService: DEBUG
 #logging.level.org.apache.catalina: TRACE
 #logging.level.org.springframework.web: DEBUG
 #logging.level.org.hibernate.SQL: DEBUG
@@ -17,3 +14,8 @@ spring:
 server.tomcat.accesslog.enabled: true
 server.tomcat.accesslog.pattern: '%t %a "%r" %s (%D ms)'
 server.tomcat.basedir: ${java.io.tmpdir}/tomcat-checklist
+
+spring.devtools.restart.additional-paths: ${custom.frontend.resources}
+custom.frontend.resources: src/main/resources
+# disable(set to one) default unused static locations in favor to WebConfig#addResourceHandlers
+spring.resources.static-locations: classpath:/public/
