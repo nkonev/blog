@@ -36,3 +36,8 @@ Embedded documentation are available at http://127.0.0.1:8080/docs/index.html
  * https://github.com/Swagger2Markup/spring-swagger2markup-demo
  * http://docs.spring.io/spring-restdocs/docs/1.2.1.RELEASE/reference/html5/
  * https://springfox.github.io/springfox/docs/current/
+
+# Changing version
+```
+./mvnw -DnewVersion=1.0.0 versions:set versions:commit
+```
