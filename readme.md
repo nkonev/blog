@@ -23,7 +23,7 @@ mvn -N io.takari:maven:wrapper
 # Run
 
 ```
-java -jar target/checklist-1.0-SNAPSHOT.jar
+java -jar checklist/target/checklist-1.0-SNAPSHOT.jar
 ```
 
 # Embedded documentation

@@ -16,6 +16,6 @@ server.tomcat.accesslog.pattern: '%t %a "%r" %s (%D ms)'
 server.tomcat.basedir: ${java.io.tmpdir}/tomcat-checklist
 
 spring.devtools.restart.additional-paths: ${custom.frontend.resources}
-custom.frontend.resources: src/main/resources
+custom.frontend.resources: checklist/src/main/resources
 # disable(set to one) default unused static locations in favor to WebConfig#addResourceHandlers
-spring.resources.static-locations: classpath:/public/
+# spring.resources.static-locations: classpath:/public/
