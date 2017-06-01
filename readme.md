@@ -41,3 +41,8 @@ Embedded documentation are available at http://127.0.0.1:8080/docs/index.html
 ```
 ./mvnw -DnewVersion=1.0.0 versions:set versions:commit
 ```
+
+# Building with frontend (just turn on `frontend` profile)
+```
+./mvnw -P frontend clean package
+```
