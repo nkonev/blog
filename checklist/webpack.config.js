@@ -3,6 +3,7 @@
 const path = require('path');
 const srcDir = path.join(__dirname, 'src/main/frontend');
 const buildDir = path.join(__dirname, 'src/main/resources/static/build');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const DEVELOPMENT_ENV = 'dev';
 const NODE_ENV = process.env.NODE_ENV || DEVELOPMENT_ENV;
@@ -47,6 +48,9 @@ module.exports = {
             verbose: false,
             dry: false
         }),
+        new CopyWebpackPlugin([
+                { from: path.join(__dirname, 'node_modules/babel-polyfill/dist/polyfill.min.js') },
+        ]),
         new WebpackOnBuildPlugin(function (stats) {
             var currentdate = new Date();
             console.log("Built with environment:", NODE_ENV, "at", currentdate.toLocaleString());
