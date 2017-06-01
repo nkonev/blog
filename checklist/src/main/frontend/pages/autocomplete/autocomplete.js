@@ -7,30 +7,20 @@ console.log("autocomplete.js");
 
 $(`#app`).append("autocomplete.js\n");
 
-const availableTags = [
-    "ActionScript",
-    "AppleScript",
-    "Asp",
-    "BASIC",
-    "C",
-    "C++",
-    "Clojure",
-    "COBOL",
-    "ColdFusion",
-    "Erlang",
-    "Fortran",
-    "Groovy",
-    "Haskell",
-    "Java",
-    "JavaScript",
-    "Lisp",
-    "Perl",
-    "PHP",
-    "Python",
-    "Ruby",
-    "Scala",
-    "Scheme"
-];
+
 $( "#tags" ).autocomplete({
-    source: availableTags
+    // http://jqueryui.com/autocomplete/#multiple-remote http://api.jqueryui.com/autocomplete/
+    source: function( request, response ) {
+        $.getJSON(
+            "/api/autocomplete",
+            {
+                prefix: request.term
+            },
+            response
+        );
+    },
+    minLength: 1,
+    select: function( event, ui ) {
+        console.log( "Selected: " + ui.item.value + " aka " + ui.item.id );
+    }
 });
