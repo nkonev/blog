@@ -1,5 +1,3 @@
 language: java
-before_install:
-  - ./mvnw
 script: "./mvnw clean package site"
 services: redis-server
