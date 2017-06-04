@@ -106,7 +106,7 @@ module.exports = function(config) {
       },
       plugins: [
           new webpack.ProvidePlugin({
-              jQuery: "jquery", // for uniform.js
+              // jQuery: "jquery", // for uniform.js
               $: 'jquery', // for usage in tests
           }),
           new webpack.DefinePlugin({
