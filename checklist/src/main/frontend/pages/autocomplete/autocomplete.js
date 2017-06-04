@@ -1,14 +1,23 @@
 import $ from 'jquery';
 // https://stackoverflow.com/questions/33998262/jquery-ui-and-webpack-how-to-manage-it-into-module
-require("jquery-ui/ui/widgets/autocomplete");
-require("jquery-ui/themes/base/all.css");
+import "jquery-ui/ui/widgets/autocomplete";
+// import "jquery-ui/themes/base/all.css";
+import "jquery-ui/themes/base/base.css";
+import "jquery-ui/themes/base/theme.css";
+import "jquery-ui/themes/base/autocomplete.css";
 
 console.log("autocomplete.js");
 
-$(`#app`).append("autocomplete.js\n");
+$(`#app`).html(`
+<h1>Type some country</h1>
 
+<div class="ui-widget">
+    <label for="countries-list">Countries: </label>
+    <input id="countries-list"/>
+</div>
+`);
 
-$( "#tags" ).autocomplete({
+$("#countries-list").autocomplete({
     // http://jqueryui.com/autocomplete/#multiple-remote http://api.jqueryui.com/autocomplete/
     source: function( request, response ) {
         $.getJSON(

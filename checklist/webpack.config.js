@@ -17,7 +17,6 @@ module.exports = {
     context: srcDir,
 
     entry: {
-        common: "./common.js",
         vendor: ["jquery", "underscore"],
         autocomplete: "./pages/autocomplete/autocomplete.js",
     },
@@ -42,7 +41,7 @@ module.exports = {
             NODE_ENV: JSON.stringify(NODE_ENV)
         }),
         new webpack.optimize.CommonsChunkPlugin({
-            name: ['common', 'vendor']
+            name: ['vendor']
         }),
         new CleanWebpackPlugin([buildDir], {
             verbose: false,
