@@ -48,7 +48,7 @@ module.exports = function(config) {
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     // 'mocha' в данном случае -- это просто репортер, не тестовый фреймворк
-    reporters: ['mocha'],
+    reporters: ['mocha', 'kjhtml'],
 
 
     // web server port
