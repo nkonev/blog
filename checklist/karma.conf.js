@@ -117,7 +117,7 @@ module.exports = function(config) {
       ],
       resolve: {
           alias: {
-              'jquery': require.resolve('jquery'), // for uniform.js
+              // 'jquery': require.resolve('jquery'), // for uniform.js
           }
       },
       module: {
