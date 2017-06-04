@@ -1,4 +1,4 @@
 language: java
 jdk: "oraclejdk8"
-script: "./mvnw clean package site"
+script: "./mvnw -DskipTests=false -Dmaven.javadoc.skip=false clean package site"
 services: redis-server
