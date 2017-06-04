@@ -34,7 +34,7 @@ module.exports = function(config) {
     exclude: [],
 
     proxies : {
-        '/catalog/frontend/static/': '/base/src/main/resources/static/'
+        '/static/': '/base/src/main/resources/static/'
     },
 
     // preprocess matching files before serving them to the browser
