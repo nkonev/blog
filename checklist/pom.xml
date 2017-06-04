@@ -128,6 +128,18 @@
                                 <arguments>install</arguments>
                             </configuration>
                         </execution>
+                        <execution>
+                            <id>karma test</id>
+                            <goals>
+                                <goal>karma</goal>
+                            </goals>
+                            <phase>generate-test-sources</phase>
+                            <configuration>
+                                <environmentVariables>
+                                    <NODE_ENV>${npm.production.env}</NODE_ENV>
+                                </environmentVariables>
+                            </configuration>
+                        </execution>
 
                         <execution>
                             <id>webpack build</id>
