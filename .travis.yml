@@ -1,4 +1,5 @@
 language: java
 jdk: "oraclejdk8"
+install: /bin/true # workaround https://github.com/Swagger2Markup/swagger2markup-maven-plugin/pull/24
 script: "./mvnw -DskipTests=false -Dmaven.javadoc.skip=false clean package site"
 services: redis-server
