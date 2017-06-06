@@ -14,12 +14,9 @@
     </parent>
 
     <properties>
-        <jedis.version>2.9.0</jedis.version>
-        <commons.pool.version>2.4.2</commons.pool.version>
-         <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
+        <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
         <asciidoctor-maven-plugin.version>1.5.3</asciidoctor-maven-plugin.version>
         <spring-restdocs-asciidoctor.version>1.2.1.RELEASE</spring-restdocs-asciidoctor.version>
-        <thymeleaf.version>3.0.5.RELEASE</thymeleaf.version>
 
         <!-- swagger stuff -->
         <swagger2markup.version>1.2.0</swagger2markup.version>
@@ -329,7 +326,6 @@
         <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
-            <version>${jedis.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -337,7 +333,6 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
-            <version>${commons.pool.version}</version>
         </dependency>
 
         <dependency>
@@ -354,12 +349,10 @@
         <dependency>
             <groupId>org.thymeleaf</groupId>
             <artifactId>thymeleaf</artifactId>
-            <version>${thymeleaf.version}</version>
         </dependency>
         <dependency>
             <groupId>org.thymeleaf</groupId>
             <artifactId>thymeleaf-spring4</artifactId>
-            <version>${thymeleaf.version}</version>
         </dependency>
 
         <!-- disables template cache and make hot reload by adding own classloader when application is launched from IDE, and mkes another useful things -->

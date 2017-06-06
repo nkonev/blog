@@ -31,6 +31,8 @@
         <selenide.version>4.4.3</selenide.version>
         <phantomjsdriver.version>1.4.3</phantomjsdriver.version>
         <webdrivermanager.version>1.6.2</webdrivermanager.version>
+
+        <thymeleaf.version>3.0.5.RELEASE</thymeleaf.version>
     </properties>
 
     <modules>
@@ -137,6 +139,17 @@
                 <groupId>org.seleniumhq.selenium</groupId>
                 <artifactId>selenium-support</artifactId>
                 <version>${selenium.override.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.thymeleaf</groupId>
+                <artifactId>thymeleaf</artifactId>
+                <version>${thymeleaf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.thymeleaf</groupId>
+                <artifactId>thymeleaf-spring4</artifactId>
+                <version>${thymeleaf.version}</version>
             </dependency>
 
         </dependencies>
