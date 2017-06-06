@@ -2,6 +2,7 @@ language: java
 cache:
   directories:
   - $HOME/.m2
+
 jdk: "oraclejdk8"
 install: /bin/true # workaround https://github.com/Swagger2Markup/swagger2markup-maven-plugin/pull/24
 script: "./mvnw -P frontend clean verify"

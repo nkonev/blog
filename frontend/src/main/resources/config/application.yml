@@ -7,15 +7,12 @@ logging.level.: INFO
 #logging.level.org.hibernate.SQL: DEBUG
 #logging.level.org.hibernate.type: TRACE
 
-spring:
-    application:
-        name: checklist
 
 server.tomcat.accesslog.enabled: true
 server.tomcat.accesslog.pattern: '%t %a "%r" %s (%D ms)'
-server.tomcat.basedir: ${java.io.tmpdir}/tomcat-checklist
+server.tomcat.basedir: ${java.io.tmpdir}/com.github.nikit.cpp.tomcat
 
 spring.devtools.restart.additional-paths: ${custom.frontend.resources}
-custom.frontend.resources: checklist/src/main/resources
+custom.frontend.resources: frontend/src/main/resources
 # disable(set to one) default unused static locations in favor to WebConfig#addResourceHandlers
 # spring.resources.static-locations: classpath:/public/
