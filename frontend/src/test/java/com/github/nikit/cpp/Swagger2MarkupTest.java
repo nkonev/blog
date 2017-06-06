@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Created by nik on 28.05.17.
  */
-public class Swagger2MarkupTest extends AbstractTestRunner {
+public class Swagger2MarkupTest extends AbstractUtTestRunner {
 
     @Test
     public void createSpringfoxSwaggerJson() throws Exception {

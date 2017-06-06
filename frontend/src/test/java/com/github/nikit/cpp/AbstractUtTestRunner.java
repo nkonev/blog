@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 )
 @AutoConfigureMockMvc(printOnlyOnFailure = false, print = MockMvcPrint.LOG_DEBUG)
 @AutoConfigureRestDocs(outputDir = TestConstants.RESTDOCS_SNIPPETS_DIR)
-public abstract class AbstractTestRunner {
+public abstract class AbstractUtTestRunner {
 
     @Autowired
     protected MockMvc mockMvc;

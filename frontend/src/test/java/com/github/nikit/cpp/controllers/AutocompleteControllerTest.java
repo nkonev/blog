@@ -1,6 +1,6 @@
 package com.github.nikit.cpp.controllers;
 
-import com.github.nikit.cpp.AbstractTestRunner;
+import com.github.nikit.cpp.AbstractUtTestRunner;
 import com.github.nikit.cpp.Constants;
 import org.junit.Test;
 
@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Created by nik on 27.05.17.
  */
-public class AutocompleteControllerTest extends AbstractTestRunner {
+public class AutocompleteControllerTest extends AbstractUtTestRunner {
 
     @Test
     public void testAutoComplete() throws Exception {
