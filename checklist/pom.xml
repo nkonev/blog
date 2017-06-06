@@ -243,6 +243,8 @@
                         </goals>
                         <configuration>
                             <mainClass>com.github.nikit.cpp.Launcher</mainClass>
+                            <!-- Need because repackaged jar with original name not applicable for including -->
+                            <classifier>exec</classifier>
                         </configuration>
                     </execution>
                 </executions>
