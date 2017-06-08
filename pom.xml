@@ -33,6 +33,7 @@
         <webdrivermanager.version>1.6.2</webdrivermanager.version>
 
         <thymeleaf.version>3.0.5.RELEASE</thymeleaf.version>
+        <postgresql.version>42.0.0</postgresql.version>
     </properties>
 
     <modules>
@@ -150,6 +151,12 @@
                 <groupId>org.thymeleaf</groupId>
                 <artifactId>thymeleaf-spring4</artifactId>
                 <version>${thymeleaf.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postgresql.version}</version>
             </dependency>
 
         </dependencies>
