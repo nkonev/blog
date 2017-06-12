@@ -2,6 +2,7 @@
   <div id="app">
     <img src="./assets/logo.png">
     <nav>
+        <router-link to="/login">Login</router-link>
         <router-link to="/">Index</router-link>
         <router-link to="/user/2">User 2</router-link>
         <router-link to="/user/3">User 3</router-link>
