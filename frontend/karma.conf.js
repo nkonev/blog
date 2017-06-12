@@ -101,9 +101,9 @@ module.exports = function(config) {
     webpack: {
       cache: true,
       devtool: 'inline-source-map',
-      entry: {
-            index: "./src/test/frontend/index.js" // 3/3
-      },
+      // entry: {
+      //       index: "./src/test/frontend/index.js" // 3/3
+      // },
       plugins: [
           new webpack.ProvidePlugin({
               // jQuery: "jquery", // for uniform.js
