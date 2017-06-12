@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import 'jquery.cookie';
+import CookieService from '../../services/CookieService';
 
 $(document).ready(function ($) {
     $('#loginform').submit(function (event) {
@@ -12,11 +12,11 @@ $(document).ready(function ($) {
             url: '/login'
 
         }).done(function(data, textStatus, jqXHR) {
-            var preLoginInfo = $.cookie('dashboard.pre.login.request');
-            console.log("success", preLoginInfo);
-            if (preLoginInfo) {
-                window.location = preLoginInfo;
-            }
+            CookieService.getLocationAnd(
+                function(loc){
+                    window.location = loc;
+                }
+            )
         }).fail(function(jqXHR, textStatus, errorThrown) {
             alert('Booh! Wrong credentials, try again!');
         });

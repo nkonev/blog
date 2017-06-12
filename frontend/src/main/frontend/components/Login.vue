@@ -14,6 +14,7 @@
     import $ from 'jquery';
     import 'jquery.cookie';
     import router from '../router'
+    import CookieService from '../services/CookieService'
 
     export default {
         methods:{
@@ -30,13 +31,16 @@
                     type: request_method,
 
                 }).done(function(data, textStatus, jqXHR) {
-                    const preLoginInfo = $.cookie('dashboard.pre.login.request');
-                    // console.log("success", data);
-                    if (preLoginInfo) {
-                        window.location = preLoginInfo;
-                    } else {
-                        router.push('/');
-                    }
+
+                    CookieService.getLocationAnd(
+                        function(loc){
+                            window.location = loc;
+                        },
+                        function (loc) {
+                            router.push('/');
+                        }
+                    )
+
                 }).fail(function(jqXHR, textStatus, errorThrown) {
                     alert('Booh! Wrong credentials, try again!');
                 });
