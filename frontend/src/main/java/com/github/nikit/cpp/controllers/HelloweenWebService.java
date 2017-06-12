@@ -35,4 +35,27 @@ public class HelloweenWebService {
             this.message = message;
         }
     }
+
+    public static class UserDTO {
+        private String login;
+
+        public UserDTO(String login) {
+            this.login = login;
+        }
+
+        public UserDTO() { }
+
+        public String getLogin() {
+            return login;
+        }
+
+        public void setLogin(String login) {
+            this.login = login;
+        }
+    }
+
+    @RequestMapping(value = "/is-authenticated", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public UserDTO checkAuthenticated(Principal principal) {
+        return new UserDTO(principal.getName());
+    }
 }
