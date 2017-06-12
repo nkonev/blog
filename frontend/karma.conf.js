@@ -48,7 +48,7 @@ module.exports = function(config) {
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     // 'mocha' в данном случае -- это просто репортер, не тестовый фреймворк
-    reporters: ['mocha', 'kjhtml'],
+    reporters: ['mocha', 'kjhtml'], // two reporters may duplicate output (https://github.com/karma-runner/karma/issues/2342)
 
 
     // web server port
@@ -61,7 +61,7 @@ module.exports = function(config) {
 
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    // logLevel: config.LOG_DEBUG,
+    logLevel: config.LOG_INFO,
 
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch: true,
@@ -110,14 +110,17 @@ module.exports = function(config) {
               $: 'jquery', // for usage in tests
           }),
           new webpack.DefinePlugin({
-              // определяем окружение
-              // для того чтобы менять поведение компонентов. когда невозмножно сделать jasmine spy
-              'process.env.NODE_ENV': JSON.stringify(KARMA_ENV)
+              'process.env': {
+                  KARMA_ENV:  JSON.stringify(KARMA_ENV),  // определяем окружение для того чтобы менять поведение компонентов. когда невозмножно сделать jasmine spy
+                  NODE_ENV:  JSON.stringify(NODE_ENV) // must be 'production' (with single quotes) for disable warnings, which you can see it if drop_console: false
+              }
+
           }),
       ],
       resolve: {
           alias: {
               // 'jquery': require.resolve('jquery'), // for uniform.js
+              'vue$': 'vue/dist/vue.esm.js', // it's important, else you will get "You are using the runtime-only build of Vue where the template compiler is not available. Either pre-compile the templates into render functions, or use the compiler-included build."
           }
       },
       module: {
