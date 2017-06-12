@@ -37,7 +37,9 @@ module.exports = {
     plugins: [
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.DefinePlugin({
-            NODE_ENV: JSON.stringify(NODE_ENV)
+            'process.env': {
+                NODE_ENV:  JSON.stringify(NODE_ENV) // must be 'production' (with single quotes) for disable warnings, which you can see it if drop_console: false
+            }
         }),
         new webpack.optimize.CommonsChunkPlugin({
             name: ['vendor']

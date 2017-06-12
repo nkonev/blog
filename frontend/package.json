@@ -1,7 +1,7 @@
 {
-  "name": "checklist",
+  "name": "frontend",
   "version": "0.0.0",
-  "description": "checklist frontend project",
+  "description": "frontend project",
   "repository": {
     "type": "git",
     "url": "http://example.com"
