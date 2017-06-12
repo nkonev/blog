@@ -9,7 +9,7 @@ function getRenderedText (Component, propsData) {
     return vm.$el.textContent;
 }
 
-describe("autocomplete", function(){
+describe("User.vue", function(){
 
     beforeEach(function() {
         setFixtures(`<div id="app"/>`);

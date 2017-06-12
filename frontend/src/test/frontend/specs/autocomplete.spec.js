@@ -1,5 +1,5 @@
 
-describe("autocomplete", function(){
+describe("autocomplete.js", function(){
     var $el, request;
 
     beforeEach(function() {
