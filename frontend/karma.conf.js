@@ -27,7 +27,7 @@ module.exports = function(config) {
 
       "src/test/frontend/index.js", // 1/3
 
-      'src/test/frontend/pages/**/*spec.js' // Test specifications
+      'src/test/frontend/specs/**/*spec.js' // Test specifications
     ],
 
     // list of files to exclude
@@ -41,7 +41,7 @@ module.exports = function(config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
       "src/test/frontend/index.js": ["webpack"], // 2/3
-      'src/test/frontend/pages/**/*spec.js': ['webpack']
+      'src/test/frontend/specs/**/*spec.js': ['webpack']
     },
 
     // test results reporter to use
@@ -112,9 +112,8 @@ module.exports = function(config) {
           new webpack.DefinePlugin({
               'process.env': {
                   KARMA_ENV:  JSON.stringify(KARMA_ENV),  // определяем окружение для того чтобы менять поведение компонентов. когда невозмножно сделать jasmine spy
-                  NODE_ENV:  JSON.stringify(NODE_ENV) // must be 'production' (with single quotes) for disable warnings, which you can see it if drop_console: false
+                  NODE_ENV:  JSON.stringify('production') // must be 'production' (with single quotes) for disable Vue warnings, which you can see it if drop_console: false
               }
-
           }),
       ],
       resolve: {
@@ -179,6 +178,13 @@ module.exports = function(config) {
                         minimize: false
                     }
                 }],
+            },
+            {
+                test: /\.vue$/,
+                loader: 'vue-loader',
+                options: {
+                    extractCSS: false
+                }
             },
         ],// end loaders
       }

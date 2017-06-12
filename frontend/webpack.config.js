@@ -38,7 +38,7 @@ module.exports = {
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.DefinePlugin({
             'process.env': {
-                NODE_ENV:  JSON.stringify(NODE_ENV) // must be 'production' (with single quotes) for disable warnings, which you can see it if drop_console: false
+                NODE_ENV:  JSON.stringify(NODE_ENV) // must be 'production' (with single quotes) for disable Vue warnings, which you can see it if drop_console: false
             }
         }),
         new webpack.optimize.CommonsChunkPlugin({
