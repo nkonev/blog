@@ -104,6 +104,11 @@ module.exports = function(config) {
       // entry: {
       //       index: "./src/test/frontend/index.js" // 3/3
       // },
+        // disable extract-test-plugin spam
+      stats: {
+            children: false
+      },
+
       plugins: [
           new webpack.ProvidePlugin({
               // jQuery: "jquery", // for uniform.js

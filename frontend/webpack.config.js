@@ -75,6 +75,11 @@ module.exports = {
         }
     },
 
+    // disable extract-test-plugin spam
+    stats: {
+        children: false
+    },
+
     module: {
         rules: [
             {
