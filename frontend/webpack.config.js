@@ -21,6 +21,7 @@ module.exports = {
         autocomplete: "./pages/autocomplete/autocomplete.js",
         login: "./pages/login/login.js",
         helloween: "./pages/helloween/helloween.js",
+        main: "./main.js", // vue.js
     },
 
     output: {
@@ -30,10 +31,6 @@ module.exports = {
     },
 
     watch: NODE_ENV == DEVELOPMENT_ENV,
-
-    watchOptions: {
-        aggregateTimeout: 100
-    },
 
     devtool: NODE_ENV == DEVELOPMENT_ENV ? "source-map" : false,
 
@@ -66,13 +63,13 @@ module.exports = {
         }),
         new webpack.LoaderOptionsPlugin({
             debug: NODE_ENV == DEVELOPMENT_ENV
-        })
-
+        }),
     ],
 
     resolve: {
         alias: {
             'jquery': require.resolve('jquery'), // for uniform.js
+            'vue$': 'vue/dist/vue.esm.js',
         }
     },
 
@@ -83,9 +80,6 @@ module.exports = {
                 exclude: /node_modules/,
                 use: {
                     loader: 'babel-loader',
-                    options: {
-                        presets: ['es2015']
-                    }
                 }
             },
             {
@@ -121,7 +115,8 @@ module.exports = {
                     {
                         loader: 'file-loader',
                         options: {
-                            name: '[path][name].[ext]'
+                            name: '[path][name].[ext]',
+                            publicPath: '/static/build/',
                         }
                     }
                 ]
@@ -134,6 +129,13 @@ module.exports = {
                         minimize: true
                     }
                 }],
+            },
+            {
+                test: /\.vue$/,
+                loader: 'vue-loader',
+                options: {
+                    extractCSS: true
+                }
             }
         ]
 

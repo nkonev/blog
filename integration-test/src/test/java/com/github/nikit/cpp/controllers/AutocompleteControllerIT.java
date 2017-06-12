@@ -13,7 +13,7 @@ public class AutocompleteControllerIT extends AbstractItTestRunner {
     @Test
     public void testOne() throws Exception {
 
-        open("http://127.0.0.1:9080/static/index.html");
+        open("http://127.0.0.1:9080/static/autocomplete.html");
         $("#countries-list").setValue("U");
         $(".ui-autocomplete .ui-menu-item div").shouldHave(text("Uganda"));
 

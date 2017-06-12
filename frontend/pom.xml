@@ -32,7 +32,7 @@
         <!-- /swagger stuff -->
 
         <frontend.maven.plugin.version>1.4</frontend.maven.plugin.version>
-        <npm.production.env>prod</npm.production.env>
+        <npm.production.env>production</npm.production.env>
         <node.js.version>v6.10.0</node.js.version>
         <npm.version>4.4.1</npm.version>
     </properties>
