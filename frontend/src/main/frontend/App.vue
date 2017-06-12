@@ -5,6 +5,7 @@
         <router-link to="/">Index</router-link>
         <router-link to="/user/2">User 2</router-link>
         <router-link to="/user/3">User 3</router-link>
+        <router-link to="/not/found">Not found</router-link>
     </nav>
     <router-view></router-view>
   </div>
