@@ -19,7 +19,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="stylus">
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -27,5 +27,12 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+
+  nav {
+      a.router-link-exact-active {
+          color white
+          background-color #003eff
+      }
+  }
 }
 </style>
