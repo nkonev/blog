@@ -10,17 +10,28 @@ import Helloween from './components/Helloween.vue'
 // and injects $router and $route to all router-enabled child components
 Vue.use(Router);
 
-export default new Router({
+const root = '/';
+const login = '/login';
+
+
+const router = new Router({
     // mode: 'history',
     routes: [
         {
-            path: '/',
+            path: root,
             name: 'Hello',
             component: Hello
         },
         { path: '/user/:id', component: User, props: true },
-        { path: '/login', component: Login },
+        { path: login, component: Login },
         { path: '/helloween', component: Helloween },
         { path: '*', component: NotFoundComponent },
     ]
-})
+});
+
+
+export  {
+    router as default,
+    login,
+    root
+}

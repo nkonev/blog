@@ -12,9 +12,8 @@
 
 <script>
     import $ from 'jquery';
-    import 'jquery.cookie';
     import router from '../router'
-    import CookieService from '../services/CookieService'
+    import {root} from '../router'
 
     export default {
         methods:{
@@ -32,14 +31,7 @@
 
                 }).done(function(data, textStatus, jqXHR) {
 
-                    CookieService.getLocationAnd(
-                        function(loc){
-                            window.location = loc;
-                        },
-                        function (loc) {
-                            router.push('/');
-                        }
-                    )
+                    router.push(root);
 
                 }).fail(function(jqXHR, textStatus, errorThrown) {
                     alert('Booh! Wrong credentials, try again!');
