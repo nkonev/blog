@@ -39,6 +39,6 @@ public class ApiControllerIT extends AbstractItTestRunner {
         open(urlPrefix+HTML);
         $(ID_API).click();
 
-        $("body").shouldHave(text("Happy Halloween, admin"));
+        $("body").shouldHave(text("Happy Halloween, "+user));
     }
 }
