@@ -33,8 +33,9 @@ public class ApiControllerIT extends AbstractItTestRunner {
 
         $("input#username").setValue(user);
         $("input#password").setValue(password);
-
         $(ID_SUBMIT).click();
+
+        $(".hello").shouldHave(text("Welcome to"));
 
         open(urlPrefix+HTML);
         $(ID_API).click();
