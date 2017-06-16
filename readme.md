@@ -21,7 +21,6 @@ mvn -N io.takari:maven:wrapper
 ```
 
 # Run
-
 ```
 java -jar frontend/target/frontend-1.0-SNAPSHOT.jar
 ```
