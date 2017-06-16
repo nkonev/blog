@@ -21,7 +21,7 @@ $("#countries-list").autocomplete({
     // http://jqueryui.com/autocomplete/#multiple-remote http://api.jqueryui.com/autocomplete/
     source: function( request, response ) {
         $.getJSON(
-            "/api/autocomplete",
+            "/api/public/autocomplete",
             {
                 prefix: request.term
             },

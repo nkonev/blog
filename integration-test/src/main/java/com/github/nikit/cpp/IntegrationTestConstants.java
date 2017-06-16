@@ -6,4 +6,9 @@ package com.github.nikit.cpp;
 public class IntegrationTestConstants {
     public static final String IMPLICITLY_WAIT_TIMEOUT = "${custom.implicitly.wait.timeout}";
     public static final String BROWSER = "${custom.browser}";
+    public static final String URL_PREFIX = "${custom.selenium.url.prefix}";
+
+    public static final String USER = "${custom.selenium.user}";
+    public static final String PASSWORD = "${custom.selenium.password}";
+
 }

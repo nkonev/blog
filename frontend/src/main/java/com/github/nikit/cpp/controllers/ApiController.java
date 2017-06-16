@@ -1,5 +1,6 @@
 package com.github.nikit.cpp.controllers;
 
+import com.github.nikit.cpp.Constants;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -12,15 +13,14 @@ import java.security.Principal;
 /**
  * Created by nik on 08.06.17.
  */
-@RequestMapping("/rest")
-@RestController()
-public class HelloweenWebService {
+@RequestMapping(Constants.Uls.API)
+@RestController
+public class ApiController {
 
     @RequestMapping(value = "/hello", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HelloweenResponse> hello(Principal principal) {
 
-        return new ResponseEntity<HelloweenResponse>(
-                new HelloweenResponse("Happy Halloween, " + principal.getName() + "!"), HttpStatus.OK);
+        return new ResponseEntity<>(new HelloweenResponse("Happy Halloween, " + principal.getName() + "!"), HttpStatus.OK);
     }
 
     public static class HelloweenResponse {
@@ -54,7 +54,7 @@ public class HelloweenWebService {
         }
     }
 
-    @RequestMapping(value = "/is-authenticated", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/profile", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDTO checkAuthenticated(Principal principal) {
         return new UserDTO(principal.getName());
     }

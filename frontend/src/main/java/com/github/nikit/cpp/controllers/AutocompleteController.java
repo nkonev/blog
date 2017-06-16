@@ -17,7 +17,7 @@ import java.util.Set;
  * Created by nik on 21.05.17.
  */
 @RestController
-@RequestMapping(Constants.Uls.API)
+@RequestMapping(Constants.Uls.API_PUBLIC)
 public class AutocompleteController {
 
     @Autowired

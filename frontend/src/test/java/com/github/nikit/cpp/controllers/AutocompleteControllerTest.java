@@ -18,11 +18,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 public class AutocompleteControllerTest extends AbstractUtTestRunner {
 
+    private static final String PREFIX = Constants.Uls.API_PUBLIC;
+
     @Test
     public void testAutoComplete() throws Exception {
-        mockMvc.perform(post(Constants.Uls.API + Constants.Uls.REPOPULATE)).andExpect(status().isOk());
+        mockMvc.perform(post(PREFIX + Constants.Uls.REPOPULATE)).andExpect(status().isOk());
 
-        mockMvc.perform(get(Constants.Uls.API + Constants.Uls.AUTOCOMPLETE).param("prefix", "Un"))
+        mockMvc.perform(get(PREFIX + Constants.Uls.AUTOCOMPLETE).param("prefix", "Un"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasItems("United Arab Emirates", "United Kingdom", "United States")))
                 .andDo(document("autocompleteManual"))
@@ -31,9 +33,9 @@ public class AutocompleteControllerTest extends AbstractUtTestRunner {
 
     @Test
     public void testAutoCompleteConcatRestDocsToAdoc() throws Exception {
-        mockMvc.perform(post(Constants.Uls.API + Constants.Uls.REPOPULATE)).andExpect(status().isOk());
+        mockMvc.perform(post(PREFIX + Constants.Uls.REPOPULATE)).andExpect(status().isOk());
 
-        mockMvc.perform(get(Constants.Uls.API + Constants.Uls.AUTOCOMPLETE).param("prefix", "Slov"))
+        mockMvc.perform(get(PREFIX + Constants.Uls.AUTOCOMPLETE).param("prefix", "Slov"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasItems("Slovakia", "Slovenia")))
                 .andDo(document(Constants.Swagger.AUTOCOMPLETE, preprocessResponse(prettyPrint())))

@@ -14,7 +14,7 @@
             }
         },
         created(){
-            this.$http.get('/rest/hello').then(response => {
+            this.$http.get('/api/hello').then(response => {
 
                 // get body data
                 this.someData = response.body;

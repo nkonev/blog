@@ -1,14 +1,8 @@
 logging.level.: INFO
 
-server.port: 9080
+server.port: 9090
 
 server.tomcat.basedir: ${java.io.tmpdir}/com.github.nikit.cpp.tomcat
 
 spring.devtools.restart.additional-paths: ${custom.frontend.resources}
 custom.frontend.resources: frontend/src/main/resources
-
-custom.implicitly.wait.timeout: 20
-custom.browser: PHANTOM
-custom.selenium.url.prefix: http://127.0.0.1:${server.port}
-custom.selenium.user: admin
-custom.selenium.password: admin

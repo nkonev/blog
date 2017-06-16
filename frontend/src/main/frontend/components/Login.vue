@@ -1,10 +1,10 @@
 <template>
     <div class="login">
         <h1>Пожалуйста, представьтесь</h1>
-        <form id="form-login" action="/login" method="post" >
+        <form>
             <label for="username">Username: </label><input id="username" name="username" v-model="formUsername"><br/>
             <label for="password">Password:</label><input id="password" name="password" v-model="formPassword"><br/>
-            <button type="submit" @click.prevent="doLogin">Login!</button>
+            <button id="btn-submit" type="submit" @click.prevent="doLogin">Login!</button>
         </form>
     </div>
 
@@ -24,7 +24,7 @@
         methods:{
             doLogin() {
                 const options = { emulateJSON: true }; // for pass as form data
-                this.$http.post('/login', {username: this.formUsername, password: this.formPassword}, options).then(response => {
+                this.$http.post('/api/login', {username: this.formUsername, password: this.formPassword}, options).then(response => {
                     // get body data
                     router.push(root);
                 }, response => {

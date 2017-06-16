@@ -9,7 +9,7 @@ $(document).ready(function ($) {
             data: data,
             timeout: 1000,
             type: 'POST',
-            url: '/login'
+            url: '/api/login'
 
         }).done(function(data, textStatus, jqXHR) {
             CookieService.getLocationAnd(

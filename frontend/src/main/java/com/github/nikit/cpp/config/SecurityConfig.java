@@ -1,5 +1,6 @@
 package com.github.nikit.cpp.config;
 
+import com.github.nikit.cpp.Constants;
 import com.github.nikit.cpp.config.security.RESTAuthenticationEntryPoint;
 import com.github.nikit.cpp.config.security.RESTAuthenticationFailureHandler;
 import com.github.nikit.cpp.config.security.RESTAuthenticationSuccessHandler;
@@ -32,10 +33,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/rest/**").authenticated();
+        http.authorizeRequests().antMatchers("/favicon.ico", "/static/**", Constants.Uls.API_PUBLIC+"/**")
+                .permitAll();
+
+        http.authorizeRequests().antMatchers(Constants.Uls.API+"/**").authenticated();
         http.csrf().disable();
         http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
-        http.formLogin().successHandler(authenticationSuccessHandler);
-        http.formLogin().failureHandler(authenticationFailureHandler);
+        http.formLogin()
+                .loginPage("/api/login").permitAll()
+                .successHandler(authenticationSuccessHandler)
+                .failureHandler(authenticationFailureHandler)
+        ;
     }
 }

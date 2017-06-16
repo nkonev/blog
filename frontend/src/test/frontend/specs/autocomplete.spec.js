@@ -28,7 +28,7 @@ describe("autocomplete.js", function(){
         jasmine.clock().tick(2000);
 
         request = jasmine.Ajax.requests.mostRecent();
-        expect(request.url).toBe('/api/autocomplete?prefix=U');
+        expect(request.url).toBe('/api/public/autocomplete?prefix=U');
         expect(request.method).toBe('GET');
 
         request.respondWith({
