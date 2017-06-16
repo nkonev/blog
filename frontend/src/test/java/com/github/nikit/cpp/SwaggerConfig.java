@@ -33,7 +33,7 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("Checklist Application")
+                .title("Good parts Application")
 //                .description("Checklist Application API Description")
 //                .contact(new Contact("TestName", "http:/test-url.com", "test@test.de"))
 //                .license("Apache 2.0")
