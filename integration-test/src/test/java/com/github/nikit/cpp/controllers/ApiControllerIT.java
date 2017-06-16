@@ -1,6 +1,7 @@
 package com.github.nikit.cpp.controllers;
 
 import com.github.nikit.cpp.integration.AbstractItTestRunner;
+import org.junit.Before;
 import org.junit.Test;
 
 import static com.codeborne.selenide.Condition.text;
@@ -18,10 +19,13 @@ public class ApiControllerIT extends AbstractItTestRunner {
 
     private static final String HTML = "/static/index.html";
 
+    @Before
+    public void before(){
+        clearBrowserCookies();
+    }
 
     @Test
     public void testHelloOnlyAuthenticated() throws Exception {
-        clearBrowserCookies();
         open(urlPrefix+HTML);
 
         $(ID_API).click();
