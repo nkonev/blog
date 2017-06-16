@@ -1,5 +1,6 @@
 package com.github.nikit.cpp.controllers;
 
+import com.github.nikit.cpp.IntegrationTestConstants;
 import com.github.nikit.cpp.integration.AbstractItTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +18,6 @@ public class ApiControllerIT extends AbstractItTestRunner {
     private static final String ID_API = "#a-api";
     private static final String ID_SUBMIT = "#btn-submit";
 
-    private static final String HTML = "/static/index.html";
 
     @Before
     public void before(){
@@ -26,7 +26,7 @@ public class ApiControllerIT extends AbstractItTestRunner {
 
     @Test
     public void testHelloOnlyAuthenticated() throws Exception {
-        open(urlPrefix+HTML);
+        open(urlPrefix+ IntegrationTestConstants.INDEX_HTML);
 
         $(ID_API).click();
         $("body").shouldHave(text("Пожалуйста, представьтесь"));
@@ -35,9 +35,10 @@ public class ApiControllerIT extends AbstractItTestRunner {
         $("input#password").setValue(password);
         $(ID_SUBMIT).click();
 
+        // Tests are unstable on TravisCI (It uses docker)  without this assert
         $(".hello").shouldHave(text("Welcome to"));
 
-        open(urlPrefix+HTML);
+        open(urlPrefix+ IntegrationTestConstants.INDEX_HTML);
         $(ID_API).click();
 
         $("body").shouldHave(text("Happy Halloween, "+user));
