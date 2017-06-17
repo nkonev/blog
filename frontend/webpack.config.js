@@ -26,6 +26,7 @@ module.exports = {
 
     output: {
         path: buildDir,
+        publicPath: "/build/", // url prefix
         filename: "[name].js",
         library: "[name]"
     },
@@ -123,7 +124,7 @@ module.exports = {
                         loader: 'file-loader',
                         options: {
                             name: '[path][name].[ext]',
-                            publicPath: '/static/build/',
+                            // publicPath: '/static/build/',
                         }
                     }
                 ]

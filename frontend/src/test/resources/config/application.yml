@@ -3,6 +3,3 @@ logging.level.: INFO
 server.port: 9090
 
 server.tomcat.basedir: ${java.io.tmpdir}/com.github.nikit.cpp.tomcat
-
-spring.devtools.restart.additional-paths: ${custom.frontend.resources}
-custom.frontend.resources: frontend/src/main/resources

@@ -142,6 +142,7 @@
                 <version>${selenium.override.version}</version>
             </dependency>
 
+            <!-- Currently not used, but for possible future usage -->
             <dependency>
                 <groupId>org.thymeleaf</groupId>
                 <artifactId>thymeleaf</artifactId>

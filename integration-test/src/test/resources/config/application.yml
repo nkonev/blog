@@ -4,11 +4,16 @@ server.port: 9080
 
 server.tomcat.basedir: ${java.io.tmpdir}/com.github.nikit.cpp.tomcat
 
-spring.devtools.restart.additional-paths: ${custom.frontend.resources}
-custom.frontend.resources: frontend/src/main/resources
-
 custom.implicitly.wait.timeout: 20
 custom.browser: PHANTOM
 custom.selenium.url.prefix: http://127.0.0.1:${server.port}
 custom.selenium.user: admin
 custom.selenium.password: admin
+
+# this is URL
+spring.mvc.static-path-pattern: /**
+# You need to set "classpath:/static/" resources instead "file:" for production
+# last slash is important
+# first element - for eliminate manual restart app in IntelliJ for copy compiled classpath to target/classes, second element - for documentation
+spring.resources.static-locations: file:../frontend/src/main/resources/static/, classpath:/static/
+

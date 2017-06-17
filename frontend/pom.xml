@@ -348,15 +348,6 @@
             <version>${swagger-annotations.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.thymeleaf</groupId>
-            <artifactId>thymeleaf</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.thymeleaf</groupId>
-            <artifactId>thymeleaf-spring4</artifactId>
-        </dependency>
-
         <!-- disables template cache and make hot reload by adding own classloader when application is launched from IDE, and mkes another useful things -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

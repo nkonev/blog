@@ -12,7 +12,12 @@ server.tomcat.accesslog.enabled: true
 server.tomcat.accesslog.pattern: '%t %a "%r" %s (%D ms)'
 server.tomcat.basedir: ${java.io.tmpdir}/com.github.nikit.cpp.tomcat
 
-spring.devtools.restart.additional-paths: ${custom.frontend.resources}
-custom.frontend.resources: frontend/src/main/resources
-# disable(set to one) default unused static locations in favor to WebConfig#addResourceHandlers
-# spring.resources.static-locations: classpath:/public/
+custom.static.location: frontend/src/main/resources/static/
+spring.devtools.restart.additional-paths: ${custom.static.location}
+# this is URL
+spring.mvc.static-path-pattern: /**
+# You need to set "classpath:/static/" resources instead "file:" for production
+# last slash is important,
+# first element - for eliminate manual restart app in IntelliJ for copy compiled classpath to target/classes, second element - for documentation
+spring.resources.static-locations: file:${custom.static.location}, classpath:/static/
+
