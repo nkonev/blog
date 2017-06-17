@@ -18,6 +18,6 @@ spring.devtools.restart.additional-paths: ${custom.static.location}
 spring.mvc.static-path-pattern: /**
 # You need to set "classpath:/static/" resources instead "file:" for production
 # last slash is important,
-# first element - for eliminate manual restart app in IntelliJ for copy compiled classpath to target/classes, second element - for documentation
+# first element - for eliminate manual restart app in IntelliJ for copy compiled js to target/classes, second element - for documentation
 spring.resources.static-locations: file:${custom.static.location}, classpath:/static/
 
