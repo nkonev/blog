@@ -12,12 +12,10 @@ server.tomcat.accesslog.enabled: true
 server.tomcat.accesslog.pattern: '%t %a "%r" %s (%D ms)'
 server.tomcat.basedir: ${java.io.tmpdir}/com.github.nikit.cpp.tomcat
 
-custom.static.location: frontend/src/main/resources/static/
-spring.devtools.restart.additional-paths: ${custom.static.location}
 # this is URL
 spring.mvc.static-path-pattern: /**
-# You need to set "classpath:/static/" resources instead "file:" for production
+# You need to set "classpath:/static/" resources instead "file:" for production or you can to remove spring.resources.static-locations
 # last slash is important,
-# first element - for eliminate manual restart app in IntelliJ for copy compiled js to target/classes, second element - for documentation
-spring.resources.static-locations: file:${custom.static.location}, classpath:/static/
+# first element - for eliminate manual restart app in IntelliJ for copy compiled js to target/classes, last slash is important,, second element - for documentation
+spring.resources.static-locations: file:frontend/src/main/resources/static/, classpath:/static/
 
