@@ -15,7 +15,7 @@ const login = '/login';
 
 
 const router = new Router({
-    // mode: 'history',
+    mode: 'history',
     routes: [
         {
             path: root,
