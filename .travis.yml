@@ -1,11 +1,19 @@
 language: java
 cache:
   directories:
-  - $HOME/.m2
+  - "$HOME/.m2"
   - frontend/node
   - frontend/node_modules
-
-jdk: "oraclejdk8"
-install: /bin/true # workaround https://github.com/Swagger2Markup/swagger2markup-maven-plugin/pull/24
+jdk: oraclejdk8
+install: "/bin/true"
 script: "./mvnw -P frontend clean verify"
 services: redis-server
+deploy:
+  provider: openshift
+  user: nikit-xxx@mail.ru
+  password:
+    secure: XSv5pDpUSlDIteInr6NSW9+3J5dFRr2NQ4bQawbgWDPwW56Hg5bey7MuCTF8n/UzorX8TGCp2ETkiXvy/ajyVmYjKkKm7/8JdZCz5skhIvdbot4NTTr0OTTCqQ/nWvEzWzo0biQGenBDTWTRgs+49MhMwPkHLV8K30BGGHf3QeVF25O7GZ2OQ9HcvOxqmv4LJGqkpTEsDwSj4ONsk+j0AkEq9gNvLkCzgsPEesk+0fXC7QjHrjvjaAa2Tsyt+/NoXR/0QpDKL9ENvhGheASQndAzVCBO6LV16TOZ6U0PpDQvPAWYLmFBWKhJsq81cRbXO6GE8HO5DFwdnh3tFJM+4jv1tafcpVaQMvO0lgN9MHDXo1EUept/9iODqNE6BKsqQLuHYsvZ7pIjzKKDp65AS4UaCHAiYVJ13FX+0lh7vVSTp3vsfbGVjI5u4jUK2Nd8drgy/HE+kP0aiZF60R4SwFxbPXxQqDtqA4JT80hggGvyrgo9bv5VWpCl+y4MwOYgRpC1V9JrszTaa9t26ujZ4DNerOWXREAwbDIRwHiZxt3F+cAKDBOYsHYcSvNp/LOGCe59F8d0GfAq/q6YLB9LbEwvgzNC/uXvzfQmKHxZoEiL8OXFUHC35k0VaF7oRYby+vyF3L+UzZPnPBTRc5OERdIVJC2T2pvUahv6oEcUFTc=
+  app: good-parts
+  domain: good-parts
+  on:
+    repo: nikit-cpp/good-parts
