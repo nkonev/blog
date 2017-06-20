@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/nikit-cpp/good-parts.svg?branch=master)](https://travis-ci.org/nikit-cpp/good-parts)
+
 # Requiremants
 
 * Redis 2.8+
