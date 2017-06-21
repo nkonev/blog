@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import User from "../../../main/frontend/components/User.vue"
+import UserProfile from "../../../main/frontend/components/UserProfile.vue"
 
 // вспомогательная функция, выполняющая монтирование и
 // возвращающая строку с результатами рендеринга
@@ -9,15 +9,15 @@ function getRenderedText (Component, propsData) {
     return vm.$el.textContent;
 }
 
-describe("User.vue", function(){
+describe("UserProfile.vue", function(){
 
     beforeEach(function() {
         setFixtures(`<div id="app"/>`);
     });
 
 
-    it("Отрисовка пользователя", function() {
-        expect(getRenderedText(User, {
+    it("Отрисовка профиля пользователя", function() {
+        expect(getRenderedText(UserProfile, {
             id: 2
         })).toBe('Пользователь ' + 2)
     });
