@@ -69,6 +69,7 @@ module.exports = {
     resolve: {
         alias: {
             'jquery': require.resolve('jquery'), // for uniform.js
+            'vue': 'vue/dist/vue.js', // fix "Vue is not constructor" in vue-online
             'vue$': 'vue/dist/vue.esm.js', // it's important, else you will get "You are using the runtime-only build of Vue where the template compiler is not available. Either pre-compile the templates into render functions, or use the compiler-included build."
         }
     },
