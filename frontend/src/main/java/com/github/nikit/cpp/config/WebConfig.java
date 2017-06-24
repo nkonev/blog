@@ -1,5 +1,6 @@
 package com.github.nikit.cpp.config;
 
+import com.github.nikit.cpp.Constants;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
@@ -40,7 +41,7 @@ public class WebConfig extends WebMvcConfigurerAdapter implements ApplicationCon
     private static class NotFoundFallback implements EmbeddedServletContainerCustomizer {
         @Override
         public void customize(ConfigurableEmbeddedServletContainer container){
-            container.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/"));
+            container.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, Constants.Uls.ROOT));
         }
     }
 
