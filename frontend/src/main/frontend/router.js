@@ -6,6 +6,7 @@ import NotFoundComponent from './components/NotFoundComponent.vue'
 import Login from './components/Login.vue'
 import Helloween from './components/Helloween.vue'
 import UserList from './components/UserList.vue'
+import Autocomplete from './components/Autocomplete.vue'
 
 
 // This installs <router-view> and <router-link>,
@@ -26,6 +27,7 @@ const router = new Router({
         },
         { name: 'user-profile', path: '/user/:id', component: UserProfile, props: true },
         { path: '/users', component: UserList},
+        { path: '/autocomplete', component: Autocomplete},
         { path: login, component: Login },
         { path: '/helloween', component: Helloween },
         { path: '*', component: NotFoundComponent },

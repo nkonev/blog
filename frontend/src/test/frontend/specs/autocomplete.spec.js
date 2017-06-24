@@ -1,3 +1,7 @@
+import Vue from 'vue'
+import Autocomplete from "../../../main/frontend/components/Autocomplete.vue"
+import CommonTestUtils from "../CommonTestUtils"
+
 
 describe("autocomplete.js", function(){
     var $el, request;
@@ -10,8 +14,9 @@ describe("autocomplete.js", function(){
 
         setFixtures(`<div id="app"/>`);
 
+        CommonTestUtils.mountToPageAndDraw(Autocomplete, "#app");
+
         // draw autocomplete widget
-        require("../../../main/frontend/pages/autocomplete/autocomplete");
         $el = $('#countries-list');
     });
 

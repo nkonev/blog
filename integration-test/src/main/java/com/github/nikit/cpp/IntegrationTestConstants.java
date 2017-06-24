@@ -13,6 +13,6 @@ public class IntegrationTestConstants {
 
     // TODO make "Page Object" pattern
     public static final String INDEX_HTML = "/index.html";
-    public static final String AUTOCOMPLETE_HTML = "/autocomplete.html";
+    public static final String AUTOCOMPLETE_HTML = "/autocomplete";
 
 }

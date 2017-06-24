@@ -18,9 +18,6 @@ module.exports = {
 
     entry: {
         vendor: ["jquery", "underscore"],
-        autocomplete: "./pages/autocomplete/autocomplete.js",
-        login: "./pages/login/login.js",
-        helloween: "./pages/helloween/helloween.js",
         main: "./main.js", // vue.js
     },
 
