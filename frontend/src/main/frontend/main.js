@@ -4,25 +4,31 @@ import Vue from 'vue'
 import VueResource from 'vue-resource'
 import App from './App.vue'
 import router from './router.js'
-import {login} from './router.js'
+// import {login} from './router.js'
+import vmodal from 'vue-js-modal'
 
 Vue.use(VueResource);
+Vue.use(vmodal);
 
 Vue.config.devtools = false;
 
 Vue.http.interceptors.push((request, next)  => {
     next((response) => {
-        if(response.status == 401 ) {
+        if(response.status === 401 ) {
             // logout();
-            router.push(login);
+
+            // не думал что такое будет работать ;)
+            vm.$modal.show('demo-login');
         }
     });
 });
 
+
 /* eslint-disable no-new */
-new Vue({
+const vm = new Vue({
   el: '#app-container',
   router,
   template: '<App/>',
   components: { App }
 });
+

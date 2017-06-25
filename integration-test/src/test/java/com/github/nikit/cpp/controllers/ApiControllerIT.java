@@ -36,9 +36,8 @@ public class ApiControllerIT extends AbstractItTestRunner {
         $(ID_SUBMIT).click();
 
         // Tests are unstable on TravisCI (It uses docker)  without this assert
-        $(".hello").shouldHave(text("Welcome to"));
-
-        open(urlPrefix+ IntegrationTestConstants.INDEX_HTML);
+        // $(".hello").shouldHave(text("Welcome to"));
+        // open(urlPrefix+ IntegrationTestConstants.INDEX_HTML);
         $(ID_API).click();
 
         $("body").shouldHave(text("Happy Halloween, "+user));

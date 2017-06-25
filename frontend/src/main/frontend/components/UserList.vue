@@ -1,7 +1,12 @@
 <template>
     <div>
         <h1>Пользователи</h1>
-        <user-item v-for="user in users" v-bind:userDTO="user" :key="user.id"></user-item>
+        <div v-if="users.length>0">
+            <user-item v-for="user in users" v-bind:userDTO="user" :key="user.id"></user-item>
+        </div>
+        <div v-else>
+            No data
+        </div>
     </div>
 
 </template>
@@ -12,7 +17,7 @@
         components: {UserItem}, // говорим, из каких компонентов могут быть извлечены тэги
         data() {
             return {
-                users: 'No users :(',
+                users: [],
             }
         },
         created(){

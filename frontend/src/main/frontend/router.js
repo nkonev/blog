@@ -3,7 +3,6 @@ import Router from 'vue-router'
 import Hello from './components/Hello.vue'
 import UserProfile from './components/UserProfile.vue'
 import NotFoundComponent from './components/NotFoundComponent.vue'
-import Login from './components/Login.vue'
 import Helloween from './components/Helloween.vue'
 import UserList from './components/UserList.vue'
 import Autocomplete from './components/Autocomplete.vue'
@@ -14,8 +13,6 @@ import Autocomplete from './components/Autocomplete.vue'
 Vue.use(Router);
 
 const root = '/';
-const login = '/login';
-
 
 const router = new Router({
     mode: 'history',
@@ -28,7 +25,6 @@ const router = new Router({
         { name: 'user-profile', path: '/user/:id', component: UserProfile, props: true },
         { path: '/users', component: UserList},
         { path: '/autocomplete', component: Autocomplete},
-        { path: login, component: Login },
         { path: '/helloween', component: Helloween },
         { path: '*', component: NotFoundComponent },
     ]
@@ -37,6 +33,5 @@ const router = new Router({
 
 export  {
     router as default,
-    login,
     root
 }

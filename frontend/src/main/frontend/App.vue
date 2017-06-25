@@ -1,10 +1,10 @@
 <template>
     <div id="app">
         <OfflineIndicator message="Oh no, you're offline :("></OfflineIndicator>
+        <LoginModal></LoginModal>
 
         <img src="./assets/logo.png">
         <nav>
-            <router-link to="/login">Login</router-link>
             <router-link to="/">Index</router-link>
             <router-link to="/users">Users</router-link>
             <router-link id="a-api" to="/helloween">helloween</router-link>
@@ -19,10 +19,16 @@
 <script>
     import Vue from 'vue';
     import { OfflineIndicator } from 'vue-online';
+    import LoginModal       from './components/LoginModal.vue';
     export default {
         name: 'app',
+        methods: {
+
+        },
+        // used components for provide custom tags
         components: {
-            OfflineIndicator
+            OfflineIndicator,
+            LoginModal
         }
     }
 </script>
