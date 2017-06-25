@@ -6,13 +6,14 @@
                 <form autocomplete="off">
                     <input id="username" type="text" placeholder="Username" v-model="formUsername">
                     <input id="password" type="password" placeholder="Password" v-model="formPassword">
+
+                    <div class="errors">
+                        <div v-show="formError" class="box-error-message">Wrong login or password</div>
+                    </div>
+                    <div class="button-set">
+                        <button id="btn-submit" class="large-btn login-btn" type="submit" @click.prevent="doLogin">Login!</button>
+                    </div>
                 </form>
-                <div class="errors">
-                    <div v-show="formError" class="box-error-message">Wrong login or password</div>
-                </div>
-                <div class="button-set">
-                    <button id="btn-submit" class="large-btn login-btn" type="submit" @click.prevent="doLogin">Login!</button>
-                </div>
             </div>
         </div>
     </modal>
