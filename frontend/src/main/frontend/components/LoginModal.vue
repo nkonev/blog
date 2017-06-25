@@ -55,7 +55,7 @@
     }
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
     $background_color=#404142;
     $signin_color= #00cf6b;
 
