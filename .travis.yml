@@ -2,8 +2,8 @@ language: java
 cache:
   directories:
   - "$HOME/.m2"
-  - frontend/node
-  - frontend/node_modules
+#  - frontend/node
+#  - frontend/node_modules
 jdk: oraclejdk8
 install: "/bin/true"
 script: "./mvnw -P frontend clean verify"
