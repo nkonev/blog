@@ -20,6 +20,11 @@ java -jar frontend/target/frontend-1.0-SNAPSHOT-exec.jar
 ./mvnw -DnewVersion=1.0.0 versions:set versions:commit
 ```
 
+# Check for update maven dependency versions
+```
+./mvnw -DlogOutput=false versions:display-dependency-updates | less
+```
+
 # Frontend development
 
 ## Run webpack
@@ -33,3 +38,4 @@ cd frontend
 cd frontend
 ./karma.sh start --browsers=PhantomJS
 ```
+
