@@ -5,6 +5,6 @@
 <script>
     export default {
         name: 'user-item', // это имя компонента, которое м. б. тегом в другом компоненте
-        props: ['userDTO']
+        props: ['userDTO'], // it may be an object, for ability to set default values
     };
 </script>
