@@ -154,8 +154,7 @@ if (NODE_ENV !== DEVELOPMENT_ENV) {
             compress: {
                 // don't show unreachable variables etc
                 warnings: false,
-                drop_console: true,
-                unsafe: true
+                drop_console: true
             }
         })
     );
