@@ -11,6 +11,7 @@
             <router-link to="/not/found">Not found</router-link>
             <router-link to="/autocomplete">Autocomplete</router-link>
             <a id="a-doc" href="/docs/index.html">Docs</a>
+            <router-link to="/registration">Registration</router-link>
         </nav>
         <router-view></router-view>
   </div>

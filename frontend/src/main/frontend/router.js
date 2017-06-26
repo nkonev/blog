@@ -6,7 +6,7 @@ import NotFoundComponent from './components/NotFoundComponent.vue'
 import Helloween from './components/Helloween.vue'
 import UserList from './components/UserList.vue'
 import Autocomplete from './components/Autocomplete.vue'
-
+import Registration from './components/Registration.vue'
 
 // This installs <router-view> and <router-link>,
 // and injects $router and $route to all router-enabled child components
@@ -26,6 +26,7 @@ const router = new Router({
         { path: '/users', component: UserList},
         { path: '/autocomplete', component: Autocomplete},
         { path: '/helloween', component: Helloween },
+        { path: '/registration', component: Registration },
         { path: '*', component: NotFoundComponent },
     ]
 });
