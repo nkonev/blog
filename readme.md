@@ -31,6 +31,8 @@ java -jar frontend/target/frontend-1.0-SNAPSHOT-exec.jar
 ./mvnw -DlogOutput=false versions:display-dependency-updates | less
 
 ./mvnw -DlogOutput=false -DprocessDependencyManagement=false versions:display-dependency-updates | less
+./mvnw -DlogOutput=false versions:display-plugin-updates | less
+./mvnw -DlogOutput=false versions:display-property-updates | less
 ```
 
 # Frontend development
