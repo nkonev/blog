@@ -18,10 +18,9 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      { pattern: 'src/test/frontend/fixtures/*.html', included: false}, // not in script tag
-      { pattern: 'src/test/frontend/responses/*.json', included: false}, // not in script tag
-
-      { pattern: 'src/main/resources/static/img/*.*', watched: false, included: false, served: true},
+      // { pattern: 'src/test/frontend/fixtures/*.html', included: false}, // not in script tag
+      // { pattern: 'src/test/frontend/responses/*.json', included: false}, // not in script tag
+      // { pattern: 'src/main/resources/static/img/*.*', watched: false, included: false, served: true},
 
       { pattern: 'node_modules/babel-polyfill/dist/polyfill.js', watched: false, included: true, served: true}, // for old WebKit in PhantomJS
 
@@ -48,8 +47,23 @@ module.exports = function(config) {
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     // 'mocha' в данном случае -- это просто репортер, не тестовый фреймворк
-    reporters: ['mocha', 'kjhtml'], // two reporters may duplicate output (https://github.com/karma-runner/karma/issues/2342)
+    reporters: ['mocha', 'html'], // two reporters may duplicate output (https://github.com/karma-runner/karma/issues/2342)
 
+      // the default configuration
+    htmlReporter: {
+          outputDir: path.join(__dirname, 'target/karma_html'), // where to put the reports
+          templatePath: null, // set if you moved jasmine_template.html
+          focusOnFailures: true, // reports show failures on start
+          namedFiles: false, // name files instead of creating sub-directories
+          pageTitle: null, // page title for reports; browser info by default
+          urlFriendlyName: false, // simply replaces spaces with _ for files/dirs
+          reportName: 'report-summary-filename', // report summary filename; browser info by default
+
+
+          // experimental
+          preserveDescribeNesting: false, // folded suites stay folded
+          foldAll: false, // reports start folded (only with preserveDescribeNesting)
+    },
 
     // web server port
     port: 9876,

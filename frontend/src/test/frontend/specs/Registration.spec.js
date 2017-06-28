@@ -1,14 +1,10 @@
+import '../common'
 import Vue from 'vue'
-Vue.config.devtools = false;
-Vue.config.productionTip = false;
-
 import Registration from "../../../main/frontend/components/Registration.vue"
 import CommonTestUtils from "../CommonTestUtils"
-import VeeValidate from 'vee-validate';
 
-
-describe("Registration2.vue", function(){
-    var $el, request, $login, $email, $password, $submit, vm;
+describe("Registration.vue", function(){
+    var vm;
 
     beforeEach(function() {
         jasmine.Ajax.install();
