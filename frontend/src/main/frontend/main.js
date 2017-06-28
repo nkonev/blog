@@ -5,12 +5,9 @@ import VueResource from 'vue-resource'
 import App from './App.vue'
 import router from './router.js'
 // import {login} from './router.js'
-import vmodal from 'vue-js-modal'
-import VeeValidate from 'vee-validate';
 
 Vue.use(VueResource);
-Vue.use(vmodal);
-Vue.use(VeeValidate);
+
 
 Vue.config.devtools = false;
 

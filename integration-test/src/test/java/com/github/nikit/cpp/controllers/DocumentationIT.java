@@ -22,7 +22,7 @@ public class DocumentationIT extends AbstractItTestRunner {
     }
 
     @Test
-    public void testHelloOnlyAuthenticated() throws Exception {
+    public void testDocumentationIsPresent() throws Exception {
         open(urlPrefix+ IntegrationTestConstants.INDEX_HTML);
 
         $(ID_DOC).click();

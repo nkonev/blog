@@ -1,4 +1,7 @@
 import Vue from 'vue'
+Vue.config.devtools = false;
+Vue.config.productionTip = false;
+
 import Autocomplete from "../../../main/frontend/components/Autocomplete.vue"
 import CommonTestUtils from "../CommonTestUtils"
 

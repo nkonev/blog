@@ -9,7 +9,8 @@ export default {
      */
     mountToPageAndDraw: function (Component, selector) {
         const Ctor = Vue.extend(Component);
-        new Ctor().$mount(selector);
+        const vm = new Ctor();
+        return vm.$mount(selector);
     },
 
     /**

@@ -7,4 +7,9 @@ jasmine.getFixtures().fixturesPath = 'base/src/test/frontend/fixtures';
 jasmine.getJSONFixtures().fixturesPath = 'base/src/test/frontend/responses';
 import 'jasmine-ajax';
 
+import Vue from 'vue'
+Vue.config.devtools = false;
+Vue.config.productionTip = false;
+
+
 console.log("[autotest] index.js loaded");

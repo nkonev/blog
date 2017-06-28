@@ -21,6 +21,10 @@
     import Vue from 'vue';
     import { OfflineIndicator } from 'vue-online';
     import LoginModal       from './components/LoginModal.vue';
+    import vmodal from 'vue-js-modal'
+
+    Vue.use(vmodal);
+
     export default {
         name: 'app',
         methods: {

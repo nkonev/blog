@@ -1,4 +1,7 @@
 import Vue from 'vue'
+Vue.config.devtools = false;
+Vue.config.productionTip = false;
+
 import UserProfile from "../../../main/frontend/components/UserProfile.vue"
 import CommonTestUtils from "../CommonTestUtils"
 
