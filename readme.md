@@ -5,10 +5,16 @@
 * Redis 2.8+
 * JDK 8
 
-# Building with frontend (just turn on `frontend` profile) and integration tests (`verify`)
+# Building with frontend (just turn on `frontend` profile)
 ```
-./mvnw -P frontend clean package verify
+./mvnw -P frontend clean package
 ```
+
+# Building without frontend and without webdriver tests
+```
+./mvnw clean package
+```
+
 
 # Run
 ```
@@ -39,3 +45,12 @@ cd frontend
 ./karma.sh start --browsers=PhantomJS
 ```
 
+## Update js dependencies
+
+https://www.npmjs.com/package/npm-check-updates
+
+```
+ncu -u
+rm package-lock.json
+./npm.sh install
+```

@@ -26,12 +26,3 @@ Embedded documentation are available at http://127.0.0.1:8080/docs/index.html
  * http://docs.spring.io/spring-restdocs/docs/1.2.1.RELEASE/reference/html5/
  * https://springfox.github.io/springfox/docs/current/
 
-# Update js dependencies
-
-https://www.npmjs.com/package/npm-check-updates
-
-```
-ncu -u
-rm package-lock.json
-./npm.sh install
-```

@@ -19,7 +19,6 @@
         <maven.project.info.reports.plugin.version>2.9</maven.project.info.reports.plugin.version>
         <maven.surefire.report.plugin.version>2.20</maven.surefire.report.plugin.version>
         <maven.surefire.plugin.version>2.20</maven.surefire.plugin.version>
-        <maven.failsafe.plugin.version>2.20</maven.failsafe.plugin.version>
         <maven.jxr.report.plugin.version>2.5</maven.jxr.report.plugin.version>
         <maven.clean.plugin.version>3.0.0</maven.clean.plugin.version>
         <java.version>1.8</java.version>
