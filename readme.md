@@ -29,6 +29,8 @@ java -jar frontend/target/frontend-1.0-SNAPSHOT-exec.jar
 # Check for update maven dependency versions
 ```
 ./mvnw -DlogOutput=false versions:display-dependency-updates | less
+
+./mvnw -DlogOutput=false -DprocessDependencyManagement=false versions:display-dependency-updates | less
 ```
 
 # Frontend development
