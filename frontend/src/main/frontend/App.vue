@@ -1,20 +1,22 @@
 <template>
     <div id="app">
-        <OfflineIndicator message="Oh no, you're offline :("></OfflineIndicator>
-        <LoginModal></LoginModal>
+        <div id="content">
+            <OfflineIndicator message="Oh no, you're offline :("></OfflineIndicator>
+            <LoginModal></LoginModal>
 
-        <img id="logo" src="./assets/logo.png">
-        <nav>
-            <router-link to="/">Index</router-link>
-            <router-link to="/users">Users</router-link>
-            <router-link id="a-api" to="/helloween">helloween</router-link>
-            <router-link to="/not/found">Not found</router-link>
-            <router-link to="/autocomplete">Autocomplete</router-link>
-            <a id="a-doc" href="/docs/index.html">Docs</a>
-            <router-link to="/registration">Registration</router-link>
-            <router-link to="/lorem">Lorem ipsum</router-link>
-        </nav>
-        <router-view></router-view>
+            <img id="logo" src="./assets/logo.png">
+            <nav>
+                <router-link to="/">Index</router-link>
+                <router-link to="/users">Users</router-link>
+                <router-link id="a-api" to="/helloween">helloween</router-link>
+                <router-link to="/not/found">Not found</router-link>
+                <router-link to="/autocomplete">Autocomplete</router-link>
+                <a id="a-doc" href="/docs/index.html">Docs</a>
+                <router-link to="/registration">Registration</router-link>
+                <router-link to="/lorem">Lorem ipsum</router-link>
+            </nav>
+            <router-view></router-view>
+        </div>
   </div>
 </template>
 
@@ -68,7 +70,11 @@
     @media screen and (max-width: $contentWidth) {
         #app {
             width: 100%;
-            margin: 0px;
+            margin-top: 0px;
+
+            #content {
+                padding: 4px;
+            }
 
             img#logo {
                 display: block;
