@@ -8,6 +8,7 @@ import static org.hamcrest.CoreMatchers.hasItems;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -22,7 +23,7 @@ public class AutocompleteControllerTest extends AbstractUtTestRunner {
 
     @Test
     public void testAutoComplete() throws Exception {
-        mockMvc.perform(post(PREFIX + Constants.Uls.REPOPULATE)).andExpect(status().isOk());
+        mockMvc.perform(post(PREFIX + Constants.Uls.REPOPULATE).with(csrf())).andExpect(status().isOk());
 
         mockMvc.perform(get(PREFIX + Constants.Uls.AUTOCOMPLETE).param("prefix", "Un"))
                 .andExpect(status().isOk())
@@ -33,7 +34,7 @@ public class AutocompleteControllerTest extends AbstractUtTestRunner {
 
     @Test
     public void testAutoCompleteConcatRestDocsToAdoc() throws Exception {
-        mockMvc.perform(post(PREFIX + Constants.Uls.REPOPULATE)).andExpect(status().isOk());
+        mockMvc.perform(post(PREFIX + Constants.Uls.REPOPULATE).with(csrf())).andExpect(status().isOk());
 
         mockMvc.perform(get(PREFIX + Constants.Uls.AUTOCOMPLETE).param("prefix", "Slov"))
                 .andExpect(status().isOk())
