@@ -2,23 +2,30 @@
     <div>
         <h1>Type some country</h1>
 
-        <label for="countries-list">Countries: </label>
-        <input id="countries-list"/>
+        <vue-instant
+                :suggestion-attribute="suggestionAttribute"
+                v-model="value"
+                :disabled="false"
+                @input="changed"
+                :show-autocomplete="true"
+                :autofocus="false"
+                :suggestions="suggestions"
+                name="customName"
+                placeholder="custom placeholder"
+                type="google"
+        ></vue-instant>
     </div>
 </template>
 
 <script>
-    import $ from 'jquery';
-    // https://stackoverflow.com/questions/33998262/jquery-ui-and-webpack-how-to-manage-it-into-module
-    import "jquery-ui/ui/widgets/autocomplete";
-    // import "jquery-ui/themes/base/all.css";
-    import "jquery-ui/themes/base/base.css";
-    import "jquery-ui/themes/base/theme.css";
-    import "jquery-ui/themes/base/autocomplete.css";
-
+    import Vue from 'vue'
+    import 'vue-instant/dist/vue-instant.css'
+    import VueInstant from 'vue-instant/dist/vue-instant.common'
+    Vue.use(VueInstant);
 
     export default {
-        mounted(){
+        name: "Autocomplete",
+        /*mounted(){
             console.log("autocomplete.js mounted");
 
             $("#countries-list").autocomplete({
@@ -37,6 +44,29 @@
                     console.log( "Selected: " + ui.item.value + " aka " + ui.item.id );
                 }
             });
+        },*/
+        data() {
+            return {
+                value: '',
+                suggestionAttribute: 'original_title',
+                suggestions: [],
+            }
+        },
+        methods: {
+            changed: function() {
+                var that = this;
+                this.suggestions = [];
+                this.$http.get('/api/public/autocomplete?prefix=' + this.value)
+                    .then(
+                        response => {
+                            that.suggestions = response.body;
+                        },
+                        response => {
+                            // error callback
+                            console.error(response);
+                        }
+                    )
+            }
         }
     }
 
