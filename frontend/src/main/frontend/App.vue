@@ -43,7 +43,15 @@
       font-family: 'Avenir', Helvetica, Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-      text-align: center;
+
+      // center content
+      width 969px
+      background-color: rgba(255, 0, 0, 0.27);
+      position: absolute;
+      left: 0;
+      right: 0;
+      margin: auto;
+
       color: #2c3e50;
       margin-top: 60px;
 
