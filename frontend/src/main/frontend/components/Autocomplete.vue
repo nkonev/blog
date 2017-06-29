@@ -25,26 +25,6 @@
 
     export default {
         name: "Autocomplete",
-        /*mounted(){
-            console.log("autocomplete.js mounted");
-
-            $("#countries-list").autocomplete({
-                // http://jqueryui.com/autocomplete/#multiple-remote http://api.jqueryui.com/autocomplete/
-                source: function( request, response ) {
-                    $.getJSON(
-                        "/api/public/autocomplete",
-                        {
-                            prefix: request.term
-                        },
-                        response
-                    );
-                },
-                minLength: 1,
-                select: function( event, ui ) {
-                    console.log( "Selected: " + ui.item.value + " aka " + ui.item.id );
-                }
-            });
-        },*/
         data() {
             return {
                 value: '',
