@@ -3,7 +3,7 @@
         <OfflineIndicator message="Oh no, you're offline :("></OfflineIndicator>
         <LoginModal></LoginModal>
 
-        <img src="./assets/logo.png">
+        <img id="logo" src="./assets/logo.png">
         <nav>
             <router-link to="/">Index</router-link>
             <router-link to="/users">Users</router-link>
@@ -39,13 +39,14 @@
 </script>
 
 <style lang="stylus">
+    $contentWidth=969px
     #app {
       font-family: 'Avenir', Helvetica, Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
 
       // center content
-      width 969px
+      width $contentWidth
       background-color: rgba(255, 0, 0, 0.27);
       position: absolute;
       left: 0;
@@ -62,6 +63,20 @@
           }
       }
     }
+
+    @media screen and (max-width: $contentWidth) {
+        #app {
+            width: 100%;
+            margin: 0px;
+
+            img#logo {
+                display: block;
+                margin: 0 auto;
+            }
+        }
+
+    }
+
 
     div.offline-indicator {
         background: #ff6762;
