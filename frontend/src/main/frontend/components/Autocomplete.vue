@@ -48,7 +48,7 @@
         data() {
             return {
                 value: '',
-                suggestionAttribute: 'original_title',
+                suggestionAttribute: 'value', // AutocompleteResponse
                 suggestions: [],
             }
         },
@@ -60,6 +60,7 @@
                     .then(
                         response => {
                             that.suggestions = response.body;
+                            console.log(that.suggestions)
                         },
                         response => {
                             // error callback
