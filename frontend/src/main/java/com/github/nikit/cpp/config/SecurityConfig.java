@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 /**
  * Created by nik on 08.06.17.
@@ -37,7 +38,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll();
 
         http.authorizeRequests().antMatchers(Constants.Uls.API+"/**").authenticated();
-        http.csrf().disable();
+        http.csrf()
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
         http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
         http.formLogin()
                 .loginPage("/api/login").permitAll()
