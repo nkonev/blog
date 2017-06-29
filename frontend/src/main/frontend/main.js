@@ -20,10 +20,9 @@ function getCookie(name) {
 
 Vue.http.interceptors.push((request, next)  => {
 
-    const csrfCookieValue = getCookie('XSRF-TOKEN');
-    console.log('csrfCookieValue', csrfCookieValue);
-
     // https://docs.spring.io/spring-security/site/docs/current/reference/html/csrf.html#csrf-cookie
+    const csrfCookieValue = getCookie('XSRF-TOKEN');
+    // console.log('csrfCookieValue', csrfCookieValue);
     request.headers.set('X-XSRF-TOKEN', csrfCookieValue);
 
     next((response) => {
