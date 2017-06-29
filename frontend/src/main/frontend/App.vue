@@ -12,6 +12,7 @@
             <router-link to="/autocomplete">Autocomplete</router-link>
             <a id="a-doc" href="/docs/index.html">Docs</a>
             <router-link to="/registration">Registration</router-link>
+            <router-link to="/lorem">Lorem ipsum</router-link>
         </nav>
         <router-view></router-view>
   </div>
