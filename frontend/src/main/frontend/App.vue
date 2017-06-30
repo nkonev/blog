@@ -59,6 +59,10 @@
       color: #2c3e50;
       margin-top: 60px;
 
+      #content {
+        padding: 4px;
+      }
+
       nav {
           a.router-link-exact-active {
               color white
@@ -71,10 +75,6 @@
         #app {
             width: 100%;
             margin-top: 0px;
-
-            #content {
-                padding: 4px;
-            }
 
             img#logo {
                 display: block;
