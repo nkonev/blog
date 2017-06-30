@@ -81,14 +81,18 @@
 
         .errors {
             display: block
-            height 16px;
+            height 20px;
+            width: 334px;
             margin-top 4px;
             margin-bottom 4px;
 
             .box-error-message {
-                padding-top 4px;
-                padding-bottom 4px;
-                height 100%
+                //display: inline
+                padding 4px;
+                //width 100%;
+                //height 100%
+                //margin-left auto;
+                //margin-right auto;
                 border-radius: 2px;
                 text-align: center;
                 width: 100%;
