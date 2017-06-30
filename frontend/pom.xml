@@ -19,7 +19,8 @@
         <spring-restdocs-asciidoctor.version>1.2.1.RELEASE</spring-restdocs-asciidoctor.version>
 
         <!-- swagger stuff -->
-        <swagger2markup.version>1.3.1</swagger2markup.version>
+        <swagger2markup.version>1.3.2</swagger2markup.version>
+        <swagger2markup-ext.version>1.3.1</swagger2markup-ext.version>
         <springfox.version>2.7.0</springfox.version>
         <asciidoctor.input.directory>${project.basedir}/src/docs/asciidoc</asciidoctor.input.directory>
         <swagger.output.dir>${project.build.directory}/swagger</swagger.output.dir>
@@ -205,12 +206,12 @@
                     <dependency>
                         <groupId>io.github.swagger2markup</groupId>
                         <artifactId>swagger2markup-import-files-ext</artifactId>
-                        <version>${swagger2markup.version}</version>
+                        <version>${swagger2markup-ext.version}</version>
                     </dependency>
                     <dependency>
                         <groupId>io.github.swagger2markup</groupId>
                         <artifactId>swagger2markup-spring-restdocs-ext</artifactId>
-                        <version>${swagger2markup.version}</version>
+                        <version>${swagger2markup-ext.version}</version>
                     </dependency>
                 </dependencies>
                 <configuration>
@@ -395,7 +396,7 @@
         <dependency>
             <groupId>io.github.swagger2markup</groupId>
             <artifactId>swagger2markup-spring-restdocs-ext</artifactId>
-            <version>${swagger2markup.version}</version>
+            <version>${swagger2markup-ext.version}</version>
             <scope>test</scope>
         </dependency>
 
