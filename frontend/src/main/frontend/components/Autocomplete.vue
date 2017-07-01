@@ -19,7 +19,10 @@
 
 <script>
     import Vue from 'vue'
-    import VueInstant from '../lib/VueInstant.vue'
+    import 'vue-instant/dist/vue-instant.css'
+    //import VueInstant from 'vue-instant/dist/vue-instant.common.js'
+    import VueInstant from 'vue-instant'
+    Vue.use(VueInstant);
 
     export default {
         name: "Autocomplete",
@@ -47,9 +50,9 @@
                     )
             }
         },
-        components: {
+        /*components: {
             vueInstant: VueInstant
-        }
+        }*/
     }
 
 </script>
