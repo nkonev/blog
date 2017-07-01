@@ -54,6 +54,8 @@
 </script>
 
 <style lang="stylus" scoped>
+    @import "../common.styl"
+
     .registration {
         display block
         position relative
@@ -67,7 +69,7 @@
             .help-block {
                 margin-left 4px;
                 position absolute
-                color red
+                color $errorColor
             }
         }
     }
