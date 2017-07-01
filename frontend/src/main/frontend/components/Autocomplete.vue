@@ -20,8 +20,8 @@
 <script>
     import Vue from 'vue'
     import 'vue-instant/dist/vue-instant.css'
-    //import VueInstant from 'vue-instant/dist/vue-instant.common.js'
-    import VueInstant from 'vue-instant'
+    import VueInstant from 'vue-instant/dist/vue-instant.common.js'
+    // import VueInstant from 'vue-instant'
     Vue.use(VueInstant);
 
     export default {
