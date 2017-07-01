@@ -57,7 +57,7 @@ module.exports = {
             filename: '[name].css'
         }),
         new webpack.ProvidePlugin({
-            // "$":"jquery",
+            "$":"jquery",
             // "jQuery":"jquery",
             // "window.jQuery":"jquery"
         }),
