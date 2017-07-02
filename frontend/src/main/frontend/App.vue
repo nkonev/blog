@@ -3,6 +3,7 @@
         <div id="content">
             <OfflineIndicator message="Oh no, you're offline :("></OfflineIndicator>
             <LoginModal></LoginModal>
+            <auto-progress/>
 
             <img id="logo" src="./assets/logo.png">
             <nav>
@@ -25,6 +26,7 @@
     import { OfflineIndicator } from 'vue-online';
     import LoginModal       from './components/LoginModal.vue';
     import vmodal from 'vue-js-modal'
+    import autoProgress from 'vue-auto-progress'
 
     Vue.use(vmodal);
 
@@ -36,7 +38,8 @@
         // used components for provide custom tags
         components: {
             OfflineIndicator,
-            LoginModal
+            LoginModal,
+            autoProgress
         }
     }
 </script>
