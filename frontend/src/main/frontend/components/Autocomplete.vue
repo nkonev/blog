@@ -3,7 +3,7 @@
         <h1>Type some country</h1>
 
         <template>
-            <v-autocomplete :items="items" v-model="item" :get-label="getLabel" :component-item='template' @change="fetchItems">
+            <v-autocomplete :items="items" v-model="item" v-bind:minLen="1" :get-label="getLabel" :component-item='template' @update-items="fetchItems" @input="onSelected">
             </v-autocomplete>
         </template>
     </div>
@@ -19,7 +19,7 @@
     export default {
         data () {
             return {
-                item: {id: 0, value: 'None', description: 'Please type'},
+                item: null,
                 template: ItemTemplate,
                 items: [],
             }
@@ -42,24 +42,9 @@
                             console.error(response);
                         }
                     )
-
-            }
-        },
-        computed:{
-            items1212 () {
-                /*console.log('fetching items...', this);
-                const that = this;
-                this.$http.get('/api/public/autocomplete?prefix=' + this.value)
-                    .then(
-                        response => {
-                            that.items = response.body;
-                            console.log(that.items);
-                        },
-                        response => {
-                            // error callback
-                            console.error(response);
-                        }
-                    )*/
+            },
+            onSelected() {
+                console.log("Selected", this.item);
             }
         }
     }
@@ -73,7 +58,7 @@
                 padding 10px 15px
                 box-shadow none
                 border 1px solid #157977
-                width calc(100% - 32px)
+                width 100%
                 outline none
                 background-color #eee
             &.v-autocomplete-selected
