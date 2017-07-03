@@ -25,7 +25,7 @@ describe("autocomplete.js", function(){
         jasmine.Ajax.uninstall();
     });
 
-    it("Ввод буквы U", function() {
+    xit("Ввод буквы U", function() {
         expect($el).toBeInDOM();
 
         $el.val("U").keydown();
