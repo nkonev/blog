@@ -48,14 +48,16 @@ public class ApiController {
         return new UserDTO(-1L, principal.getName());
     }
 
-    private static final List<UserDTO> USER_DTO_LIST = Arrays.asList(
-            new UserDTO(1L, "user1"),
-            new UserDTO(2L, "user2"),
-            new UserDTO(3L, "user3"),
-            new UserDTO(4L, "user4"),
-            new UserDTO(10L, "user10")
-    );
-
+    private static final List<UserDTO> USER_DTO_LIST;
+    static {
+        USER_DTO_LIST = Arrays.asList(
+                new UserDTO(1L, "user1"),
+                new UserDTO(2L, "user2"),
+                new UserDTO(3L, "user3"),
+                new UserDTO(4L, "user4"),
+                new UserDTO(10L, "user10")
+        );
+    }
 
     @GetMapping(value = "/user")
     public Collection<UserDTO> getUsers() {
