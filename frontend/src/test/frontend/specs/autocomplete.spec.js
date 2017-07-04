@@ -29,9 +29,11 @@ describe("autocomplete.js", function(){
     xit("Ввод префикса Unit", function(done) {
         expect($el).toBeInDOM();
 
-        $el.val("Unit").change();
-        vm.$emit('focus');
-        vm.$emit('input', "Unit");
+        $el.val("Unit").change().keyup();
+        vm.$emit('input');
+        vm.$emit('change', ["Unit"]);
+        vm.$emit('update-items', ["Unit"]);
+
 
 
         Vue.nextTick(() => {
