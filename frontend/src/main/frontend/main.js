@@ -8,8 +8,7 @@ import router from './router.js'
 
 Vue.use(VueResource);
 
-
-Vue.config.devtools = false;
+// Vue.config.devtools = false;
 
 function getCookie(name) {
 

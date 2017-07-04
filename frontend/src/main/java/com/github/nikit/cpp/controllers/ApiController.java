@@ -67,7 +67,7 @@ public class ApiController {
         return USER_DTO_LIST.stream()
                 .filter(userDTO -> userId.equals(userDTO.getId()))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("user with id="+ userId + " nt found"));
+                .orElseThrow(() -> new RuntimeException("user with id="+ userId + " not found"));
     }
 
 }

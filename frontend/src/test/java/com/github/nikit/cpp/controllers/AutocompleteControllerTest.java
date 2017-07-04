@@ -27,7 +27,7 @@ public class AutocompleteControllerTest extends AbstractUtTestRunner {
 
         mockMvc.perform(get(PREFIX + Constants.Uls.AUTOCOMPLETE).param("prefix", "Un"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasItems("United Arab Emirates", "United Kingdom", "United States")))
+                .andExpect(jsonPath("$[*].value", hasItems("United Arab Emirates", "United Kingdom", "United States")))
                 .andDo(document("autocompleteManual"))
         ;
     }
@@ -38,7 +38,7 @@ public class AutocompleteControllerTest extends AbstractUtTestRunner {
 
         mockMvc.perform(get(PREFIX + Constants.Uls.AUTOCOMPLETE).param("prefix", "Slov"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasItems("Slovakia", "Slovenia")))
+                .andExpect(jsonPath("$[*].value", hasItems("Slovakia", "Slovenia")))
                 .andDo(document(Constants.Swagger.AUTOCOMPLETE, preprocessResponse(prettyPrint())))
         ;
     }

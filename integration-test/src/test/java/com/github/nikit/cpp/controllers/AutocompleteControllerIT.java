@@ -14,11 +14,11 @@ import static com.github.nikit.cpp.IntegrationTestConstants.AUTOCOMPLETE_HTML;
 public class AutocompleteControllerIT extends AbstractItTestRunner {
 
     @Test
-    public void testOne() throws Exception {
+    public void testUni() throws Exception {
 
         open(urlPrefix+AUTOCOMPLETE_HTML);
-        $("#countries-list").setValue("U");
-        $(".ui-autocomplete .ui-menu-item div").shouldHave(text("Uganda"));
+        $(".v-autocomplete-input").setValue("Uni");
+        $(".v-autocomplete-list").shouldHave(text("United Arab Emirates"));
 
         //TimeUnit.SECONDS.sleep(9999);
     }
