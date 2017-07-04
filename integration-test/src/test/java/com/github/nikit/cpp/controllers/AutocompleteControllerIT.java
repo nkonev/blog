@@ -17,8 +17,10 @@ public class AutocompleteControllerIT extends AbstractItTestRunner {
     public void testUni() throws Exception {
 
         open(urlPrefix+AUTOCOMPLETE_HTML);
-        $(".v-autocomplete-input").setValue("Uni");
-        $(".v-autocomplete-list").shouldHave(text("United Arab Emirates"));
+        $("input[name='customName']").sendKeys("Uni");
+        //$("input[name='search']").sendKeys("Uni");
+
+        $(".vue-instant__suggestions").shouldHave(text("United Arab Emirates"));
 
         //TimeUnit.SECONDS.sleep(9999);
     }
