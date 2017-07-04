@@ -3,7 +3,7 @@
         <h1>Type some country</h1>
 
         <template>
-            <v-autocomplete :items="items" v-model="item" v-bind:minLen="1":get-label="getLabel" :component-item='template' @update-items="fetchItems" @input="onSelected">
+            <v-autocomplete :items="items" v-model="item" v-bind:minLen="1" :get-label="getLabel" :component-item='template' @update-items="fetchItems" @input="onSelected">
             </v-autocomplete>
         </template>
     </div>
