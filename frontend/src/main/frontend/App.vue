@@ -46,6 +46,9 @@
 
 <style lang="stylus">
     $contentWidth=969px
+    body {
+        background-color: rgba(0, 128, 0, 0.1);
+    }
     #app {
       top: 0px
 
@@ -55,7 +58,7 @@
 
       // center content
       width $contentWidth
-      background-color: rgba(255, 0, 0, 0.27);
+      background-color: white;
       position: absolute;
       left: 0;
       right: 0;
