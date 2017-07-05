@@ -108,7 +108,8 @@
 
         a {
             color: black;
-            float: left;
+            // float: left; // float makes it as block(synonym for followed line), see https://habrahabr.ru/post/136588/
+            display block
             padding: 8px 16px;
             text-decoration: none;
         }
