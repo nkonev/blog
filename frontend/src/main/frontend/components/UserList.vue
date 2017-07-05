@@ -33,6 +33,7 @@
     import UserItem from "./UserItem.vue";
     import {PAGE_SIZE} from "../constants";
     import Paginate from 'vuejs-paginate';
+    import {users} from '../router';
 
     Vue.component('paginate', Paginate);
 
@@ -46,7 +47,7 @@
         },
         methods: {
             reloadPage: function(pageNum) {
-                this.$router.push({path: '/users', query: {page: pageNum}});
+                this.$router.push({path: users, query: {page: pageNum}});
                 console.log("opening page ", pageNum);
 
                 this.$http.get('/api/user?page='+(pageNum-1)+'&size='+PAGE_SIZE).then(response => {

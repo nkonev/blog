@@ -14,6 +14,7 @@ import Lorem from './components/Lorem.vue'
 Vue.use(Router);
 
 const root = '/';
+const users = '/users';
 
 const router = new Router({
     mode: 'history',
@@ -24,7 +25,7 @@ const router = new Router({
             component: Hello
         },
         { name: 'user-profile', path: '/user/:id', component: UserProfile, props: true },
-        { path: '/users', component: UserList},
+        { path: users, component: UserList},
         { path: '/autocomplete', component: Autocomplete},
         { path: '/helloween', component: Helloween },
         { path: '/registration', component: Registration },
@@ -36,5 +37,6 @@ const router = new Router({
 
 export  {
     router as default,
-    root
+    root,
+    users
 }
