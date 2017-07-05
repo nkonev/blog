@@ -14,7 +14,7 @@
     };
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
     .user {
         border-color rgba(0, 176, 88, 0.56)
         border-width 2px;
