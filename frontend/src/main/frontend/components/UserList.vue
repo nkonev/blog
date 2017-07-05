@@ -41,7 +41,7 @@
             return {
                 users: [],
                 initialPage: 0,
-                pageCount: 234, // FIXME
+                pageCount: 0,
             }
         },
         methods: {
