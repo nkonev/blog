@@ -7,14 +7,15 @@
                 :margin-pages="2"
                 :click-handler="reloadPage"
                 :page-range="4"
-                :initial-page="initialPage"
+                :initial-page="initialPageIndex"
+                ref="paginate"
                 :container-class="'pagination'"
                 :page-class="'page-item'"
                 :page-link-class="'page-link-item'"
                 :prev-class="'prev-item'"
-                :prev-link-class="'prev-link-item'"
+                :prev-link-class="'prev-link-item arrow-link-item'"
                 :next-class="'next-item'"
-                :next-link-class="'next-link-item'"
+                :next-link-class="'next-link-item arrow-link-item'"
         ></paginate>
 
         <div v-if="users.length>0">
@@ -40,18 +41,15 @@
         data() {
             return {
                 users: [],
-                initialPage: 0,
                 pageCount: 0,
             }
         },
         methods: {
-            reloadPage: function(pageNum, init) {
-                if (!init) {
-                    pageNum = pageNum - 1; // for Spring DATA
-                }
+            reloadPage: function(pageNum) {
+                this.$router.push({path: '/users', query: {page: pageNum}});
                 console.log("opening page ", pageNum);
 
-                this.$http.get('/api/user?page='+pageNum+'&size='+PAGE_SIZE).then(response => {
+                this.$http.get('/api/user?page='+(pageNum-1)+'&size='+PAGE_SIZE).then(response => {
                     this.users = response.body;
                 }, response => {
                     console.error(response);
@@ -59,9 +57,18 @@
                 });
             }
         },
+        computed: {
+            /*
+             The index of initial page which selected. default: 0
+             */
+            initialPageIndex() {
+                return this.$route.query.page ? parseInt(this.$route.query.page-1) : 0;
+            }
+        },
         created(){
             console.log("created");
-            this.reloadPage(this.initialPage, true);
+            const page = this.initialPageIndex+1;
+            this.reloadPage(page);
 
             // get page count
             this.$http.get('/api/user-count').then(response => {
@@ -100,7 +107,7 @@
         .disabled  {
             pointer-events: none;
             cursor: default;
-            .prev-link-item,.next-link-item {
+            .arrow-link-item {
                 color #aaabac
                 text-decoration line-through
             }

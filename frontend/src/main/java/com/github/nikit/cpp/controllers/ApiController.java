@@ -55,7 +55,7 @@ public class ApiController {
     private static final List<UserDTO> USER_DTO_LIST;
     static {
         USER_DTO_LIST = new ArrayList<>();
-        for (int i=0; i<100000; ++i){
+        for (int i=0; i<100001; ++i){
             USER_DTO_LIST.add(new UserDTO((long)i, "user"+i));
         }
     }
