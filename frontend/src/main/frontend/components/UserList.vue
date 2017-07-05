@@ -84,7 +84,6 @@
         .page-link-item {
             min-width 26px;
             text-align center;
-            overflow visible
         }
 
         .active {
