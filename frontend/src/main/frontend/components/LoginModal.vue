@@ -23,6 +23,8 @@
 //    import router from '../router'
 //    import {root} from '../router'
 
+    import store from  '../store';
+
     export default {
         name: 'LoginModal',
 
@@ -38,12 +40,15 @@
                 this.formError = null;
             },
             doLogin() {
+                const self = this;
                 const options = { emulateJSON: true }; // for pass as form data
                 this.$http.post('/api/login', {username: this.formUsername, password: this.formPassword}, options).then(response => {
                     // get body data
                     this.$modal.hide('demo-login');
                     // router.push(root);
-                    window.location.reload();
+                    window.location.reload(); // fixme change to vuex
+
+                    store.commit('login', self.formUsername, '/build/assets/logo.png');
                 }, response => {
                     // error callback
                     // alert('Booh! Wrong credentials, try again!');

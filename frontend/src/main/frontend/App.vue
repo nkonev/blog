@@ -16,6 +16,7 @@
                 <router-link to="/registration">Registration</router-link>
                 <router-link to="/lorem">Lorem ipsum</router-link>
                 <router-link to="/posts">Posts</router-link>
+                <user-profile-nav/>
             </nav>
             <router-view></router-view>
         </div>
@@ -28,6 +29,7 @@
     import LoginModal       from './components/LoginModal.vue';
     import vmodal from 'vue-js-modal'
     import autoProgress from 'vue-auto-progress'
+    import userProfileNav from './components/UserProfileNav.vue'
 
     Vue.use(vmodal);
 
@@ -40,7 +42,8 @@
         components: {
             OfflineIndicator,
             LoginModal,
-            autoProgress
+            autoProgress,
+            userProfileNav
         },
         mounted() {
         }
@@ -77,10 +80,23 @@
       }
 
       nav {
+          a {
+              padding 12px
+              display flex
+              flex-direction column
+              justify-content center
+          }
+
           a.router-link-exact-active {
               color white
               background-color #003eff
+              border-radius 2px
           }
+
+          display flex
+          flex-direction row
+          flex-wrap wrap
+          justify-content space-between
       }
     }
 
