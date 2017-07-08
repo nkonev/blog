@@ -15,6 +15,7 @@
                 <a id="a-doc" href="/docs/index.html">Docs</a>
                 <router-link to="/registration">Registration</router-link>
                 <router-link to="/lorem">Lorem ipsum</router-link>
+                <router-link to="/posts">Posts</router-link>
             </nav>
             <router-view></router-view>
         </div>
@@ -47,9 +48,11 @@
 </script>
 
 <style lang="stylus">
+    @import "./constants.styl"
+
     $contentWidth=969px
     body {
-        background-color: rgba(0, 128, 0, 0.1);
+        background-color: $bgColor;
     }
     #app {
       top: 0px

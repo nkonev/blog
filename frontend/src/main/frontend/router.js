@@ -7,6 +7,7 @@ import Helloween from './components/Helloween.vue'
 import UserList from './components/UserList.vue'
 import Autocomplete from './components/Autocomplete.vue'
 import Registration from './components/Registration.vue'
+import PostList from './components/PostList.vue'
 import Lorem from './components/Lorem.vue'
 
 // This installs <router-view> and <router-link>,
@@ -30,6 +31,7 @@ const router = new Router({
         { path: '/helloween', component: Helloween },
         { path: '/registration', component: Registration },
         { path: '/lorem', component: Lorem },
+        { path: '/posts', component: PostList },
         { path: '*', component: NotFoundComponent },
     ]
 });
