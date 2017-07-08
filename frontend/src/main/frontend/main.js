@@ -5,6 +5,7 @@ import VueResource from 'vue-resource'
 import App from './App.vue'
 import router from './router.js'
 // import {login} from './router.js'
+import VueNotifications from './notifications'
 
 Vue.use(VueResource);
 
@@ -30,6 +31,10 @@ Vue.http.interceptors.push((request, next)  => {
 
             // не думал что такое будет работать ;)
             vm.$modal.show('demo-login');
+        } else {
+            if (!response.ok) {
+                VueNotifications.error({title: 'Network error', message: 'Network error occurred while connecting to server'})
+            }
         }
     });
 });

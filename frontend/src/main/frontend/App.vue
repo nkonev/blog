@@ -27,37 +27,8 @@
     import LoginModal       from './components/LoginModal.vue';
     import vmodal from 'vue-js-modal'
     import autoProgress from 'vue-auto-progress'
-    import VueNotifications from 'vue-notifications'
-    import miniToastr from 'mini-toastr'
 
     Vue.use(vmodal);
-
-    const toastTypes = {
-        success: 'success',
-        error: 'error',
-        info: 'info',
-        warn: 'warn'
-    };
-
-    // Here we setup messages output to `mini-toastr`
-    function toast ({title, message, type, timeout, cb}) {
-        return miniToastr[type](message, title, timeout, cb)
-    }
-
-    // Binding for methods .success(), .error() and etc. You can specify and map your own methods here.
-    // Required to pipe our output to UI library (mini-toastr in example here)
-    // All not-specified events (types) would be piped to output in console.
-    const options = {
-        success: toast,
-        error: toast,
-        info: toast,
-        warn: toast
-    };
-
-    VueNotifications.config.timeout = 4000
-
-    // Activate plugin
-    Vue.use(VueNotifications, options); // VueNotifications have auto install but if we want to specify options we've got to do it manually.
 
     export default {
         name: 'app',
@@ -71,19 +42,7 @@
             autoProgress
         },
         mounted() {
-            miniToastr.init({types: toastTypes});
-
-            setTimeout(()=>{
-                this.showGeneralError();
-            }, 5000);
-        },
-        notifications: {
-            showGeneralError: {
-                title: 'Unexpected error',
-                message: 'Please reload page',
-                type: 'error' //Default: 'info', also you can use VueNotifications.type.error instead of 'error'
-            }
-        },
+        }
     }
 </script>
 
