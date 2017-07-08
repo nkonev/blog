@@ -54,7 +54,7 @@
 </script>
 
 <style lang="stylus" scoped>
-    @import "../common.styl"
+    @import "../constants.styl"
 
     .registration {
         display block
