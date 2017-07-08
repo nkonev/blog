@@ -1,6 +1,11 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
+
+    <button @click="increment">+</button>
+    <button @click="decrement">-</button>
+    <p>{{ count }}</p>
+
     <h2>Essential Links</h2>
     <ul>
       <li><a href="https://vuejs.org" target="_blank">Core Docs</a></li>
@@ -21,13 +26,28 @@
 </template>
 
 <script>
-export default {
-  name: 'hello',
-  data () {
-    return {
-      msg: 'Welcome to Your Vue.js App'
+  import store from '../store'
+
+  export default {
+    name: 'hello',
+    data () {
+      return {
+        msg: 'Welcome to Your Vue.js App'
+      }
+    },
+    computed: {
+        count () {
+            return store.state.count
+        }
+    },
+    methods: {
+        increment () {
+            store.commit('increment')
+        },
+        decrement () {
+            store.commit('decrement')
+        }
     }
-  }
 }
 </script>
 
