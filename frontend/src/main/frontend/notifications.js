@@ -22,4 +22,8 @@ miniToastr.init({types: {
 }});
 
 
-export default VueNotifications;
+export default {
+    networkError() {
+        VueNotifications.error({title: 'Network error', message: 'Network error occurred while connecting to server'})
+    }
+}
