@@ -3,7 +3,7 @@
         <form action="/api/register" method="post">
             <div class="field">
                 <label for="login">Login</label>
-                <input id="login" v-model="profile.login" name="login" v-validate="'required'"/>
+                <input id="login" v-model="profile.login" name="login" v-validate="'required'" autofocus/>
                 <span class="help-block" v-show="errors.has('login')">{{ errors.first('login') }}</span>
             </div>
             <div class="field">
