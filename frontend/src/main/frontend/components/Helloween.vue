@@ -1,12 +1,13 @@
 <template>
     <div>
         <h1>Тут будут данные</h1>
-        {{someData}}
+        <p>{{someData}}</p>
     </div>
 
 </template>
 
 <script>
+
     export default {
         data() {
             return {
@@ -22,6 +23,6 @@
             }, response => {
                 // error callback
             });
-        }
+        },
     };
 </script>

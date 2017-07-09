@@ -3,6 +3,7 @@ package com.github.nikit.cpp.config;
 import com.github.nikit.cpp.Constants;
 import com.github.nikit.cpp.config.security.RESTAuthenticationEntryPoint;
 import com.github.nikit.cpp.config.security.RESTAuthenticationFailureHandler;
+import com.github.nikit.cpp.config.security.RESTAuthenticationLogoutSuccessHandler;
 import com.github.nikit.cpp.config.security.RESTAuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +26,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private RESTAuthenticationFailureHandler authenticationFailureHandler;
     @Autowired
     private RESTAuthenticationSuccessHandler authenticationSuccessHandler;
+    @Autowired
+    private RESTAuthenticationLogoutSuccessHandler authenticationLogoutSuccessHandler;
 
     @Override
     protected void configure(AuthenticationManagerBuilder builder) throws Exception {
@@ -45,6 +48,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/api/login").permitAll()
                 .successHandler(authenticationSuccessHandler)
                 .failureHandler(authenticationFailureHandler)
+
+        .and().logout().logoutUrl("/api/logout").logoutSuccessHandler(authenticationLogoutSuccessHandler).permitAll()
         ;
     }
 }
