@@ -31,6 +31,7 @@
     import autoProgress from 'vue-auto-progress'
     import userProfileNav from './components/UserProfileNav.vue'
     import store from './store'
+    import {GET_USER, FETCH_USER_PROFILE} from './store'
     import {mapGetters} from 'vuex'
 
     Vue.use(vmodal);
@@ -41,7 +42,7 @@
 
         },
         store,
-        computed: mapGetters({currentUser: 'getUser'}), // currentUser is here, 'getUser' -- in store.js
+        computed: mapGetters({currentUser: GET_USER}), // currentUser is here, 'getUser' -- in store.js
         // used components for provide custom tags
         components: {
             OfflineIndicator,
@@ -50,7 +51,8 @@
             userProfileNav
         },
         mounted() {
-            store.dispatch('fetchUserProfile');
+            // attempt to initialize LoginModal
+            store.dispatch(FETCH_USER_PROFILE);
         }
     }
 </script>

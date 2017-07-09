@@ -1,7 +1,13 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import {GET_PROFILE_URL} from './constants'
 
 Vue.use(Vuex);
+
+export const GET_USER = 'getUser';
+export const SET_USER = 'setUser';
+export const UNSET_USER = 'unsetUser';
+export const FETCH_USER_PROFILE = 'fetchUserProfile';
 
 const store = new Vuex.Store({
     state: {
@@ -16,26 +22,27 @@ const store = new Vuex.Store({
             state.count--
         },
 
-        setUser(state, payload) {
+        [SET_USER](state, payload) {
             state.currentUser = {login: payload.login, avatar: payload.avatar}
         },
-        unsetUser(state) {
+        [UNSET_USER](state) {
             state.currentUser = null;
         },
     },
     getters: {
-        getUser(state) {
+        [GET_USER](state) {
             return state.currentUser;
         }
     },
     actions: {
-        fetchUserProfile(context) {
-            Vue.http.get('/api/profile').then(response => {
-                console.info('User Profile:', response.body);
-                context.commit('setUser', {login: response.body.login, avatar: response.body.avatar});
+        [FETCH_USER_PROFILE](context) {
+            Vue.http.get(GET_PROFILE_URL).then(response => {
+                const userProfile = response.body;
+                console.info('User Profile:', userProfile);
+                context.commit('setUser', {login: userProfile.login, avatar: userProfile.avatar});
             }, response => {
                 // error callback
-                console.error('Can\'t get user profile!', response);
+                console.error("Can\'t get user profile!", response);
             });
         }
     }

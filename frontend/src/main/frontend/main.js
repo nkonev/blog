@@ -4,9 +4,10 @@ import Vue from 'vue'
 import VueResource from 'vue-resource'
 import App from './App.vue'
 import router from './router.js'
-// import {login} from './router.js'
 import Notifications from './notifications'
 import store from './store'
+import {UNSET_USER} from './store'
+import {LOGIN_MODAL, GET_PROFILE_URL} from './constants'
 
 Vue.use(VueResource);
 
@@ -18,7 +19,7 @@ function getCookie(name) {
     if (parts.length === 2) return parts.pop().split(";").shift();
 }
 
-Vue.http.interceptors.push((request, next)  => {
+Vue.http.interceptors.push((request, next) => {
 
     // https://docs.spring.io/spring-security/site/docs/current/reference/html/csrf.html#csrf-cookie
     const csrfCookieValue = getCookie('XSRF-TOKEN');
@@ -27,11 +28,11 @@ Vue.http.interceptors.push((request, next)  => {
 
     next((response) => {
         if(response.status === 401) {
-            store.commit('unsetUser');
+            store.commit(UNSET_USER);
 
             // we show modal always except on immediate get profile
-            if (request.url!==('/api/profile')) {
-                vm.$modal.show('demo-login');
+            if (request.url!==(GET_PROFILE_URL)) {
+                vm.$modal.show(LOGIN_MODAL);
             }
         } else {
             if (!response.ok) {

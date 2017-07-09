@@ -1,5 +1,5 @@
 <template>
-    <modal name="demo-login" transition="pop-out" @before-open="beforeOpen" :width="380" :height="250">
+    <modal :name="modalName" transition="pop-out" @before-open="beforeOpen" :width="380" :height="250">
         <div class="box">
             <div class="box-part">
                 <div class="login-title">Пожалуйста, представьтесь</div>
@@ -24,6 +24,9 @@
 //    import {root} from '../router'
 
     import store from  '../store';
+    import {FETCH_USER_PROFILE} from '../store'
+
+    import {LOGIN_MODAL} from '../constants';
 
     export default {
         name: 'LoginModal',
@@ -32,7 +35,9 @@
             return {
                 formUsername: '',
                 formPassword: '',
-                formError: null
+                formError: null,
+
+                modalName: LOGIN_MODAL
             }
         },
         methods:{
@@ -44,9 +49,9 @@
                 const options = { emulateJSON: true }; // for pass as form data
                 this.$http.post('/api/login', {username: this.formUsername, password: this.formPassword}, options).then(response => {
                     // get body data
-                    this.$modal.hide('demo-login');
+                    this.$modal.hide(LOGIN_MODAL);
 
-                    store.dispatch('fetchUserProfile');
+                    store.dispatch(FETCH_USER_PROFILE);
                 }, response => {
                     // error callback
                     // alert('Booh! Wrong credentials, try again!');
