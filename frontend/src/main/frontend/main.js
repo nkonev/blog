@@ -6,6 +6,7 @@ import App from './App.vue'
 import router from './router.js'
 // import {login} from './router.js'
 import Notifications from './notifications'
+import store from './store'
 
 Vue.use(VueResource);
 
@@ -25,11 +26,13 @@ Vue.http.interceptors.push((request, next)  => {
     request.headers.set('X-XSRF-TOKEN', csrfCookieValue);
 
     next((response) => {
-        if(response.status === 401 ) {
-            // logout();
+        if(response.status === 401) {
+            store.commit('unsetUser');
 
-            // не думал что такое будет работать ;)
-            vm.$modal.show('demo-login');
+            // we show modal always except on immediate get profile
+            if (request.url!==('/api/profile')) {
+                vm.$modal.show('demo-login');
+            }
         } else {
             if (!response.ok) {
                 Notifications.networkError();

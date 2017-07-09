@@ -49,7 +49,7 @@ public class ApiController {
      */
     @RequestMapping(value = "/profile", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDTO checkAuthenticated(Principal principal) {
-        return new UserDTO(-1L, principal.getName());
+        return new UserDTO(-1L, principal.getName(), "https://www.w3.org/html/logo/downloads/HTML5_Logo_512.png");
     }
 
     private static final List<UserDTO> USER_DTO_LIST;

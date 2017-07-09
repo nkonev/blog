@@ -16,7 +16,7 @@
                 <router-link to="/registration">Registration</router-link>
                 <router-link to="/lorem">Lorem ipsum</router-link>
                 <router-link to="/posts">Posts</router-link>
-                <user-profile-nav/>
+                <user-profile-nav v-bind:currentUser="currentUser"/>
             </nav>
             <router-view></router-view>
         </div>
@@ -30,6 +30,8 @@
     import vmodal from 'vue-js-modal'
     import autoProgress from 'vue-auto-progress'
     import userProfileNav from './components/UserProfileNav.vue'
+    import store from './store'
+    import {mapGetters} from 'vuex'
 
     Vue.use(vmodal);
 
@@ -38,6 +40,8 @@
         methods: {
 
         },
+        store,
+        computed: mapGetters({currentUser: 'getUser'}), // currentUser is here, 'getUser' -- in store.js
         // used components for provide custom tags
         components: {
             OfflineIndicator,
@@ -46,6 +50,7 @@
             userProfileNav
         },
         mounted() {
+            store.dispatch('fetchUserProfile');
         }
     }
 </script>

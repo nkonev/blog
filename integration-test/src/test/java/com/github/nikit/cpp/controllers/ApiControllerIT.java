@@ -25,7 +25,7 @@ public class ApiControllerIT extends AbstractItTestRunner {
     }
 
     @Test
-    public void testHelloOnlyAuthenticated() throws Exception {
+    public void useSeeHisLoginAfterSuccessfulLogin() throws Exception {
         open(urlPrefix+ IntegrationTestConstants.INDEX_HTML);
 
         $(ID_API).click();
@@ -40,6 +40,6 @@ public class ApiControllerIT extends AbstractItTestRunner {
         // open(urlPrefix+ IntegrationTestConstants.INDEX_HTML);
         $(ID_API).click();
 
-        $("body").shouldHave(text("Happy Halloween, "+user));
+        $(".user-profile-nav-login").shouldHave(text(""+user));
     }
 }

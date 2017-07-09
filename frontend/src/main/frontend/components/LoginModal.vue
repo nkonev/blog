@@ -45,10 +45,8 @@
                 this.$http.post('/api/login', {username: this.formUsername, password: this.formPassword}, options).then(response => {
                     // get body data
                     this.$modal.hide('demo-login');
-                    // router.push(root);
-                    window.location.reload(); // fixme change to vuex
 
-                    store.commit('login', self.formUsername, '/build/assets/logo.png');
+                    store.dispatch('fetchUserProfile');
                 }, response => {
                     // error callback
                     // alert('Booh! Wrong credentials, try again!');

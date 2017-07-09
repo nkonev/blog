@@ -12,10 +12,18 @@ public class UserDTO implements Serializable {
 
     private String login;
 
+    private String avatar;
+
     public UserDTO(Long id, String login) {
         this.id = id;
         this.login = login;
     }
+
+    public UserDTO(Long id, String login, String avatar) {
+        this(id, login);
+        this.avatar = avatar;
+    }
+
 
     public UserDTO() { }
 
@@ -33,5 +41,13 @@ public class UserDTO implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }
