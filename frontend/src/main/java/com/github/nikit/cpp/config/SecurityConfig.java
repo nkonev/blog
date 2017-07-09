@@ -27,8 +27,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private RESTAuthenticationSuccessHandler authenticationSuccessHandler;
     @Autowired
     private RESTAuthenticationLogoutSuccessHandler authenticationLogoutSuccessHandler;
-//    @Autowired
-//    private RewriteCsrfTokenLogoutHandler rewriteCsrfTokenLogoutHandler;
 
     @Bean
     public CsrfTokenRepository csrfTokenRepository() {
