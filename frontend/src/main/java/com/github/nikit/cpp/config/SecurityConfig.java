@@ -1,17 +1,16 @@
 package com.github.nikit.cpp.config;
 
 import com.github.nikit.cpp.Constants;
-import com.github.nikit.cpp.config.security.RESTAuthenticationEntryPoint;
-import com.github.nikit.cpp.config.security.RESTAuthenticationFailureHandler;
-import com.github.nikit.cpp.config.security.RESTAuthenticationLogoutSuccessHandler;
-import com.github.nikit.cpp.config.security.RESTAuthenticationSuccessHandler;
+import com.github.nikit.cpp.config.security.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
 
 /**
  * Created by nik on 08.06.17.
@@ -28,6 +27,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private RESTAuthenticationSuccessHandler authenticationSuccessHandler;
     @Autowired
     private RESTAuthenticationLogoutSuccessHandler authenticationLogoutSuccessHandler;
+//    @Autowired
+//    private RewriteCsrfTokenLogoutHandler rewriteCsrfTokenLogoutHandler;
+
+    @Bean
+    public CsrfTokenRepository csrfTokenRepository() {
+        return CookieCsrfTokenRepository.withHttpOnlyFalse();
+    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder builder) throws Exception {
@@ -42,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests().antMatchers(Constants.Uls.API+"/**").authenticated();
         http.csrf()
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+                .csrfTokenRepository(csrfTokenRepository());
         http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
         http.formLogin()
                 .loginPage("/api/login").permitAll()

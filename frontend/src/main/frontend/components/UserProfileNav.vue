@@ -7,7 +7,7 @@
             <img :src="currentUser.avatar"/>
         </template>
         <div class="user-profile-nav-not-registegred" v-else>
-            Not registered
+            <a href="#" @click.prevent="login">login</a>
         </div>
 
     </div>
@@ -18,6 +18,7 @@
     import store from '../store'
     import {UNSET_USER} from '../store'
     import "vue-multiselect/dist/vue-multiselect.min.css"
+    import {LOGIN_MODAL} from '../constants'
 
     export default {
         name: 'user-profile-nav',
@@ -49,6 +50,9 @@
                         );
                         break;
                 }
+            },
+            login() {
+                this.$modal.show(LOGIN_MODAL);
             }
         },
     }
