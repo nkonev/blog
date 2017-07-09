@@ -16,14 +16,15 @@
                 <input id="password" type="password" v-model="profile.password" name="password" v-validate="'required'"/>
                 <span class="help-block" v-show="errors.has('password')">{{ errors.first('password') }}</span>
             </div>
-            <button id="submit" type="submit" @click="onSubmit" v-bind:disabled="hasFormErrors()">Submit</button>
+            <button id="submit" type="submit" @click.prevent="onSubmit" v-bind:disabled="hasFormErrors() || submitting">Submit</button>
         </form>
     </div>
 </template>
 
 <script>
     import Vue from 'vue'
-    import VeeValidate from 'vee-validate';
+    import VeeValidate from 'vee-validate'; // on blur by default.
+    // The field must always have either a name or a data-vv-name attribute http://vee-validate.logaretm.com/
     Vue.use(VeeValidate);
 
     export default {
@@ -33,8 +34,9 @@
                 profile: {
                     login: '',
                     email: '',
-                    password: ''
+                    password: '',
                 },
+                submitting: false,
             }
         },
         methods: {
@@ -43,6 +45,14 @@
                 if (this.hasFormErrors()) {
                     return false;
                 }
+
+                const self = this;
+                console.log('start submitting');
+                this.submitting = true;
+                setTimeout(()=>{
+                    self.submitting = false;
+                    console.log('end submitting');
+                }, 2000);
             },
             hasFormErrors(){
                 const isErrs = this.errors.any();
