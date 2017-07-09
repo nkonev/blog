@@ -33,6 +33,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return CookieCsrfTokenRepository.withHttpOnlyFalse();
     }
 
+    @Bean
+    public RESTAuthenticationLogoutSuccessHandler restAuthenticationLogoutSuccessHandler() {
+        return new RESTAuthenticationLogoutSuccessHandler(csrfTokenRepository());
+    }
+
     @Override
     protected void configure(AuthenticationManagerBuilder builder) throws Exception {
         builder.inMemoryAuthentication().withUser("user").password("user").roles("USER").and().withUser("admin")

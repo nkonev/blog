@@ -4,7 +4,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
-import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import javax.servlet.ServletException;
@@ -15,7 +14,7 @@ import java.io.IOException;
 /**
  * Created by nik on 09.07.17.
  */
-@Component
+
 public class RESTAuthenticationLogoutSuccessHandler implements LogoutSuccessHandler {
 
     private final CsrfTokenRepository csrfTokenRepository;
