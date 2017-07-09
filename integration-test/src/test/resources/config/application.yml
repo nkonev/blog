@@ -3,6 +3,7 @@ logging.level.: INFO
 server.port: 9080
 
 server.tomcat.basedir: ${java.io.tmpdir}/com.github.nikit.cpp.tomcat
+server.session.store-dir: ${server.tomcat.basedir}/sessions
 
 custom.implicitly.wait.timeout: 20
 custom.browser: PHANTOM

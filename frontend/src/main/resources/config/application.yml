@@ -11,6 +11,7 @@ logging.level.: INFO
 server.tomcat.accesslog.enabled: true
 server.tomcat.accesslog.pattern: '%t %a "%r" %s (%D ms)'
 server.tomcat.basedir: ${java.io.tmpdir}/com.github.nikit.cpp.tomcat
+server.session.store-dir: ${server.tomcat.basedir}/sessions
 
 # this is URL
 spring.mvc.static-path-pattern: /**

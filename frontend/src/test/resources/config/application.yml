@@ -3,3 +3,4 @@ logging.level.: INFO
 server.port: 9090
 
 server.tomcat.basedir: ${java.io.tmpdir}/com.github.nikit.cpp.tomcat
+server.session.store-dir: ${server.tomcat.basedir}/sessions
