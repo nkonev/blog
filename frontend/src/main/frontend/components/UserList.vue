@@ -74,7 +74,7 @@
             // get page count
             this.$http.get('/api/user-count').then(response => {
                 const userCount = response.body;
-                this.pageCount = userCount / PAGE_SIZE;
+                this.pageCount = Math.ceil(userCount / PAGE_SIZE);
             }, response => {
                 console.error(response);
                 // alert(response);
