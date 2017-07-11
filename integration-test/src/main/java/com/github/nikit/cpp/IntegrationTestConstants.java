@@ -11,8 +11,10 @@ public class IntegrationTestConstants {
     public static final String USER = "${custom.selenium.user}";
     public static final String PASSWORD = "${custom.selenium.password}";
 
-    // TODO make "Page Object" pattern
-    public static final String INDEX_HTML = "/index.html";
-    public static final String AUTOCOMPLETE_HTML = "/autocomplete";
+    public static class Pages {
+        public static final String INDEX_HTML = "/index.html";
+        public static final String AUTOCOMPLETE = "/autocomplete";
+        public static final String USERS_LIST = "/users";
 
+    }
 }

@@ -30,7 +30,7 @@ const router = new Router({
         // { path: usersWithPage, component: UserList, name: "users", props: true },
         { path: users, component: UserList},
         { path: '/autocomplete', component: Autocomplete},
-        { path: '/helloween', component: Helloween },
+        { path: '/profile', component: Helloween },
         { path: '/registration', component: Registration },
         { path: '/lorem', component: Lorem },
         { path: '/posts', component: PostList },
