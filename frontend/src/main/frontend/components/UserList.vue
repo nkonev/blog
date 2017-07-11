@@ -34,6 +34,7 @@
     import {PAGE_SIZE} from "../constants";
     import Paginate from 'vuejs-paginate';
     import {users} from '../router';
+    import {GET_ADMIN_USERS, SET_ADMIN_USERS} from '../store'
 
     Vue.component('paginate', Paginate);
 
@@ -42,7 +43,7 @@
         // props: ['page'], // see in router.js
         data() {
             return {
-                users: [],
+                // users: [],
                 pageCount: 0,
             }
         },
@@ -54,7 +55,8 @@
 
                 // API request
                 this.$http.get('/api/user?page='+(pageNum-1)+'&size='+PAGE_SIZE).then(response => {
-                    this.users = response.body;
+                    //this.users = response.body;
+                    this.$store.commit(SET_ADMIN_USERS, response.body);
                 }, response => {
                     console.error(response);
                     // alert(response);
@@ -68,6 +70,9 @@
             initialPageIndex() {
                 // return this.$props.page ? parseInt(this.$props.page-1) : 0;
                 return this.$route.query.page ? parseInt(this.$route.query.page-1) : 0;
+            },
+            users(){
+                return this.$store.getters[GET_ADMIN_USERS]
             }
         },
         created(){

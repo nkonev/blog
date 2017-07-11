@@ -51,7 +51,7 @@
             userProfileNav
         },
         mounted() {
-            // attempt to initialize LoginModal
+            // attempt to initialize user-profile-nav
             store.dispatch(FETCH_USER_PROFILE);
         }
     }

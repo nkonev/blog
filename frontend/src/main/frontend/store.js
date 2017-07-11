@@ -8,11 +8,15 @@ export const GET_USER = 'getUser';
 export const SET_USER = 'setUser';
 export const UNSET_USER = 'unsetUser';
 export const FETCH_USER_PROFILE = 'fetchUserProfile';
+export const GET_ADMIN_USERS = 'getAdminUsers';
+export const SET_ADMIN_USERS = 'setAdminUsers';
+
 
 const store = new Vuex.Store({
     state: {
         count: 0,
-        currentUser: null
+        currentUser: null,
+        adminUsers: []
     },
     mutations: {
         increment (state) {
@@ -28,18 +32,30 @@ const store = new Vuex.Store({
         [UNSET_USER](state) {
             state.currentUser = null;
         },
+
+        [SET_ADMIN_USERS](state, payload) {
+            state.adminUsers = payload;
+        },
+
     },
     getters: {
         [GET_USER](state) {
             return state.currentUser;
-        }
+        },
+
+        [GET_ADMIN_USERS](state) {
+            return state.adminUsers;
+        },
+
     },
+
+    // only it may contain async operations
     actions: {
         [FETCH_USER_PROFILE](context) {
             Vue.http.get(GET_PROFILE_URL).then(response => {
                 const userProfile = response.body;
                 console.info('User Profile:', userProfile);
-                context.commit('setUser', {login: userProfile.login, avatar: userProfile.avatar});
+                context.commit(SET_USER, {login: userProfile.login, avatar: userProfile.avatar});
             }, response => {
                 // error callback
                 console.error("Can\'t get user profile!", response);
