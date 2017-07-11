@@ -7,7 +7,7 @@
 
             <img id="logo" src="./assets/logo.png">
             <nav>
-                <router-link to="/">Index</router-link>
+                <router-link to="/" exact>Index</router-link>
                 <router-link to="/users">Users</router-link>
                 <router-link id="a-api" to="/helloween">helloween</router-link>
                 <router-link to="/not/found">Not found</router-link>
@@ -94,7 +94,7 @@
               justify-content center
           }
 
-          a.router-link-exact-active {
+          a.router-link-active {
               color white
               background-color #003eff
               border-radius 2px

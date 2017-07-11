@@ -39,6 +39,7 @@
 
     export default {
         components: {UserItem}, // говорим, из каких компонентов могут быть извлечены тэги
+        // props: ['page'], // see in router.js
         data() {
             return {
                 users: [],
@@ -47,9 +48,11 @@
         },
         methods: {
             reloadPage: function(pageNum) {
+                // this.$router.push({path: users + "/" + pageNum});
                 this.$router.push({path: users, query: {page: pageNum}});
                 console.log("opening page ", pageNum);
 
+                // API request
                 this.$http.get('/api/user?page='+(pageNum-1)+'&size='+PAGE_SIZE).then(response => {
                     this.users = response.body;
                 }, response => {
@@ -63,6 +66,7 @@
              The index of initial page which selected. default: 0
              */
             initialPageIndex() {
+                // return this.$props.page ? parseInt(this.$props.page-1) : 0;
                 return this.$route.query.page ? parseInt(this.$route.query.page-1) : 0;
             }
         },

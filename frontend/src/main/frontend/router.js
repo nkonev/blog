@@ -16,6 +16,7 @@ Vue.use(Router);
 
 const root = '/';
 const users = '/users';
+const usersWithPage = users + '/:page?'; // '?' means not necessary as in RegExp
 
 const router = new Router({
     mode: 'history',
@@ -26,6 +27,7 @@ const router = new Router({
             component: Hello
         },
         { name: 'user-profile', path: '/user/:id', component: UserProfile, props: true },
+        // { path: usersWithPage, component: UserList, name: "users", props: true },
         { path: users, component: UserList},
         { path: '/autocomplete', component: Autocomplete},
         { path: '/helloween', component: Helloween },
@@ -40,5 +42,6 @@ const router = new Router({
 export  {
     router as default,
     root,
-    users
+    users,
+    usersWithPage
 }
