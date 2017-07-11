@@ -34,7 +34,8 @@
     import {PAGE_SIZE} from "../constants";
     import Paginate from 'vuejs-paginate';
     import {users} from '../router';
-    import {GET_ADMIN_USERS, SET_ADMIN_USERS} from '../store'
+    import store from '../store'
+    import {GET_ADMIN_USERS, GET_ADMIN_USERS_PAGE_COUNT, FETCH_ADMIN_USERS, SET_ADMIN_USERS_PAGE} from '../store'
 
     Vue.component('paginate', Paginate);
 
@@ -44,7 +45,7 @@
         data() {
             return {
                 // users: [],
-                pageCount: 0,
+                // pageCount: 0,
             }
         },
         methods: {
@@ -53,14 +54,8 @@
                 this.$router.push({path: users, query: {page: pageNum}});
                 console.log("opening page ", pageNum);
 
-                // API request
-                this.$http.get('/api/user?page='+(pageNum-1)+'&size='+PAGE_SIZE).then(response => {
-                    //this.users = response.body;
-                    this.$store.commit(SET_ADMIN_USERS, response.body);
-                }, response => {
-                    console.error(response);
-                    // alert(response);
-                });
+                // this.$store.commit(SET_ADMIN_USERS_PAGE, pageNum);
+                // this.$store.dispatch(FETCH_ADMIN_USERS, pageNum); // not necessary ;)
             }
         },
         computed: {
@@ -71,24 +66,41 @@
                 // return this.$props.page ? parseInt(this.$props.page-1) : 0;
                 return this.$route.query.page ? parseInt(this.$route.query.page-1) : 0;
             },
+
             users(){
                 return this.$store.getters[GET_ADMIN_USERS]
+            },
+            pageCount() {
+                return this.$store.getters[GET_ADMIN_USERS_PAGE_COUNT]
             }
         },
         created(){
             console.log("created");
             const page = this.initialPageIndex+1;
+            this.$store.commit(SET_ADMIN_USERS_PAGE, page);
             this.reloadPage(page);
 
             // get page count
-            this.$http.get('/api/user-count').then(response => {
+            /*this.$http.get('/api/user-count').then(response => {
                 const userCount = response.body;
                 this.pageCount = Math.ceil(userCount / PAGE_SIZE);
             }, response => {
                 console.error(response);
                 // alert(response);
-            });
+            });*/
+        },
+        /*mounted(){
+            // setInterval(() => { this.$store.state.n++ }, 1000)
+            this.$store.watch(this.$store.getters[GET_ADMIN_USERS], adminUsers => {
+                console.log('watched: ', adminUsers)
+            })
+        },*/
+        watch: {
+            'adminUsers': function () {
+                console.log('watched adminUsers');
+            }
         }
+
     };
 </script>
 
