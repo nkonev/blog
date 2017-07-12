@@ -31,7 +31,7 @@
     import autoProgress from 'vue-auto-progress'
     import userProfileNav from './components/UserProfileNav.vue'
     import store from './store'
-    import {GET_USER, FETCH_USER_PROFILE} from './store'
+    import {GET_USER, SETUP_AFTER_LOGIN} from './store'
     import {mapGetters} from 'vuex'
 
     Vue.use(vmodal);
@@ -52,7 +52,7 @@
         },
         mounted() {
             // attempt to initialize user-profile-nav
-            store.dispatch(FETCH_USER_PROFILE);
+            store.dispatch(SETUP_AFTER_LOGIN);
         }
     }
 </script>

@@ -6,7 +6,7 @@ import App from './App.vue'
 import router from './router.js'
 import Notifications from './notifications'
 import store from './store'
-import {UNSET_USER} from './store'
+import {TEARDOWN_AFTER_LOGOUT} from './store'
 import {LOGIN_MODAL, GET_PROFILE_URL} from './constants'
 
 Vue.use(VueResource);
@@ -28,7 +28,7 @@ Vue.http.interceptors.push((request, next) => {
 
     next((response) => {
         if(response.status === 401) {
-            store.commit(UNSET_USER);
+            store.dispatch(TEARDOWN_AFTER_LOGOUT);
 
             // we show modal always except on immediate get profile
             if (request.url!==(GET_PROFILE_URL)) {

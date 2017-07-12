@@ -24,7 +24,7 @@
 //    import {root} from '../router'
 
     import store from  '../store';
-    import {FETCH_USER_PROFILE} from '../store'
+    import {SETUP_AFTER_LOGIN} from '../store'
 
     import {LOGIN_MODAL} from '../constants';
 
@@ -51,7 +51,7 @@
                     // get body data
                     this.$modal.hide(LOGIN_MODAL);
 
-                    store.dispatch(FETCH_USER_PROFILE);
+                    store.dispatch(SETUP_AFTER_LOGIN);
                 }, response => {
                     // error callback
                     // alert('Booh! Wrong credentials, try again!');

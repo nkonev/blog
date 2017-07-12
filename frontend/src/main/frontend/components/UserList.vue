@@ -54,7 +54,7 @@
                 this.$router.push({path: users, query: {page: pageNum}});
                 console.log("opening page ", pageNum);
 
-                // this.$store.commit(SET_ADMIN_USERS_PAGE, pageNum);
+                this.$store.commit(SET_ADMIN_USERS_PAGE, pageNum);
                 // this.$store.dispatch(FETCH_ADMIN_USERS, pageNum); // not necessary ;)
             }
         },
@@ -77,7 +77,7 @@
         created(){
             console.log("created");
             const page = this.initialPageIndex+1;
-            this.$store.commit(SET_ADMIN_USERS_PAGE, page);
+            //this.$store.commit(SET_ADMIN_USERS_PAGE, page);
             this.reloadPage(page);
 
             // get page count

@@ -15,7 +15,8 @@ export const SET_ADMIN_USERS_PAGE_COUNT = 'setAdminUsersPageCount';
 export const SET_ADMIN_USERS_PAGE = 'setAdminUsersPage'; // текущая траница страницы с пользователями
 export const FETCH_ADMIN_USERS_PAGES_COUNT = 'fetchAdminUsersCount';
 export const FETCH_ADMIN_USERS = 'fetchAdminUsers';
-
+export const SETUP_AFTER_LOGIN = 'setupAfterLogin';
+export const TEARDOWN_AFTER_LOGOUT = 'tearDownAfterLogout';
 
 const store = new Vuex.Store({
     state: {
@@ -72,6 +73,15 @@ const store = new Vuex.Store({
 
     // only it may contain async operations
     actions: {
+        [SETUP_AFTER_LOGIN](context) {
+            context.dispatch(FETCH_USER_PROFILE);
+            context.dispatch(FETCH_ADMIN_USERS, context.state.adminUsersPage);
+        },
+        [TEARDOWN_AFTER_LOGOUT](context) {
+            context.commit(UNSET_USER);
+            context.commit(SET_ADMIN_USERS_PAGE_COUNT, 0);
+            context.commit(SET_ADMIN_USERS, []);
+        },
         [FETCH_USER_PROFILE](context) {
             Vue.http.get(GET_PROFILE_URL).then(response => {
                 const userProfile = response.body;
@@ -81,17 +91,11 @@ const store = new Vuex.Store({
                 // error callback
                 console.error("Can\'t get user profile!", response);
             });
-
-            // TODO re-write top part as composition method
-            // as INITIALIZE_LOGGED_IN {
-            // FETCH_USER_PROFILE
-            // FETCH_ADMIN_USERS - fixme dup !
-            // }
-
-            context.dispatch(FETCH_ADMIN_USERS, context.state.adminUsersPage);
         },
         
         [FETCH_ADMIN_USERS](context, pageNum) {
+            console.log("will fetching adminUsers for page", pageNum);
+
             // get page count
             Vue.http.get('/api/user-count').then(response => {
                 const userCount = response.body;
@@ -103,7 +107,6 @@ const store = new Vuex.Store({
             });
 
 
-            console.log("will fetching adminUsers for page", pageNum);
             // API request
             Vue.http.get('/api/user?page='+(pageNum-1)+'&size='+PAGE_SIZE).then(response => {
                 context.commit(SET_ADMIN_USERS, response.body);
