@@ -71,7 +71,14 @@
                     console.error(response);
                     // alert(response);
                 });
-
+            },
+            onLogin(ignore) {
+                this.reloadPage(this.initialPageIndex+1);
+                this.initPageCount();
+            },
+            onLogout(ignore) {
+                this.pageCount=0;
+                this.users=[];
             }
         },
         computed: {
@@ -83,23 +90,19 @@
                 return this.$route.query.page ? parseInt(this.$route.query.page-1) : 0;
             }
         },
-        created(){
+        created() {
             console.log("created");
             const page = this.initialPageIndex+1;
             this.reloadPage(page);
             this.initPageCount();
 
-            const self = this;
-            bus.$on(LOGIN, ignore => {
-                self.reloadPage(self.initialPageIndex+1);
-                self.initPageCount();
-            });
-
-            bus.$on(LOGOUT, ignore => {
-                self.pageCount=0;
-                self.users=[];
-            });
-
+            bus.$on(LOGIN, this.onLogin);
+            bus.$on(LOGOUT, this.onLogout);
+        },
+        destroyed() {
+            console.log("destroyed");
+            bus.$off(LOGIN, this.onLogin);
+            bus.$off(LOGOUT, this.onLogout);
         }
     };
 </script>
