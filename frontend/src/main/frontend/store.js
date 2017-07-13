@@ -103,7 +103,7 @@ const store = new Vuex.Store({
 
             if ((''+window.location.pathname).startsWith(users)){
                 const page = initialPageIndex()+1;
-                context.commit(SET_ADMIN_USERS_PAGE, page);
+                // context.commit(SET_ADMIN_USERS_PAGE, page);
                 context.dispatch(FETCH_ADMIN_USERS, page);
             }
         },
