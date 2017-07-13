@@ -34,6 +34,8 @@
     import {PAGE_SIZE} from "../constants";
     import Paginate from 'vuejs-paginate';
     import {users} from '../router';
+    import bus from '../bus'
+    import {LOGIN, LOGOUT} from '../bus'
 
     Vue.component('paginate', Paginate);
 
@@ -59,6 +61,17 @@
                     console.error(response);
                     // alert(response);
                 });
+            },
+            initPageCount() {
+                // get page count
+                this.$http.get('/api/user-count').then(response => {
+                    const userCount = response.body;
+                    this.pageCount = Math.ceil(userCount / PAGE_SIZE);
+                }, response => {
+                    console.error(response);
+                    // alert(response);
+                });
+
             }
         },
         computed: {
@@ -74,15 +87,19 @@
             console.log("created");
             const page = this.initialPageIndex+1;
             this.reloadPage(page);
+            this.initPageCount();
 
-            // get page count
-            this.$http.get('/api/user-count').then(response => {
-                const userCount = response.body;
-                this.pageCount = Math.ceil(userCount / PAGE_SIZE);
-            }, response => {
-                console.error(response);
-                // alert(response);
+            const self = this;
+            bus.$on(LOGIN, ignore => {
+                self.reloadPage(self.initialPageIndex+1);
+                self.initPageCount();
             });
+
+            bus.$on(LOGOUT, ignore => {
+                self.pageCount=0;
+                self.users=[];
+            });
+
         }
     };
 </script>

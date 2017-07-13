@@ -8,6 +8,8 @@ import Notifications from './notifications'
 import store from './store'
 import {UNSET_USER} from './store'
 import {LOGIN_MODAL, GET_PROFILE_URL} from './constants'
+import bus from './bus'
+import {LOGOUT} from './bus'
 
 Vue.use(VueResource);
 
@@ -29,6 +31,7 @@ Vue.http.interceptors.push((request, next) => {
     next((response) => {
         if(response.status === 401) {
             store.commit(UNSET_USER);
+            bus.$emit(LOGOUT, null);
 
             // we show modal always except on immediate get profile
             if (request.url!==(GET_PROFILE_URL)) {

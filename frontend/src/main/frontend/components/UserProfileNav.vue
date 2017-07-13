@@ -19,6 +19,9 @@
     import {UNSET_USER} from '../store'
     import "vue-multiselect/dist/vue-multiselect.min.css"
     import {LOGIN_MODAL} from '../constants'
+    import bus from '../bus'
+    import {LOGOUT} from '../bus'
+
 
     export default {
         name: 'user-profile-nav',
@@ -42,6 +45,7 @@
                             response => {
                                 // ok
                                 store.commit(UNSET_USER);
+                                bus.$emit(LOGOUT, null);
                             },
                             response => {
                                 // fail

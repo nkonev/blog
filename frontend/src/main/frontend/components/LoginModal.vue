@@ -25,6 +25,8 @@
 
     import store from  '../store';
     import {FETCH_USER_PROFILE} from '../store'
+    import bus from '../bus'
+    import {LOGIN} from '../bus'
 
     import {LOGIN_MODAL} from '../constants';
 
@@ -52,6 +54,7 @@
                     this.$modal.hide(LOGIN_MODAL);
 
                     store.dispatch(FETCH_USER_PROFILE);
+                    bus.$emit(LOGIN, null);
                 }, response => {
                     // error callback
                     // alert('Booh! Wrong credentials, try again!');

@@ -17,7 +17,7 @@ import static com.github.nikit.cpp.IntegrationTestConstants.Pages.USERS_LIST;
  * Тест на список пользователей, управляемый админом
  * Created by nik on 12.07.17.
  */
-@Ignore
+
 public class UsersIT extends AbstractItTestRunner {
 
     @Before
@@ -41,6 +41,7 @@ public class UsersIT extends AbstractItTestRunner {
 
     }
 
+    @Ignore
     @Test
     public void testPagination() throws Exception {
         UsersPage usersPage = new UsersPage(urlPrefix);
@@ -59,7 +60,7 @@ public class UsersIT extends AbstractItTestRunner {
         loginModal.login();
 
         // тут мы ожидаем что пользователь(админ) увидит список пользователей без перезагрузки
-        Selenide.refresh();
+//        Selenide.refresh();
 
         $("li .page-item,.active a").shouldHave(Condition.text("2"));
     }
