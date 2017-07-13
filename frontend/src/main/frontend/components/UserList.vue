@@ -31,11 +31,11 @@
 <script>
     import Vue from 'vue'
     import UserItem from "./UserItem.vue";
-    import {PAGE_SIZE} from "../constants";
+    import {PAGE_SIZE, PAGE} from "../constants";
     import Paginate from 'vuejs-paginate';
     import {users} from '../router';
     import store from '../store'
-    import {GET_ADMIN_USERS, GET_ADMIN_USERS_PAGE_COUNT, FETCH_ADMIN_USERS, SET_ADMIN_USERS_PAGE} from '../store'
+    import {GET_ADMIN_USERS, GET_ADMIN_USERS_PAGE_COUNT, FETCH_ADMIN_USERS, GET_ADMIN_USERS_INITIAL_PAGE_INDEX} from '../store'
 
     Vue.component('paginate', Paginate);
 
@@ -50,12 +50,10 @@
         },
         methods: {
             reloadPage: function(pageNum) {
-                // this.$router.push({path: users + "/" + pageNum});
-                this.$router.push({path: users, query: {page: pageNum}});
+                this.$router.push({path: users, query: {[PAGE]: pageNum}});
                 console.log("opening page ", pageNum);
 
-                // this.$store.commit(SET_ADMIN_USERS_PAGE, pageNum);
-                this.$store.dispatch(FETCH_ADMIN_USERS, pageNum); // not necessary ;)
+                this.$store.dispatch(FETCH_ADMIN_USERS, pageNum);
             }
         },
         computed: {
@@ -63,8 +61,7 @@
              The index of initial page which selected. default: 0
              */
             initialPageIndex() {
-                // return this.$props.page ? parseInt(this.$props.page-1) : 0;
-                return this.$route.query.page ? parseInt(this.$route.query.page-1) : 0;
+                return this.$store.getters[GET_ADMIN_USERS_INITIAL_PAGE_INDEX]
             },
 
             users(){
@@ -75,30 +72,10 @@
             }
         },
         created(){
-            //console.log("created");
-            //const page = this.initialPageIndex+1;
-            //this.$store.commit(SET_ADMIN_USERS_PAGE, page);
-            //this.reloadPage(page);
-
-            // get page count
-            /*this.$http.get('/api/user-count').then(response => {
-                const userCount = response.body;
-                this.pageCount = Math.ceil(userCount / PAGE_SIZE);
-            }, response => {
-                console.error(response);
-                // alert(response);
-            });*/
+            console.log("UserList created");
         },
-        /*mounted(){
-            // setInterval(() => { this.$store.state.n++ }, 1000)
-            this.$store.watch(this.$store.getters[GET_ADMIN_USERS], adminUsers => {
-                console.log('watched: ', adminUsers)
-            })
-        },*/
-        watch: {
-            'adminUsers': function () {
-                console.log('watched adminUsers');
-            }
+        mounted() {
+            console.log("UserList mounted");
         }
 
     };
