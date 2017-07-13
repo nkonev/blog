@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import {GET_PROFILE_URL, PAGE_SIZE} from './constants'
+import {users} from './router'
 
 Vue.use(Vuex);
 
@@ -15,8 +16,27 @@ export const SET_ADMIN_USERS_PAGE_COUNT = 'setAdminUsersPageCount';
 export const SET_ADMIN_USERS_PAGE = 'setAdminUsersPage'; // текущая траница страницы с пользователями
 export const FETCH_ADMIN_USERS_PAGES_COUNT = 'fetchAdminUsersCount';
 export const FETCH_ADMIN_USERS = 'fetchAdminUsers';
-export const SETUP_AFTER_LOGIN = 'setupAfterLogin';
+export const SETUP_AFTER_LOGIN = 'setupAfterLogin'; // инициализаиия после логина
+export const SETUP = 'setUp'; // прсто инициализация
 export const TEARDOWN_AFTER_LOGOUT = 'tearDownAfterLogout';
+
+function getUrlParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+
+// TODO remove duplicate in UserList.vue
+function initialPageIndex() {
+    // return this.$props.page ? parseInt(this.$props.page-1) : 0;
+    return window.location.search.includes('page') ? parseInt(getUrlParameterByName('page')-1) : 0;
+}
+
 
 const store = new Vuex.Store({
     state: {
@@ -73,9 +93,19 @@ const store = new Vuex.Store({
 
     // only it may contain async operations
     actions: {
-        [SETUP_AFTER_LOGIN](context) {
+        [SETUP](context) { // TODO remove
             context.dispatch(FETCH_USER_PROFILE);
-            context.dispatch(FETCH_ADMIN_USERS, context.state.adminUsersPage);
+            // if (currentPage == '/users' && state.adminUsers.isEmpty())
+            // context.dispatch(FETCH_ADMIN_USERS, context.state.adminUsersPage);
+        },
+        [SETUP_AFTER_LOGIN](context) { 
+            context.dispatch(FETCH_USER_PROFILE);
+
+            if ((''+window.location.pathname).startsWith(users)){
+                const page = initialPageIndex()+1;
+                context.commit(SET_ADMIN_USERS_PAGE, page);
+                context.dispatch(FETCH_ADMIN_USERS, page);
+            }
         },
         [TEARDOWN_AFTER_LOGOUT](context) {
             context.commit(UNSET_USER);
