@@ -18,7 +18,7 @@
                 :next-link-class="'next-link-item arrow-link-item'"
         ></paginate>
 
-        <div v-if="users.length>0">
+        <div v-if="users.length>0" id="user-list">
             <user-item v-for="user in users" v-bind:userDTO="user" :key="user.id"></user-item>
         </div>
         <div v-else>
@@ -91,7 +91,7 @@
             }
         },
         created() {
-            console.log("created");
+            //console.log("created");
             const page = this.initialPageIndex+1;
             this.reloadPage(page);
             this.initPageCount();
@@ -100,7 +100,7 @@
             bus.$on(LOGOUT, this.onLogout);
         },
         destroyed() {
-            console.log("destroyed");
+            //console.log("destroyed");
             bus.$off(LOGIN, this.onLogin);
             bus.$off(LOGOUT, this.onLogout);
         }

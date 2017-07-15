@@ -5,11 +5,15 @@ server.port: 9080
 server.tomcat.basedir: ${java.io.tmpdir}/com.github.nikit.cpp.tomcat
 server.session.store-dir: ${server.tomcat.basedir}/sessions
 
-custom.implicitly.wait.timeout: 20
-custom.browser: PHANTOM
-custom.selenium.url.prefix: http://127.0.0.1:${server.port}
-custom.selenium.user: admin
-custom.selenium.password: admin
+custom.selenium.implicitly-wait-timeout: 10
+custom.selenium.browser: PHANTOM
+custom.selenium.window-height: 900
+custom.selenium.window-width: 1600
+
+custom.it.url.prefix: http://127.0.0.1:${server.port}
+custom.it.user: admin
+custom.it.password: admin
+
 
 # this is URL
 # spring.mvc.static-path-pattern: /**

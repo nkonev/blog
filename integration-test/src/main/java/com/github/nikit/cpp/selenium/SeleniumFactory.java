@@ -2,6 +2,7 @@ package com.github.nikit.cpp.selenium;
 
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.WebDriverRunner;
+import com.github.nikit.cpp.configuration.SeleniumConfiguration;
 import io.github.bonigarcia.wdm.ChromeDriverManager;
 import io.github.bonigarcia.wdm.FirefoxDriverManager;
 import io.github.bonigarcia.wdm.PhantomJsDriverManager;
@@ -33,16 +34,12 @@ public class SeleniumFactory implements FactoryBean<WebDriver> {
 
     private WebDriver driver;
 
-    private static final Logger logger = LoggerFactory.getLogger(SeleniumFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SeleniumFactory.class);
 
-    private final int implicitlyWaitTimeout;
+    private SeleniumConfiguration seleniumConfiguration;
 
-    private final Browser browser;
-
-    public SeleniumFactory(int implicitlyWaitTimeout, Browser browser) throws Exception {
-        this.implicitlyWaitTimeout = implicitlyWaitTimeout;
-        this.browser = browser;
-
+    public SeleniumFactory(SeleniumConfiguration seleniumConfiguration) throws Exception {
+        this.seleniumConfiguration = seleniumConfiguration;
     }
 
     @Override
@@ -69,7 +66,7 @@ public class SeleniumFactory implements FactoryBean<WebDriver> {
         // the initialization phase of your application
         SLF4JBridgeHandler.install();
 
-        switch(browser) {
+        switch(seleniumConfiguration.getBrowser()) {
             case PHANTOM:
             {
                 PhantomJsDriverManager.getInstance().version(PHANTOM_JS_DRIVER_VERSION).setup(); // download executables if need and set System.properties
@@ -104,8 +101,8 @@ public class SeleniumFactory implements FactoryBean<WebDriver> {
             break;
         }
 
-        driver.manage().window().setSize(new Dimension(1600, 900));
-        driver.manage().timeouts().implicitlyWait(implicitlyWaitTimeout, TimeUnit.SECONDS); // wait for #findElement()
+        driver.manage().window().setSize(new Dimension(seleniumConfiguration.getWindowWidth(), seleniumConfiguration.getWindowHeight()));
+        driver.manage().timeouts().implicitlyWait(seleniumConfiguration.getImplicitlyWaitTimeout(), TimeUnit.SECONDS); // wait for #findElement()
 
         WebDriverRunner.setWebDriver(driver);
         // Configuration.collectionsTimeout = 9999 * 1000;
