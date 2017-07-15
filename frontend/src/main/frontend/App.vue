@@ -9,7 +9,6 @@
             <nav>
                 <router-link to="/" exact>Index</router-link>
                 <router-link to="/users">Users</router-link>
-                <router-link to="/profile">profile</router-link>
                 <router-link to="/not/found">Not found</router-link>
                 <router-link to="/autocomplete">Autocomplete</router-link>
                 <a id="a-doc" href="/docs/index.html">Docs</a>

@@ -3,7 +3,6 @@ import Router from 'vue-router'
 import Hello from './components/Hello.vue'
 import UserProfile from './components/UserProfile.vue'
 import NotFoundComponent from './components/NotFoundComponent.vue'
-import Helloween from './components/Helloween.vue'
 import UserList from './components/UserList.vue'
 import Autocomplete from './components/Autocomplete.vue'
 import Registration from './components/Registration.vue'
@@ -17,6 +16,7 @@ Vue.use(Router);
 const root = '/';
 const users = '/users';
 const usersWithPage = users + '/:page?'; // '?' means not necessary as in RegExp
+const useProfileName = 'user-profile';
 
 const router = new Router({
     mode: 'history',
@@ -26,11 +26,10 @@ const router = new Router({
             name: 'Hello',
             component: Hello
         },
-        { name: 'user-profile', path: '/user/:id', component: UserProfile, props: true },
+        { name: useProfileName, path: '/user/:id?', component: UserProfile, props: true, },
         // { path: usersWithPage, component: UserList, name: "users", props: true },
         { path: users, component: UserList},
         { path: '/autocomplete', component: Autocomplete},
-        { path: '/profile', component: Helloween },
         { path: '/registration', component: Registration },
         { path: '/lorem', component: Lorem },
         { path: '/posts', component: PostList },
@@ -43,5 +42,6 @@ export  {
     router as default,
     root,
     users,
-    usersWithPage
+    usersWithPage,
+    useProfileName
 }

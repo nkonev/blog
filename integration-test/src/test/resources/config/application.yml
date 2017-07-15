@@ -13,6 +13,7 @@ custom.selenium.window-width: 1600
 custom.it.url.prefix: http://127.0.0.1:${server.port}
 custom.it.user: admin
 custom.it.password: admin
+custom.it.user.id: 0
 
 
 # this is URL

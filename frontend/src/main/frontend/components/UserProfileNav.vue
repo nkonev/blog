@@ -22,6 +22,8 @@
     import bus from '../bus'
     import {LOGOUT} from '../bus'
 
+    import router from  '../router'
+    import {useProfileName} from  '../router'
 
     export default {
         name: 'user-profile-nav',
@@ -31,7 +33,7 @@
         },
         data () {
             return {
-                actions: ['exit'],
+                actions: ['exit', 'profile'],
             }
         },
         components: {
@@ -52,6 +54,9 @@
                                 console.error("Can't to logout");
                             }
                         );
+                        break;
+                    case 'profile':
+                        router.push({name: useProfileName, params: {id: this.$props.currentUser.id}});
                         break;
                 }
             },

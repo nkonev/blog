@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,14 +23,14 @@ import java.util.stream.Collectors;
 public class ApiController {
 
     @RequestMapping(value = "/hello", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<HelloweenResponse> hello(Principal principal) {
+    public HelloResponse hello(Principal principal) {
 
-        return new ResponseEntity<>(new HelloweenResponse("Happy Halloween, " + principal.getName() + "!"), HttpStatus.OK);
+        return new HelloResponse("Hello, " + principal.getName() + "!");
     }
 
-    public static class HelloweenResponse {
+    public static class HelloResponse {
         private String message;
-        public HelloweenResponse(String message) {
+        public HelloResponse(String message) {
             this.message = message;
         }
         public String getMessage() {
@@ -49,7 +48,7 @@ public class ApiController {
      */
     @RequestMapping(value = "/profile", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDTO checkAuthenticated(Principal principal) {
-        return new UserDTO(-1L, principal.getName(), "https://www.w3.org/html/logo/downloads/HTML5_Logo_512.png");
+        return new UserDTO(0L, principal.getName(), "https://www.w3.org/html/logo/downloads/HTML5_Logo_512.png");
     }
 
     private static final List<UserDTO> USER_DTO_LIST;

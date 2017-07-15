@@ -113,4 +113,20 @@ public class UserListIT extends AbstractItTestRunner {
         usersPage.assertActivePaginatorPage(page);
     }
 
+    @Test
+    public void userCanTwiceLoginLogout() throws Exception {
+        UsersPage userPage = new UsersPage(urlPrefix);
+        userPage.openPage();
+
+        LoginModal loginModal = new LoginModal(user, password);
+
+        loginModal.login();
+
+        loginModal.logout();
+
+        loginModal.openLoginModal();
+
+        loginModal.login();
+    }
+
 }

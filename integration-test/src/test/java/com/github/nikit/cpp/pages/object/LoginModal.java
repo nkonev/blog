@@ -29,8 +29,8 @@ public class LoginModal {
     }
 
     public void logout() {
-        $(".multiselect").click();
-        $(byText("exit")).click();
+        UserNav.open();
+        UserNav.exit();
     }
 
     public void openLoginModal() {

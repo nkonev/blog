@@ -23,7 +23,7 @@ const store = new Vuex.Store({
         },
 
         [SET_USER](state, payload) {
-            state.currentUser = {login: payload.login, avatar: payload.avatar}
+            state.currentUser = {id: payload.id, login: payload.login, avatar: payload.avatar}
         },
         [UNSET_USER](state) {
             state.currentUser = null;
@@ -39,7 +39,7 @@ const store = new Vuex.Store({
             Vue.http.get(GET_PROFILE_URL).then(response => {
                 const userProfile = response.body;
                 console.info('User Profile:', userProfile);
-                context.commit('setUser', {login: userProfile.login, avatar: userProfile.avatar});
+                context.commit(SET_USER, userProfile);
             }, response => {
                 // error callback
                 console.error("Can\'t get user profile!", response);
