@@ -10,10 +10,10 @@ describe("UserProfile.vue", function(){
     });
 
 
-    xit("Отрисовка профиля пользователя", function() {
+    it("Отрисовка профиля пользователя", function() {
         expect(CommonTestUtils.getRenderedText(UserProfile, {
             id: 2
-        })).toContainText(' Пользователь ' + 2)
+        }).includes("Пользователь 2")  ).toBeTruthy()
     });
 
 });
