@@ -15,6 +15,8 @@
                 <router-link to="/registration">Registration</router-link>
                 <router-link to="/lorem">Lorem ipsum</router-link>
                 <router-link to="/posts">Posts</router-link>
+                <router-link to="/post/edit">Edit</router-link>
+
                 <user-profile-nav v-bind:currentUser="currentUser"/>
             </nav>
             <router-view></router-view>

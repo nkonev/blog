@@ -8,6 +8,7 @@ import Autocomplete from './components/Autocomplete.vue'
 import Registration from './components/Registration.vue'
 import PostList from './components/PostList.vue'
 import Lorem from './components/Lorem.vue'
+import PostEdit from './components/PostEdit.vue'
 
 // This installs <router-view> and <router-link>,
 // and injects $router and $route to all router-enabled child components
@@ -33,6 +34,7 @@ const router = new Router({
         { path: '/registration', component: Registration },
         { path: '/lorem', component: Lorem },
         { path: '/posts', component: PostList },
+        { path: '/post/edit', component: PostEdit },
         { path: '*', component: NotFoundComponent },
     ]
 });
