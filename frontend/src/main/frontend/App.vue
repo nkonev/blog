@@ -1,7 +1,6 @@
 <template>
     <div id="app">
         <div id="content">
-            <OfflineIndicator message="Oh no, you're offline :("></OfflineIndicator>
             <LoginModal></LoginModal>
             <auto-progress/>
 
@@ -26,7 +25,6 @@
 
 <script>
     import Vue from 'vue';
-    import { OfflineIndicator } from 'vue-online';
     import LoginModal       from './components/LoginModal.vue';
     import vmodal from 'vue-js-modal'
     import autoProgress from 'vue-auto-progress'
@@ -46,7 +44,6 @@
         computed: mapGetters({currentUser: GET_USER}), // currentUser is here, 'getUser' -- in store.js
         // used components for provide custom tags
         components: {
-            OfflineIndicator,
             LoginModal,
             autoProgress,
             userProfileNav

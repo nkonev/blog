@@ -4,7 +4,7 @@ import Hello from './components/Hello.vue'
 import UserProfile from './components/UserProfile.vue'
 import NotFoundComponent from './components/NotFoundComponent.vue'
 import UserList from './components/UserList.vue'
-import Autocomplete from './components/Autocomplete.vue'
+// import Autocomplete from './components/Autocomplete.vue'
 import Registration from './components/Registration.vue'
 import PostList from './components/PostList.vue'
 import Lorem from './components/Lorem.vue'
@@ -31,7 +31,7 @@ const router = new Router({
         { name: useProfileName, path: '/user/:id?', component: UserProfile, props: true, },
         // { path: usersWithPage, component: UserList, name: "users", props: true },
         { path: users, component: UserList},
-        { path: '/autocomplete', component: Autocomplete},
+        //{ path: '/autocomplete', component: Autocomplete},
         { path: '/registration', component: Registration },
         { path: '/lorem', component: Lorem },
         { path: '/posts', component: PostList },

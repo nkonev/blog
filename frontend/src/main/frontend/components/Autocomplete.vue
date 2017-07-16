@@ -3,7 +3,7 @@
         <h1>Type some country</h1>
 
         <template>
-            <v-autocomplete :items="items" v-model="item" v-bind:minLen="1" :get-label="getLabel" :component-item='template' @update-items="fetchItems" @input="onSelected">
+            <v-autocomplete :items="items" v-model="item" v-bind:minLen="1" :get-label="getLabel" :component-item='template' @update-items="fetchItems" @input="onSelected" input-class="v-autocomplete-input">
             </v-autocomplete>
         </template>
     </div>
@@ -14,8 +14,13 @@
     import Autocomplete from 'v-autocomplete'
     import 'v-autocomplete/dist/v-autocomplete.css'
 
+    // this module ('v-autocomplete') is buggy,
+    // you'll get "Uncaught TypeError: __webpack_require__(...) is not a function" after any change this file
+    // consider to remove it
+
     Vue.use(Autocomplete);
     import ItemTemplate from './AutocompleteItemTemplate.vue'
+
     export default {
         data () {
             return {
