@@ -8,7 +8,8 @@ import Autocomplete from './components/Autocomplete.vue'
 import Registration from './components/Registration.vue'
 import PostList from './components/PostList.vue'
 import Lorem from './components/Lorem.vue'
-import PostEdit from './components/PostEdit.vue'
+// Lazy load heavy component https://router.vuejs.org/en/advanced/lazy-loading.html. see also in .babelrc
+const PostEdit = () => import('./components/PostEdit.vue');
 
 // This installs <router-view> and <router-link>,
 // and injects $router and $route to all router-enabled child components
