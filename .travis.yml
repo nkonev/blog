@@ -3,7 +3,7 @@ cache:
   directories:
   - "$HOME/.m2"
   - frontend/node
-  - frontend/node_modules
+#  - frontend/node_modules
 jdk: oraclejdk8
 install: "/bin/true" # workaround https://github.com/Swagger2Markup/swagger2markup-maven-plugin/pull/24
 script: "./mvnw -P frontend clean package"
