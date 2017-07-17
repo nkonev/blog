@@ -34,6 +34,7 @@
 
         <frontend.maven.plugin.version>1.4</frontend.maven.plugin.version>
         <npm.production.env>production</npm.production.env>
+        <karma.browsers>PhantomJS</karma.browsers>
         <node.js.version>v8.1.2</node.js.version>
         <npm.version>5.0.3</npm.version>
     </properties>
@@ -134,6 +135,7 @@
                             <phase>generate-test-sources</phase>
                             <configuration>
                                 <environmentVariables>
+                                    <KARMA_BROWSERS>${karma.browsers}</KARMA_BROWSERS>
                                     <NODE_ENV>${npm.production.env}</NODE_ENV>
                                 </environmentVariables>
                             </configuration>
