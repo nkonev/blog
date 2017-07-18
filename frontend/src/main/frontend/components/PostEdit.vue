@@ -11,6 +11,9 @@
                       @ready="onEditorReady($event)">
         </quill-editor>
 
+        <div class="command-buttons">
+            <button class="save-btn">Сохранить</button>
+        </div>
     </div>
 </template>
 
@@ -50,3 +53,26 @@
         }
     }
 </script>
+
+<style lang="stylus" scoped>
+    $signin_color= #00cf6b;
+    @import "../buttons.styl"
+
+    .command-buttons {
+
+        .save-btn {
+            height 32px
+            min-width 64px
+            border-radius 2px;
+            border-width 1px;
+            background: white;
+            color: $signin_color;
+            &:hover {
+                border-color: $signin_color;
+                background: cornflowerblue;
+                color: white;
+            }
+        }
+    }
+
+</style>

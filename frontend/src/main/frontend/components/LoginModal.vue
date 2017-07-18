@@ -69,6 +69,7 @@
 <style lang="stylus" scoped>
     $background_color=#404142;
     $signin_color= #00cf6b;
+    @import "../buttons.styl"
 
     .box {
         background: white;
