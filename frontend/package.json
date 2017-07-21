@@ -19,7 +19,7 @@
     "clean-webpack-plugin": "^0.1.16",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.28.4",
-    "extract-text-webpack-plugin": "git://github.com/webpack-contrib/extract-text-webpack-plugin.git#77daf83a430c8490ba1d71cf410bc0569a66c332",
+    "extract-text-webpack-plugin": "git://github.com/BowlingX/extract-text-webpack-plugin.git#143760a4b60c1c4e74d8211e3d1f687e0a56b4cd",
     "file-loader": "^0.11.2",
     "html-loader": "^0.4.5",
     "jasmine": "^2.6.0",
