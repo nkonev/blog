@@ -19,7 +19,7 @@
     "clean-webpack-plugin": "^0.1.16",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.28.4",
-    "extract-text-webpack-plugin": "git://github.com/nikit-cpp/extract-text-webpack-plugin.git",
+    "extract-text-webpack-plugin": "^2.1.2",
     "file-loader": "^0.11.2",
     "html-loader": "^0.4.5",
     "jasmine": "^2.6.0",
@@ -44,7 +44,7 @@
     "vue-loader": "^13.0.1",
     "vue-style-loader": "^3.0.1",
     "vue-template-compiler": "^2.4.1",
-    "webpack": "^3.3.0"
+    "webpack": "^2.7.0"
   },
   "dependencies": {
     "jquery": "^3.2.1",
