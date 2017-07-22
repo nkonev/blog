@@ -413,6 +413,12 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
+        <!-- https://www.owasp.org/index.php/OWASP_Java_HTML_Sanitizer_Project -->
+        <dependency>
+            <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
+            <artifactId>owasp-java-html-sanitizer</artifactId>
+            <version>20160413.1</version>
+        </dependency>
     </dependencies>
 
 
