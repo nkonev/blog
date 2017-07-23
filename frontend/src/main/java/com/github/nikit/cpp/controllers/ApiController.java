@@ -105,34 +105,6 @@ public class ApiController {
         return USER_DTO_LIST.stream().skip(page*size).limit(size).collect(Collectors.toList());
     }
 
-    public static class Count{
-        private int pages;
-        private int count;
-
-        public Count() { }
-
-        public Count(int pages, int count) {
-            this.pages = pages;
-            this.count = count;
-        }
-
-        public int getPages() {
-            return pages;
-        }
-
-        public void setPages(int pages) {
-            this.pages = pages;
-        }
-
-        public int getCount() {
-            return count;
-        }
-
-        public void setCount(int count) {
-            this.count = count;
-        }
-    }
-
     @GetMapping(value = "/user-count")
     public int getUsersCount() {
         return USER_DTO_LIST.size();
