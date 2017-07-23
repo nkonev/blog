@@ -21,7 +21,6 @@
 
 <script>
 //    import router from '../router'
-//    import {root} from '../router'
 
     import store from  '../store';
     import {FETCH_USER_PROFILE} from '../store'

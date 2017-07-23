@@ -1,7 +1,9 @@
 <template>
     <div>
-        <label for="search">Search</label>
-        <input id="search" v-model="searchString" @input="onChangeSearchString()"/> <button @click="onClearButton()">clear</button>
+        <div class="search">
+            <label for="search">Search</label>
+            <input id="search" v-model="searchString" @input="onChangeSearchString()"/> <button @click="onClearButton()">clear</button>
+        </div>
         <div class="post-list">
             <div v-if="posts.length>0">
                 <post-item v-for="post in posts" v-bind:postDTO="post" :key="post.id"></post-item>
@@ -76,5 +78,7 @@
 </script>
 
 <style lang="stylus" scoped>
-
+    .search {
+        margin-top 4px;
+    }
 </style>
