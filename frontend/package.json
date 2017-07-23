@@ -47,9 +47,11 @@
     "webpack": "^2.7.0"
   },
   "dependencies": {
+    "@stomp/stompjs": "^3.1.1",
     "jquery": "^3.2.1",
     "jquery-ui": "^1.12.1",
     "mini-toastr": "^0.6.5",
+    "sockjs-client": "^1.1.4",
     "underscore": "^1.8.3",
     "vee-validate": "^2.0.0-rc.7",
     "vue": "^2.4.1",
@@ -63,6 +65,7 @@
     "vue-router": "^2.7.0",
     "vue-simple-spinner": "^1.2.1",
     "vuejs-paginate": "^1.1.0",
-    "vuex": "^2.3.1"
+    "vuex": "^2.3.1",
+    "websocket": "^1.0.24"
   }
 }

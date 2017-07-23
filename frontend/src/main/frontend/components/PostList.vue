@@ -24,11 +24,15 @@
 <script>
     import PostItem from './PostItem.vue'
     import InfiniteLoading from 'vue-infinite-loading';
+    const Stomp = require("@stomp/stompjs/lib/stomp.js").Stomp; // https://github.com/jmesnil/stomp-websocket/issues/119 https://stomp-js.github.io/stomp-websocket/codo/extra/docs-src/Usage.md.html
+    import SockJS from 'sockjs-client' // https://www.npmjs.com/package/sockjs-client
 
     // https://peachscript.github.io/vue-infinite-loading/#!/getting-started/with-filter
     const api = '/api/public/post';
     const POSTS_PAGE_SIZE = 20;
     const MAX_PAGES = 10;
+
+    let socket;
 
     export default {
         name: 'posts',
@@ -73,6 +77,23 @@
                 this.searchString = '';
                 this.onChangeSearchString();
             }
+        },
+        mounted(){
+            socket = new SockJS('/stomp');
+            let stompClient = Stomp.over(socket);
+            stompClient.reconnect_delay = 5000; //
+            stompClient.connect({ }, function(frame) {
+                // subscribe
+                stompClient.subscribe("/topic/greetings", function(data) {
+                    var message = data.body;
+                    console.log(message);
+                });
+
+            });
+        },
+        beforeDestroy() {
+            console.debug('closing SockJs');
+            socket.close();
         }
     }
 </script>
