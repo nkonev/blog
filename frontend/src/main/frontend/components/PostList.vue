@@ -1,7 +1,7 @@
 <template>
     <div>
         <label for="search">Search</label>
-        <input id="search"/>
+        <input id="search" v-model="searchString" @input="onChangeSearchString()"/> <button @click="onClearButton()">clear</button>
         <div class="post-list">
             <div v-if="posts.length>0">
                 <post-item v-for="post in posts" v-bind:postDTO="post" :key="post.id"></post-item>
@@ -25,12 +25,15 @@
 
     // https://peachscript.github.io/vue-infinite-loading/#!/getting-started/with-filter
     const api = '/api/public/posts';
+    const POSTS_PAGE_SIZE = 20;
+    const MAX_PAGES = 10;
 
     export default {
         name: 'posts',
         data() {
             return {
-                posts: [ ]
+                posts: [ ],
+                searchString: ''
             }
         },
         components: {
@@ -41,13 +44,15 @@
             onInfinite() {
                 this.$http.get(api, {
                     params: {
-                        page: this.posts.length / 20,
+                        searchString: this.searchString,
+                        page: Math.floor(this.posts.length / POSTS_PAGE_SIZE),
                     },
                 }).then((res) => {
                     if (res.data.length) {
                         this.posts = this.posts.concat(res.data); // add data from server's response
                         this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded');
-                        if (this.posts.length / 20 === 10) {
+                        if (Math.floor(this.posts.length / POSTS_PAGE_SIZE) === MAX_PAGES) {
+                            console.log("Overwhelming prevention");
                             this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
                         }
                     } else {
@@ -55,12 +60,17 @@
                     }
                 });
             },
-            changeFilter() {
+            onChangeSearchString() {
+                console.debug('onChangeSearchString');
                 this.posts = [];
                 this.$nextTick(() => {
                     this.$refs.infiniteLoading.$emit('$InfiniteLoading:reset');
                 });
             },
+            onClearButton() {
+                this.searchString = '';
+                this.onChangeSearchString();
+            }
         }
     }
 </script>

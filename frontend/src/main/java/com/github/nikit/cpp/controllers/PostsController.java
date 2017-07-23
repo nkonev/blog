@@ -88,12 +88,13 @@ public class PostsController {
     @GetMapping
     public List<PostDTO> getPosts(
             @RequestParam(value = "page", required=false, defaultValue = "0") int page,
-            @RequestParam(value = "size", required=false, defaultValue = "0") int size
+            @RequestParam(value = "size", required=false, defaultValue = "0") int size,
+            @RequestParam(value = "searchString", required=false, defaultValue = "") String searchString
     ) {
         page = PageUtils.fixPage(page);
         size = PageUtils.fixSize(size);
 
-        return POST_DTO_LIST.stream().skip(page*size).limit(size).collect(Collectors.toList());
+        return POST_DTO_LIST.stream().filter(postDTO -> postDTO.getText().contains(searchString) || postDTO.getTitle().contains(searchString)).skip(page*size).limit(size).collect(Collectors.toList());
     }
 
 }
