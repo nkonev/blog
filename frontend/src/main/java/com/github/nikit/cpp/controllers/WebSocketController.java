@@ -21,7 +21,7 @@ public class WebSocketController {
     @GetMapping(path="/api/public/greetings")
     @ResponseBody
     public void greet() {
-        String text = "Hello at [" + new Date() + "]";
+        String text = "Hello(привет) at [" + new Date() + "]";
         this.template.convertAndSend("/topic/greetings", text);
     }
 }

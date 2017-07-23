@@ -51,7 +51,6 @@
     "jquery": "^3.2.1",
     "jquery-ui": "^1.12.1",
     "mini-toastr": "^0.6.5",
-    "sockjs-client": "^1.1.4",
     "underscore": "^1.8.3",
     "vee-validate": "^2.0.0-rc.7",
     "vue": "^2.4.1",
