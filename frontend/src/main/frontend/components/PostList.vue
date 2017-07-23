@@ -81,7 +81,6 @@
         mounted(){
             socket = new SockJS('/stomp');
             let stompClient = Stomp.over(socket);
-            stompClient.reconnect_delay = 5000; //
             stompClient.connect({ }, function(frame) {
                 // subscribe
                 stompClient.subscribe("/topic/greetings", function(data) {
