@@ -8,6 +8,7 @@ import Registration from './components/Registration.vue'
 import PostList from './components/PostList.vue'
 // Lazy load heavy component https://router.vuejs.org/en/advanced/lazy-loading.html. see also in .babelrc
 const PostEdit = () => import('./components/PostEdit.vue');
+import PostView from './components/PostView.vue'
 
 // This installs <router-view> and <router-link>,
 // and injects $router and $route to all router-enabled child components
@@ -17,6 +18,7 @@ const root = '/';
 const users = '/users';
 const usersWithPage = users + '/:page?'; // '?' means not necessary as in RegExp
 const useProfileName = 'user-profile';
+const post = 'post';
 
 const router = new Router({
     mode: 'history',
@@ -31,6 +33,7 @@ const router = new Router({
         { path: '/autocomplete', component: Autocomplete},
         { path: '/registration', component: Registration },
         { path: '/post/edit', component: PostEdit },
+        { name: post, path: '/post/:id', component: PostView},
         { path: '*', component: NotFoundComponent },
     ]
 });
@@ -41,5 +44,6 @@ export  {
     root,
     users,
     usersWithPage,
-    useProfileName
+    useProfileName,
+    post
 }

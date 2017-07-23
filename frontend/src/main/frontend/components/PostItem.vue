@@ -1,7 +1,7 @@
 <template>
     <div class="post">
         <img :src="postDTO.titleImg"/>
-        <h2>{{postDTO.title}}</h2>
+        <router-link :to="{name: post, params: { id: postDTO.id} }"><h2>{{postDTO.title}}</h2></router-link>
         <div class="post-content">
             {{postDTO.text}}
             <hr/>
@@ -10,9 +10,16 @@
 </template>
 
 <script>
+    import {post} from '../router';
+
     export default {
         name: 'post-item',
         props: ['postDTO'], // it may be an object, for ability to set default values
+        data() {
+            return {
+                post: post
+            }
+        }
     }
 </script>
 

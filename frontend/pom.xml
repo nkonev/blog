@@ -419,8 +419,14 @@
             <artifactId>owasp-java-html-sanitizer</artifactId>
             <version>20160413.1</version>
         </dependency>
-    </dependencies>
 
+        <dependency>
+            <!-- jsoup HTML parser library @ https://jsoup.org/ -->
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.10.3</version>
+        </dependency>
+    </dependencies>
 
 
     <profiles>

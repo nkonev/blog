@@ -26,7 +26,7 @@
     import InfiniteLoading from 'vue-infinite-loading';
 
     // https://peachscript.github.io/vue-infinite-loading/#!/getting-started/with-filter
-    const api = '/api/public/posts';
+    const api = '/api/public/post';
     const POSTS_PAGE_SIZE = 20;
     const MAX_PAGES = 10;
 
