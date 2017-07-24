@@ -82,11 +82,13 @@
             stompClient = Stomp.client(url);
             stompClient.reconnect_delay = 5000; // reconnect after 5 sec
 
-            stompClient.connect({ }, function(frame) {
+            stompClient.connect({ }, (frame) => {
                 // subscribe
-                stompClient.subscribe("/topic/greetings", function(data) {
-                    var message = data.body;
+                stompClient.subscribe("/topic/posts", (data) => {
+                    const message = data.body;
+                    const obj = JSON.parse(message);
                     console.log(message);
+                    this.posts.unshift(obj);
                 });
             });
         },

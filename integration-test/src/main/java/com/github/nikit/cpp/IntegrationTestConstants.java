@@ -11,7 +11,7 @@ public class IntegrationTestConstants {
     public static final String USER_ID = "${custom.it.user.id}";
 
     public static class Pages {
-        public static final String INDEX_HTML = "/index.html";
+        public static final String INDEX_HTML = "/";
         public static final String AUTOCOMPLETE = "/autocomplete";
         public static final String USERS_LIST = "/users";
         public static final String USER = "/user";

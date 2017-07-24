@@ -21,7 +21,7 @@ public class WebSocketController {
     @GetMapping(path="/api/public/greetings")
     @ResponseBody
     public void greet() {
-        String text = "Hello(привет) at [" + new Date() + "]";
-        this.template.convertAndSend("/topic/greetings", text);
+        PostController.PostDTO postDTO = new PostController.PostDTO(2_000_000, "Post via websocket", "Пост, пришедший через вебсокет " + new Date(), null);
+        this.template.convertAndSend("/topic/posts", postDTO);
     }
 }
