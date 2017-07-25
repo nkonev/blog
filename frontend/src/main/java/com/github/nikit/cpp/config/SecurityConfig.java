@@ -40,7 +40,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder builder) throws Exception {
-        builder.inMemoryAuthentication().withUser("user").password("user").roles("USER").and().withUser("admin")
+        builder
+                .eraseCredentials(true) // erase password from the Authentication. https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#core-services-erasing-credentials
+                .inMemoryAuthentication().withUser("user").password("user").roles("USER").and().withUser("admin")
                 .password("admin").roles("ADMIN");
     }
 
