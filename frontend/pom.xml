@@ -217,6 +217,7 @@
                     </dependency>
                 </dependencies>
                 <configuration>
+                    <skip>${skipTests}</skip>
                     <swaggerInput>${swagger.input}</swaggerInput>
                     <outputDir>${generated.asciidoc.directory}</outputDir>
                     <config>
