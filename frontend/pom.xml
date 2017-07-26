@@ -429,11 +429,6 @@
             <version>1.10.3</version>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>org.springframework</groupId>-->
-            <!--<artifactId>spring-websocket</artifactId>-->
-            <!--&lt;!&ndash;<version>5.0.0.BUILD-SNAPSHOT</version>&ndash;&gt;-->
-        <!--</dependency>-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
@@ -441,7 +436,10 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-messaging</artifactId>
-            <!--<version>5.0.0.BUILD-SNAPSHOT</version>-->
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-acl</artifactId>
         </dependency>
     </dependencies>
 
