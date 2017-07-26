@@ -22,3 +22,20 @@ custom.it.user.id: 0
 # first element - for eliminate manual restart app in IntelliJ for copy compiled js to target/classes, last slash is important,, second element - for documentation
 # spring.resources.static-locations: file:../frontend/src/main/resources/static/, classpath:/static/
 
+spring.jpa:
+  properties:
+    hibernate.use_sql_comments: true
+    hibernate.format_sql: true
+  hibernate.ddl-auto: validate
+
+spring.datasource:
+    url: jdbc:postgresql://172.22.0.2:5432/blog
+    username: blog
+    password: "blogPazZw0rd"
+    driverClassName: org.postgresql.Driver
+
+liquibase:
+  change-log: classpath:liquibase/migration.yml
+  contexts: main,test
+
+spring.redis.url: redis://172.22.0.3:6379/0
