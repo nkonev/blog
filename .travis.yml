@@ -9,4 +9,3 @@ install: "/bin/true" # workaround https://github.com/Swagger2Markup/swagger2mark
 script:
   - (cd docker; docker-compose up -d)
   - "./mvnw -P frontend clean package"
-services: redis-server

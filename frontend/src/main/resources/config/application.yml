@@ -36,3 +36,5 @@ spring.datasource:
 liquibase:
   change-log: classpath:liquibase/migration.yml
   contexts: main
+
+spring.redis.url: redis://172.22.0.3:6379/0
