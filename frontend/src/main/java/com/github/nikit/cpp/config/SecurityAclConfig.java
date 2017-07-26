@@ -44,8 +44,7 @@ public class SecurityAclConfig {
 
     @Bean
     public PermissionGrantingStrategy permissionGrantingStrategy() {
-        return new DefaultPermissionGrantingStrategy(
-                new ConsoleAuditLogger());
+        return new DefaultPermissionGrantingStrategy(new ConsoleAuditLogger());
     }
 
     @Bean
