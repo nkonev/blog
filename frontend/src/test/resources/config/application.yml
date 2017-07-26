@@ -4,3 +4,19 @@ server.port: 9090
 
 server.tomcat.basedir: ${java.io.tmpdir}/com.github.nikit.cpp.tomcat
 server.session.store-dir: ${server.tomcat.basedir}/sessions
+
+spring.jpa:
+  properties:
+    hibernate.use_sql_comments: true
+    hibernate.format_sql: true
+  hibernate.ddl-auto: validate
+
+spring.datasource:
+    url: jdbc:postgresql://172.22.0.2:5432/blog
+    username: blog
+    password: "blogPazZw0rd"
+    driverClassName: org.postgresql.Driver
+
+liquibase:
+  change-log: classpath:liquibase/migration.yml
+  contexts: main,test
