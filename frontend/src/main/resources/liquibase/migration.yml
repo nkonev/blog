@@ -1,0 +1,3 @@
+databaseChangeLog:
+   - include:
+      file: classpath:liquibase/migration/bootstrap.sql

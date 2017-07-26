@@ -1,0 +1,36 @@
+version: '2'
+
+services:
+  #enviroment
+   postgresql:
+    image : postgres:${POSTGRESL_VERSION}
+    hostname: postgresql
+    # имена контейнеров не должны пересекаться с уже существующими
+    container_name: postgresql-blog-dev
+    restart: unless-stopped
+    ports:
+     - 5432
+    environment:
+     - POSTGRES_PASSWORD=postgresqlPassword
+    volumes :
+     - ./postgresql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+     - postgresql_test_data_dir:/var/lib/postgresql/data
+    networks:
+     test:
+      ipv4_address: 172.22.0.2
+
+volumes:
+  #enviroment
+  postgresql_test_data_dir:
+
+networks:
+  test:
+    driver: bridge
+#    driver_opts:
+#      com.docker.network.enable_ipv6: "true"
+#      com.docker.network.bridge.enable_ip_masquerade: "false"
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.22.0.0/24
+        gateway: 172.22.0.1
