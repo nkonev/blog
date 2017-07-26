@@ -37,6 +37,7 @@
     </properties>
 
     <modules>
+        <module>configs-generator</module>
         <module>api</module>
         <module>frontend</module>
         <module>integration-test</module>
