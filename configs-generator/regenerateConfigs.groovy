@@ -6,7 +6,7 @@ println string
 
 
 // usage:
-// mvn -pl configs-generator generate-resources
+// ./mvnw -pl configs-generator generate-resources
 // after usage you must do Build -> Rebuild project
 
 
@@ -23,8 +23,9 @@ def AUTOGENERATE_SNIPPET =
 
 def writeAndLog(filePath, content) {
     def file = new File(filePath);
-    file.write content
-
+    file.withWriter('UTF-8') { writer ->
+        writer.write(content)
+    }
     println("""File ${file} was successfully saved!""");
 };
 
