@@ -29,6 +29,7 @@ import javax.sql.DataSource;
 // http://book2s.com/java/src/package/com/foreach/across/modules/spring/security/acl/config/aclsecurityconfiguration.html
 
 /**
+ * tables in "auth" schema
  * ACL_SID              GrantedAuthority(ROLE_ADMIN, ...) or Principal
  * ACL_CLASS            Post.class or Comment.class
  * ACL_OBJECT_IDENTITY  acl_class_id, parent_acl_sid_id(owner) Post or Comment instance

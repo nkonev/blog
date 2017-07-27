@@ -33,7 +33,7 @@ def writeAndLog(filePath, content) {
 ////////////////////////////////////////////////////////////// common snippets //////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-def DATA_STORE_SNIPPET = {String contexts ->
+def DATA_STORE_SNIPPET = {String contexts, boolean dropFirst ->
 return """
 spring.jpa:
   properties:
@@ -56,6 +56,7 @@ auth.datasource:
 liquibase:
   change-log: classpath:liquibase/migration.yml
   contexts: ${contexts}
+  drop-first: ${dropFirst}
 
 spring.redis.url: redis://172.22.0.3:6379/0
 """};
@@ -99,7 +100,7 @@ spring.mvc.static-path-pattern: /**
 # first element - for eliminate manual restart app in IntelliJ for copy compiled js to target/classes, last slash is important,, second element - for documentation
 spring.resources.static-locations: file:frontend/src/main/resources/static/, classpath:/static/
 
-${DATA_STORE_SNIPPET('main')}
+${DATA_STORE_SNIPPET('main', false)}
 """;
 writeAndLog(FRONTEND_MAIN_YML_FILE, FRONTEND_MAIN_YML_CONTENT);
 
@@ -112,7 +113,7 @@ logging.level.: INFO
 server.port: ${TEST_TIME_PORT}
 ${WEBSERVER_SNIPPET}
 ${USERS_SNIPPET}
-${DATA_STORE_SNIPPET('main, test')}
+${DATA_STORE_SNIPPET('main, test', true)}
 """;
 writeAndLog(FRONTEND_TEST_YML_FILE, FRONTEND_TEST_YML_CONTENT);
 
@@ -138,6 +139,6 @@ ${USERS_SNIPPET}
 # first element - for eliminate manual restart app in IntelliJ for copy compiled js to target/classes, last slash is important,, second element - for documentation
 # spring.resources.static-locations: file:../frontend/src/main/resources/static/, classpath:/static/
 
-${DATA_STORE_SNIPPET('main, test')}
+${DATA_STORE_SNIPPET('main, test', false)}
 """;
 writeAndLog(INTEGRATION_TEST_YML_FILE, INTEGRATION_TEST_YML_CONTENT);

@@ -14,6 +14,8 @@ public class Post {
     private String text;
     private URL titleImg;
 
+    private long ownerId;
+
     public Post() { }
 
     public Long getId() {
@@ -46,5 +48,13 @@ public class Post {
 
     public void setTitleImg(URL titleImg) {
         this.titleImg = titleImg;
+    }
+
+    public long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(long ownerId) {
+        this.ownerId = ownerId;
     }
 }

@@ -47,6 +47,7 @@ auth.datasource:
 liquibase:
   change-log: classpath:liquibase/migration.yml
   contexts: main
+  drop-first: false
 
 spring.redis.url: redis://172.22.0.3:6379/0
 
