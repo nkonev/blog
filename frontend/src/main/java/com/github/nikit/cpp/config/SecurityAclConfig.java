@@ -72,17 +72,22 @@ public class SecurityAclConfig {
     }
 
 
+    /**
+     * As I see this is who besides owner can change ACL
+     * @return
+     */
     AclAuthorizationStrategy aclAuthorizationStrategy() {
         return new AclAuthorizationStrategyImpl(
 //                new SimpleGrantedAuthority("ROLE_ADMIN"),
 //                new SimpleGrantedAuthority("ROLE_ADMIN"),
-                new SimpleGrantedAuthority(SecurityConfig.ROLE_ADMIN) // todo check for prefix
+                new SimpleGrantedAuthority(SecurityConfig.ROLE_ADMIN)
         );
     }
 
     /**
      * https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#domain-acls-key-concepts
-     * Retrieves the Acl applicable for a given ObjectIdentity. Acl internally holds ObjectIdentity. Acl <==> Secured object instance
+     * Retrieves the Acl applicable for a given ObjectIdentity. Acl internally holds [ManyToOne] ObjectIdentity. And List of AccessControlEntry
+     * Acl <==> Secured object instance
      * @return
      */
     @Bean
