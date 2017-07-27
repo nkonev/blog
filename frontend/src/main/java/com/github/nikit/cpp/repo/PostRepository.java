@@ -15,7 +15,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("select p from Post p where p.ownerId = ?#{ principal?.id }")
     Page<Post> findMyPosts(Pageable pageable);
 
-    Page<Post> findByTextContains(Pageable page, String contain);
+    Page<Post> findByTextContainsOrTitleContainsOrderByIdDesc(Pageable page, String textContain, String titleContain);
 
     Optional<Post> findById(Long id);
 }

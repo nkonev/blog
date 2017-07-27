@@ -108,7 +108,7 @@ public class PostController {
         PageRequest springDataPage = new PageRequest(page, size);
 
         return postRepository
-                .findByTextContains(springDataPage, searchString).getContent()
+                .findByTextContainsOrTitleContainsOrderByIdDesc(springDataPage, searchString, searchString).getContent()
                 .stream()
                 .map(PostController::convertToPostDTO)
                 .collect(Collectors.toList());

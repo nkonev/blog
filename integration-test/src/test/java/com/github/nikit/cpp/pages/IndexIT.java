@@ -22,12 +22,43 @@ public class IndexIT extends AbstractItTestRunner {
     @Autowired
     private WebSocketController webSocketController;
 
+    public static class IndexPage {
+        private String urlPrefix;
+        public IndexPage(String urlPrefix) {
+            this.urlPrefix = urlPrefix;
+        }
+
+        /**
+         * Открыть страницу в браузере
+         */
+        public void openPage() {
+            open(urlPrefix+INDEX_HTML);
+        }
+
+        public void contains(String s) {
+            $(".post-list").shouldHave(Condition.text(s));
+        }
+
+        public void setSearchString(String s) {
+            $("input#search").setValue(s);
+        }
+    }
+
     @Test
     public void testWebsocketPush() throws Exception {
-        open(urlPrefix+INDEX_HTML);
-        $(".post-list").shouldHave(Condition.text("Lorem Ipsum является стандартной \"рыбой\" для текстов на латинице с начала XVI века."));
+
+        IndexPage indexPage = new IndexPage(urlPrefix);
+        indexPage.openPage();
+
+        indexPage.contains("Lorem Ipsum является стандартной \"рыбой\" для текстов на латинице с начала XVI века.");
 
         webSocketController.greet();
-        $(".post-list").shouldHave(Condition.text("Пост, пришедший через вебсокет"));
+
+        indexPage.contains("Пост, пришедший через вебсокет");
+
+        // TODO add js lodash??.debounce
+        indexPage.setSearchString("1234");
+
+        indexPage.contains("generated_post_91234");
     }
 }

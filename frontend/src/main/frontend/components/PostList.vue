@@ -73,8 +73,10 @@
                 });
             },
             onClearButton() {
-                this.searchString = '';
-                this.onChangeSearchString();
+                if (this.searchString !== '') {
+                    this.searchString = '';
+                    this.onChangeSearchString();
+                }
             }
         },
         mounted(){
