@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,8 +49,8 @@ public class ApiController {
      * @return
      */
     @RequestMapping(value = "/profile", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public UserDTO checkAuthenticated(Principal principal) {
-        return new UserDTO(0L, principal.getName(), "https://www.w3.org/html/logo/downloads/HTML5_Logo_512.png");
+    public UserDTO checkAuthenticated(Principal principal) throws MalformedURLException {
+        return new UserDTO(0L, principal.getName(), new URL("https://www.w3.org/html/logo/downloads/HTML5_Logo_512.png"));
     }
 
     private static final List<UserDTO> USER_DTO_LIST;

@@ -7,6 +7,7 @@ package com.github.nikit.cpp;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
@@ -26,5 +27,11 @@ public abstract class AbstractUtTestRunner {
 
     @Autowired
     protected MockMvc mockMvc;
+
+    @Value("${custom.it.user}")
+    protected String username;
+
+    @Value("${custom.it.password}")
+    protected String password;
 
 }

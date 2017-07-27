@@ -1,6 +1,7 @@
 package com.github.nikit.cpp.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -26,14 +27,22 @@ import javax.sql.DataSource;
 // https://stackoverflow.com/questions/26292431/how-to-configure-spring-acl-without-xml-file
 // gotcha https://stackoverflow.com/questions/38609874/acl-security-in-spring-boot
 // http://book2s.com/java/src/package/com/foreach/across/modules/spring/security/acl/config/aclsecurityconfiguration.html
+
+/**
+ * ACL_SID              GrantedAuthority(ROLE_ADMIN, ...) or Principal
+ * ACL_CLASS            Post.class or Comment.class
+ * ACL_OBJECT_IDENTITY  acl_class_id, parent_acl_sid_id(owner) Post or Comment instance
+ * ACL_ENTRY            acl_object_identity_id, acl_sid_id(recipient), auditing, permissions_bitmask_integer
+ */
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @EnableCaching
 public class SecurityAclConfig {
     @Autowired
+    @Qualifier(value = DbConfig.AUTH_DATASOURCE_BEAN_NAME)
     private DataSource dataSource;
 
-    private final String CACHE_NAME = "acl";
+    public static final String CACHE_NAME = "acl-cache";
 
     @Autowired
     private CacheManager cacheManager;
@@ -52,6 +61,11 @@ public class SecurityAclConfig {
         return new SpringCacheBasedAclCache(cacheInstance(), permissionGrantingStrategy(), aclAuthorizationStrategy());
     }
 
+    /**
+     * https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#domain-acls-key-concepts
+     * LookupStrategy provides a highly optimized strategy for retrieving ACL information, using batched retrievals
+     * @return
+     */
     @Bean
     LookupStrategy lookupStrategy() {
         return new BasicLookupStrategy(dataSource, aclCache(), aclAuthorizationStrategy(), new ConsoleAuditLogger());
@@ -60,15 +74,21 @@ public class SecurityAclConfig {
 
     AclAuthorizationStrategy aclAuthorizationStrategy() {
         return new AclAuthorizationStrategyImpl(
-//                new SimpleGrantedAuthority("ROLE_ACL_ADMIN"),
-//                new SimpleGrantedAuthority("ROLE_ACL_ADMIN"),
-                new SimpleGrantedAuthority("ROLE_ACL_ADMIN")
+//                new SimpleGrantedAuthority("ROLE_ADMIN"),
+//                new SimpleGrantedAuthority("ROLE_ADMIN"),
+                new SimpleGrantedAuthority(SecurityConfig.ROLE_ADMIN) // todo check for prefix
         );
     }
 
+    /**
+     * https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#domain-acls-key-concepts
+     * Retrieves the Acl applicable for a given ObjectIdentity. Acl internally holds ObjectIdentity. Acl <==> Secured object instance
+     * @return
+     */
     @Bean
     JdbcMutableAclService aclService() {
         JdbcMutableAclService service = new JdbcMutableAclService(dataSource, lookupStrategy(), aclCache());
+        // https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#postgresql
         service.setClassIdentityQuery("select currval(pg_get_serial_sequence('acl_class', 'id'))");
         service.setSidIdentityQuery("select currval(pg_get_serial_sequence('acl_sid', 'id'))");
         return service;

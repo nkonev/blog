@@ -41,7 +41,13 @@ spring.jpa:
   hibernate.ddl-auto: validate
 
 spring.datasource:
-    url: jdbc:postgresql://172.22.0.2:5432/blog
+    url: jdbc:postgresql://172.22.0.2:5432/blog?connectTimeout=10
+    username: blog
+    password: "blogPazZw0rd"
+    driverClassName: org.postgresql.Driver
+
+auth.datasource:
+    url: jdbc:postgresql://172.22.0.2:5432/blog?currentSchema=auth&connectTimeout=10
     username: blog
     password: "blogPazZw0rd"
     driverClassName: org.postgresql.Driver
@@ -57,6 +63,11 @@ def WEBSERVER_SNIPPET =
 """
 server.tomcat.basedir: \${java.io.tmpdir}/com.github.nikit.cpp.tomcat
 server.session.store-dir: \${server.tomcat.basedir}/sessions
+""";
+
+def USERS_SNIPPET=
+"""custom.it.user: admin
+custom.it.password: admin
 """;
 
 
@@ -98,8 +109,8 @@ def FRONTEND_TEST_YML_CONTENT =
 logging.level.: INFO
 
 server.port: ${TEST_TIME_PORT}
-
 ${WEBSERVER_SNIPPET}
+${USERS_SNIPPET}
 ${DATA_STORE_SNIPPET('main, test')}
 """;
 writeAndLog(FRONTEND_TEST_YML_FILE, FRONTEND_TEST_YML_CONTENT);
@@ -110,19 +121,15 @@ def INTEGRATION_TEST_YML_CONTENT =
 logging.level.: INFO
 
 server.port: ${TEST_TIME_PORT}
-
 ${WEBSERVER_SNIPPET}
-
 custom.selenium.implicitly-wait-timeout: 10
 custom.selenium.browser: PHANTOM
 custom.selenium.window-height: 900
 custom.selenium.window-width: 1600
 
 custom.it.url.prefix: http://127.0.0.1:\${server.port}
-custom.it.user: admin
-custom.it.password: admin
 custom.it.user.id: 0
-
+${USERS_SNIPPET}
 
 # this is URL
 # spring.mvc.static-path-pattern: /**

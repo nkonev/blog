@@ -1,12 +1,10 @@
 package com.github.nikit.cpp.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.net.URL;
 
 @Entity
+@Table(name = "post", schema = "posts")
 public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id

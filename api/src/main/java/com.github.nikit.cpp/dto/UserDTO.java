@@ -1,6 +1,7 @@
 package com.github.nikit.cpp.dto;
 
 import java.io.Serializable;
+import java.net.URL;
 
 /**
  * Created by nik on 22.06.17.
@@ -12,14 +13,14 @@ public class UserDTO implements Serializable {
 
     private String login;
 
-    private String avatar;
+    private URL avatar;
 
     public UserDTO(Long id, String login) {
         this.id = id;
         this.login = login;
     }
 
-    public UserDTO(Long id, String login, String avatar) {
+    public UserDTO(Long id, String login, URL avatar) {
         this(id, login);
         this.avatar = avatar;
     }
@@ -43,11 +44,11 @@ public class UserDTO implements Serializable {
         this.id = id;
     }
 
-    public String getAvatar() {
+    public URL getAvatar() {
         return avatar;
     }
 
-    public void setAvatar(String avatar) {
+    public void setAvatar(URL avatar) {
         this.avatar = avatar;
     }
 }

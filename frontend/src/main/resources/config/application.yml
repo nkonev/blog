@@ -33,7 +33,13 @@ spring.jpa:
   hibernate.ddl-auto: validate
 
 spring.datasource:
-    url: jdbc:postgresql://172.22.0.2:5432/blog
+    url: jdbc:postgresql://172.22.0.2:5432/blog?connectTimeout=10
+    username: blog
+    password: "blogPazZw0rd"
+    driverClassName: org.postgresql.Driver
+
+auth.datasource:
+    url: jdbc:postgresql://172.22.0.2:5432/blog?currentSchema=auth&connectTimeout=10
     username: blog
     password: "blogPazZw0rd"
     driverClassName: org.postgresql.Driver

@@ -5,10 +5,8 @@ logging.level.: INFO
 
 server.port: 9080
 
-
 server.tomcat.basedir: ${java.io.tmpdir}/com.github.nikit.cpp.tomcat
 server.session.store-dir: ${server.tomcat.basedir}/sessions
-
 
 custom.selenium.implicitly-wait-timeout: 10
 custom.selenium.browser: PHANTOM
@@ -16,9 +14,9 @@ custom.selenium.window-height: 900
 custom.selenium.window-width: 1600
 
 custom.it.url.prefix: http://127.0.0.1:${server.port}
+custom.it.user.id: 0
 custom.it.user: admin
 custom.it.password: admin
-custom.it.user.id: 0
 
 
 # this is URL
@@ -35,7 +33,13 @@ spring.jpa:
   hibernate.ddl-auto: validate
 
 spring.datasource:
-    url: jdbc:postgresql://172.22.0.2:5432/blog
+    url: jdbc:postgresql://172.22.0.2:5432/blog?connectTimeout=10
+    username: blog
+    password: "blogPazZw0rd"
+    driverClassName: org.postgresql.Driver
+
+auth.datasource:
+    url: jdbc:postgresql://172.22.0.2:5432/blog?currentSchema=auth&connectTimeout=10
     username: blog
     password: "blogPazZw0rd"
     driverClassName: org.postgresql.Driver
