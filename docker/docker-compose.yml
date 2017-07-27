@@ -16,7 +16,7 @@ services:
      - ./postgresql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
      - postgresql_blog_dev_data_dir:/var/lib/postgresql/data
     networks:
-     test:
+     blog-dev:
       ipv4_address: 172.22.0.2
     logging:
      driver: "json-file"
@@ -34,7 +34,7 @@ services:
     volumes :
      - redis_blog_dev_data_dir:/data
     networks:
-     test:
+     blog-dev:
       ipv4_address: 172.22.0.3
     logging:
      driver: "json-file"
@@ -48,7 +48,7 @@ volumes:
   redis_blog_dev_data_dir:
 
 networks:
-  test:
+  blog-dev:
     driver: bridge
 #    driver_opts:
 #      com.docker.network.enable_ipv6: "true"
