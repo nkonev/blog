@@ -3,6 +3,7 @@ package com.github.nikit.cpp.controllers;
 import com.github.nikit.cpp.Constants;
 import com.github.nikit.cpp.PageUtils;
 import com.github.nikit.cpp.entity.Post;
+import com.github.nikit.cpp.entity.UserAccount;
 import com.github.nikit.cpp.repo.PostRepository;
 import org.jsoup.Jsoup;
 import org.owasp.html.HtmlPolicyBuilder;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.MalformedURLException;
@@ -126,6 +128,23 @@ public class PostController {
                 .findById(id)
                 .map(PostController::convertToPostDTO)
                 .orElseThrow(()-> new RuntimeException("Post " + id + " not found"));
+    }
+
+    @PostMapping
+    public void createPost(@AuthenticationPrincipal UserAccount userAccount, PostDTO postDTO) {
+        postRepository.save(convertToPost(userAccount, postDTO));
+    }
+
+    @PutMapping
+    public void updatePost(@AuthenticationPrincipal UserAccount userAccount, PostDTO postDTO) {
+        postRepository.save(convertToPost(userAccount, postDTO));
+    }
+
+
+    private Post convertToPost(UserAccount userAccount, PostDTO postDTO) {
+        if (userAccount == null) { throw new IllegalArgumentException("userAccount can't be null"); }
+        if (postDTO == null) { throw new IllegalArgumentException("postDTO can't be null"); }
+        return new Post(postDTO.getId(), postDTO.getTitle(), postDTO.getText(), postDTO.getTitleImg(), userAccount.getId());
     }
 
 }

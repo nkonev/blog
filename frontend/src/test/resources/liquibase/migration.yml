@@ -1,0 +1,7 @@
+databaseChangeLog:
+   - include:
+      file: classpath:liquibase/migration/pre.sql
+   - include:
+      file: classpath:liquibase/migration/bootstrap.sql
+   - include:
+      file: classpath:liquibase/migration/post.sql

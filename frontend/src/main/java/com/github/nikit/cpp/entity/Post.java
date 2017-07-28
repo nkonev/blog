@@ -18,6 +18,14 @@ public class Post {
 
     public Post() { }
 
+    public Post(Long id, String title, String text, URL titleImg, long ownerId) {
+        this.id = id;
+        this.title = title;
+        this.text = text;
+        this.titleImg = titleImg;
+        this.ownerId = ownerId;
+    }
+
     public Long getId() {
         return id;
     }
