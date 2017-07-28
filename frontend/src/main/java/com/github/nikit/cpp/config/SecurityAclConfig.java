@@ -1,5 +1,6 @@
 package com.github.nikit.cpp.config;
 
+import com.github.nikit.cpp.config.security.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.Cache;
@@ -81,7 +82,7 @@ public class SecurityAclConfig {
         return new AclAuthorizationStrategyImpl(
 //                new SimpleGrantedAuthority("ROLE_ADMIN"),
 //                new SimpleGrantedAuthority("ROLE_ADMIN"),
-                new SimpleGrantedAuthority(SecurityConfig.ROLE_ADMIN)
+                new SimpleGrantedAuthority(Roles.ROLE_ADMIN)
         );
     }
 

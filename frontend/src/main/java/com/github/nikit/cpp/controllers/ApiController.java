@@ -2,10 +2,8 @@ package com.github.nikit.cpp.controllers;
 
 import com.github.nikit.cpp.Constants;
 import com.github.nikit.cpp.PageUtils;
-import com.github.nikit.cpp.dto.UserDTO;
-import org.springframework.http.HttpStatus;
+import com.github.nikit.cpp.dto.UserAccountDTO;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
@@ -49,15 +47,15 @@ public class ApiController {
      * @return
      */
     @RequestMapping(value = "/profile", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public UserDTO checkAuthenticated(Principal principal) throws MalformedURLException {
-        return new UserDTO(0L, principal.getName(), new URL("https://www.w3.org/html/logo/downloads/HTML5_Logo_512.png"));
+    public UserAccountDTO checkAuthenticated(Principal principal) throws MalformedURLException {
+        return new UserAccountDTO(0L, principal.getName(), new URL("https://www.w3.org/html/logo/downloads/HTML5_Logo_512.png"));
     }
 
-    private static final List<UserDTO> USER_DTO_LIST;
+    private static final List<UserAccountDTO> USER_DTO_LIST;
     static {
         USER_DTO_LIST = new ArrayList<>();
         for (int i=0; i<100001; ++i){
-            USER_DTO_LIST.add(new UserDTO((long)i, "user"+i));
+            USER_DTO_LIST.add(new UserAccountDTO((long)i, "user"+i));
         }
     }
 
@@ -87,14 +85,14 @@ public class ApiController {
     }
 
     @PostMapping(value = "/user")
-    public Collection<UserDTO> getUsersPost(@NotNull PageDTO pageDTO) {
+    public Collection<UserAccountDTO> getUsersPost(@NotNull PageDTO pageDTO) {
         int page = PageUtils.fixPage(pageDTO.getPage());
         int size = PageUtils.fixSize(pageDTO.getSize());
         return getUsers(page, size);
     }
 
     @GetMapping(value = "/user")
-    public Collection<UserDTO> getUsersGet(
+    public Collection<UserAccountDTO> getUsersGet(
             @RequestParam(value = "page", required=false, defaultValue = "0") int page,
             @RequestParam(value = "size", required=false, defaultValue = "0") int size
     ) {
@@ -103,7 +101,7 @@ public class ApiController {
         return getUsers(page, size);
     }
 
-    private Collection<UserDTO> getUsers(int page, int size) {
+    private Collection<UserAccountDTO> getUsers(int page, int size) {
         return USER_DTO_LIST.stream().skip(page*size).limit(size).collect(Collectors.toList());
     }
 
@@ -113,7 +111,7 @@ public class ApiController {
     }
 
     @GetMapping(value = "/user/{id}")
-    public UserDTO getUser(@PathVariable("id") Long userId) {
+    public UserAccountDTO getUser(@PathVariable("id") Long userId) {
         return USER_DTO_LIST.stream()
                 .filter(userDTO -> userId.equals(userDTO.getId()))
                 .findFirst()

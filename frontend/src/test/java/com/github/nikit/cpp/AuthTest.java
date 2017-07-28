@@ -7,6 +7,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
+
+import static com.github.nikit.cpp.config.SecurityConfig.PASSWORD_PARAMETER;
+import static com.github.nikit.cpp.config.SecurityConfig.USERNAME_PARAMETER;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -21,8 +24,8 @@ public class AuthTest extends AbstractUtTestRunner {
         MvcResult loginResult = mockMvc.perform(
                 post(SecurityConfig.API_LOGIN_URL)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("username", username)
-                        .param("password", password)
+                        .param(USERNAME_PARAMETER, username)
+                        .param(PASSWORD_PARAMETER, password)
                 .with(csrf())
         )
                 .andExpect(status().isOk())

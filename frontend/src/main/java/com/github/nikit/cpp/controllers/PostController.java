@@ -2,6 +2,7 @@ package com.github.nikit.cpp.controllers;
 
 import com.github.nikit.cpp.Constants;
 import com.github.nikit.cpp.PageUtils;
+import com.github.nikit.cpp.dto.UserAccountDetailsDTO;
 import com.github.nikit.cpp.entity.Post;
 import com.github.nikit.cpp.entity.UserAccount;
 import com.github.nikit.cpp.repo.PostRepository;
@@ -12,7 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.MalformedURLException;
@@ -131,17 +135,19 @@ public class PostController {
     }
 
     @PostMapping
-    public void createPost(@AuthenticationPrincipal UserAccount userAccount, PostDTO postDTO) {
+    public void createPost(
+            @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // null if not authenticated
+            PostDTO postDTO) {
         postRepository.save(convertToPost(userAccount, postDTO));
     }
 
     @PutMapping
-    public void updatePost(@AuthenticationPrincipal UserAccount userAccount, PostDTO postDTO) {
+    public void updatePost(@AuthenticationPrincipal UserAccountDetailsDTO userAccount, PostDTO postDTO) {
         postRepository.save(convertToPost(userAccount, postDTO));
     }
 
 
-    private Post convertToPost(UserAccount userAccount, PostDTO postDTO) {
+    private Post convertToPost(UserAccountDetailsDTO userAccount, PostDTO postDTO) {
         if (userAccount == null) { throw new IllegalArgumentException("userAccount can't be null"); }
         if (postDTO == null) { throw new IllegalArgumentException("postDTO can't be null"); }
         return new Post(postDTO.getId(), postDTO.getTitle(), postDTO.getText(), postDTO.getTitleImg(), userAccount.getId());

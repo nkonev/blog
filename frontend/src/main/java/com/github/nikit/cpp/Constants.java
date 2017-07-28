@@ -13,6 +13,7 @@ public class Constants {
     public static class Uls {
         public static final String ROOT = "/";
         public static final String API = "/api";
+        public static final String ADMIN = "/admin";
         public static final String API_PUBLIC = "/api/public";
         public static final String POST = "/post";
         public static final String REPOPULATE = "/repopulate";
