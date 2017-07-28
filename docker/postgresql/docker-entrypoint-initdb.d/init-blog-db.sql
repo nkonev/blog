@@ -11,7 +11,7 @@ ALTER SYSTEM SET commit_siblings=10;
 
 create user blog with password 'blogPazZw0rd';
 create database blog with owner blog;
-\connect blog blog;
+\connect blog;
 
 create extension if not exists "uuid-ossp" schema pg_catalog;
 -- create extension if not exists "hstore" schema pg_catalog;
