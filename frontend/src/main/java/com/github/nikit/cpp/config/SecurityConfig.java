@@ -2,6 +2,7 @@ package com.github.nikit.cpp.config;
 
 import com.github.nikit.cpp.Constants;
 import com.github.nikit.cpp.config.security.*;
+import com.github.nikit.cpp.entity.UserRole;
 import com.github.nikit.cpp.services.BlogUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -99,7 +100,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers(Constants.Uls.API+"/**").authenticated();
         http.authorizeRequests()
-                .antMatchers(Constants.Uls.API+Constants.Uls.ADMIN+"/**").hasAuthority(Roles.ROLE_ADMIN);
+                .antMatchers(Constants.Uls.API+Constants.Uls.ADMIN+"/**").hasAuthority(UserRole.ROLE_ADMIN.name());
 
         http.csrf()
                 .csrfTokenRepository(csrfTokenRepository());

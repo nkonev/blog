@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    @Query("select p from Post p where p.ownerId = ?#{ principal?.id }")
+    @Query("select p from Post p where p.owner.id = ?#{ principal?.id }")
     Page<Post> findMyPosts(Pageable pageable);
 
     Page<Post> findByTextContainsOrTitleContainsOrderByIdDesc(Pageable page, String textContain, String titleContain);

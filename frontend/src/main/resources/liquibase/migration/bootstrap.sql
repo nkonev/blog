@@ -22,15 +22,15 @@ create table users (
 	locked boolean not null DEFAULT false
 );
 
-create table roles (
+create table user_roles (
 	user_id bigint not null REFERENCES users(id),
-	role_name varchar(50) not null,
-	UNIQUE(user_id, role_name)
+	role_id INT not null, -- enum UserRole value starts with 0
+	UNIQUE(user_id, role_id)
 );
 
 
 -- Group Authorities
-CREATE SEQUENCE groups_id_seq;
+/*CREATE SEQUENCE groups_id_seq;
 create table groups (
 	id bigint NOT NULL DEFAULT nextval('groups_id_seq') primary key,
 	group_name varchar(50) not null
@@ -62,47 +62,42 @@ create table persistent_logins (
 	token varchar(64) not null,
 	last_used timestamp not null
 );
-
+*/
 
 -- ACL Schema
+-- unique principals or authorities which may apply to multiple principals
 create table acl_sid(
 	id bigserial not null primary key,
-	principal boolean not null,
-	sid varchar(100) not null,
-	constraint unique_uk_1 unique(sid,principal)
+	principal boolean not null, -- this is principal name or a GrantedAuthority
+	sid varchar(50) not null, -- principal (user)name or GrantedAuthority(role)
+	unique(sid, principal)
 );
-
+-- defines the domain object types to which ACLs apply. The class column stores the Java class name of the object
 create table acl_class(
 	id bigserial not null primary key,
-	class varchar(100) not null,
-	constraint unique_uk_2 unique(class)
+	class varchar(256) not null unique
 );
-
+-- stores the object identity definitions of specific domain objects, Post or Comment instance
 create table acl_object_identity(
 	id bigserial primary key,
-	object_id_class bigint not null,
-	object_id_identity bigint not null,
-	parent_object bigint,
-	owner_sid bigint,
+	object_id_class bigint not null references acl_class(id),
+	object_id_identity bigint not null, -- id of instance(entity)
+	parent_object bigint references acl_object_identity(id), -- Post is Parent for Comment for example
+	owner_sid bigint references acl_sid(id),
 	entries_inheriting boolean not null,
-	constraint unique_uk_3 unique(object_id_class,object_id_identity),
-	constraint foreign_fk_1 foreign key(parent_object)references acl_object_identity(id),
-	constraint foreign_fk_2 foreign key(object_id_class)references acl_class(id),
-	constraint foreign_fk_3 foreign key(owner_sid)references acl_sid(id)
+	unique(object_id_class, object_id_identity)
 );
-
+-- stores the ACL permissions which apply to a specific object identity and security identity
 create table acl_entry(
 	id bigserial primary key,
-	acl_object_identity bigint not null,
+	acl_object_identity bigint not null references acl_object_identity(id),
 	ace_order int not null,
-	sid bigint not null,
-	mask integer not null,
-	granting boolean not null,
-	audit_success boolean not null,
-	audit_failure boolean not null,
-	constraint unique_uk_4 unique(acl_object_identity,ace_order),
-	constraint foreign_fk_4 foreign key(acl_object_identity) references acl_object_identity(id),
-	constraint foreign_fk_5 foreign key(sid) references acl_sid(id)
+	sid bigint not null references acl_sid(id),
+	mask integer not null, -- permissions bitmask
+	granting boolean not null, -- grant or deny
+	audit_success boolean not null, -- log granting, for ConsoleAuditLogger
+	audit_failure boolean not null, -- log denying
+	unique(acl_object_identity, ace_order)
 );
 SET search_path = public, pg_catalog;
 
@@ -131,15 +126,20 @@ INSERT INTO auth.users (username, password)
 	SELECT 'generated_user_' || i, '9831ec1837ce68115596609d36785cf4bd77f6c2' -- sha1('generated_user_password')
 	FROM generate_series(0, 100000) AS i;
 
+/**
+enum UserRole:
+0 ROLE_ADMIN
+1 ROLE_USER
+ */
 
-insert into auth.roles(user_id, role_name) VALUES
-	((select id from auth.users where username = 'admin'), 'ROLE_ADMIN'),
-	((select id from auth.users where username = 'nikita'), 'ROLE_USER'),
-	((select id from auth.users where username = 'alice'), 'ROLE_USER'),
-	((select id from auth.users where username = 'bob'), 'ROLE_USER');
+insert into auth.user_roles(user_id, role_id) VALUES
+	((select id from auth.users where username = 'admin'), 0),
+	((select id from auth.users where username = 'nikita'), 1),
+	((select id from auth.users where username = 'alice'), 1),
+	((select id from auth.users where username = 'bob'), 1);
 -- insert many test user roles
-INSERT INTO auth.roles (user_id, role_name)
-	SELECT i, 'ROLE_USER'
+INSERT INTO auth.user_roles (user_id, role_id)
+	SELECT i, 1
 	FROM generate_series(5, 100000) AS i;
 
 insert into posts.post (title, text, title_img, owner_id)

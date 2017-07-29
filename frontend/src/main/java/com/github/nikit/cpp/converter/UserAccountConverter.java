@@ -2,6 +2,7 @@ package com.github.nikit.cpp.converter;
 
 import com.github.nikit.cpp.dto.UserAccountDetailsDTO;
 import com.github.nikit.cpp.entity.UserAccount;
+import com.github.nikit.cpp.entity.UserRole;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -21,9 +22,9 @@ public class UserAccountConverter {
         );
     }
 
-    private static Collection<SimpleGrantedAuthority> convertRoles(Collection<String> roles) {
+    private static Collection<SimpleGrantedAuthority> convertRoles(Collection<UserRole> roles) {
         if (roles==null) {return null;}
-        return roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
+        return roles.stream().map(ur -> new SimpleGrantedAuthority(ur.name())).collect(Collectors.toSet());
     }
 
 }

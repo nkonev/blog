@@ -1,12 +1,15 @@
 package com.github.nikit.cpp.entity;
 
+import com.github.nikit.cpp.Constants;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import javax.persistence.*;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
 
 @Entity
-@Table(name = "users", schema = "auth")
+@Table(name = "users", schema = Constants.Schemas.AUTH)
 public class UserAccount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -18,10 +21,11 @@ public class UserAccount {
     private boolean locked;
     private boolean enabled; // synonym to "confirmed"
 
+    @Enumerated(EnumType.ORDINAL)
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name="roles", schema = "auth", joinColumns=@JoinColumn(name="user_id"))
-    @Column(name="role_name")
-    private Collection<String> roles = new HashSet<>(); // synonym to "authority"
+    @CollectionTable(name="user_roles", schema = Constants.Schemas.AUTH, joinColumns=@JoinColumn(name="user_id"))
+    @Column(name="role_id")
+    private Collection<UserRole> roles = new HashSet<>(); // synonym to "authority"
 
     public UserAccount() { }
 
@@ -81,11 +85,11 @@ public class UserAccount {
         this.password = password;
     }
 
-    public Collection<String> getRoles() {
+    public Collection<UserRole> getRoles() {
         return roles;
     }
 
-    public void setRoles(Collection<String> roles) {
+    public void setRoles(Collection<UserRole> roles) {
         this.roles = roles;
     }
 }

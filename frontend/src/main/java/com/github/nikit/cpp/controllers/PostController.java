@@ -6,6 +6,7 @@ import com.github.nikit.cpp.dto.UserAccountDetailsDTO;
 import com.github.nikit.cpp.entity.Post;
 import com.github.nikit.cpp.entity.UserAccount;
 import com.github.nikit.cpp.repo.PostRepository;
+import com.github.nikit.cpp.repo.UserAccountRepository;
 import org.jsoup.Jsoup;
 import org.owasp.html.HtmlPolicyBuilder;
 import org.owasp.html.PolicyFactory;
@@ -17,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.MalformedURLException;
@@ -30,11 +32,13 @@ import java.util.stream.Collectors;
  */
 
 @RestController
-@RequestMapping(Constants.Uls.API_PUBLIC+Constants.Uls.POST)
 public class PostController {
 
     @Autowired
     private PostRepository postRepository;
+
+    @Autowired
+    private UserAccountRepository userAccountRepository;
 
     // https://www.owasp.org/index.php/OWASP_Java_HTML_Sanitizer_Project
     private static final PolicyFactory SANITIZER_POLICY = new HtmlPolicyBuilder()
@@ -102,7 +106,7 @@ public class PostController {
         return new PostDTO(post.getId(), post.getTitle(), cleanHtmlTags(post.getText()), post.getTitleImg() );
     }
 
-    @GetMapping
+    @GetMapping(Constants.Uls.API_PUBLIC+Constants.Uls.POST)
     public List<PostDTO> getPosts(
             @RequestParam(value = "page", required=false, defaultValue = "0") int page,
             @RequestParam(value = "size", required=false, defaultValue = "0") int size,
@@ -124,7 +128,7 @@ public class PostController {
         return SANITIZER_POLICY.sanitize(html);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(Constants.Uls.API_PUBLIC+Constants.Uls.POST+"/{id}")
     public PostDTO getPost(
             @PathVariable("id") long id
     ) {
@@ -134,23 +138,48 @@ public class PostController {
                 .orElseThrow(()-> new RuntimeException("Post " + id + " not found"));
     }
 
-    @PostMapping
+
+    // ================================================= secured
+
+    @GetMapping(Constants.Uls.API+Constants.Uls.POST+Constants.Uls.MY)
+    public List<PostDTO> getMyPosts(
+            @RequestParam(value = "page", required=false, defaultValue = "0") int page,
+            @RequestParam(value = "size", required=false, defaultValue = "0") int size,
+            @RequestParam(value = "searchString", required=false, defaultValue = "") String searchString // TODO implement
+    ) {
+        page = PageUtils.fixPage(page);
+        size = PageUtils.fixSize(size);
+
+        PageRequest springDataPage = new PageRequest(page, size);
+
+        return postRepository
+                .findMyPosts(springDataPage).getContent()
+                .stream()
+                .map(PostController::convertToPostDTO)
+                .collect(Collectors.toList());
+    }
+
+    @PostMapping(Constants.Uls.API+Constants.Uls.POST)
     public void createPost(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // null if not authenticated
-            PostDTO postDTO) {
+            @RequestBody PostDTO postDTO) {
         postRepository.save(convertToPost(userAccount, postDTO));
     }
 
-    @PutMapping
-    public void updatePost(@AuthenticationPrincipal UserAccountDetailsDTO userAccount, PostDTO postDTO) {
+    @PutMapping(Constants.Uls.API+Constants.Uls.POST)
+    public void updatePost(
+            @AuthenticationPrincipal UserAccountDetailsDTO userAccount,
+            @RequestBody PostDTO postDTO
+    ) {
         postRepository.save(convertToPost(userAccount, postDTO));
     }
 
-
-    private Post convertToPost(UserAccountDetailsDTO userAccount, PostDTO postDTO) {
-        if (userAccount == null) { throw new IllegalArgumentException("userAccount can't be null"); }
+    private Post convertToPost(UserAccountDetailsDTO userAccountDetailsDTO, PostDTO postDTO) {
+        if (userAccountDetailsDTO == null) { throw new IllegalArgumentException("userAccount can't be null"); }
         if (postDTO == null) { throw new IllegalArgumentException("postDTO can't be null"); }
-        return new Post(postDTO.getId(), postDTO.getTitle(), postDTO.getText(), postDTO.getTitleImg(), userAccount.getId());
+        UserAccount ua = userAccountRepository.findOne(userAccountDetailsDTO.getId());
+        Assert.notNull(ua, "User account not found");
+        return new Post(postDTO.getId(), postDTO.getTitle(), postDTO.getText(), postDTO.getTitleImg(), ua);
     }
 
 }

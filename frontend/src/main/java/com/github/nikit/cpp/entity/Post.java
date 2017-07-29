@@ -1,10 +1,12 @@
 package com.github.nikit.cpp.entity;
 
+import com.github.nikit.cpp.Constants;
+
 import javax.persistence.*;
 import java.net.URL;
 
 @Entity
-@Table(name = "post", schema = "posts")
+@Table(name = "post", schema = Constants.Schemas.POSTS)
 public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -14,16 +16,18 @@ public class Post {
     private String text;
     private URL titleImg;
 
-    private long ownerId;
+    @ManyToOne
+    @JoinColumn(name="owner_id")
+    private UserAccount owner;
 
     public Post() { }
 
-    public Post(Long id, String title, String text, URL titleImg, long ownerId) {
+    public Post(Long id, String title, String text, URL titleImg, UserAccount owner) {
         this.id = id;
         this.title = title;
         this.text = text;
         this.titleImg = titleImg;
-        this.ownerId = ownerId;
+        this.owner = owner;
     }
 
     public Long getId() {
@@ -58,11 +62,11 @@ public class Post {
         this.titleImg = titleImg;
     }
 
-    public long getOwnerId() {
-        return ownerId;
+    public UserAccount getOwner() {
+        return owner;
     }
 
-    public void setOwnerId(long ownerId) {
-        this.ownerId = ownerId;
+    public void setOwner(UserAccount owner) {
+        this.owner = owner;
     }
 }

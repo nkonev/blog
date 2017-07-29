@@ -18,9 +18,15 @@ public class Constants {
         public static final String POST = "/post";
         public static final String REPOPULATE = "/repopulate";
         public static final String AUTOCOMPLETE = "/autocomplete";
+        public static final String MY = "/my";
     }
 
     public static class Swagger {
         public static final String AUTOCOMPLETE = "autocompletePost";
+    }
+
+    public static class Schemas {
+        public static final String AUTH = "auth";
+        public static final String POSTS = "posts";
     }
 }

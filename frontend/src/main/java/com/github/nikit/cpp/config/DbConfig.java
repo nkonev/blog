@@ -19,26 +19,4 @@ import javax.sql.DataSource;
 @EnableTransactionManagement
 public class DbConfig {
 
-    // https://docs.spring.io/spring-boot/docs/current/reference/html/howto-data-access.html#howto-two-datasources
-    @Bean
-    @Primary
-    @ConfigurationProperties("spring.datasource")
-    public DataSourceProperties fooDataSourceProperties() {
-        return new DataSourceProperties();
-    }
-
-    @Bean
-    @Primary
-    @ConfigurationProperties("spring.datasource")
-    public DataSource dataSource() {
-        return fooDataSourceProperties().initializeDataSourceBuilder().build();
-    }
-
-    public static final String AUTH_DATASOURCE_BEAN_NAME = "authDatasource";
-
-    @Bean(name = AUTH_DATASOURCE_BEAN_NAME)
-    @ConfigurationProperties("auth.datasource")
-    public DataSource authDataSource() {
-        return DataSourceBuilder.create().build();
-    }
 }
