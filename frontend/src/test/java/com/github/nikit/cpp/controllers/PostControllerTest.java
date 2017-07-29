@@ -31,6 +31,8 @@ public class PostControllerTest extends AbstractUtTestRunner {
     @Autowired
     private ObjectMapper objectMapper;
 
+    public static final String USER_ALICE = "alice";
+
     public static class PostDtoBuilder {
         public static class Instance {
             private final PostController.PostDTO postDTO;
@@ -56,7 +58,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
         }
     }
 
-    @WithUserDetails("alice")
+    @WithUserDetails(USER_ALICE)
     @Test
     public void testUserCanAddPost() throws Exception {
         MvcResult addPostRequest = mockMvc.perform(
