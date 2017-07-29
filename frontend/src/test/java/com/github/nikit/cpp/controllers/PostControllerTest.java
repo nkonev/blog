@@ -4,12 +4,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.nikit.cpp.AbstractUtTestRunner;
 import com.github.nikit.cpp.Constants;
+import com.github.nikit.cpp.entity.UserRole;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -19,6 +21,7 @@ import java.util.List;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class PostControllerTest extends AbstractUtTestRunner {
@@ -68,8 +71,11 @@ public class PostControllerTest extends AbstractUtTestRunner {
                         .with(csrf())
         )
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.owner.login").value(USER_ALICE))
                 .andReturn();
-        LOGGER.info(addPostRequest.getResponse().getContentAsString());
+        String addStr = addPostRequest.getResponse().getContentAsString();
+        LOGGER.info(addStr);
+        PostController.PostDTO added = objectMapper.readValue(addStr, PostController.PostDTO.class);
 
         // check post present in my posts
         MvcResult getMyPostsRequest = mockMvc.perform(
@@ -83,10 +89,26 @@ public class PostControllerTest extends AbstractUtTestRunner {
         List<PostController.PostDTO> posts = objectMapper.readValue(strListPosts, new TypeReference<List<PostController.PostDTO>>(){});
         Assert.assertTrue("I should can see my created post",
                 posts.stream().anyMatch(postDTO -> postDTO.getTitle().equals("default new post title")));
+
         // check foreign post not present in my posts
         Assert.assertFalse("foreign post shouldn't be in my posts",
                 posts.stream().anyMatch(postDTO -> postDTO.getTitle().startsWith("generated_post")));
 
+        // check Alice can update her post
+        final String updatedTitle = "updated title";
+        added.setTitle(updatedTitle);
+        added.setOwner(null); // owner should be ignored
+        MvcResult updatePostRequest = mockMvc.perform(
+                put(Constants.Uls.API+Constants.Uls.POST)
+                        .content(objectMapper.writeValueAsString(added))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .with(csrf())
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value(updatedTitle))
+                .andExpect(jsonPath("$.owner.login").value(USER_ALICE))
+                .andReturn();
+        LOGGER.info(updatePostRequest.getResponse().getContentAsString());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -108,16 +130,37 @@ public class PostControllerTest extends AbstractUtTestRunner {
     }
 
 
+    @WithUserDetails(USER_ALICE)
+    @Test
+    public void testUserCannotUpdateForeignPost() throws Exception {
+        final long foreignPostId = 1000;
 
-//    @Test
-//    public void testUserCanUpdateHisPost() throws Exception {
-//
-//    }
-//
-//    @Test
-//    public void testUserCannotUpdateForeignPost() throws Exception {
-//
-//    }
+        MvcResult getPostRequest = mockMvc.perform(
+                get(Constants.Uls.API_PUBLIC+Constants.Uls.POST+"/"+foreignPostId)
+        )
+                .andExpect(status().isOk())
+                .andReturn();
+        String getStr = getPostRequest.getResponse().getContentAsString();
+        LOGGER.info(getStr);
+        PostController.PostDTO foreign = objectMapper.readValue(getStr, PostController.PostDTO.class);
 
+
+        MvcResult addPostRequest = mockMvc.perform(
+                put(Constants.Uls.API+Constants.Uls.POST)
+                        .content(objectMapper.writeValueAsString(foreign))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .with(csrf())
+        )
+                .andExpect(status().isForbidden())
+                .andReturn();
+        String addStr = addPostRequest.getResponse().getContentAsString();
+        LOGGER.info(addStr);
+
+    }
+
+    @Test
+    public void testUserCannotRecreateExistsPost() throws Exception {
+
+    }
 
 }

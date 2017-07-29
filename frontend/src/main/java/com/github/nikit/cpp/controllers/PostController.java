@@ -2,6 +2,8 @@ package com.github.nikit.cpp.controllers;
 
 import com.github.nikit.cpp.Constants;
 import com.github.nikit.cpp.PageUtils;
+import com.github.nikit.cpp.converter.UserAccountConverter;
+import com.github.nikit.cpp.dto.UserAccountDTO;
 import com.github.nikit.cpp.dto.UserAccountDetailsDTO;
 import com.github.nikit.cpp.entity.Post;
 import com.github.nikit.cpp.entity.UserAccount;
@@ -54,6 +56,7 @@ public class PostController {
         private String title;
         private String text;
         private URL titleImg;
+        private UserAccountDTO owner;
 
         public PostDTO() { }
 
@@ -62,6 +65,11 @@ public class PostController {
             this.title = title;
             this.text = text;
             this.titleImg = titleImg;
+        }
+
+        public PostDTO(long id, String title, String text, URL titleImg, UserAccountDTO userAccountDTO) {
+            this(id, title, text, titleImg);
+            this.owner = userAccountDTO;
         }
 
         public long getId() {
@@ -94,6 +102,14 @@ public class PostController {
 
         public void setTitleImg(URL titleImg) {
             this.titleImg = titleImg;
+        }
+
+        public UserAccountDTO getOwner() {
+            return owner;
+        }
+
+        public void setOwner(UserAccountDTO owner) {
+            this.owner = owner;
         }
     }
 
@@ -160,18 +176,25 @@ public class PostController {
     }
 
     @PostMapping(Constants.Uls.API+Constants.Uls.POST)
-    public void createPost(
+    public PostDTO createPost(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // null if not authenticated
             @RequestBody PostDTO postDTO) {
-        postRepository.save(convertToPost(userAccount, postDTO));
+        Post saved = postRepository.save(convertToPost(userAccount, postDTO));
+        return convertToDto(saved);
     }
 
     @PutMapping(Constants.Uls.API+Constants.Uls.POST)
-    public void updatePost(
+    public PostDTO updatePost(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount,
             @RequestBody PostDTO postDTO
     ) {
-        postRepository.save(convertToPost(userAccount, postDTO));
+        Post saved = postRepository.save(convertToPost(userAccount, postDTO));
+        return convertToDto(saved);
+    }
+
+    private PostDTO convertToDto(Post saved) {
+        if (saved == null) { throw new IllegalArgumentException("Post can't be null"); }
+        return new PostDTO(saved.getId(), saved.getTitle(), saved.getText(), saved.getTitleImg(), UserAccountConverter.convertToUserAccountDTO(saved.getOwner()));
     }
 
     private Post convertToPost(UserAccountDetailsDTO userAccountDetailsDTO, PostDTO postDTO) {

@@ -1,5 +1,6 @@
 package com.github.nikit.cpp.converter;
 
+import com.github.nikit.cpp.dto.UserAccountDTO;
 import com.github.nikit.cpp.dto.UserAccountDetailsDTO;
 import com.github.nikit.cpp.entity.UserAccount;
 import com.github.nikit.cpp.entity.UserRole;
@@ -25,6 +26,15 @@ public class UserAccountConverter {
     private static Collection<SimpleGrantedAuthority> convertRoles(Collection<UserRole> roles) {
         if (roles==null) {return null;}
         return roles.stream().map(ur -> new SimpleGrantedAuthority(ur.name())).collect(Collectors.toSet());
+    }
+
+    public static UserAccountDTO convertToUserAccountDTO(UserAccount userAccount) {
+        if (userAccount == null) { return null; }
+        return new UserAccountDTO(
+                userAccount.getId(),
+                userAccount.getUsername(),
+                userAccount.getAvatar()
+        );
     }
 
 }
