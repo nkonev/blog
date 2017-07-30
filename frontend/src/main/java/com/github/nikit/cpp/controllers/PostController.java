@@ -52,6 +52,11 @@ public class PostController {
             .requireRelNofollowOnLinks()
             .toFactory();
 
+    /**
+     * Used in main page
+     * @param html
+     * @return
+     */
     private static String cleanHtmlTags(String html) {
         return html == null ? null : Jsoup.parse(html).text();
     }
@@ -150,7 +155,7 @@ public class PostController {
         return new PostDTOWithAuthorization(
                 saved.getId(),
                 saved.getTitle(),
-                saved.getText(),
+                (saved.getText()),
                 saved.getTitleImg(),
                 UserAccountConverter.convertToUserAccountDTO(saved.getOwner()),
                 blogPermissionEvaluator.hasPostPermission(saved, userAccount, Permissions.EDIT),
@@ -161,7 +166,7 @@ public class PostController {
     private Post convertToPost(PostDTO postDTO, Post forUpdate) {
         if (postDTO == null) { throw new IllegalArgumentException("postDTO can't be null"); }
         if (forUpdate == null){ forUpdate = new Post(); }
-        forUpdate.setText(postDTO.getText());
+        forUpdate.setText(sanitize(postDTO.getText()));
         forUpdate.setTitle(postDTO.getTitle());
         forUpdate.setTitleImg(postDTO.getTitleImg());
         return forUpdate;

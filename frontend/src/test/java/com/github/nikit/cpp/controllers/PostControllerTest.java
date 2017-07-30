@@ -59,6 +59,11 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 postDTO.setId(id);
                 return this;
             }
+
+            public Instance text(String s) {
+                postDTO.setText(s);
+                return this;
+            }
         }
 
         public static Instance startBuilding() {
@@ -230,4 +235,22 @@ public class PostControllerTest extends AbstractUtTestRunner {
 
     }
 
+    @WithUserDetails(USER_ALICE)
+    @Test
+    public void xssText() throws Exception {
+        MvcResult addPostRequest = mockMvc.perform(
+                post(Constants.Uls.API+Constants.Uls.POST)
+                        .content(objectMapper.writeValueAsString(PostDtoBuilder.startBuilding().text("Harmless <script>alert('XSS')</script>text").build()))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .with(csrf())
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.owner.login").value(USER_ALICE))
+                .andExpect(jsonPath("$.text").value("Harmless text"))
+                .andReturn();
+        String addStr = addPostRequest.getResponse().getContentAsString();
+        LOGGER.info(addStr);
+        PostDTO added = objectMapper.readValue(addStr, PostDTO.class);
+
+    }
 }
