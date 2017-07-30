@@ -30,30 +30,7 @@ create table user_roles (
 
 
 -- Group Authorities
-/*CREATE SEQUENCE groups_id_seq;
-create table groups (
-	id bigint NOT NULL DEFAULT nextval('groups_id_seq') primary key,
-	group_name varchar(50) not null
-);
-ALTER SEQUENCE groups_id_seq OWNED BY groups.id;
-ALTER SEQUENCE groups_id_seq MINVALUE 0 START 0 RESTART 0;
-
-create table group_authorities (
-	group_id bigint not null,
-	authority varchar(50) not null,
-	constraint fk_group_authorities_group foreign key(group_id) references groups(id)
-);
-
-CREATE SEQUENCE group_members_id_seq;
-create table group_members (
-	id bigint NOT NULL DEFAULT nextval('group_members_id_seq') primary key,
-	username varchar(50) not null,
-	group_id bigint not null,
-	constraint fk_group_members_group foreign key(group_id) references groups(id)
-);
-ALTER SEQUENCE group_members_id_seq OWNED BY group_members.id;
-ALTER SEQUENCE group_members_id_seq MINVALUE 0 START 0 RESTART 0;
-
+/*
 
 -- Persistent Login (Remember-Me)
 create table persistent_logins (
@@ -64,41 +41,6 @@ create table persistent_logins (
 );
 */
 
--- ACL Schema
--- unique principals or authorities which may apply to multiple principals
-create table acl_sid(
-	id bigserial not null primary key,
-	principal boolean not null, -- this is principal name or a GrantedAuthority
-	sid varchar(50) not null, -- principal (user)name or GrantedAuthority(role)
-	unique(sid, principal)
-);
--- defines the domain object types to which ACLs apply. The class column stores the Java class name of the object
-create table acl_class(
-	id bigserial not null primary key,
-	class varchar(256) not null unique
-);
--- stores the object identity definitions of specific domain objects, Post or Comment instance
-create table acl_object_identity(
-	id bigserial primary key,
-	object_id_class bigint not null references acl_class(id),
-	object_id_identity bigint not null, -- id of instance(entity)
-	parent_object bigint references acl_object_identity(id), -- Post is Parent for Comment for example
-	owner_sid bigint references acl_sid(id),
-	entries_inheriting boolean not null,
-	unique(object_id_class, object_id_identity)
-);
--- stores the ACL permissions which apply to a specific object identity and security identity
-create table acl_entry(
-	id bigserial primary key,
-	acl_object_identity bigint not null references acl_object_identity(id),
-	ace_order int not null,
-	sid bigint not null references acl_sid(id),
-	mask integer not null, -- permissions bitmask
-	granting boolean not null, -- grant or deny
-	audit_success boolean not null, -- log granting, for ConsoleAuditLogger
-	audit_failure boolean not null, -- log denying
-	unique(acl_object_identity, ace_order)
-);
 SET search_path = public, pg_catalog;
 
 

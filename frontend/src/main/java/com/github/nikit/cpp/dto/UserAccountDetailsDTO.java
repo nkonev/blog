@@ -1,5 +1,6 @@
 package com.github.nikit.cpp.dto;
 
+import com.github.nikit.cpp.entity.UserAccount;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

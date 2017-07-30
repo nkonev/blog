@@ -4,14 +4,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.nikit.cpp.AbstractUtTestRunner;
 import com.github.nikit.cpp.Constants;
-import com.github.nikit.cpp.entity.UserRole;
+import com.github.nikit.cpp.dto.PostDTO;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -35,13 +34,14 @@ public class PostControllerTest extends AbstractUtTestRunner {
     private ObjectMapper objectMapper;
 
     public static final String USER_ALICE = "alice";
+    public static final String USER_ADMIN  ="admin";
 
     public static class PostDtoBuilder {
         public static class Instance {
-            private final PostController.PostDTO postDTO;
+            private final PostDTO postDTO;
             {
                 try {
-                    postDTO = new PostController.PostDTO(
+                    postDTO = new PostDTO(
                             0,
                             "default new post title",
                             "default new post text",
@@ -51,8 +51,13 @@ public class PostControllerTest extends AbstractUtTestRunner {
                     throw new RuntimeException(e);
                 }
             }
-            public PostController.PostDTO build() {
+            public PostDTO build() {
                 return postDTO;
+            }
+
+            public Instance id(long id) {
+                postDTO.setId(id);
+                return this;
             }
         }
 
@@ -63,7 +68,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
 
     @WithUserDetails(USER_ALICE)
     @Test
-    public void testUserCanAddPost() throws Exception {
+    public void testUserCanAddAndUpdatePost() throws Exception {
         MvcResult addPostRequest = mockMvc.perform(
                 post(Constants.Uls.API+Constants.Uls.POST)
                         .content(objectMapper.writeValueAsString(PostDtoBuilder.startBuilding().build()))
@@ -75,7 +80,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andReturn();
         String addStr = addPostRequest.getResponse().getContentAsString();
         LOGGER.info(addStr);
-        PostController.PostDTO added = objectMapper.readValue(addStr, PostController.PostDTO.class);
+        PostDTO added = objectMapper.readValue(addStr, PostDTO.class);
 
         // check post present in my posts
         MvcResult getMyPostsRequest = mockMvc.perform(
@@ -86,7 +91,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andReturn();
         String strListPosts = getMyPostsRequest.getResponse().getContentAsString();
         LOGGER.info(strListPosts);
-        List<PostController.PostDTO> posts = objectMapper.readValue(strListPosts, new TypeReference<List<PostController.PostDTO>>(){});
+        List<PostDTO> posts = objectMapper.readValue(strListPosts, new TypeReference<List<PostDTO>>(){});
         Assert.assertTrue("I should can see my created post",
                 posts.stream().anyMatch(postDTO -> postDTO.getTitle().equals("default new post title")));
 
@@ -97,7 +102,6 @@ public class PostControllerTest extends AbstractUtTestRunner {
         // check Alice can update her post
         final String updatedTitle = "updated title";
         added.setTitle(updatedTitle);
-        added.setOwner(null); // owner should be ignored
         MvcResult updatePostRequest = mockMvc.perform(
                 put(Constants.Uls.API+Constants.Uls.POST)
                         .content(objectMapper.writeValueAsString(added))
@@ -129,6 +133,22 @@ public class PostControllerTest extends AbstractUtTestRunner {
         LOGGER.info(addPostRequest.getResponse().getContentAsString());
     }
 
+    @Test
+    public void testAnonymousCannotUpdatePost() throws Exception {
+        final long foreignPostId = 1001;
+        PostDTO postDTO = PostDtoBuilder.startBuilding().id(foreignPostId).build();
+
+        MvcResult addPostRequest = mockMvc.perform(
+                put(Constants.Uls.API+Constants.Uls.POST)
+                        .content(objectMapper.writeValueAsString(postDTO))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .with(csrf())
+        )
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+        LOGGER.info(addPostRequest.getResponse().getContentAsString());
+    }
+
 
     @WithUserDetails(USER_ALICE)
     @Test
@@ -139,10 +159,12 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 get(Constants.Uls.API_PUBLIC+Constants.Uls.POST+"/"+foreignPostId)
         )
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.canEdit").value(false))
+                .andExpect(jsonPath("$.canDelete").value(false))
                 .andReturn();
         String getStr = getPostRequest.getResponse().getContentAsString();
         LOGGER.info(getStr);
-        PostController.PostDTO foreign = objectMapper.readValue(getStr, PostController.PostDTO.class);
+        PostDTO foreign = objectMapper.readValue(getStr, PostDTO.class);
 
 
         MvcResult addPostRequest = mockMvc.perform(
@@ -158,8 +180,53 @@ public class PostControllerTest extends AbstractUtTestRunner {
 
     }
 
+    @WithUserDetails(USER_ALICE)
     @Test
     public void testUserCannotRecreateExistsPost() throws Exception {
+        final long foreignPostId = 1001;
+
+        PostDTO postDTO = PostDtoBuilder.startBuilding().id(foreignPostId).build();
+        MvcResult addPostRequest = mockMvc.perform(
+                post(Constants.Uls.API+Constants.Uls.POST)
+                        .content(objectMapper.writeValueAsString(postDTO))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .with(csrf())
+        )
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        String addStr = addPostRequest.getResponse().getContentAsString();
+        LOGGER.info(addStr);
+    }
+
+    @WithUserDetails(USER_ADMIN)
+    @Test
+    public void testAdminCanUpdateForeignPost() throws Exception {
+        final long foreignPostId = 1000;
+
+        MvcResult getPostRequest = mockMvc.perform(
+                get(Constants.Uls.API_PUBLIC+Constants.Uls.POST+"/"+foreignPostId)
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.canEdit").value(true))
+                .andExpect(jsonPath("$.canDelete").value(true))
+                .andReturn();
+        String getStr = getPostRequest.getResponse().getContentAsString();
+        LOGGER.info(getStr);
+        PostDTO foreign = objectMapper.readValue(getStr, PostDTO.class);
+
+        final String title = "title updated by admin";
+        foreign.setTitle(title);
+        MvcResult updatePostRequest = mockMvc.perform(
+                put(Constants.Uls.API+Constants.Uls.POST)
+                        .content(objectMapper.writeValueAsString(foreign))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .with(csrf())
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value(title))
+                .andReturn();
+        String addStr = updatePostRequest.getResponse().getContentAsString();
+        LOGGER.info(addStr);
 
     }
 

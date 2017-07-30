@@ -22,11 +22,15 @@ public class Post {
 
     public Post() { }
 
-    public Post(Long id, String title, String text, URL titleImg, UserAccount owner) {
+    public Post(Long id, String title, String text, URL titleImg) {
         this.id = id;
         this.title = title;
         this.text = text;
         this.titleImg = titleImg;
+    }
+
+    public Post(Long id, String title, String text, URL titleImg, UserAccount owner) {
+        this(id, title, text, titleImg);
         this.owner = owner;
     }
 

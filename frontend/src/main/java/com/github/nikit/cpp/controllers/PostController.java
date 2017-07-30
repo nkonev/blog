@@ -3,29 +3,27 @@ package com.github.nikit.cpp.controllers;
 import com.github.nikit.cpp.Constants;
 import com.github.nikit.cpp.PageUtils;
 import com.github.nikit.cpp.converter.UserAccountConverter;
-import com.github.nikit.cpp.dto.UserAccountDTO;
+import com.github.nikit.cpp.dto.PostDTO;
+import com.github.nikit.cpp.dto.PostDTOWithAuthorization;
 import com.github.nikit.cpp.dto.UserAccountDetailsDTO;
+import com.github.nikit.cpp.entity.Permissions;
 import com.github.nikit.cpp.entity.Post;
 import com.github.nikit.cpp.entity.UserAccount;
+import com.github.nikit.cpp.exception.BadRequestException;
 import com.github.nikit.cpp.repo.PostRepository;
 import com.github.nikit.cpp.repo.UserAccountRepository;
+import com.github.nikit.cpp.services.BlogPermissionEvaluator;
 import org.jsoup.Jsoup;
 import org.owasp.html.HtmlPolicyBuilder;
 import org.owasp.html.PolicyFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,6 +40,9 @@ public class PostController {
     @Autowired
     private UserAccountRepository userAccountRepository;
 
+    @Autowired
+    private BlogPermissionEvaluator blogPermissionEvaluator;
+
     // https://www.owasp.org/index.php/OWASP_Java_HTML_Sanitizer_Project
     private static final PolicyFactory SANITIZER_POLICY = new HtmlPolicyBuilder()
             .allowElements("a", "b", "img", "p")
@@ -50,68 +51,6 @@ public class PostController {
             .allowAttributes("src").onElements("img")
             .requireRelNofollowOnLinks()
             .toFactory();
-
-    public static class PostDTO {
-        private long id;
-        private String title;
-        private String text;
-        private URL titleImg;
-        private UserAccountDTO owner;
-
-        public PostDTO() { }
-
-        public PostDTO(long id, String title, String text, URL titleImg) {
-            this.id = id;
-            this.title = title;
-            this.text = text;
-            this.titleImg = titleImg;
-        }
-
-        public PostDTO(long id, String title, String text, URL titleImg, UserAccountDTO userAccountDTO) {
-            this(id, title, text, titleImg);
-            this.owner = userAccountDTO;
-        }
-
-        public long getId() {
-            return id;
-        }
-
-        public void setId(long id) {
-            this.id = id;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
-        }
-
-        public String getText() {
-            return text;
-        }
-
-        public void setText(String text) {
-            this.text = text;
-        }
-
-        public URL getTitleImg() {
-            return titleImg;
-        }
-
-        public void setTitleImg(URL titleImg) {
-            this.titleImg = titleImg;
-        }
-
-        public UserAccountDTO getOwner() {
-            return owner;
-        }
-
-        public void setOwner(UserAccountDTO owner) {
-            this.owner = owner;
-        }
-    }
 
     private static String cleanHtmlTags(String html) {
         return html == null ? null : Jsoup.parse(html).text();
@@ -145,12 +84,13 @@ public class PostController {
     }
 
     @GetMapping(Constants.Uls.API_PUBLIC+Constants.Uls.POST+"/{id}")
-    public PostDTO getPost(
-            @PathVariable("id") long id
+    public PostDTOWithAuthorization getPost(
+            @PathVariable("id") long id,
+            @AuthenticationPrincipal UserAccountDetailsDTO userAccount // null if not authenticated
     ) {
         return postRepository
                 .findById(id)
-                .map(PostController::convertToPostDTO)
+                .map(post -> convertToDto(post, userAccount))
                 .orElseThrow(()-> new RuntimeException("Post " + id + " not found"));
     }
 
@@ -176,33 +116,55 @@ public class PostController {
     }
 
     @PostMapping(Constants.Uls.API+Constants.Uls.POST)
-    public PostDTO createPost(
+    public PostDTOWithAuthorization createPost(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // null if not authenticated
-            @RequestBody PostDTO postDTO) {
-        Post saved = postRepository.save(convertToPost(userAccount, postDTO));
-        return convertToDto(saved);
-    }
-
-    @PutMapping(Constants.Uls.API+Constants.Uls.POST)
-    public PostDTO updatePost(
-            @AuthenticationPrincipal UserAccountDetailsDTO userAccount,
-            @RequestBody PostDTO postDTO
-    ) {
-        Post saved = postRepository.save(convertToPost(userAccount, postDTO));
-        return convertToDto(saved);
-    }
-
-    private PostDTO convertToDto(Post saved) {
-        if (saved == null) { throw new IllegalArgumentException("Post can't be null"); }
-        return new PostDTO(saved.getId(), saved.getTitle(), saved.getText(), saved.getTitleImg(), UserAccountConverter.convertToUserAccountDTO(saved.getOwner()));
-    }
-
-    private Post convertToPost(UserAccountDetailsDTO userAccountDetailsDTO, PostDTO postDTO) {
-        if (userAccountDetailsDTO == null) { throw new IllegalArgumentException("userAccount can't be null"); }
-        if (postDTO == null) { throw new IllegalArgumentException("postDTO can't be null"); }
-        UserAccount ua = userAccountRepository.findOne(userAccountDetailsDTO.getId());
+            @RequestBody @NotNull PostDTO postDTO) {
+        Assert.notNull(userAccount, "UserAccountDetailsDTO can't be null");
+        if (postDTO.getId()!=0){
+            throw new BadRequestException("cannot be setted");
+        }
+        Post fromWeb = convertToPost(postDTO, null);
+        UserAccount ua = userAccountRepository.findOne(userAccount.getId()); // TODO check Hibernate cache for it
         Assert.notNull(ua, "User account not found");
-        return new Post(postDTO.getId(), postDTO.getTitle(), postDTO.getText(), postDTO.getTitleImg(), ua);
+        fromWeb.setOwner(ua);
+        Post saved = postRepository.save(fromWeb);
+        return convertToDto(saved, userAccount);
+    }
+
+    @PreAuthorize("hasPermission(#postDTO, T(com.github.nikit.cpp.entity.Permissions).EDIT)")
+    @PutMapping(Constants.Uls.API+Constants.Uls.POST)
+    public PostDTOWithAuthorization updatePost(
+            @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // null if not authenticated
+            @RequestBody @NotNull PostDTO postDTO
+    ) {
+        Assert.notNull(userAccount, "UserAccountDetailsDTO can't be null");
+        Post found = postRepository.findOne(postDTO.getId());
+        Assert.notNull(found, "Post with id " + postDTO.getId() + " not found");
+        Post updatedEntity = convertToPost(postDTO, found);
+        Post saved = postRepository.save(updatedEntity);
+        return convertToDto(saved, userAccount);
+    }
+
+    private PostDTOWithAuthorization convertToDto(Post saved, UserAccountDetailsDTO userAccount) {
+        if (saved == null) { throw new IllegalArgumentException("Post can't be null"); }
+        return new PostDTOWithAuthorization(
+                saved.getId(),
+                saved.getTitle(),
+                saved.getText(),
+                saved.getTitleImg(),
+                UserAccountConverter.convertToUserAccountDTO(saved.getOwner()),
+                blogPermissionEvaluator.hasPostPermission(saved, userAccount, Permissions.EDIT),
+                blogPermissionEvaluator.hasPostPermission(saved, userAccount, Permissions.DELETE)
+        );
+    }
+
+    private Post convertToPost(PostDTO postDTO, Post forUpdate) {
+        if (postDTO == null) { throw new IllegalArgumentException("postDTO can't be null"); }
+        if (forUpdate == null){ forUpdate = new Post(); }
+        forUpdate.setText(postDTO.getText());
+        forUpdate.setTitle(postDTO.getTitle());
+        forUpdate.setTitleImg(postDTO.getTitleImg());
+        return forUpdate;
     }
 
 }
