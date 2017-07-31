@@ -47,7 +47,8 @@ describe("Registration.vue", function(){
             expect($("input#login").val()).toBe('lol');
             expect($("input#password").val()).toBe('1234');
             expect($("input#email").val()).toBe('wrong mail no');
-            expect($("button#submit")).toHaveAttr('disabled');
+            expect(vm.$el.textContent).toContainText('The email field must be a valid email');
+            // expect($("button#submit")).toHaveAttr('disabled');
             done();
         });
     });

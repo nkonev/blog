@@ -5,6 +5,7 @@ const webpack = require('webpack');
 const DEVELOPMENT_ENV = 'dev';
 const KARMA_ENV = 'karma';
 const NODE_ENV = process.env.NODE_ENV || DEVELOPMENT_ENV;
+const webpackConfig = require('./webpack.config.js');
 
 let ENV_BROWSERS = process.env.KARMA_BROWSERS;
 ENV_BROWSERS=ENV_BROWSERS ? ENV_BROWSERS.split(",") : [ NODE_ENV == DEVELOPMENT_ENV ? 'Chrome' : 'PhantomJS' ];
@@ -117,6 +118,7 @@ module.exports = function(config) {
       }
     },
 
+    //     webpack: webpackConfig
     webpack: {
       cache: false, // since webpack 3; more https://github.com/webpack-contrib/extract-text-webpack-plugin/pull/546#issuecomment-317856794
       devtool: 'inline-source-map',
