@@ -8,12 +8,21 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+/**
+ * Provides Spring Security compatible UserAccountDetailsDTO.
+ */
 @Component
 public class BlogUserDetailsService implements UserDetailsService {
 
     @Autowired
     private UserAccountRepository userAccountRepository;
 
+    /**
+     * load UserAccountDetailsDTO from database, or throws UsernameNotFoundException
+     * @param username
+     * @return
+     * @throws UsernameNotFoundException
+     */
     @Override
     public UserAccountDetailsDTO loadUserByUsername(String username) throws UsernameNotFoundException {
         return userAccountRepository
