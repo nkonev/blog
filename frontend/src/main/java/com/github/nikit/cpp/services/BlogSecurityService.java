@@ -31,11 +31,11 @@ public class BlogSecurityService {
 
     public boolean hasPostPermission(Post saved, UserAccountDetailsDTO userAccount, Permissions permission) {
         if (userAccount == null) {return false;}
-
-        if (saved.getOwner().getId().equals(userAccount.getId())){
+        if (roleHierarchy.getReachableGrantedAuthorities(userAccount.getAuthorities()).contains(new SimpleGrantedAuthority(UserRole.ROLE_MODERATOR.name()))){
             return true;
         }
-        if (roleHierarchy.getReachableGrantedAuthorities(userAccount.getAuthorities()).contains(new SimpleGrantedAuthority(UserRole.ROLE_MODERATOR.name()))){
+        if (saved.getOwner().getId().equals(userAccount.getId())){
+            if (permission==Permissions.DELETE) { return false; }
             return true;
         }
         return false;

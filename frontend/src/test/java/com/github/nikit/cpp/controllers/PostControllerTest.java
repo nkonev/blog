@@ -82,6 +82,8 @@ public class PostControllerTest extends AbstractUtTestRunner {
         )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.owner.login").value(USER_ALICE))
+                .andExpect(jsonPath("$.canEdit").value(true))
+                .andExpect(jsonPath("$.canDelete").value(false))
                 .andReturn();
         String addStr = addPostRequest.getResponse().getContentAsString();
         LOGGER.info(addStr);
@@ -116,6 +118,8 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value(updatedTitle))
                 .andExpect(jsonPath("$.owner.login").value(USER_ALICE))
+                .andExpect(jsonPath("$.canEdit").value(true))
+                .andExpect(jsonPath("$.canDelete").value(false))
                 .andReturn();
         LOGGER.info(updatePostRequest.getResponse().getContentAsString());
     }
