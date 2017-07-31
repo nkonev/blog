@@ -57,8 +57,13 @@
                     if (res.data.length) {
                         this.posts = this.posts.concat(res.data); // add data from server's response
                         this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded');
+
                         if (Math.floor(this.posts.length / POSTS_PAGE_SIZE) === MAX_PAGES) {
                             console.log("Overwhelming prevention");
+                            this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
+                        }
+                        if (res.data.length < POSTS_PAGE_SIZE) {
+                            console.log("Loaded less than page size");
                             this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
                         }
                     } else {

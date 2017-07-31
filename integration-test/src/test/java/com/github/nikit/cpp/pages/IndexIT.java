@@ -6,6 +6,10 @@ import com.github.nikit.cpp.integration.AbstractItTestRunner;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static com.codeborne.selenide.Selenide.$;
@@ -21,6 +25,9 @@ public class IndexIT extends AbstractItTestRunner {
 
     @Autowired
     private WebSocketController webSocketController;
+
+    @Autowired
+    private WebDriver driver;
 
     public static class IndexPage {
         private String urlPrefix;
@@ -56,9 +63,33 @@ public class IndexIT extends AbstractItTestRunner {
 
         indexPage.contains("Пост, пришедший через вебсокет");
 
-        // TODO add js lodash??.debounce
         indexPage.setSearchString("1234");
 
         indexPage.contains("generated_post_91234");
     }
+
+    /**
+     * Test PostList:65
+     * if (res.data.length < POSTS_PAGE_SIZE) ...
+     */
+    @Test
+    public void testInfinityBugOnServerRespondLessThanPageSize() throws Exception {
+
+        IndexPage indexPage = new IndexPage(urlPrefix);
+        indexPage.openPage();
+
+        indexPage.setSearchString("generated_post_98765"); // request that respond one result
+
+        indexPage.contains("generated_post_98765");
+
+        $("body").sendKeys(Keys.END);
+        // firing key down / up
+        {
+            WebElement e = $("body").getWrappedElement();
+            new Actions(driver).keyDown(e, Keys.CONTROL).keyUp(e, Keys.CONTROL).perform();
+        }
+
+        Assert.assertEquals(1, $(".post-list").findAll(".post").size());
+    }
+
 }
