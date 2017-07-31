@@ -32,6 +32,8 @@ module.exports = {
 
     devtool: NODE_ENV == DEVELOPMENT_ENV ? "source-map" : false,
 
+    cache: false, // since webpack 3; more https://github.com/webpack-contrib/extract-text-webpack-plugin/pull/546#issuecomment-317856794
+
     plugins: [
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.DefinePlugin({

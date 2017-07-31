@@ -118,7 +118,7 @@ module.exports = function(config) {
     },
 
     webpack: {
-      cache: true,
+      cache: false, // since webpack 3; more https://github.com/webpack-contrib/extract-text-webpack-plugin/pull/546#issuecomment-317856794
       devtool: 'inline-source-map',
       // entry: {
       //       index: "./src/test/frontend/index.js" // 3/3
