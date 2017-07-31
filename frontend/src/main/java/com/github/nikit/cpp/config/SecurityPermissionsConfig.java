@@ -1,12 +1,17 @@
 package com.github.nikit.cpp.config;
 
+import com.github.nikit.cpp.entity.UserRole;
 import com.github.nikit.cpp.services.BlogPermissionEvaluator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
+import org.springframework.security.access.vote.RoleHierarchyVoter;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 
 // https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#domain-acls
 // https://stackoverflow.com/questions/26292431/how-to-configure-spring-acl-without-xml-file
@@ -29,9 +34,20 @@ public class SecurityPermissionsConfig {
 
     // @Override
     @Bean
-    protected MethodSecurityExpressionHandler createExpressionHandler(){
+    public MethodSecurityExpressionHandler methodSecurityExpressionHandler(){
         DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
         expressionHandler.setPermissionEvaluator(blogPermissionEvaluator);
+        expressionHandler.setRoleHierarchy(roleHierarchy());
         return expressionHandler;
+    }
+
+    @Bean
+    public RoleHierarchy roleHierarchy(){
+        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+        roleHierarchy.setHierarchy(
+                UserRole.ROLE_ADMIN.name() + " > " + UserRole.ROLE_MODERATOR.name() + "\n"+
+                UserRole.ROLE_MODERATOR.name() + " > " + UserRole.ROLE_USER.name() + "\n"
+        );
+        return roleHierarchy;
     }
 }
