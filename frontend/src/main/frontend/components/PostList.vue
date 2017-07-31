@@ -24,6 +24,7 @@
 <script>
     import PostItem from './PostItem.vue'
     import InfiniteLoading from 'vue-infinite-loading';
+    import debounce from "lodash/debounce"
     const Stomp = require("@stomp/stompjs/lib/stomp.js").Stomp; // https://github.com/jmesnil/stomp-websocket/issues/119 https://stomp-js.github.io/stomp-websocket/codo/extra/docs-src/Usage.md.html
 
     // https://peachscript.github.io/vue-infinite-loading/#!/getting-started/with-filter
@@ -78,6 +79,10 @@
                     this.onChangeSearchString();
                 }
             }
+        },
+        created() {
+            // https://forum-archive.vuejs.org/topic/5174/debounce-replacement-in-vue-2-0
+            this.onChangeSearchString = debounce(this.onChangeSearchString, 500);
         },
         mounted(){
             const url = ((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host + "/stomp";
