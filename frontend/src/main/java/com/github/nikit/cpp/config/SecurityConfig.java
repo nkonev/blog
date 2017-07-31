@@ -71,18 +71,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth
-//                .eraseCredentials(true) // erase password from the Authentication. https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#core-services-erasing-credentials
-//                .inMemoryAuthentication().withUser("user").password("user").roles("USER").and().withUser("admin")
-//                .password("admin").roles("ADMIN");
-
         // https://dzone.com/articles/spring-security-4-authenticate-and-authorize-users
         // http://www.programming-free.com/2015/09/spring-security-password-encryption.html
-        auth
-                .userDetailsService(blogUserDetailsService)
-                .passwordEncoder(passwordEncoder())
-        ;
-
+        auth.authenticationProvider(authenticationProvider());
     }
 
     public PasswordEncoder passwordEncoder() {
@@ -120,13 +111,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new SecurityEvaluationContextExtension();
     }
 
-//    @Bean
-//    public DaoAuthenticationProvider authenticationProvider() {
-//        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-//        authenticationProvider.setUserDetailsService(userDetailsService);
-//        authenticationProvider.setPasswordEncoder(passwordEncoder());
-//        return authenticationProvider;
-//    }
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(blogUserDetailsService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        return authenticationProvider;
+    }
 
 //    @Bean
 //    public PersistentTokenBasedRememberMeServices getPersistentTokenBasedRememberMeServices() {
