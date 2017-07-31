@@ -12,6 +12,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+/**
+ * Central entrypoint for access decisions
+ */
 @Service
 public class BlogSecurityService {
     @Autowired
