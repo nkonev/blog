@@ -7,40 +7,19 @@ import com.github.nikit.cpp.entity.Post;
 import com.github.nikit.cpp.entity.UserRole;
 import com.github.nikit.cpp.repo.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.io.Serializable;
-
 @Service
-public class BlogPermissionEvaluator implements PermissionEvaluator {
+public class BlogSecurityService {
+    @Autowired
+    private RoleHierarchy roleHierarchy;
 
     @Autowired
     private PostRepository postRepository;
 
-    @Autowired
-    private RoleHierarchy roleHierarchy;
-
-    @Override
-    public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
-        if (!authentication.isAuthenticated()){ return false; }
-        Permissions perm = (Permissions) permission;
-        UserAccountDetailsDTO userAccountDetailsDTO = (UserAccountDetailsDTO) authentication.getPrincipal();
-
-        if (targetDomainObject instanceof PostDTO) {
-            return hasPostPermission((PostDTO) targetDomainObject, userAccountDetailsDTO, perm);
-        }
-        return false;
-    }
-
-    @Override
-    public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
-        throw new UnsupportedOperationException("Not implemented");
-    }
 
     public boolean hasPostPermission(PostDTO dto, UserAccountDetailsDTO userAccount, Permissions permission) {
         Assert.notNull(dto, "PostDTO can't be null");
@@ -49,18 +28,17 @@ public class BlogPermissionEvaluator implements PermissionEvaluator {
         return hasPostPermission(post, userAccount, permission);
     }
 
+
     public boolean hasPostPermission(Post saved, UserAccountDetailsDTO userAccount, Permissions permission) {
         if (userAccount == null) {return false;}
 
         if (saved.getOwner().getId().equals(userAccount.getId())){
             return true;
         }
-//        if (userAccount.getAuthorities().contains(new SimpleGrantedAuthority(UserRole.ROLE_ADMIN.name()))){
-//            return true;
-//        }
-        if(roleHierarchy.getReachableGrantedAuthorities(userAccount.getAuthorities()).contains(new SimpleGrantedAuthority(UserRole.ROLE_MODERATOR.name()))){
+        if (roleHierarchy.getReachableGrantedAuthorities(userAccount.getAuthorities()).contains(new SimpleGrantedAuthority(UserRole.ROLE_MODERATOR.name()))){
             return true;
         }
         return false;
     }
+
 }

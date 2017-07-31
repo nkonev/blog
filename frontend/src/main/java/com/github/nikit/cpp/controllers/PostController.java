@@ -9,23 +9,19 @@ import com.github.nikit.cpp.dto.UserAccountDetailsDTO;
 import com.github.nikit.cpp.entity.Permissions;
 import com.github.nikit.cpp.entity.Post;
 import com.github.nikit.cpp.entity.UserAccount;
-import com.github.nikit.cpp.entity.UserRole;
 import com.github.nikit.cpp.exception.BadRequestException;
 import com.github.nikit.cpp.repo.PostRepository;
 import com.github.nikit.cpp.repo.UserAccountRepository;
-import com.github.nikit.cpp.services.BlogPermissionEvaluator;
+import com.github.nikit.cpp.services.BlogSecurityService;
 import org.jsoup.Jsoup;
 import org.owasp.html.HtmlPolicyBuilder;
 import org.owasp.html.PolicyFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,7 +40,7 @@ public class PostController {
     private UserAccountRepository userAccountRepository;
 
     @Autowired
-    private BlogPermissionEvaluator blogPermissionEvaluator;
+    private BlogSecurityService blogSecurityService;
 
     // https://www.owasp.org/index.php/OWASP_Java_HTML_Sanitizer_Project
     private static final PolicyFactory SANITIZER_POLICY = new HtmlPolicyBuilder()
@@ -139,7 +135,7 @@ public class PostController {
         return convertToDto(saved, userAccount);
     }
 
-    @PreAuthorize("hasPermission(#postDTO, T(com.github.nikit.cpp.entity.Permissions).EDIT)")
+    @PreAuthorize("@blogSecurityService.hasPostPermission(#postDTO, #userAccount, T(com.github.nikit.cpp.entity.Permissions).EDIT)")
     @PutMapping(Constants.Uls.API+Constants.Uls.POST)
     public PostDTOWithAuthorization updatePost(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // null if not authenticated
@@ -155,14 +151,15 @@ public class PostController {
 
     private PostDTOWithAuthorization convertToDto(Post saved, UserAccountDetailsDTO userAccount) {
         if (saved == null) { throw new IllegalArgumentException("Post can't be null"); }
+
         return new PostDTOWithAuthorization(
                 saved.getId(),
                 saved.getTitle(),
                 (saved.getText()),
                 saved.getTitleImg(),
                 UserAccountConverter.convertToUserAccountDTO(saved.getOwner()),
-                blogPermissionEvaluator.hasPostPermission(saved, userAccount, Permissions.EDIT),
-                blogPermissionEvaluator.hasPostPermission(saved, userAccount, Permissions.DELETE)
+                blogSecurityService.hasPostPermission(saved, userAccount, Permissions.EDIT),
+                blogSecurityService.hasPostPermission(saved, userAccount, Permissions.DELETE)
         );
     }
 
