@@ -15,7 +15,7 @@ SET search_path = auth, pg_catalog;
 create table users (
   id bigserial primary key,
 	username varchar(50) not null unique,
-	password varchar(50) not null,
+	password varchar(100) not null,
 	avatar VARCHAR(256),
 	enabled boolean not null DEFAULT true,
 	expired boolean not null DEFAULT false,
@@ -28,10 +28,7 @@ create table user_roles (
 	UNIQUE(user_id, role_id)
 );
 
-
--- Group Authorities
 /*
-
 -- Persistent Login (Remember-Me)
 create table persistent_logins (
 	username varchar(64) not null,
@@ -59,13 +56,13 @@ CREATE TABLE posts.post  (
 -- changeset nkonev:2_test_data context:test failOnError: true
 -- insert test data
 insert into auth.users(username, password) VALUES
-	('admin', 'd033e22ae348aeb5660fc2140aec35850c4da997'), -- sha1('admin')
-	('nikita', '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8'), -- sha1('password')
-	('alice', '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8'),
-	('bob', '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8');
+	('admin', '$2a$10$HsyFGy9IO//nJZxYc2xjDeV/kF7koiPrgIDzPOfgmngKVe9cOyOS2'), -- bcrypt('admin', 10)
+	('nikita', '$2a$10$e3pEnL2d3RB7jBrlEA3B9eUhayb/bmEG1V35h.4EhdReUAMzlAWxS'), -- bcrypt('password', 10)
+	('alice', '$2a$10$e3pEnL2d3RB7jBrlEA3B9eUhayb/bmEG1V35h.4EhdReUAMzlAWxS'),
+	('bob', '$2a$10$e3pEnL2d3RB7jBrlEA3B9eUhayb/bmEG1V35h.4EhdReUAMzlAWxS');
 -- insert many test users
 INSERT INTO auth.users (username, password)
-	SELECT 'generated_user_' || i, '9831ec1837ce68115596609d36785cf4bd77f6c2' -- sha1('generated_user_password')
+	SELECT 'generated_user_' || i, '$2a$10$0nGRZ4Quy0hW2W.prjc.AOyUkNqgFulVckZQ.gFsOly5ESntrW7E.' -- bcrypt('generated_user_password', 10)
 	FROM generate_series(0, 100000) AS i;
 
 /**

@@ -80,18 +80,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // http://www.programming-free.com/2015/09/spring-security-password-encryption.html
         auth
                 .userDetailsService(blogUserDetailsService)
-                .passwordEncoder(passwordencoder())
+                .passwordEncoder(passwordEncoder())
         ;
 
     }
 
-    public MessageDigestPasswordEncoder passwordencoder(){
-        return new ShaPasswordEncoder();
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(); // default strength is BCrypt.GENSALT_DEFAULT_LOG2_ROUNDS=10
     }
-
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
