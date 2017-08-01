@@ -62,6 +62,7 @@
                             console.log("Overwhelming prevention");
                             this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
                         }
+                        // Prevent infinity loading bug when there server responds is less than POSTS_PAGE_SIZE elements
                         if (res.data.length < POSTS_PAGE_SIZE) {
                             console.log("Loaded less than page size");
                             this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
