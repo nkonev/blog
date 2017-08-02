@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/nikit-cpp/good-parts.svg?branch=master)](https://travis-ci.org/nikit-cpp/good-parts)
+[![Build Status](https://travis-ci.org/nikit-cpp/blog.svg?branch=master)](https://travis-ci.org/nikit-cpp/blog)
 
 # Requirements
 
