@@ -15,6 +15,7 @@ import com.github.nikit.cpp.repo.UserAccountRepository;
 import com.github.nikit.cpp.services.BlogSecurityService;
 import com.github.nikit.cpp.utils.IpUtil;
 import com.github.nikit.cpp.utils.XssHtmlChangeListener;
+import com.github.nikit.cpp.utils.XssSanitizeUtil;
 import org.jsoup.Jsoup;
 import org.owasp.html.HtmlChangeListener;
 import org.owasp.html.HtmlPolicyBuilder;
@@ -47,16 +48,6 @@ public class PostController {
     @Autowired
     private BlogSecurityService blogSecurityService;
 
-    // https://www.owasp.org/index.php/OWASP_Java_HTML_Sanitizer_Project
-    private static final PolicyFactory SANITIZER_POLICY = new HtmlPolicyBuilder()
-            .allowElements("a", "b", "img", "p")
-            .allowUrlProtocols("https", "http")
-            .allowAttributes("href").onElements("a")
-            .allowAttributes("src").onElements("img")
-            .requireRelNofollowOnLinks()
-            .toFactory();
-    private static final XssHtmlChangeListener XSS_HTML_CHANGE_LISTENER = new XssHtmlChangeListener();
-
     /**
      * Used in main page
      * @param html
@@ -87,14 +78,6 @@ public class PostController {
                 .stream()
                 .map(PostController::convertToPostDTO)
                 .collect(Collectors.toList());
-    }
-
-    public static final String sanitize(String html) {
-        return SANITIZER_POLICY.sanitize(
-                html,
-                XSS_HTML_CHANGE_LISTENER,
-                "ip='"+IpUtil.getIpAddress()+"'"
-        );
     }
 
     @GetMapping(Constants.Uls.API_PUBLIC+Constants.Uls.POST+"/{id}")
@@ -176,7 +159,7 @@ public class PostController {
     private Post convertToPost(PostDTO postDTO, Post forUpdate) {
         if (postDTO == null) { throw new IllegalArgumentException("postDTO can't be null"); }
         if (forUpdate == null){ forUpdate = new Post(); }
-        forUpdate.setText(sanitize(postDTO.getText()));
+        forUpdate.setText(XssSanitizeUtil.sanitize(postDTO.getText()));
         forUpdate.setTitle(postDTO.getTitle());
         forUpdate.setTitleImg(postDTO.getTitleImg());
         return forUpdate;
