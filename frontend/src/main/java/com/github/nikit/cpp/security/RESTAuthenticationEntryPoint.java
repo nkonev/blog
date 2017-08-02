@@ -1,4 +1,4 @@
-package com.github.nikit.cpp.config.security;
+package com.github.nikit.cpp.security;
 
 /**
  * Created by nik on 07.03.17.

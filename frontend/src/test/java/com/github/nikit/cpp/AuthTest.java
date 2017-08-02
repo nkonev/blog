@@ -1,15 +1,14 @@
 package com.github.nikit.cpp;
 
-import com.github.nikit.cpp.config.SecurityConfig;
+import com.github.nikit.cpp.security.SecurityConfig;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 
-import static com.github.nikit.cpp.config.SecurityConfig.PASSWORD_PARAMETER;
-import static com.github.nikit.cpp.config.SecurityConfig.USERNAME_PARAMETER;
+import static com.github.nikit.cpp.security.SecurityConfig.PASSWORD_PARAMETER;
+import static com.github.nikit.cpp.security.SecurityConfig.USERNAME_PARAMETER;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

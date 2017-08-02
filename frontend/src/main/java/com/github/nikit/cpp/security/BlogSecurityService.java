@@ -1,4 +1,4 @@
-package com.github.nikit.cpp.services;
+package com.github.nikit.cpp.security;
 
 import com.github.nikit.cpp.dto.PostDTO;
 import com.github.nikit.cpp.dto.UserAccountDetailsDTO;

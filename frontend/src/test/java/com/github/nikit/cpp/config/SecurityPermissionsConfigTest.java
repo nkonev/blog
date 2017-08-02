@@ -1,6 +1,7 @@
 package com.github.nikit.cpp.config;
 
 import com.github.nikit.cpp.entity.UserRole;
+import com.github.nikit.cpp.security.SecurityPermissionsConfig;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.security.core.GrantedAuthority;

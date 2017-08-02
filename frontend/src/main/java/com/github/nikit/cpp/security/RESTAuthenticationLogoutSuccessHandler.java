@@ -1,4 +1,4 @@
-package com.github.nikit.cpp.config.security;
+package com.github.nikit.cpp.security;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;

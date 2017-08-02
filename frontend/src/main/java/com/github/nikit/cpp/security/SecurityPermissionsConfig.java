@@ -1,4 +1,4 @@
-package com.github.nikit.cpp.config;
+package com.github.nikit.cpp.security;
 
 import com.github.nikit.cpp.entity.UserRole;
 import org.springframework.context.annotation.Bean;

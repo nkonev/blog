@@ -1,31 +1,21 @@
-package com.github.nikit.cpp.config;
+package com.github.nikit.cpp.security;
 
 import com.github.nikit.cpp.Constants;
-import com.github.nikit.cpp.config.security.*;
 import com.github.nikit.cpp.entity.UserRole;
-import com.github.nikit.cpp.services.BlogUserDetailsService;
+import com.github.nikit.cpp.security.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationTrustResolver;
-import org.springframework.security.authentication.AuthenticationTrustResolverImpl;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.authentication.encoding.MessageDigestPasswordEncoder;
-import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
-import javax.sql.DataSource;
 
 /**
  * http://websystique.com/springmvc/spring-mvc-4-and-spring-security-4-integration-example/
