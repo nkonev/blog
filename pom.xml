@@ -42,7 +42,7 @@
         <module>integration-test</module>
     </modules>
 
-    <url>https://github.com/nikit-cpp/checklist.git</url>
+    <url>https://github.com/nikit-cpp/blog.git</url>
 
 
     <build>
