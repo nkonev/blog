@@ -73,7 +73,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
 
     @WithUserDetails(USER_ALICE)
     @Test
-    public void testUserCanAddAndUpdateAndDeletePost() throws Exception {
+    public void testUserCanAddAndUpdateAndCannotDeletePost() throws Exception {
         MvcResult addPostRequest = mockMvc.perform(
                 post(Constants.Uls.API+Constants.Uls.POST)
                         .content(objectMapper.writeValueAsString(PostDtoBuilder.startBuilding().build()))
@@ -285,12 +285,9 @@ public class PostControllerTest extends AbstractUtTestRunner {
     @Test
     public void testAdminCanDeleteForeignPost() throws Exception {
         final long foreignPostId = 1001;
-        PostDTO postDTO = PostDtoBuilder.startBuilding().id(foreignPostId).build();
 
         MvcResult addPostRequest = mockMvc.perform(
                 delete(Constants.Uls.API+Constants.Uls.POST+"/"+foreignPostId).with(csrf())
-                        .content(objectMapper.writeValueAsString(postDTO))
-                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())
         )
                 .andExpect(status().isOk())
