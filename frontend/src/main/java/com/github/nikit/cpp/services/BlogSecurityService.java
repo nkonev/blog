@@ -26,9 +26,7 @@ public class BlogSecurityService {
 
     public boolean hasPostPermission(PostDTO dto, UserAccountDetailsDTO userAccount, Permissions permission) {
         Assert.notNull(dto, "PostDTO can't be null");
-        Post post = postRepository.findOne(dto.getId());
-        Assert.notNull(post, "Post with id "+dto.getId()+" not found");
-        return hasPostPermission(post, userAccount, permission);
+        return hasPostPermission(dto.getId(), userAccount, permission);
     }
 
     public boolean hasPostPermission(long id, UserAccountDetailsDTO userAccount, Permissions permission) {
