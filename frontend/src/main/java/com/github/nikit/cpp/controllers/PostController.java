@@ -13,9 +13,14 @@ import com.github.nikit.cpp.exception.BadRequestException;
 import com.github.nikit.cpp.repo.PostRepository;
 import com.github.nikit.cpp.repo.UserAccountRepository;
 import com.github.nikit.cpp.services.BlogSecurityService;
+import com.github.nikit.cpp.utils.IpUtil;
+import com.github.nikit.cpp.utils.XssHtmlChangeListener;
 import org.jsoup.Jsoup;
+import org.owasp.html.HtmlChangeListener;
 import org.owasp.html.HtmlPolicyBuilder;
 import org.owasp.html.PolicyFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -50,6 +55,7 @@ public class PostController {
             .allowAttributes("src").onElements("img")
             .requireRelNofollowOnLinks()
             .toFactory();
+    private static final XssHtmlChangeListener XSS_HTML_CHANGE_LISTENER = new XssHtmlChangeListener();
 
     /**
      * Used in main page
@@ -84,7 +90,11 @@ public class PostController {
     }
 
     public static final String sanitize(String html) {
-        return SANITIZER_POLICY.sanitize(html);
+        return SANITIZER_POLICY.sanitize(
+                html,
+                XSS_HTML_CHANGE_LISTENER,
+                "ip='"+IpUtil.getIpAddress()+"'"
+        );
     }
 
     @GetMapping(Constants.Uls.API_PUBLIC+Constants.Uls.POST+"/{id}")
