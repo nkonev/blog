@@ -80,9 +80,9 @@ public class PostController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping(Constants.Uls.API_PUBLIC+Constants.Uls.POST+"/{id}")
+    @GetMapping(Constants.Uls.API_PUBLIC+Constants.Uls.POST+Constants.Uls.SLASH_ID)
     public PostDTOWithAuthorization getPost(
-            @PathVariable("id") long id,
+            @PathVariable(Constants.PathVariables.ID) long id,
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount // null if not authenticated
     ) {
         return postRepository
@@ -141,6 +141,16 @@ public class PostController {
         Post saved = postRepository.save(updatedEntity);
         return convertToDto(saved, userAccount);
     }
+
+    @PreAuthorize("@blogSecurityService.hasPostPermission(#id, #userAccount, T(com.github.nikit.cpp.entity.Permissions).DELETE)")
+    @DeleteMapping(Constants.Uls.API+Constants.Uls.POST+Constants.Uls.SLASH_ID)
+    public void deletePost(
+            @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // null if not authenticated
+            @PathVariable(Constants.PathVariables.ID) long id
+    ) {
+        postRepository.delete(id);
+    }
+
 
     private PostDTOWithAuthorization convertToDto(Post saved, UserAccountDetailsDTO userAccount) {
         if (saved == null) { throw new IllegalArgumentException("Post can't be null"); }

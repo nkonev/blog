@@ -31,6 +31,11 @@ public class BlogSecurityService {
         return hasPostPermission(post, userAccount, permission);
     }
 
+    public boolean hasPostPermission(long id, UserAccountDetailsDTO userAccount, Permissions permission) {
+        Post post = postRepository.findOne(id);
+        Assert.notNull(post, "Post with id "+id+" not found");
+        return hasPostPermission(post, userAccount, permission);
+    }
 
     public boolean hasPostPermission(Post saved, UserAccountDetailsDTO userAccount, Permissions permission) {
         if (userAccount == null) {return false;}

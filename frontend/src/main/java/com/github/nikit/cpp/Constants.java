@@ -19,6 +19,11 @@ public class Constants {
         public static final String REPOPULATE = "/repopulate";
         public static final String AUTOCOMPLETE = "/autocomplete";
         public static final String MY = "/my";
+        public static final String SLASH_ID = "/{id}";
+    }
+
+    public static class PathVariables {
+        public static final String ID = "id";
     }
 
     public static class Swagger {

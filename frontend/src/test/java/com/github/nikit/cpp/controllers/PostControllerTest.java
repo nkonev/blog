@@ -73,7 +73,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
 
     @WithUserDetails(USER_ALICE)
     @Test
-    public void testUserCanAddAndUpdatePost() throws Exception {
+    public void testUserCanAddAndUpdateAndDeletePost() throws Exception {
         MvcResult addPostRequest = mockMvc.perform(
                 post(Constants.Uls.API+Constants.Uls.POST)
                         .content(objectMapper.writeValueAsString(PostDtoBuilder.startBuilding().build()))
@@ -122,6 +122,13 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andExpect(jsonPath("$.canDelete").value(false))
                 .andReturn();
         LOGGER.info(updatePostRequest.getResponse().getContentAsString());
+
+
+        MvcResult deleteResult = mockMvc.perform(
+                delete(Constants.Uls.API+Constants.Uls.POST+"/"+added.getId()).with(csrf())
+        )
+                .andExpect(status().isForbidden())
+                .andReturn();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -158,6 +165,23 @@ public class PostControllerTest extends AbstractUtTestRunner {
         LOGGER.info(addPostRequest.getResponse().getContentAsString());
     }
 
+    @Test
+    public void testAnonymousCannotDeletePost() throws Exception {
+        final long foreignPostId = 1001;
+        PostDTO postDTO = PostDtoBuilder.startBuilding().id(foreignPostId).build();
+
+        MvcResult addPostRequest = mockMvc.perform(
+                delete(Constants.Uls.API+Constants.Uls.POST+"/"+foreignPostId).with(csrf())
+                        .content(objectMapper.writeValueAsString(postDTO))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .with(csrf())
+        )
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+        LOGGER.info(addPostRequest.getResponse().getContentAsString());
+    }
+
+
 
     @WithUserDetails(USER_ALICE)
     @Test
@@ -188,6 +212,24 @@ public class PostControllerTest extends AbstractUtTestRunner {
         LOGGER.info(addStr);
 
     }
+
+    @WithUserDetails(USER_ALICE)
+    @Test
+    public void testUserCannotDeleteForeignPost() throws Exception {
+        final long foreignPostId = 1001;
+        PostDTO postDTO = PostDtoBuilder.startBuilding().id(foreignPostId).build();
+
+        MvcResult addPostRequest = mockMvc.perform(
+                delete(Constants.Uls.API+Constants.Uls.POST+"/"+foreignPostId).with(csrf())
+                        .content(objectMapper.writeValueAsString(postDTO))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .with(csrf())
+        )
+                .andExpect(status().isForbidden())
+                .andReturn();
+        LOGGER.info(addPostRequest.getResponse().getContentAsString());
+    }
+
 
     @WithUserDetails(USER_ALICE)
     @Test
@@ -238,6 +280,24 @@ public class PostControllerTest extends AbstractUtTestRunner {
         LOGGER.info(addStr);
 
     }
+
+    @WithUserDetails(USER_ADMIN)
+    @Test
+    public void testAdminCanDeleteForeignPost() throws Exception {
+        final long foreignPostId = 1001;
+        PostDTO postDTO = PostDtoBuilder.startBuilding().id(foreignPostId).build();
+
+        MvcResult addPostRequest = mockMvc.perform(
+                delete(Constants.Uls.API+Constants.Uls.POST+"/"+foreignPostId).with(csrf())
+                        .content(objectMapper.writeValueAsString(postDTO))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .with(csrf())
+        )
+                .andExpect(status().isOk())
+                .andReturn();
+        LOGGER.info(addPostRequest.getResponse().getContentAsString());
+    }
+
 
     @WithUserDetails(USER_ALICE)
     @Test
