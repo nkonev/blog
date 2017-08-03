@@ -37,7 +37,7 @@
             changed: function() {
                 var that = this;
                 this.suggestions = [];
-                this.$http.get('/api/public/autocomplete?prefix=' + this.value)
+                this.$http.get('/api/autocomplete?prefix=' + this.value)
                     .then(
                         response => {
                             that.suggestions = response.body;

@@ -16,7 +16,7 @@
 
 <script>
 
-    const api_prefix = '/api/public/post/';
+    const api_prefix = '/api/post/';
 
     export default {
         name: 'post-view',

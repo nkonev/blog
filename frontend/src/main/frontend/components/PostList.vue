@@ -28,7 +28,7 @@
     const Stomp = require("@stomp/stompjs/lib/stomp.js").Stomp; // https://github.com/jmesnil/stomp-websocket/issues/119 https://stomp-js.github.io/stomp-websocket/codo/extra/docs-src/Usage.md.html
 
     // https://peachscript.github.io/vue-infinite-loading/#!/getting-started/with-filter
-    const api = '/api/public/post';
+    const api = '/api/post';
     const POSTS_PAGE_SIZE = 20;
     const MAX_PAGES = 10;
 

@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * Created by nik on 21.05.17.
  */
 @RestController
-@RequestMapping(Constants.Uls.API_PUBLIC)
+@RequestMapping(Constants.Uls.API)
 public class AutocompleteController {
 
     @Autowired

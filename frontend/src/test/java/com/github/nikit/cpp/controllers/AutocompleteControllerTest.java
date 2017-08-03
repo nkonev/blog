@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 public class AutocompleteControllerTest extends AbstractUtTestRunner {
 
-    private static final String PREFIX = Constants.Uls.API_PUBLIC;
+    private static final String PREFIX = Constants.Uls.API;
 
     @Test
     public void testAutoComplete() throws Exception {

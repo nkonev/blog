@@ -4,6 +4,7 @@ import com.github.nikit.cpp.Constants;
 import com.github.nikit.cpp.PageUtils;
 import com.github.nikit.cpp.dto.UserAccountDTO;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
  */
 @RequestMapping(Constants.Uls.API)
 @RestController
+@PreAuthorize("isAuthenticated()")
 public class ApiController {
 
     @RequestMapping(value = "/hello", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

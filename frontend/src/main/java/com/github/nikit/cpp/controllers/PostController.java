@@ -25,10 +25,6 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * document.getElementsByTagName('body')[0].innerHTML = 'XSSed';
- */
-
 @RestController
 public class PostController {
 
@@ -55,7 +51,7 @@ public class PostController {
         return new PostDTO(post.getId(), post.getTitle(), cleanHtmlTags(post.getText()), post.getTitleImg() );
     }
 
-    @GetMapping(Constants.Uls.API_PUBLIC+Constants.Uls.POST)
+    @GetMapping(Constants.Uls.API+Constants.Uls.POST)
     public List<PostDTO> getPosts(
             @RequestParam(value = "page", required=false, defaultValue = "0") int page,
             @RequestParam(value = "size", required=false, defaultValue = "0") int size,
@@ -63,7 +59,6 @@ public class PostController {
     ) {
         page = PageUtils.fixPage(page);
         size = PageUtils.fixSize(size);
-
         PageRequest springDataPage = new PageRequest(page, size);
 
         return postRepository
@@ -73,9 +68,9 @@ public class PostController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping(Constants.Uls.API_PUBLIC+Constants.Uls.POST+Constants.Uls.SLASH_ID)
+    @GetMapping(Constants.Uls.API+Constants.Uls.POST+Constants.Uls.POST_ID)
     public PostDTOWithAuthorization getPost(
-            @PathVariable(Constants.PathVariables.ID) long id,
+            @PathVariable(Constants.PathVariables.POST_ID) long id,
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount // null if not authenticated
     ) {
         return postRepository
@@ -87,6 +82,7 @@ public class PostController {
 
     // ================================================= secured
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping(Constants.Uls.API+Constants.Uls.POST+Constants.Uls.MY)
     public List<PostDTO> getMyPosts(
             @RequestParam(value = "page", required=false, defaultValue = "0") int page,
@@ -105,13 +101,16 @@ public class PostController {
                 .collect(Collectors.toList());
     }
 
+    // https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#el-common-built-in
+    @PreAuthorize("isAuthenticated()")
     @PostMapping(Constants.Uls.API+Constants.Uls.POST)
-    public PostDTOWithAuthorization createPost(
+    public PostDTOWithAuthorization addPost(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // null if not authenticated
-            @RequestBody @NotNull PostDTO postDTO) {
+            @RequestBody @NotNull PostDTO postDTO
+    ) {
         Assert.notNull(userAccount, "UserAccountDetailsDTO can't be null");
         if (postDTO.getId()!=0){
-            throw new BadRequestException("cannot be setted");
+            throw new BadRequestException("id cannot be set");
         }
         Post fromWeb = convertToPost(postDTO, null);
         UserAccount ua = userAccountRepository.findOne(userAccount.getId()); // TODO check Hibernate cache for it
@@ -135,18 +134,19 @@ public class PostController {
         return convertToDto(saved, userAccount);
     }
 
-    @PreAuthorize("@blogSecurityService.hasPostPermission(#id, #userAccount, T(com.github.nikit.cpp.entity.Permissions).DELETE)")
-    @DeleteMapping(Constants.Uls.API+Constants.Uls.POST+Constants.Uls.SLASH_ID)
+    @PreAuthorize("@blogSecurityService.hasPostPermission(#postId, #userAccount, T(com.github.nikit.cpp.entity.Permissions).DELETE)")
+    @DeleteMapping(Constants.Uls.API+Constants.Uls.POST+Constants.Uls.POST_ID)
     public void deletePost(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // null if not authenticated
-            @PathVariable(Constants.PathVariables.ID) long id
+            @PathVariable(Constants.PathVariables.POST_ID) long postId
     ) {
-        postRepository.delete(id);
+        Assert.notNull(userAccount, "UserAccountDetailsDTO can't be null");
+        postRepository.delete(postId);
     }
 
 
     private PostDTOWithAuthorization convertToDto(Post saved, UserAccountDetailsDTO userAccount) {
-        if (saved == null) { throw new IllegalArgumentException("Post can't be null"); }
+        Assert.notNull(saved, "Post can't be null");
 
         return new PostDTOWithAuthorization(
                 saved.getId(),
@@ -160,7 +160,8 @@ public class PostController {
     }
 
     private Post convertToPost(PostDTO postDTO, Post forUpdate) {
-        if (postDTO == null) { throw new IllegalArgumentException("postDTO can't be null"); }
+        Assert.notNull(postDTO, "postDTO can't be null");
+
         if (forUpdate == null){ forUpdate = new Post(); }
         forUpdate.setText(XssSanitizeUtil.sanitize(postDTO.getText()));
         forUpdate.setTitle(postDTO.getTitle());

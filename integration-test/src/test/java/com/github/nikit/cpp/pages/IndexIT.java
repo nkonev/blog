@@ -77,9 +77,10 @@ public class IndexIT extends AbstractItTestRunner {
 
         indexPage.contains("Пост, пришедший через вебсокет");
 
-        indexPage.setSearchString("1234");
+        indexPage.setSearchString("234");
 
-        indexPage.contains("generated_post_91234");
+        indexPage.contains("generated_post_234");
+        indexPage.contains("generated_post_1234");
     }
 
     /**
@@ -92,9 +93,9 @@ public class IndexIT extends AbstractItTestRunner {
         IndexPage indexPage = new IndexPage(urlPrefix);
         indexPage.openPage();
 
-        indexPage.setSearchString("generated_post_98765"); // request that respond one result
+        indexPage.setSearchString("generated_post_1765"); // request that respond one result
 
-        indexPage.contains("generated_post_98765");
+        indexPage.contains("generated_post_1765");
 
         indexPage.sendEnd();
 

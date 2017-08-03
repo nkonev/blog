@@ -8,4 +8,8 @@ public class TestConstants {
     public static final String SWAGGER_DIR = "target/swagger";
     public static final String SWAGGER_JSON = "swagger.json";
     public static final String SPRINGFOX_DOCS_URL = "/v2/api-docs";
+
+    public static final String USER_ALICE = "alice";
+    public static final String USER_ADMIN  ="admin";
+    public static final String USER_BOB = "bob";
 }

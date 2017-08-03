@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.nikit.cpp.AbstractUtTestRunner;
 import com.github.nikit.cpp.Constants;
+import com.github.nikit.cpp.PageUtils;
+import com.github.nikit.cpp.TestConstants;
 import com.github.nikit.cpp.dto.PostDTO;
 import org.junit.Assert;
 import org.junit.Test;
@@ -11,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -18,6 +21,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.everyItem;
+import static org.hamcrest.core.Is.is;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -32,9 +37,6 @@ public class PostControllerTest extends AbstractUtTestRunner {
 
     @Autowired
     private ObjectMapper objectMapper;
-
-    public static final String USER_ALICE = "alice";
-    public static final String USER_ADMIN  ="admin";
 
     public static class PostDtoBuilder {
         public static class Instance {
@@ -71,7 +73,21 @@ public class PostControllerTest extends AbstractUtTestRunner {
         }
     }
 
-    @WithUserDetails(USER_ALICE)
+    public static final long FOREIGN_POST = 1000;
+
+
+    @Test
+    public void testAnonymousCanGetPostsAndItsLimiting() throws Exception {
+        MvcResult getPostsRequest = mockMvc.perform(
+                get(Constants.Uls.API+Constants.Uls.POST)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(PageUtils.DEFAULT_SIZE))
+                .andReturn();
+    }
+
+    @WithUserDetails(TestConstants.USER_ALICE)
     @Test
     public void testUserCanAddAndUpdateAndCannotDeletePost() throws Exception {
         MvcResult addPostRequest = mockMvc.perform(
@@ -81,7 +97,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
                         .with(csrf())
         )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.owner.login").value(USER_ALICE))
+                .andExpect(jsonPath("$.owner.login").value(TestConstants.USER_ALICE))
                 .andExpect(jsonPath("$.canEdit").value(true))
                 .andExpect(jsonPath("$.canDelete").value(false))
                 .andReturn();
@@ -117,7 +133,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
         )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value(updatedTitle))
-                .andExpect(jsonPath("$.owner.login").value(USER_ALICE))
+                .andExpect(jsonPath("$.owner.login").value(TestConstants.USER_ALICE))
                 .andExpect(jsonPath("$.canEdit").value(true))
                 .andExpect(jsonPath("$.canDelete").value(false))
                 .andReturn();
@@ -131,9 +147,9 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andReturn();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = AuthenticationCredentialsNotFoundException.class)
     public void testAnonymousCannotAddPostUnit() throws Exception {
-        postController.createPost(null, PostDtoBuilder.startBuilding().build());
+        postController.addPost(null, PostDtoBuilder.startBuilding().build());
     }
 
     @Test
@@ -151,7 +167,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
 
     @Test
     public void testAnonymousCannotUpdatePost() throws Exception {
-        final long foreignPostId = 1001;
+        final long foreignPostId = FOREIGN_POST;
         PostDTO postDTO = PostDtoBuilder.startBuilding().id(foreignPostId).build();
 
         MvcResult addPostRequest = mockMvc.perform(
@@ -167,7 +183,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
 
     @Test
     public void testAnonymousCannotDeletePost() throws Exception {
-        final long foreignPostId = 1001;
+        final long foreignPostId = FOREIGN_POST;
         PostDTO postDTO = PostDtoBuilder.startBuilding().id(foreignPostId).build();
 
         MvcResult addPostRequest = mockMvc.perform(
@@ -183,13 +199,13 @@ public class PostControllerTest extends AbstractUtTestRunner {
 
 
 
-    @WithUserDetails(USER_ALICE)
+    @WithUserDetails(TestConstants.USER_ALICE)
     @Test
     public void testUserCannotUpdateForeignPost() throws Exception {
-        final long foreignPostId = 1000;
+        final long foreignPostId = FOREIGN_POST;
 
         MvcResult getPostRequest = mockMvc.perform(
-                get(Constants.Uls.API_PUBLIC+Constants.Uls.POST+"/"+foreignPostId)
+                get(Constants.Uls.API+Constants.Uls.POST+"/"+foreignPostId)
         )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.canEdit").value(false))
@@ -213,10 +229,10 @@ public class PostControllerTest extends AbstractUtTestRunner {
 
     }
 
-    @WithUserDetails(USER_ALICE)
+    @WithUserDetails(TestConstants.USER_ALICE)
     @Test
     public void testUserCannotDeleteForeignPost() throws Exception {
-        final long foreignPostId = 1001;
+        final long foreignPostId = FOREIGN_POST;
         PostDTO postDTO = PostDtoBuilder.startBuilding().id(foreignPostId).build();
 
         MvcResult addPostRequest = mockMvc.perform(
@@ -231,10 +247,10 @@ public class PostControllerTest extends AbstractUtTestRunner {
     }
 
 
-    @WithUserDetails(USER_ALICE)
+    @WithUserDetails(TestConstants.USER_ALICE)
     @Test
     public void testUserCannotRecreateExistsPost() throws Exception {
-        final long foreignPostId = 1001;
+        final long foreignPostId = FOREIGN_POST;
 
         PostDTO postDTO = PostDtoBuilder.startBuilding().id(foreignPostId).build();
         MvcResult addPostRequest = mockMvc.perform(
@@ -249,13 +265,13 @@ public class PostControllerTest extends AbstractUtTestRunner {
         LOGGER.info(addStr);
     }
 
-    @WithUserDetails(USER_ADMIN)
+    @WithUserDetails(TestConstants.USER_ADMIN)
     @Test
     public void testAdminCanUpdateForeignPost() throws Exception {
-        final long foreignPostId = 1000;
+        final long foreignPostId = FOREIGN_POST;
 
         MvcResult getPostRequest = mockMvc.perform(
-                get(Constants.Uls.API_PUBLIC+Constants.Uls.POST+"/"+foreignPostId)
+                get(Constants.Uls.API+Constants.Uls.POST+"/"+foreignPostId)
         )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.canEdit").value(true))
@@ -281,10 +297,10 @@ public class PostControllerTest extends AbstractUtTestRunner {
 
     }
 
-    @WithUserDetails(USER_ADMIN)
+    @WithUserDetails(TestConstants.USER_ADMIN)
     @Test
     public void testAdminCanDeleteForeignPost() throws Exception {
-        final long foreignPostId = 1001;
+        final long foreignPostId = FOREIGN_POST;
 
         MvcResult addPostRequest = mockMvc.perform(
                 delete(Constants.Uls.API+Constants.Uls.POST+"/"+foreignPostId).with(csrf())
@@ -296,7 +312,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
     }
 
 
-    @WithUserDetails(USER_ALICE)
+    @WithUserDetails(TestConstants.USER_ALICE)
     @Test
     public void xssText() throws Exception {
         MvcResult addPostRequest = mockMvc.perform(
@@ -306,7 +322,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
                         .with(csrf())
         )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.owner.login").value(USER_ALICE))
+                .andExpect(jsonPath("$.owner.login").value(TestConstants.USER_ALICE))
                 .andExpect(jsonPath("$.text").value("Harmless text"))
                 .andReturn();
         String addStr = addPostRequest.getResponse().getContentAsString();

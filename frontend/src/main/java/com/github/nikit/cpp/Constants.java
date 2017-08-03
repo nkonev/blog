@@ -14,16 +14,19 @@ public class Constants {
         public static final String ROOT = "/";
         public static final String API = "/api";
         public static final String ADMIN = "/admin";
-        public static final String API_PUBLIC = "/api/public";
         public static final String POST = "/post";
         public static final String REPOPULATE = "/repopulate";
         public static final String AUTOCOMPLETE = "/autocomplete";
         public static final String MY = "/my";
-        public static final String SLASH_ID = "/{id}";
+        public static final String POST_ID = "/{postId}";
+        public static final String COMMENT_ID = "/{commentId}";
+
+        public static final String COMMENT = "/comment";
     }
 
     public static class PathVariables {
-        public static final String ID = "id";
+        public static final String POST_ID = "postId";
+        public static final String COMMENT_ID = "commentId";
     }
 
     public static class Swagger {

@@ -5,6 +5,9 @@ import com.github.nikit.cpp.Constants;
 import javax.persistence.*;
 import java.net.URL;
 
+/**
+ * This entity "Post" don't have comments because there isn't always need to get Post with Collection<Comment>
+ */
 @Entity
 @Table(name = "post", schema = Constants.Schemas.POSTS)
 public class Post {

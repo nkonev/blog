@@ -1,29 +1,24 @@
 package com.github.nikit.cpp.dto;
 
-import java.net.URL;
-
-public class PostDTOWithAuthorization extends PostDTO {
+public class CommentDTOWithAuthorization extends CommentDTO {
     private UserAccountDTO owner;
     private boolean canEdit;
     private boolean canDelete;
 
-    public PostDTOWithAuthorization(
+    public CommentDTOWithAuthorization() { }
+
+    public CommentDTOWithAuthorization(
             long id,
-            String title,
             String text,
-            URL titleImg,
-            UserAccountDTO userAccountDTO,
+            UserAccountDTO owner,
             boolean canEdit,
             boolean canDelete
     ) {
-        super(id, title, text, titleImg);
-        this.owner = userAccountDTO;
+        super(id, text);
+        this.owner = owner;
         this.canEdit = canEdit;
         this.canDelete = canDelete;
     }
-
-    public PostDTOWithAuthorization() { }
-
 
     public UserAccountDTO getOwner() {
         return owner;
