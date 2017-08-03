@@ -2,8 +2,9 @@
 
 # Requirements
 
-* Redis 2.8+
 * JDK 8
+* Docker 1.12.3 +
+* docker-compose 1.8.0 +
 
 # Building with frontend (just turn on `frontend` profile)
 ```

@@ -7,9 +7,9 @@ const KARMA_ENV = 'karma';
 const NODE_ENV = process.env.NODE_ENV || DEVELOPMENT_ENV;
 
 let ENV_BROWSERS = process.env.KARMA_BROWSERS;
-ENV_BROWSERS=ENV_BROWSERS ? ENV_BROWSERS.split(",") : [ NODE_ENV == DEVELOPMENT_ENV ? 'Chrome' : 'PhantomJS' ];
+ENV_BROWSERS=ENV_BROWSERS ? ENV_BROWSERS.split(",") : ['PhantomJS'];
 const browsers=ENV_BROWSERS;
-console.log(browsers);
+// console.log(browsers);
 
 module.exports = function(config) {
   config.set({

@@ -1,7 +1,8 @@
 import '../common'
 import Vue from 'vue'
 import Registration from "../../../main/frontend/components/Registration.vue"
-import CommonTestUtils from "../CommonTestUtils"
+import CommonTestUtils from "../CommonTestUtils" // todo remove it
+import { mount } from 'avoriaz';
 
 describe("Registration.vue", function(){
     var vm;
@@ -37,19 +38,24 @@ describe("Registration.vue", function(){
         });
     });
 
-    it("email fail", function(done) {
-        vm.$data.profile.email='wrong mail no';
-        vm.$data.profile.password='1234';
-        vm.$data.profile.login='lol';
+    it("email fail", function() {
+        const RegistrationComponent = mount(Registration);// set input value
 
-        Vue.nextTick(() => {
-            //expect(vm.$el.querySelector('input#login').value).toBe('lol');
-            expect($("input#login").val()).toBe('lol');
-            expect($("input#password").val()).toBe('1234');
-            expect($("input#email").val()).toBe('wrong mail no');
-            expect($("button#submit")).toHaveAttr('disabled');
-            done();
+        // set input value
+        RegistrationComponent.setData({
+            profile: {
+                email: "wrong mail no",
+                password: '1234',
+                login: 'lol'
+            },
         });
+
+        // simulate event
+        const emailInput = RegistrationComponent.find('input#email')[0];
+        emailInput.trigger('blur'); // for appropriate event see in vee-validate sources or documentation
+
+        expect(RegistrationComponent.text()).toContain('The email field must be a valid email.');
+        expect(RegistrationComponent.data().profile.email).toBe('wrong mail no');
     });
 
 });
