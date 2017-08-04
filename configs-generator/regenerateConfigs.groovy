@@ -53,6 +53,7 @@ liquibase:
   drop-first: ${dropFirst}
 
 spring.redis.url: redis://172.22.0.3:6379/0
+spring.data.redis.repositories.enabled: false
 """};
 
 def WEBSERVER_SNIPPET =
