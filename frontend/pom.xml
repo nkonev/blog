@@ -193,7 +193,7 @@
                     <dependency>
                         <groupId>com.google.guava</groupId>
                         <artifactId>guava</artifactId>
-                        <version>19.0</version>
+                        <version>22.0</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -410,7 +410,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>19.0</version>
+            <version>22.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
