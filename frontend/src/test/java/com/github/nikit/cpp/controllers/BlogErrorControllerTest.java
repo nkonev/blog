@@ -43,6 +43,7 @@ public class BlogErrorControllerTest extends AbstractUtTestRunner {
         Assert.assertEquals(200, responseEntity.getStatusCodeValue()); // we respond 200 for 404 fallback
 
         LOGGER.info(str);
+        LOGGER.info("HTML 404 fallback Content-Type: {}", responseEntity.getHeaders().getContentType());
         Assert.assertTrue(responseEntity.getHeaders().getContentType().equals(MediaType.TEXT_HTML));
         Assert.assertTrue(str.contains("<!doctype html>"));
     }
