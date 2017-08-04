@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.embedded.AbstractConfigurableEmbeddedServletContainer;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
@@ -38,6 +39,15 @@ public abstract class AbstractUtTestRunner {
 
     @Autowired
     protected MockMvc mockMvc;
+
+//    @Value("${server.port}")
+//    protected int serverPort;
+//
+//    @Value("${server.contextPath}")
+//    protected String contextPath;
+
+    @Autowired
+    protected AbstractConfigurableEmbeddedServletContainer abstractConfigurableEmbeddedServletContainer;
 
     @Value("${custom.it.user}")
     protected String username;

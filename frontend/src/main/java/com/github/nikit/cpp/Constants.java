@@ -15,6 +15,7 @@ public class Constants {
         public static final String API = "/api";
         public static final String ADMIN = "/admin";
         public static final String POST = "/post";
+        public static final String PROFILE = "/profile";
         public static final String REPOPULATE = "/repopulate";
         public static final String AUTOCOMPLETE = "/autocomplete";
         public static final String MY = "/my";

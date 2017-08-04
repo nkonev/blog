@@ -29,7 +29,7 @@ public class UserProfileController {
      * @param principal
      * @return
      */
-    @RequestMapping(value = "/profile", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = Constants.Uls.PROFILE, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public UserAccountDTO checkAuthenticated(Principal principal) throws MalformedURLException {
         return new UserAccountDTO(0L, principal.getName(), new URL("https://www.w3.org/html/logo/downloads/HTML5_Logo_512.png"));
     }

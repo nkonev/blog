@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
+ * Called on wrong credentials
  * Created by nik on 07.03.17.
  */
 @Component

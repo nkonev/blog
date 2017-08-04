@@ -4,6 +4,7 @@ import com.github.nikit.cpp.Constants;
 import com.github.nikit.cpp.entity.UserRole;
 import com.github.nikit.cpp.security.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.Http401AuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -75,7 +76,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.csrf()
                 .csrfTokenRepository(csrfTokenRepository());
-        http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
+        http.exceptionHandling()
+                .authenticationEntryPoint(authenticationEntryPoint)
+                /*.accessDeniedHandler(
+                        (request, response, accessDeniedException) -> {
+                            throw accessDeniedException;
+                        }
+                )*/
+        ;
         http.formLogin()
                 .loginPage(API_LOGIN_URL).usernameParameter(USERNAME_PARAMETER).passwordParameter(PASSWORD_PARAMETER).permitAll()
                 .successHandler(authenticationSuccessHandler)
@@ -83,10 +91,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         .and().logout().logoutUrl(API_LOGOUT_URL).logoutSuccessHandler(authenticationLogoutSuccessHandler).permitAll();
 
+
 //        http.rememberMe().rememberMeParameter(REMEMBER_ME_PARAMETER).tokenRepository(tokenRepository)
 //                .tokenValiditySeconds(86400);
 
-        ;
     }
 
     // https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#data-configuration
