@@ -55,10 +55,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new RESTAuthenticationLogoutSuccessHandler(csrfTokenRepository());
     }
 
-//    @Autowired
-    // @Qualifier("customUserDetailsService")
-//    UserDetailsService userDetailsService;
-
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         // https://dzone.com/articles/spring-security-4-authenticate-and-authorize-users
