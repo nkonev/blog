@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.annotation.Repeat;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.Assert;
 
@@ -87,6 +88,7 @@ public class CommentControllerTest extends AbstractUtTestRunner {
     }
 
 
+    @Repeat(10)
     @WithUserDetails(TestConstants.USER_ALICE)
     @Test
     public void testUserCanAddAndUpdateAndCanDeleteComment() throws Exception {
