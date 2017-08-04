@@ -31,47 +31,5 @@
                 }
             },
         },
-        /*methods: {
-            _me() {
-                const storeUser = store.getters[GET_USER];
-                if (this.$props && storeUser) {
-                    return storeUser ? storeUser.id == this.$props.id : false;
-                } else {
-                    return false;
-                }
-            },
-            fetchUserData() {
-                const self = this;
-                this.$http.get('/api/hello').then(response => {
-                    self.userData = response.body;
-                }, response => {
-                    // error callback
-                });
-            },
-            onLogin(ignore) {
-                /* computed property me not produce update dom when store changed so if won't works *
-                if (this._me()) {
-                    this.fetchUserData();
-                }
-            },
-            onLogout(ignore) {
-                if (this._me()) {
-                    this.userData = NO_DATA;
-                }
-            },
-        },
-        mounted(){
-            if (this._me()) {
-                this.fetchUserData();
-             }
-
-            bus.$on(LOGIN, this.onLogin);
-            bus.$on(LOGOUT, this.onLogout);
-        },
-        beforeDestroy() {
-            //console.log("destroyed");
-            bus.$off(LOGIN, this.onLogin);
-            bus.$off(LOGOUT, this.onLogout);
-        }*/
     };
 </script>

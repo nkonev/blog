@@ -22,26 +22,7 @@ import java.util.stream.Collectors;
 @RequestMapping(Constants.Uls.API)
 @RestController
 @PreAuthorize("isAuthenticated()")
-public class ApiController {
-
-    @RequestMapping(value = "/hello", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public HelloResponse hello(Principal principal) {
-
-        return new HelloResponse("Hello, " + principal.getName() + "!");
-    }
-
-    public static class HelloResponse {
-        private String message;
-        public HelloResponse(String message) {
-            this.message = message;
-        }
-        public String getMessage() {
-            return message;
-        }
-        public void setMessage(String message) {
-            this.message = message;
-        }
-    }
+public class UserProfileController {
 
     /**
      * Отдаёт профиль текущего пользователя
@@ -59,38 +40,6 @@ public class ApiController {
         for (int i=0; i<100001; ++i){
             USER_DTO_LIST.add(new UserAccountDTO((long)i, "user"+i));
         }
-    }
-
-    public static class PageDTO {
-        private int page; // starts with 0 accords Spring DATA Pageable
-        private int size; // размер страницы
-
-
-        public PageDTO() { }
-
-
-        public int getPage() {
-            return page;
-        }
-
-        public void setPage(int page) {
-            this.page = page;
-        }
-
-        public int getSize() {
-            return size;
-        }
-
-        public void setSize(int size) {
-            this.size = size;
-        }
-    }
-
-    @PostMapping(value = "/user")
-    public Collection<UserAccountDTO> getUsersPost(@NotNull PageDTO pageDTO) {
-        int page = PageUtils.fixPage(pageDTO.getPage());
-        int size = PageUtils.fixSize(pageDTO.getSize());
-        return getUsers(page, size);
     }
 
     @GetMapping(value = "/user")
