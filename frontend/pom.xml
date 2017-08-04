@@ -189,13 +189,6 @@
                         </configuration>
                     </execution>
                 </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.google.guava</groupId>
-                        <artifactId>guava</artifactId>
-                        <version>22.0</version>
-                    </dependency>
-                </dependencies>
             </plugin>
 
             <!-- First, use the swagger2markup plugin to generate asciidoc -->
@@ -406,11 +399,6 @@
             <artifactId>springfox-swagger2</artifactId>
             <version>${springfox.version}</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>21.0</version>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
