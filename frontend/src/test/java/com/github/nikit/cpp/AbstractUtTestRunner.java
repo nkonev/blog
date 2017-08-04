@@ -18,6 +18,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -47,7 +48,14 @@ public abstract class AbstractUtTestRunner {
 //    protected String contextPath;
 
     @Autowired
+    protected TestRestTemplate restTemplate;
+
+    @Autowired
     protected AbstractConfigurableEmbeddedServletContainer abstractConfigurableEmbeddedServletContainer;
+
+    public String urlWithContextPath(){
+        return "http://127.0.0.1:"+abstractConfigurableEmbeddedServletContainer.getPort()+abstractConfigurableEmbeddedServletContainer.getContextPath();
+    }
 
     @Value("${custom.it.user}")
     protected String username;

@@ -25,9 +25,6 @@ public class AuthTest extends AbstractUtTestRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthTest.class);
 
-    @Autowired
-    private TestRestTemplate restTemplate;
-
     @Test
     public void testAuth() throws Exception {
         // auth
@@ -72,7 +69,7 @@ public class AuthTest extends AbstractUtTestRunner {
      */
     @Test
     public void testNotAuthorized() throws Exception {
-        ResponseEntity<String> responseEntity = restTemplate.getForEntity("http://127.0.0.1:"+abstractConfigurableEmbeddedServletContainer.getPort()+abstractConfigurableEmbeddedServletContainer.getContextPath()+Constants.Uls.API+Constants.Uls.PROFILE, String.class);
+        ResponseEntity<String> responseEntity = restTemplate.getForEntity(urlWithContextPath()+Constants.Uls.API+Constants.Uls.PROFILE, String.class);
         String str = responseEntity.getBody();
         Assert.assertEquals(401, responseEntity.getStatusCodeValue());
 
