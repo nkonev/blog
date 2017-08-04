@@ -29,7 +29,7 @@ public class BlogErrorControllerTest extends AbstractUtTestRunner {
 
         Map<String, Object> resp = objectMapper.readValue(str, new TypeReference<Map<String, Object>>(){});
 
-        Assert.assertTrue(responseEntity.getHeaders().getContentType().equals(MediaType.APPLICATION_JSON_UTF8));
+        Assert.assertTrue(responseEntity.getHeaders().getContentType().toString().contains(MediaType.APPLICATION_JSON_UTF8_VALUE));
         Assert.assertEquals("Not Found", resp.get("error"));
         Assert.assertEquals(404, resp.get("status"));
     }
@@ -44,7 +44,7 @@ public class BlogErrorControllerTest extends AbstractUtTestRunner {
 
         LOGGER.info(str);
         LOGGER.info("HTML 404 fallback Content-Type: {}", responseEntity.getHeaders().getContentType());
-        Assert.assertTrue(responseEntity.getHeaders().getContentType().equals(MediaType.TEXT_HTML));
+        Assert.assertTrue(responseEntity.getHeaders().getContentType().toString().contains(MediaType.TEXT_HTML_VALUE));
         Assert.assertTrue(str.contains("<!doctype html>"));
     }
 
