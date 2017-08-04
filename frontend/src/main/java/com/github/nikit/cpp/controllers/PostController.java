@@ -2,6 +2,7 @@ package com.github.nikit.cpp.controllers;
 
 import com.github.nikit.cpp.Constants;
 import com.github.nikit.cpp.PageUtils;
+import com.github.nikit.cpp.converter.PostConverter;
 import com.github.nikit.cpp.converter.UserAccountConverter;
 import com.github.nikit.cpp.dto.PostDTO;
 import com.github.nikit.cpp.dto.PostDTOWithAuthorization;
@@ -19,12 +20,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Transactional
 @RestController
 public class PostController {
 
@@ -35,21 +38,7 @@ public class PostController {
     private UserAccountRepository userAccountRepository;
 
     @Autowired
-    private BlogSecurityService blogSecurityService;
-
-    /**
-     * Used in main page
-     * @param html
-     * @return
-     */
-    private static String cleanHtmlTags(String html) {
-        return html == null ? null : Jsoup.parse(html).text();
-    }
-
-    public static PostDTO convertToPostDTO(Post post) {
-        if (post==null) {return null;}
-        return new PostDTO(post.getId(), post.getTitle(), cleanHtmlTags(post.getText()), post.getTitleImg() );
-    }
+    private PostConverter postConverter;
 
     @GetMapping(Constants.Uls.API+Constants.Uls.POST)
     public List<PostDTO> getPosts(
@@ -64,7 +53,7 @@ public class PostController {
         return postRepository
                 .findByTextContainsOrTitleContainsOrderByIdDesc(springDataPage, searchString, searchString).getContent()
                 .stream()
-                .map(PostController::convertToPostDTO)
+                .map(postConverter::convertToPostDTOWithCleanTags)
                 .collect(Collectors.toList());
     }
 
@@ -75,7 +64,7 @@ public class PostController {
     ) {
         return postRepository
                 .findById(id)
-                .map(post -> convertToDto(post, userAccount))
+                .map(post -> postConverter.convertToDto(post, userAccount))
                 .orElseThrow(()-> new RuntimeException("Post " + id + " not found"));
     }
 
@@ -97,7 +86,7 @@ public class PostController {
         return postRepository
                 .findMyPosts(springDataPage).getContent()
                 .stream()
-                .map(PostController::convertToPostDTO)
+                .map(postConverter::convertToPostDTOWithCleanTags)
                 .collect(Collectors.toList());
     }
 
@@ -112,12 +101,12 @@ public class PostController {
         if (postDTO.getId()!=0){
             throw new BadRequestException("id cannot be set");
         }
-        Post fromWeb = convertToPost(postDTO, null);
+        Post fromWeb = postConverter.convertToPost(postDTO, null);
         UserAccount ua = userAccountRepository.findOne(userAccount.getId()); // TODO check Hibernate cache for it
         Assert.notNull(ua, "User account not found");
         fromWeb.setOwner(ua);
         Post saved = postRepository.save(fromWeb);
-        return convertToDto(saved, userAccount);
+        return postConverter.convertToDto(saved, userAccount);
     }
 
     @PreAuthorize("@blogSecurityService.hasPostPermission(#postDTO, #userAccount, T(com.github.nikit.cpp.entity.Permissions).EDIT)")
@@ -129,9 +118,9 @@ public class PostController {
         Assert.notNull(userAccount, "UserAccountDetailsDTO can't be null");
         Post found = postRepository.findOne(postDTO.getId());
         Assert.notNull(found, "Post with id " + postDTO.getId() + " not found");
-        Post updatedEntity = convertToPost(postDTO, found);
+        Post updatedEntity = postConverter.convertToPost(postDTO, found);
         Post saved = postRepository.save(updatedEntity);
-        return convertToDto(saved, userAccount);
+        return postConverter.convertToDto(saved, userAccount);
     }
 
     @PreAuthorize("@blogSecurityService.hasPostPermission(#postId, #userAccount, T(com.github.nikit.cpp.entity.Permissions).DELETE)")
@@ -143,30 +132,4 @@ public class PostController {
         Assert.notNull(userAccount, "UserAccountDetailsDTO can't be null");
         postRepository.delete(postId);
     }
-
-
-    private PostDTOWithAuthorization convertToDto(Post saved, UserAccountDetailsDTO userAccount) {
-        Assert.notNull(saved, "Post can't be null");
-
-        return new PostDTOWithAuthorization(
-                saved.getId(),
-                saved.getTitle(),
-                (saved.getText()),
-                saved.getTitleImg(),
-                UserAccountConverter.convertToUserAccountDTO(saved.getOwner()),
-                blogSecurityService.hasPostPermission(saved, userAccount, Permissions.EDIT),
-                blogSecurityService.hasPostPermission(saved, userAccount, Permissions.DELETE)
-        );
-    }
-
-    private Post convertToPost(PostDTO postDTO, Post forUpdate) {
-        Assert.notNull(postDTO, "postDTO can't be null");
-
-        if (forUpdate == null){ forUpdate = new Post(); }
-        forUpdate.setText(XssSanitizeUtil.sanitize(postDTO.getText()));
-        forUpdate.setTitle(postDTO.getTitle());
-        forUpdate.setTitleImg(postDTO.getTitleImg());
-        return forUpdate;
-    }
-
 }
