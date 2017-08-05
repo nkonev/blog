@@ -60,14 +60,20 @@ CREATE TABLE posts.comment (
 
 -- changeset nkonev:2_test_data context:test failOnError: true
 -- insert test data
-INSERT INTO auth.users(username, password) VALUES
-	('admin', '$2a$10$HsyFGy9IO//nJZxYc2xjDeV/kF7koiPrgIDzPOfgmngKVe9cOyOS2'), -- bcrypt('admin', 10)
-	('nikita', '$2a$10$e3pEnL2d3RB7jBrlEA3B9eUhayb/bmEG1V35h.4EhdReUAMzlAWxS'), -- bcrypt('password', 10)
-	('alice', '$2a$10$e3pEnL2d3RB7jBrlEA3B9eUhayb/bmEG1V35h.4EhdReUAMzlAWxS'),
-	('bob', '$2a$10$e3pEnL2d3RB7jBrlEA3B9eUhayb/bmEG1V35h.4EhdReUAMzlAWxS');
+INSERT INTO auth.users(username, password, avatar) VALUES
+	('admin', '$2a$10$HsyFGy9IO//nJZxYc2xjDeV/kF7koiPrgIDzPOfgmngKVe9cOyOS2', 'https://cdn3.iconfinder.com/data/icons/rcons-user-action/32/boy-512.png'), -- bcrypt('admin', 10)
+	('nikita', '$2a$10$e3pEnL2d3RB7jBrlEA3B9eUhayb/bmEG1V35h.4EhdReUAMzlAWxS', 'https://cdn3.iconfinder.com/data/icons/users-6/100/654853-user-men-2-512.png'), -- bcrypt('password', 10)
+	('alice', '$2a$10$e3pEnL2d3RB7jBrlEA3B9eUhayb/bmEG1V35h.4EhdReUAMzlAWxS', 'https://cdn3.iconfinder.com/data/icons/rcons-user-action/32/girl-512.png'),
+	('bob', '$2a$10$e3pEnL2d3RB7jBrlEA3B9eUhayb/bmEG1V35h.4EhdReUAMzlAWxS', NULL);
 -- insert many test users
-INSERT INTO auth.users (username, password)
-	SELECT 'generated_user_' || i, '$2a$10$0nGRZ4Quy0hW2W.prjc.AOyUkNqgFulVckZQ.gFsOly5ESntrW7E.' -- bcrypt('generated_user_password', 10)
+INSERT INTO auth.users (username, password, avatar)
+	SELECT
+    'generated_user_' || i,
+    '$2a$10$0nGRZ4Quy0hW2W.prjc.AOyUkNqgFulVckZQ.gFsOly5ESntrW7E.', -- bcrypt('generated_user_password', 10)
+    CASE
+      WHEN i % 2 = 0 THEN 'https://cdn3.iconfinder.com/data/icons/avatars-9/145/Avatar_Alien-512.png'
+      ELSE NULL
+    END
 	FROM generate_series(0, 1000) AS i;
 
 /**

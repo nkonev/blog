@@ -2,9 +2,12 @@ package com.github.nikit.cpp.controllers;
 
 import com.github.nikit.cpp.Constants;
 import com.github.nikit.cpp.PageUtils;
+import com.github.nikit.cpp.converter.UserAccountConverter;
 import com.github.nikit.cpp.dto.UserAccountDTO;
+import com.github.nikit.cpp.dto.UserAccountDetailsDTO;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
@@ -25,13 +28,13 @@ import java.util.stream.Collectors;
 public class UserProfileController {
 
     /**
-     * Отдаёт профиль текущего пользователя
-     * @param principal
-     * @return
+     *
+     * @param userAccount
+     * @return current logged in profile
      */
-    @GetMapping(value = Constants.Uls.PROFILE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public UserAccountDTO checkAuthenticated(Principal principal) throws MalformedURLException {
-        return new UserAccountDTO(0L, principal.getName(), new URL("https://www.w3.org/html/logo/downloads/HTML5_Logo_512.png"));
+    @GetMapping(value = Constants.Uls.PROFILE)
+    public UserAccountDTO checkAuthenticated(@AuthenticationPrincipal UserAccountDetailsDTO userAccount) throws MalformedURLException {
+        return UserAccountConverter.convertToUserAccountDTO(userAccount);
     }
 
     private static final List<UserAccountDTO> USER_DTO_LIST;

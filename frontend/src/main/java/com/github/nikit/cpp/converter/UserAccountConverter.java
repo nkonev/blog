@@ -37,4 +37,14 @@ public class UserAccountConverter {
         );
     }
 
+    public static UserAccountDTO convertToUserAccountDTO(UserAccountDetailsDTO userAccount) {
+        if (userAccount == null) { return null; }
+        return new UserAccountDTO(
+                userAccount.getId(),
+                userAccount.getUsername(),
+                userAccount.getAvatar()
+        );
+    }
+
+
 }
