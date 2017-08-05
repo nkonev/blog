@@ -23,7 +23,7 @@ public class ExceptionHandler {
                 e instanceof AccessDeniedException ||
                         e instanceof AuthenticationException ||
                         e instanceof RemoteAuthenticationException
-                ) {throw e;} // Spring Security has own exception handling
+        ) {throw e;} // Spring Security has own exception handling
 
         // response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "internal error");

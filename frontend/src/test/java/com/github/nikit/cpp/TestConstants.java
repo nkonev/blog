@@ -9,6 +9,10 @@ public class TestConstants {
     public static final String SWAGGER_JSON = "swagger.json";
     public static final String SPRINGFOX_DOCS_URL = "/v2/api-docs";
 
+    public static final String SQL_URL = "/sql";
+    public static final String SQL_QUERY = "select * from users;";
+    public static final String USER_DETAILS = "/user-details-vuln";
+
     public static final String USER_ALICE = "alice";
     public static final String USER_ADMIN  ="admin";
     public static final String USER_BOB = "bob";

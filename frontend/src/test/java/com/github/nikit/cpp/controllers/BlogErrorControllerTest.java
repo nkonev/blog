@@ -3,7 +3,10 @@ package com.github.nikit.cpp.controllers;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.nikit.cpp.AbstractUtTestRunner;
 import com.github.nikit.cpp.Constants;
+import com.github.nikit.cpp.TestConstants;
+import com.github.nikit.cpp.security.SecurityConfig;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,13 +14,60 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.net.URI;
 import java.util.Map;
 
+import static com.github.nikit.cpp.security.SecurityConfig.PASSWORD_PARAMETER;
+import static com.github.nikit.cpp.security.SecurityConfig.USERNAME_PARAMETER;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 public class BlogErrorControllerTest extends AbstractUtTestRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BlogErrorControllerTest.class);
+
+    @Test
+    public void testAuth() throws Exception {
+        // auth
+        MvcResult loginResult = mockMvc.perform(
+                post(SecurityConfig.API_LOGIN_URL)
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param(USERNAME_PARAMETER, username)
+                        .param(PASSWORD_PARAMETER, password)
+                        .with(csrf())
+        )
+                .andExpect(status().isOk())
+                .andReturn();
+
+        LOGGER.info(loginResult.getResponse().getContentAsString());
+    }
+
+    /**
+     * We use restTemplate because Spring Security has own exception handling mechanism (not Spring MVC Exception Handler)
+     * which eventually handled on Error Page
+     * @throws Exception
+     */
+    @Test
+    public void testNotAuthorized() throws Exception {
+        ResponseEntity<String> responseEntity = restTemplate.getForEntity(urlWithContextPath()+Constants.Uls.API+Constants.Uls.PROFILE, String.class);
+        String str = responseEntity.getBody();
+        Assert.assertEquals(401, responseEntity.getStatusCodeValue());
+
+        LOGGER.info(str);
+
+        Map<String, String> resp = objectMapper.readValue(str, new TypeReference<Map<String, String>>(){});
+        // check that Exception Handler hides Spring Security exceptions
+        Assert.assertFalse(resp.containsKey("exception"));
+        Assert.assertFalse(resp.containsKey("trace"));
+        Assert.assertFalse(resp.containsValue("org.springframework.security.access.AccessDeniedException"));
+
+        Assert.assertTrue(resp.containsKey("message"));
+        Assert.assertEquals("Access is denied", resp.get("message"));
+    }
 
     @Test
     public void testNotFoundJs() throws Exception {
@@ -48,4 +98,36 @@ public class BlogErrorControllerTest extends AbstractUtTestRunner {
         Assert.assertTrue(str.contains("<!doctype html>"));
     }
 
+    @Test
+    public void testSqlExceptionIsHidden() throws Exception {
+        ResponseEntity<String> responseEntity = restTemplate.getForEntity(urlWithContextPath()+Constants.Uls.API+ TestConstants.SQL_URL, String.class);
+        String str = responseEntity.getBody();
+        Assert.assertEquals(500, responseEntity.getStatusCodeValue());
+
+        LOGGER.info(str);
+
+        Map<String, String> resp = objectMapper.readValue(str, new TypeReference<Map<String, String>>(){});
+        Assert.assertFalse(resp.containsKey("exception"));
+        Assert.assertFalse(resp.containsKey("trace"));
+        Assert.assertFalse(resp.containsValue(TestConstants.SQL_QUERY));
+
+        Assert.assertEquals("internal error", resp.get("message"));
+        Assert.assertEquals("Internal Server Error", resp.get("error"));
+    }
+
+    @Test
+    public void testUserDetailsWithPasswordIsNotSerialized() throws Exception {
+        ResponseEntity<String> responseEntity = restTemplate.getForEntity(urlWithContextPath()+Constants.Uls.API+TestConstants.USER_DETAILS, String.class);
+        String str = responseEntity.getBody();
+        Assert.assertEquals(500, responseEntity.getStatusCodeValue());
+
+        LOGGER.info(str);
+
+        Map<String, String> resp = objectMapper.readValue(str, new TypeReference<Map<String, String>>(){});
+        Assert.assertFalse(resp.containsKey("exception"));
+        Assert.assertFalse(resp.containsKey("trace"));
+
+        Assert.assertEquals("internal error", resp.get("message"));
+        Assert.assertEquals("Internal Server Error", resp.get("error"));
+    }
 }
