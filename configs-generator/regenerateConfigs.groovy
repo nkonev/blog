@@ -125,7 +125,7 @@ custom.selenium.window-height: 900
 custom.selenium.window-width: 1600
 
 custom.it.url.prefix: http://127.0.0.1:\${server.port}
-custom.it.user.id: 0
+custom.it.user.id: 1
 ${USERS_SNIPPET}
 
 # this is URL
