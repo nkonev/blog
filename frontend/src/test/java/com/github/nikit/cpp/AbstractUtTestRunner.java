@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.embedded.AbstractConfigurableEmbeddedServletContainer;
+import org.springframework.boot.context.embedded.Ssl;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
@@ -54,7 +55,9 @@ public abstract class AbstractUtTestRunner {
     protected AbstractConfigurableEmbeddedServletContainer abstractConfigurableEmbeddedServletContainer;
 
     public String urlWithContextPath(){
-        return "http://127.0.0.1:"+abstractConfigurableEmbeddedServletContainer.getPort()+abstractConfigurableEmbeddedServletContainer.getContextPath();
+        Ssl ssl = abstractConfigurableEmbeddedServletContainer.getSsl();
+        String protocol = ssl!=null && ssl.isEnabled() ? "https" : "http";
+        return protocol+"://127.0.0.1:"+abstractConfigurableEmbeddedServletContainer.getPort()+abstractConfigurableEmbeddedServletContainer.getContextPath();
     }
 
     @Value("${custom.it.user}")
