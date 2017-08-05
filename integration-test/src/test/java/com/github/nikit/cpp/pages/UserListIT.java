@@ -78,23 +78,29 @@ public class UserListIT extends AbstractItTestRunner {
         LoginModal loginModal = new LoginModal(user, password);
         loginModal.login();
         $(UsersPage.PREV_PAGE_LI_SELECTOR).shouldHave(Condition.cssClass(UsersPage.DISABLED_CLASS));
-        $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("user0"));
-        $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("user1"));
-        $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("user9"));
+
+        $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("admin"));
+        $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("nikita"));
+        $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("alice"));
+        $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("bob"));
+
+        $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("generated_user_0"));
+        $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("generated_user_4"));
+        $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("generated_user_5"));
 
         usersPage.goNextPaginatorPage();
-        $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("user10"));
+        $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("generated_user_6"));
 
         loginModal.logout();
-        $(UsersPage.USERS_CONTAINER_SELECTOR).shouldNotHave(Condition.text("user10"));
+        $(UsersPage.USERS_CONTAINER_SELECTOR).shouldNotHave(Condition.text("generated_user_6"));
 
         loginModal.openLoginModal();
         loginModal.login();
         usersPage.goNthPaginatorPage(5);
-        $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("user40"));
+        $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("generated_user_40"));
 
-        usersPage.goNthPaginatorPage(10001);
-        $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("user100000"));
+        usersPage.goNthPaginatorPage(101);
+        $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("generated_user_1000"));
         $(UsersPage.NEXT_PAGE_LI_SELECTOR).shouldHave(Condition.cssClass(UsersPage.DISABLED_CLASS));
     }
 

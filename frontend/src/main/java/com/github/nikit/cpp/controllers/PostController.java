@@ -78,10 +78,8 @@ public class PostController {
             @RequestParam(value = "size", required=false, defaultValue = "0") int size,
             @RequestParam(value = "searchString", required=false, defaultValue = "") String searchString // TODO implement
     ) {
-        page = PageUtils.fixPage(page);
-        size = PageUtils.fixSize(size);
 
-        PageRequest springDataPage = new PageRequest(page, size);
+        PageRequest springDataPage = new PageRequest(PageUtils.fixPage(page), PageUtils.fixSize(size));
 
         return postRepository
                 .findMyPosts(springDataPage).getContent()

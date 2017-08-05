@@ -1,6 +1,6 @@
 <template>
     <div class="user">
-        <div class="user-avatar"><img src="/build/assets/logo.png"/></div>
+        <div class="user-avatar"><img :src="userDTO.avatar"/></div>
         <div class="user-info">
             <router-link :to="{ name: 'user-profile', params: { id: userDTO.id } }">{{ userDTO.login }}</router-link>
         </div>
@@ -26,6 +26,7 @@
         &-avatar {
             width 32px;
             height 32px;
+            margin 2px;
 
             img {
                 width 100%

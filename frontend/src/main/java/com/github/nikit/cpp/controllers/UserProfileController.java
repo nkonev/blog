@@ -5,6 +5,10 @@ import com.github.nikit.cpp.PageUtils;
 import com.github.nikit.cpp.converter.UserAccountConverter;
 import com.github.nikit.cpp.dto.UserAccountDTO;
 import com.github.nikit.cpp.dto.UserAccountDetailsDTO;
+import com.github.nikit.cpp.repo.UserAccountRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,6 +31,9 @@ import java.util.stream.Collectors;
 @PreAuthorize("isAuthenticated()")
 public class UserProfileController {
 
+    @Autowired
+    private UserAccountRepository userAccountRepository;
+
     /**
      *
      * @param userAccount
@@ -37,38 +44,25 @@ public class UserProfileController {
         return UserAccountConverter.convertToUserAccountDTO(userAccount);
     }
 
-    private static final List<UserAccountDTO> USER_DTO_LIST;
-    static {
-        USER_DTO_LIST = new ArrayList<>();
-        for (int i=0; i<100001; ++i){
-            USER_DTO_LIST.add(new UserAccountDTO((long)i, "user"+i));
-        }
-    }
-
     @GetMapping(value = "/user")
     public Collection<UserAccountDTO> getUsersGet(
             @RequestParam(value = "page", required=false, defaultValue = "0") int page,
             @RequestParam(value = "size", required=false, defaultValue = "0") int size
     ) {
-        page = PageUtils.fixPage(page);
-        size = PageUtils.fixSize(size);
-        return getUsers(page, size);
-    }
+        PageRequest springDataPage = new PageRequest(PageUtils.fixPage(page), PageUtils.fixSize(size), Sort.Direction.ASC, "id");
 
-    private Collection<UserAccountDTO> getUsers(int page, int size) {
-        return USER_DTO_LIST.stream().skip(page*size).limit(size).collect(Collectors.toList());
+        return userAccountRepository.findAll(springDataPage).getContent().stream().map(UserAccountConverter::convertToUserAccountDTO).collect(Collectors.toList());
     }
 
     @GetMapping(value = "/user-count")
-    public int getUsersCount() {
-        return USER_DTO_LIST.size();
+    public long getUsersCount() {
+        return userAccountRepository.count();
     }
 
     @GetMapping(value = "/user/{id}")
     public UserAccountDTO getUser(@PathVariable("id") Long userId) {
-        return USER_DTO_LIST.stream()
-                .filter(userDTO -> userId.equals(userDTO.getId()))
-                .findFirst()
+
+        return userAccountRepository.getById(userId).map(UserAccountConverter::convertToUserAccountDTO)
                 .orElseThrow(() -> new RuntimeException("user with id="+ userId + " not found"));
     }
 }

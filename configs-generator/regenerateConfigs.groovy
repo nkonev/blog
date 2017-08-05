@@ -1,5 +1,5 @@
 def string = """
-Вас приветствует генератор конфигов
+This is Groovy config generator
 """
 
 println string
@@ -7,7 +7,7 @@ println string
 
 // usage:
 // ./mvnw -pl configs-generator generate-resources
-// after usage you must do Build -> Rebuild project
+// after usage you should do Build -> Rebuild project
 
 
 def FRONTEND_MAIN_YML_FILE = "${project.basedir}/../frontend/src/main/resources/config/application.yml";
@@ -75,7 +75,7 @@ custom.it.password: admin
 def FRONTEND_MAIN_YML_CONTENT =
 """${AUTOGENERATE_SNIPPET}
 logging.level.: INFO
-logging.level.org.springframework.web.socket: TRACE
+logging.level.org.springframework.web.socket: INFO
 #logging.level.org.springframework.security: DEBUG
 #logging.level.org.springframework.session: DEBUG
 #logging.level.org.springframework.security.web: DEBUG
