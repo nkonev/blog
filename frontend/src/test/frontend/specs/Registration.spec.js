@@ -16,6 +16,8 @@ describe("Registration.vue", function(){
     it("email ok", function(done) {
         const RegistrationComponent = mount(Registration);
 
+        expect(RegistrationComponent.data().submitEnabled).toBe(false);
+
         RegistrationComponent.setData({
             profile: {
                 email: "good@mail.co",
