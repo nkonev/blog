@@ -1,40 +1,57 @@
-import '../common'
 import Vue from 'vue'
+import '../../../../src/main/frontend/main' // contains vue-resource
 import Registration from "../../../main/frontend/components/Registration.vue"
-import CommonTestUtils from "../CommonTestUtils" // todo remove it
 import { mount } from 'avoriaz';
 
 describe("Registration.vue", function(){
-    var vm;
 
     beforeEach(function() {
         jasmine.Ajax.install();
-
-        jasmine.getJSONFixtures().clearCache();
-
-        setFixtures(`<div id="app">This is app</div>`);
-
-        vm = CommonTestUtils.mountToPageAndDraw(Registration, "#app");
     });
 
     afterEach(function() {
         jasmine.Ajax.uninstall();
     });
 
-
     // https://scotch.io/tutorials/how-to-write-a-unit-test-for-vuejs
     it("email ok", function(done) {
+        const RegistrationComponent = mount(Registration);
 
-        vm.$data.profile.email='good@mail.co';
-        vm.$data.profile.password='123456';
-        vm.$data.profile.login='lol';
+        RegistrationComponent.setData({
+            profile: {
+                email: "good@mail.co",
+                password: '123456',
+                login: 'lol'
+            },
+        });
+
+        // simulate event
+        const submit = RegistrationComponent.find('button#submit')[0];
+        submit.trigger('click');
+
+        const request = jasmine.Ajax.requests.mostRecent();
+        expect(request.url).toBe('/api/register');
+        expect(request.method).toBe('POST');
+        expect(request.data()).toEqual({
+            login: 'lol',
+            password: '123456',
+            email: 'good@mail.co'
+        });
+
+        request.respondWith({
+            "status": 200,
+            "contentType": 'application/json;charset=UTF-8',
+            "responseText": '{}' // Firefox requires this
+        });
+
 
         Vue.nextTick(() => {
-            expect($("input#login").val()).toBe('lol');
-            expect($("input#password").val()).toBe('123456');
-            expect($("input#email").val()).toBe('good@mail.co');
+            expect(RegistrationComponent.data().profile.email).toBe('good@mail.co');
+            expect(RegistrationComponent.data().profile.password).toBe('123456');
+            expect(RegistrationComponent.data().profile.login).toBe('lol');
 
-            expect(vm.$data.submitEnabled).toBe(true);
+            expect(RegistrationComponent.data().submitEnabled).toBe(true);
+
             done();
         });
     });
@@ -56,7 +73,7 @@ describe("Registration.vue", function(){
             expect(RegistrationComponent.text()).toContain('Email is invalid');
             expect(RegistrationComponent.text()).toContain('password must be logger than');
             expect(RegistrationComponent.data().profile.email).toBe('wrong mail no');
-            expect(vm.$data.submitEnabled).toBe(false);
+            expect(RegistrationComponent.data().submitEnabled).toBe(false);
             done();
         });
     });

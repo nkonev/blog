@@ -4,7 +4,8 @@
   "description": "frontend project",
   "scripts": {
     "dev": "webpack",
-    "unit": "karma start"
+    "unit": "karma start",
+    "unit-chrome": "karma start --browsers=Chrome"
   },
   "repository": {
     "type": "git",
