@@ -8,10 +8,9 @@
 </template>
 
 <script>
+    import Vue from 'vue'
     import {GET_USER} from '../store'
     import store from  '../store'
-    import bus from '../bus'
-    import {LOGIN, LOGOUT} from '../bus'
 
     export default {
         name: 'user-profile', // это имя компонента, которое м. б. тегом в другом компоненте

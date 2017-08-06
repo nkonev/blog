@@ -44,8 +44,8 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      "src/test/frontend/index.js": ["webpack"], // 2/3
-      'src/test/frontend/specs/**/*spec.js': ['webpack']
+      "src/test/frontend/index.js": ["webpack", 'sourcemap'], // 2/3
+      'src/test/frontend/specs/**/*spec.js': ['webpack', 'sourcemap']
     },
 
     // test results reporter to use
@@ -143,7 +143,7 @@ module.exports = function(config) {
       resolve: {
           alias: {
               // 'jquery': require.resolve('jquery'), // for uniform.js
-              'vue': 'vue/dist/vue.js', // fix "Vue is not constructor" in vue-online
+              // 'vue': 'vue/dist/vue.js', // fix "Vue is not constructor" in vue-online
               'vue$': 'vue/dist/vue.esm.js', // it's important, else you will get "You are using the runtime-only build of Vue where the template compiler is not available. Either pre-compile the templates into render functions, or use the compiler-included build."
           }
       },
