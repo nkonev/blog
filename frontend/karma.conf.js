@@ -2,6 +2,9 @@
 // Generated on Mon Dec 12 2016 23:49:18 GMT+0300 (MSK)
 const path = require('path');
 const webpack = require('webpack');
+const webpackModule = require('./webpack/module');
+const webpackResolve = require('./webpack/resolve');
+
 const DEVELOPMENT_ENV = 'dev';
 const KARMA_ENV = 'karma';
 const NODE_ENV = process.env.NODE_ENV || DEVELOPMENT_ENV;
@@ -23,14 +26,8 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      // { pattern: 'src/test/frontend/fixtures/*.html', included: false}, // not in script tag
-      // { pattern: 'src/test/frontend/responses/*.json', included: false}, // not in script tag
-      // { pattern: 'src/main/resources/static/img/*.*', watched: false, included: false, served: true},
-
       { pattern: 'node_modules/babel-polyfill/dist/polyfill.js', watched: false, included: true, served: true}, // for old WebKit in PhantomJS
-
       "src/test/frontend/index.js", // 1/3
-
       'src/test/frontend/specs/**/*spec.js' // Test specifications
     ],
 
@@ -51,24 +48,8 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    // 'mocha' в данном случае -- это просто репортер, не тестовый фреймворк
-    reporters: ['mocha', 'html'], // two reporters may duplicate output (https://github.com/karma-runner/karma/issues/2342)
-
-      // the default configuration
-    htmlReporter: {
-          outputDir: path.join(__dirname, 'target/karma_html'), // where to put the reports
-          templatePath: null, // set if you moved jasmine_template.html
-          focusOnFailures: true, // reports show failures on start
-          namedFiles: false, // name files instead of creating sub-directories
-          pageTitle: null, // page title for reports; browser info by default
-          urlFriendlyName: false, // simply replaces spaces with _ for files/dirs
-          reportName: 'report-summary-filename', // report summary filename; browser info by default
-
-
-          // experimental
-          preserveDescribeNesting: false, // folded suites stay folded
-          foldAll: false, // reports start folded (only with preserveDescribeNesting)
-    },
+    // 'mocha' this is reporter, not framework
+    reporters: ['mocha'], // two reporters may duplicate output (https://github.com/karma-runner/karma/issues/2342)
 
     // web server port
     port: 9876,
@@ -100,7 +81,8 @@ module.exports = function(config) {
     concurrency: Infinity,
 
     client: {
-      useIframe: true
+      useIframe: true,
+      captureConsole: true // append browser console to output or not
     },
 
     customLaunchers: {
@@ -118,12 +100,12 @@ module.exports = function(config) {
     },
 
     webpack: {
-      cache: true,
+      cache: false,
       devtool: 'inline-source-map',
       // entry: {
       //       index: "./src/test/frontend/index.js" // 3/3
       // },
-        // disable extract-test-plugin spam
+      // disable extract-test-plugin spam
       stats: {
             children: false
       },
@@ -131,7 +113,7 @@ module.exports = function(config) {
       plugins: [
           new webpack.ProvidePlugin({
               // jQuery: "jquery", // for uniform.js
-              $: 'jquery', // for usage in tests
+              // $: 'jquery', // for usage in tests
           }),
           new webpack.DefinePlugin({
               'process.env': {
@@ -140,79 +122,8 @@ module.exports = function(config) {
               }
           }),
       ],
-      resolve: {
-          alias: {
-              // 'jquery': require.resolve('jquery'), // for uniform.js
-              // 'vue': 'vue/dist/vue.js', // fix "Vue is not constructor" in vue-online
-              'vue$': 'vue/dist/vue.esm.js', // it's important, else you will get "You are using the runtime-only build of Vue where the template compiler is not available. Either pre-compile the templates into render functions, or use the compiler-included build."
-          }
-      },
-      module: {
-        loaders: [
-          {
-              test:   /\.js$/,
-              exclude: /node_modules/,
-              use: {
-                  loader: 'babel-loader',
-              }
-          },
-            {
-                test: /\.css$/,
-                use:[
-                    'style-loader',
-                    'css-loader?sourceMap'
-                ]
-            },
-
-            {
-              test: /\.styl$/,
-                use:[
-                    'style-loader',
-                    'css-loader?sourceMap',
-                    'stylus-loader'
-                ]
-            },
-            {
-                test: /\.(ttf|eot|woff|woff2)$/,
-                // for fix MemoryFs error with Karma -- remove limit
-                use: [
-                    {
-                        loader: 'url-loader',
-                        options: {
-                            name: '[path][name].[ext]',
-                        }
-                    }
-                ],
-            },
-            {
-                test: /\.(png|jpg|svg|gif)$/,
-                use: [
-                    {
-                        loader: 'file-loader',
-                        options: {
-                            name: '[path][name].[ext]'
-                        }
-                    }
-                ]
-            },
-            {
-                test: /\.html$/,
-                use: [{
-                    loader: 'html-loader',
-                    options: {
-                        minimize: false
-                    }
-                }],
-            },
-            {
-                test: /\.vue$/,
-                loader: 'vue-loader',
-                options: {
-                    extractCSS: false
-                }
-            },
-        ],// end loaders
-      }
+      resolve: webpackResolve,
+      module: webpackModule(false),
     }
   })
 };
