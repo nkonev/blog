@@ -41,13 +41,15 @@ java -jar frontend/target/frontend-1.0-SNAPSHOT-exec.jar
 ## Run webpack
 ```
 cd frontend
-./webpack.sh
+npm run dev
 ```
 
 ## Run KarmaJS with PhantomJS browser (Chrome will be if not specified)
 ```
 cd frontend
-./karma.sh start --browsers=PhantomJS
+npm run unit
+# or
+npm run unit -- --browsers=Chrome
 ```
 
 ## Update js dependencies
@@ -57,5 +59,5 @@ https://www.npmjs.com/package/npm-check-updates
 ```
 ncu -u
 rm package-lock.json
-./npm.sh install
+npm install
 ```
