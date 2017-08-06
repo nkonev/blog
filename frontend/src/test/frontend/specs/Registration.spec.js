@@ -22,40 +22,43 @@ describe("Registration.vue", function(){
     });
 
 
+    // https://scotch.io/tutorials/how-to-write-a-unit-test-for-vuejs
+    it("email ok", function(done) {
 
-    it("all ok", function(done) {
         vm.$data.profile.email='good@mail.co';
-        vm.$data.profile.password='1234';
+        vm.$data.profile.password='123456';
         vm.$data.profile.login='lol';
 
         Vue.nextTick(() => {
             expect($("input#login").val()).toBe('lol');
-            expect($("input#password").val()).toBe('1234');
+            expect($("input#password").val()).toBe('123456');
             expect($("input#email").val()).toBe('good@mail.co');
 
-            expect($("button#submit")).not.toHaveAttr('disabled');
+            expect(vm.$data.submitEnabled).toBe(true);
             done();
         });
     });
 
-    it("email fail", function() {
-        const RegistrationComponent = mount(Registration);// set input value
+    it("email and password fail", function(done) {
+        const RegistrationComponent = mount(Registration);
 
         // set input value
         RegistrationComponent.setData({
             profile: {
                 email: "wrong mail no",
-                password: '1234',
+                password: '12345',
                 login: 'lol'
             },
         });
 
-        // simulate event
-        const emailInput = RegistrationComponent.find('input#email')[0];
-        emailInput.trigger('blur'); // for appropriate event see in vee-validate sources or documentation
-
-        expect(RegistrationComponent.text()).toContain('The email field must be a valid email.');
-        expect(RegistrationComponent.data().profile.email).toBe('wrong mail no');
+        Vue.nextTick(() => {
+            // console.log(">>>", RegistrationComponent.text());
+            expect(RegistrationComponent.text()).toContain('Email is invalid');
+            expect(RegistrationComponent.text()).toContain('password must be logger than');
+            expect(RegistrationComponent.data().profile.email).toBe('wrong mail no');
+            expect(vm.$data.submitEnabled).toBe(false);
+            done();
+        });
     });
 
 });

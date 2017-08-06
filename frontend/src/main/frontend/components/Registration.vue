@@ -1,6 +1,6 @@
 <template>
     <div class="registration" id="registration">
-        <form action="/api/register" method="post">
+        <form>
             <div class="field">
                 <label for="login">Login <span class="required-mark">*</span></label>
                 <input id="login" v-model="profile.login" name="login" autofocus/>
@@ -41,7 +41,10 @@
                     password: '',
                 },
                 errors: {
-
+                    // email:
+                            // false if there isn't any error
+                            // 'error message' if error present
+                    // ...
                 },
                 submitEnabled: false
             }
@@ -78,15 +81,10 @@
                 return hasErrors;
             },
             validate() {
-                this.errors = {
-                    // email:
-                        // false if not error
-                        // 'error message' if error present
-                    // ...
-                };
+                this.errors = { };
                 this.errors.login = required(this.profile.login) ? false : 'login is required';
                 this.errors.email = required(this.profile.email) ? false : 'Email is required';
-                if (!this.errors.email){ // if previous check is passed
+                if (!this.errors.email) { // if previous check is passed
                     this.errors.email = email(this.profile.email) ? false : 'Email is invalid';
                 }
                 this.errors.password = required(this.profile.password)  ? false : 'password is required';
