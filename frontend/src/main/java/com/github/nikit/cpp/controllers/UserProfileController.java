@@ -5,19 +5,16 @@ import com.github.nikit.cpp.PageUtils;
 import com.github.nikit.cpp.converter.UserAccountConverter;
 import com.github.nikit.cpp.dto.UserAccountDTO;
 import com.github.nikit.cpp.dto.UserAccountDetailsDTO;
-import com.github.nikit.cpp.repo.UserAccountRepository;
+import com.github.nikit.cpp.repo.jpa.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.constraints.NotNull;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -29,6 +26,7 @@ import java.util.stream.Collectors;
 @RequestMapping(Constants.Uls.API)
 @RestController
 @PreAuthorize("isAuthenticated()")
+@Transactional
 public class UserProfileController {
 
     @Autowired

@@ -3,19 +3,14 @@ package com.github.nikit.cpp.controllers;
 import com.github.nikit.cpp.Constants;
 import com.github.nikit.cpp.PageUtils;
 import com.github.nikit.cpp.converter.PostConverter;
-import com.github.nikit.cpp.converter.UserAccountConverter;
 import com.github.nikit.cpp.dto.PostDTO;
 import com.github.nikit.cpp.dto.PostDTOWithAuthorization;
 import com.github.nikit.cpp.dto.UserAccountDetailsDTO;
-import com.github.nikit.cpp.entity.Permissions;
-import com.github.nikit.cpp.entity.Post;
-import com.github.nikit.cpp.entity.UserAccount;
+import com.github.nikit.cpp.entity.jpa.Post;
+import com.github.nikit.cpp.entity.jpa.UserAccount;
 import com.github.nikit.cpp.exception.BadRequestException;
-import com.github.nikit.cpp.repo.PostRepository;
-import com.github.nikit.cpp.repo.UserAccountRepository;
-import com.github.nikit.cpp.security.BlogSecurityService;
-import com.github.nikit.cpp.utils.XssSanitizeUtil;
-import org.jsoup.Jsoup;
+import com.github.nikit.cpp.repo.jpa.PostRepository;
+import com.github.nikit.cpp.repo.jpa.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -107,7 +102,7 @@ public class PostController {
         return postConverter.convertToDto(saved, userAccount);
     }
 
-    @PreAuthorize("@blogSecurityService.hasPostPermission(#postDTO, #userAccount, T(com.github.nikit.cpp.entity.Permissions).EDIT)")
+    @PreAuthorize("@blogSecurityService.hasPostPermission(#postDTO, #userAccount, T(com.github.nikit.cpp.entity.jpa.Permissions).EDIT)")
     @PutMapping(Constants.Uls.API+Constants.Uls.POST)
     public PostDTOWithAuthorization updatePost(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // null if not authenticated
@@ -121,7 +116,7 @@ public class PostController {
         return postConverter.convertToDto(saved, userAccount);
     }
 
-    @PreAuthorize("@blogSecurityService.hasPostPermission(#postId, #userAccount, T(com.github.nikit.cpp.entity.Permissions).DELETE)")
+    @PreAuthorize("@blogSecurityService.hasPostPermission(#postId, #userAccount, T(com.github.nikit.cpp.entity.jpa.Permissions).DELETE)")
     @DeleteMapping(Constants.Uls.API+Constants.Uls.POST+Constants.Uls.POST_ID)
     public void deletePost(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // null if not authenticated

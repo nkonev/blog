@@ -1,6 +1,5 @@
 package com.github.nikit.cpp.dto;
 
-import com.github.nikit.cpp.entity.UserAccount;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,7 +14,7 @@ import java.util.HashSet;
 public class UserAccountDetailsDTO extends UserAccountDTO implements UserDetails {
     private static final long serialVersionUID = -3271989114498135073L;
 
-    private String password;
+    private String password; // password hash
     private boolean expired;
     private boolean locked;
     private boolean enabled; // synonym to "confirmed"

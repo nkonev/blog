@@ -1,4 +1,4 @@
-package com.github.nikit.cpp.entity;
+package com.github.nikit.cpp.entity.jpa;
 
 public enum UserRole {
     // You shouldn't to change order of enum entries because these used in Hibernate's @Enumerated

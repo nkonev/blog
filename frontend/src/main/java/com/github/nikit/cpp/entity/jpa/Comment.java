@@ -1,9 +1,8 @@
-package com.github.nikit.cpp.entity;
+package com.github.nikit.cpp.entity.jpa;
 
 import com.github.nikit.cpp.Constants;
 
 import javax.persistence.*;
-import java.net.URL;
 
 @Entity
 @Table(name = "comment", schema = Constants.Schemas.POSTS)

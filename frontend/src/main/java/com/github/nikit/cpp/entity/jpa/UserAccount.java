@@ -1,6 +1,7 @@
-package com.github.nikit.cpp.entity;
+package com.github.nikit.cpp.entity.jpa;
 
 import com.github.nikit.cpp.Constants;
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
@@ -20,14 +21,28 @@ public class UserAccount {
     private boolean expired;
     private boolean locked;
     private boolean enabled; // synonym to "confirmed"
+    @Email
+    private String email;
 
     @Enumerated(EnumType.ORDINAL)
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name="user_roles", schema = Constants.Schemas.AUTH, joinColumns=@JoinColumn(name="user_id"))
     @Column(name="role_id")
+    @NotEmpty
     private Collection<UserRole> roles = new HashSet<>(); // synonym to "authority"
 
     public UserAccount() { }
+
+    public UserAccount(String username, String password, URL avatar, boolean expired, boolean locked, boolean enabled, Collection<UserRole> roles, String email) {
+        this.username = username;
+        this.password = password;
+        this.avatar = avatar;
+        this.expired = expired;
+        this.locked = locked;
+        this.enabled = enabled;
+        this.roles = roles;
+        this.email = email;
+    }
 
     public Long getId() {
         return id;
@@ -91,5 +106,13 @@ public class UserAccount {
 
     public void setRoles(Collection<UserRole> roles) {
         this.roles = roles;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

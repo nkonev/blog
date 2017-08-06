@@ -1,6 +1,8 @@
 package com.github.nikit.cpp.controllers;
 
 import com.github.nikit.cpp.Constants;
+import com.github.nikit.cpp.dto.BlogError;
+import com.github.nikit.cpp.dto.BlogErrorWithDebug;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.web.AbstractErrorController;
 import org.springframework.boot.autoconfigure.web.ErrorAttributes;
@@ -36,20 +38,26 @@ public class BlogErrorController extends AbstractErrorController {
 
     @RequestMapping(value = PATH, produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseBody
-    public Map<String, Object> errorJson(HttpServletRequest request, HttpServletResponse response) {
+    public BlogError errorJson(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> errorAttributes = getErrorAttributes(request, debug);
 
-        Map<String, Object> map = new HashMap<>();
-
-        map.put("status", response.getStatus());
-        map.put("error", (String) errorAttributes.get("error"));
-        map.put("message", (String) errorAttributes.get("message"));
-        map.put("timeStamp", errorAttributes.get("timestamp").toString());
         if (debug) {
-            map.put("exception", (String) errorAttributes.get("exception"));
-            map.put("trace", (String) errorAttributes.get("trace"));
+            return new BlogErrorWithDebug(
+                    response.getStatus(),
+                    (String) errorAttributes.get("error"),
+                    (String) errorAttributes.get("message"),
+                    errorAttributes.get("timestamp").toString(),
+                    (String) errorAttributes.get("exception"),
+                    (String) errorAttributes.get("trace")
+            );
+        } else {
+            return new BlogError(
+                    response.getStatus(),
+                    (String) errorAttributes.get("error"),
+                    (String) errorAttributes.get("message"),
+                    errorAttributes.get("timestamp").toString()
+            );
         }
-        return map;
     }
 
     @Override

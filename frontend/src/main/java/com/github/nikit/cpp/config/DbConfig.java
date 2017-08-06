@@ -14,8 +14,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 
 @Configuration
-@EntityScan(basePackages = "com.github.nikit.cpp.entity")
-@EnableJpaRepositories(basePackages = "com.github.nikit.cpp.repo")
+@EntityScan(basePackages = "com.github.nikit.cpp.entity.jpa")
+@EnableJpaRepositories(basePackages = "com.github.nikit.cpp.repo.jpa")
 @EnableTransactionManagement
 public class DbConfig {
 

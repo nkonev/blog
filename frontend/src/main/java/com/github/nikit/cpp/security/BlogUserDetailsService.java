@@ -2,7 +2,7 @@ package com.github.nikit.cpp.security;
 
 import com.github.nikit.cpp.converter.UserAccountConverter;
 import com.github.nikit.cpp.dto.UserAccountDetailsDTO;
-import com.github.nikit.cpp.repo.UserAccountRepository;
+import com.github.nikit.cpp.repo.jpa.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

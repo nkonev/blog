@@ -46,3 +46,30 @@ liquibase:
 spring.redis.url: redis://172.22.0.3:6379/0
 spring.data.redis.repositories.enabled: false
 
+# https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-email.html
+# https://yandex.ru/support/mail-new/mail-clients.html
+# https://stackoverflow.com/questions/411331/using-javamail-with-tls
+spring.mail:
+  testConnection: false
+  host: smtp.yandex.ru
+  port: 465
+  username: "username"
+  password: "password"
+  properties:
+    # mail.smtp.starttls.enable: "true"
+    mail.smtp.ssl.enable: "true"
+    mail.smtp.connectiontimeout: 5000
+    mail.smtp.timeout: 3000
+    mail.smtp.writetimeout: 5000
+
+custom:
+  base-url: "http://127.0.0.1:8080"
+  registration:
+    email:
+      from: "username@yandex.ru"
+      subject: "Registration confirmation"
+      text-template: "Please open __REGISTRATION_LINK_PLACEHOLDER__ for complete registration."
+  confirmation:
+    registration:
+      token:
+        ttl-minutes: 5

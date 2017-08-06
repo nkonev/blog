@@ -1,6 +1,6 @@
-package com.github.nikit.cpp.repo;
+package com.github.nikit.cpp.repo.jpa;
 
-import com.github.nikit.cpp.entity.Post;
+import com.github.nikit.cpp.entity.jpa.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

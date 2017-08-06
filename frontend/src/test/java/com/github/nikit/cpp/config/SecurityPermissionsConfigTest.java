@@ -1,6 +1,6 @@
 package com.github.nikit.cpp.config;
 
-import com.github.nikit.cpp.entity.UserRole;
+import com.github.nikit.cpp.entity.jpa.UserRole;
 import com.github.nikit.cpp.security.SecurityPermissionsConfig;
 import org.junit.Assert;
 import org.junit.Test;

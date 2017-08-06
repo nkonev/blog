@@ -1,9 +1,10 @@
 package com.github.nikit.cpp.converter;
 
+import com.github.nikit.cpp.dto.CreateUserDTO;
 import com.github.nikit.cpp.dto.UserAccountDTO;
 import com.github.nikit.cpp.dto.UserAccountDetailsDTO;
-import com.github.nikit.cpp.entity.UserAccount;
-import com.github.nikit.cpp.entity.UserRole;
+import com.github.nikit.cpp.entity.jpa.UserAccount;
+import com.github.nikit.cpp.entity.jpa.UserRole;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.Collection;
 import java.util.stream.Collectors;

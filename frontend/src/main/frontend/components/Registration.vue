@@ -31,6 +31,7 @@
         name: 'registration', // component name
         data(){
             return {
+                // CreateUserDTO
                 profile: {
                     login: '',
                     email: '',
@@ -49,10 +50,14 @@
                 const self = this;
                 console.log('start submitting');
                 this.submitting = true;
-                setTimeout(()=>{
+
+                this.$http.post('/api/register', this.profile).then(response => {
                     self.submitting = false;
                     console.log('end submitting');
-                }, 2000);
+                }, response => {
+                    console.error(response);
+                    // alert(response);
+                });
             },
             hasFormErrors(){
                 const isErrs = this.errors.any();

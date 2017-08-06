@@ -1,4 +1,4 @@
-package com.github.nikit.cpp.entity;
+package com.github.nikit.cpp.entity.jpa;
 
 import com.github.nikit.cpp.Constants;
 

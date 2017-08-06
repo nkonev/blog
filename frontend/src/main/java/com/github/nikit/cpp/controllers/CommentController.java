@@ -3,18 +3,14 @@ package com.github.nikit.cpp.controllers;
 import com.github.nikit.cpp.Constants;
 import com.github.nikit.cpp.PageUtils;
 import com.github.nikit.cpp.converter.CommentConverter;
-import com.github.nikit.cpp.converter.UserAccountConverter;
 import com.github.nikit.cpp.dto.CommentDTO;
 import com.github.nikit.cpp.dto.CommentDTOWithAuthorization;
 import com.github.nikit.cpp.dto.UserAccountDetailsDTO;
-import com.github.nikit.cpp.entity.Comment;
-import com.github.nikit.cpp.entity.Permissions;
-import com.github.nikit.cpp.entity.Post;
-import com.github.nikit.cpp.entity.UserAccount;
+import com.github.nikit.cpp.entity.jpa.Comment;
+import com.github.nikit.cpp.entity.jpa.UserAccount;
 import com.github.nikit.cpp.exception.BadRequestException;
-import com.github.nikit.cpp.repo.CommentRepository;
-import com.github.nikit.cpp.repo.UserAccountRepository;
-import com.github.nikit.cpp.security.BlogSecurityService;
+import com.github.nikit.cpp.repo.jpa.CommentRepository;
+import com.github.nikit.cpp.repo.jpa.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -87,7 +83,7 @@ public class CommentController {
         return commentConverter.convertToDto(saved, userAccount);
     }
 
-    @PreAuthorize("@blogSecurityService.hasCommentPermission(#commentDTO, #userAccount, T(com.github.nikit.cpp.entity.Permissions).EDIT)")
+    @PreAuthorize("@blogSecurityService.hasCommentPermission(#commentDTO, #userAccount, T(com.github.nikit.cpp.entity.jpa.Permissions).EDIT)")
     @PutMapping(Constants.Uls.API+Constants.Uls.POST+Constants.Uls.POST_ID +Constants.Uls.COMMENT)
     public CommentDTOWithAuthorization updateComment (
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // nullable
@@ -105,7 +101,7 @@ public class CommentController {
         return commentConverter.convertToDto(saved, userAccount);
     }
 
-    @PreAuthorize("@blogSecurityService.hasCommentPermission(#commentId, #userAccount, T(com.github.nikit.cpp.entity.Permissions).DELETE)")
+    @PreAuthorize("@blogSecurityService.hasCommentPermission(#commentId, #userAccount, T(com.github.nikit.cpp.entity.jpa.Permissions).DELETE)")
     @DeleteMapping(Constants.Uls.API+Constants.Uls.POST+Constants.Uls.POST_ID +Constants.Uls.COMMENT+Constants.Uls.COMMENT_ID)
     public void deleteComment(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // null if not authenticated
