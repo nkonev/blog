@@ -3,29 +3,31 @@
         <form action="/api/register" method="post">
             <div class="field">
                 <label for="login">Login <span class="required-mark">*</span></label>
-                <input id="login" v-model="profile.login" name="login" v-validate="'required'" autofocus/>
-                <span class="help-block" v-show="errors.has('login')">{{ errors.first('login') }}</span>
+                <input id="login" v-model="profile.login" name="login" autofocus/>
+                <span class="help-block" v-show="errors.login">{{ errors.login }}</span>
             </div>
             <div class="field">
                 <label for="email">Email <span class="required-mark">*</span></label>
-                <input id="email" v-model="profile.email" name="email" v-validate="'required|email'"/>
-                <span class="help-block" v-show="errors.has('email')">{{ errors.first('email') }}</span>
+                <input id="email" v-model="profile.email" name="email" />
+                <span class="help-block" v-show="errors.email">{{ errors.email }}</span>
             </div>
             <div class="field">
                 <label for="password">password <span class="required-mark">*</span></label>
-                <input id="password" type="password" v-model="profile.password" name="password" v-validate="'required'"/>
-                <span class="help-block" v-show="errors.has('password')">{{ errors.first('password') }}</span>
+                <input id="password" type="password" v-model="profile.password" name="password" />
+                <span class="help-block" v-show="errors.password">{{ errors.password }}</span>
             </div>
-            <button id="submit" type="submit" @click.prevent="onSubmit" v-bind:disabled="hasFormErrors() || submitting">Submit</button>
+            <button id="submit" type="submit" @click.prevent="onSubmit" v-bind:disabled="!submitEnabled">Submit</button>
         </form>
     </div>
 </template>
 
 <script>
     import Vue from 'vue'
-    import VeeValidate from 'vee-validate'; // on blur by default.
-    // The field must always have either a name or a data-vv-name attribute http://vee-validate.logaretm.com/
-    Vue.use(VeeValidate);
+    // https://monterail.github.io/vuelidate/
+    // https://github.com/monterail/vuelidate/tree/master/src/validators
+    // import {required, email} from 'vuelidate'
+    import required from 'vuelidate/lib/validators/required'
+    import email from 'vuelidate/lib/validators/email'
 
     export default {
         name: 'registration', // component name
@@ -37,22 +39,37 @@
                     email: '',
                     password: '',
                 },
-                submitting: false,
+                errors: {
+                    login: false, // false or 'error message'
+                    email: false,
+                    password :false
+                },
+                submitEnabled: false
             }
+        },
+        watch: {
+            'profile.login': function (p) {
+                this.hasFormErrors();
+            },
+            'profile.email': function (p) {
+                this.hasFormErrors();
+            },
+            'profile.password': function (p) {
+                this.hasFormErrors();
+            },
         },
         methods: {
             onSubmit() {
-                console.log(this.profile.login, this.profile.email, this.profile.password);
                 if (this.hasFormErrors()) {
                     return false;
                 }
 
                 const self = this;
                 console.log('start submitting');
-                this.submitting = true;
+                this.submitEnabled = false;
 
                 this.$http.post('/api/register', this.profile).then(response => {
-                    self.submitting = false;
+                    self.submitEnabled = true;
                     console.log('end submitting');
                 }, response => {
                     console.error(response);
@@ -60,9 +77,24 @@
                 });
             },
             hasFormErrors(){
-                const isErrs = this.errors.any();
-                console.log('hasFormErrors', isErrs);
-                return isErrs;
+                let hasErrors = this.validate();
+                this.submitEnabled = !hasErrors;
+                return hasErrors;
+            },
+            validate() {
+                this.errors = {
+                    login: required(this.profile.login) ? false : 'login is required',
+                    email: required(this.profile.email) && email(this.profile.email) ? false : 'Valid email is required',
+                    password: required(this.profile.password)  ? false : 'valid password is required',
+                };
+                console.debug("validated", Object.keys(this.errors));
+                let hasErrors = false;
+                Object.keys(this.errors).forEach(item => {
+                    console.debug(item, this.errors[item]);
+                    hasErrors = hasErrors || ((this.errors[item] === false) ? false : true);
+                });
+                console.debug("validated, hasErrors=", hasErrors);
+                return hasErrors
             }
         }
     }
