@@ -3,6 +3,35 @@
 
 logging.level.: INFO
 
+custom.base-url: "http://127.0.0.1:${server.port}"
+
+# https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-email.html
+# https://yandex.ru/support/mail-new/mail-clients.html
+# https://stackoverflow.com/questions/411331/using-javamail-with-tls
+spring.mail:
+  testConnection: false
+  host: 127.0.0.1 
+  port: 1025
+  username: testEmailUsername 
+  password: testEmailPassword 
+  properties:
+    # mail.smtp.starttls.enable: "true"
+    # mail.smtp.ssl.enable: "true"
+    mail.smtp.connectiontimeout: 5000
+    mail.smtp.timeout: 3000
+    mail.smtp.writetimeout: 5000
+
+custom:
+  registration:
+    email:
+      from: testEmailUsername@test.example.com 
+      subject: "Registration confirmation"
+      text-template: "Please open __REGISTRATION_LINK_PLACEHOLDER__ for complete registration."
+  confirmation:
+    registration:
+      token:
+        ttl-minutes: 5
+
 server.port: 9080
 
 server.tomcat.basedir: ${java.io.tmpdir}/com.github.nikit.cpp.tomcat
