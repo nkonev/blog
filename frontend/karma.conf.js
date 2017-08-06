@@ -49,7 +49,7 @@ module.exports = function(config) {
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     // 'mocha' this is reporter, not framework
-    reporters: ['mocha'], // two reporters may duplicate output (https://github.com/karma-runner/karma/issues/2342)
+    reporters: ['spec'], // two reporters may duplicate output (https://github.com/karma-runner/karma/issues/2342)
 
     // web server port
     port: 9876,

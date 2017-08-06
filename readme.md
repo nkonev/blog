@@ -7,6 +7,9 @@
 * docker-compose 1.8.0 +
 
 # Building with frontend (just turn on `frontend` profile)
+
+There is highly recommends to shut down your application on 8080, although tests uses 8090, some of
+them can fails, with websocket for example.
 ```
 ./mvnw -P frontend clean package
 ```
