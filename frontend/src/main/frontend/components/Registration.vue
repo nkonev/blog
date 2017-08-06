@@ -25,9 +25,10 @@
     import Vue from 'vue'
     // https://monterail.github.io/vuelidate/
     // https://github.com/monterail/vuelidate/tree/master/src/validators
-    // import {required, email} from 'vuelidate'
     import required from 'vuelidate/lib/validators/required'
     import email from 'vuelidate/lib/validators/email'
+
+    const PASSWORD_MIN_LENGTH = 6;
 
     export default {
         name: 'registration', // component name
@@ -40,23 +41,18 @@
                     password: '',
                 },
                 errors: {
-                    login: false, // false or 'error message'
-                    email: false,
-                    password :false
+
                 },
                 submitEnabled: false
             }
         },
         watch: {
-            'profile.login': function (p) {
-                this.hasFormErrors();
-            },
-            'profile.email': function (p) {
-                this.hasFormErrors();
-            },
-            'profile.password': function (p) {
-                this.hasFormErrors();
-            },
+            'profile': {
+                handler: function (val, oldVal) {
+                    this.hasFormErrors();
+                },
+                deep: true
+            }
         },
         methods: {
             onSubmit() {
@@ -83,15 +79,26 @@
             },
             validate() {
                 this.errors = {
-                    login: required(this.profile.login) ? false : 'login is required',
-                    email: required(this.profile.email) && email(this.profile.email) ? false : 'Valid email is required',
-                    password: required(this.profile.password)  ? false : 'valid password is required',
+                    // email:
+                        // false if not error
+                        // 'error message' if error present
+                    // ...
                 };
+                this.errors.login = required(this.profile.login) ? false : 'login is required';
+                this.errors.email = required(this.profile.email) ? false : 'Email is required';
+                if (!this.errors.email){ // if previous check is passed
+                    this.errors.email = email(this.profile.email) ? false : 'Email is invalid';
+                }
+                this.errors.password = required(this.profile.password)  ? false : 'password is required';
+                if (!this.errors.password){ // if previous check is passed
+                    this.errors.password = this.profile.password.length >= PASSWORD_MIN_LENGTH ? false : 'password must be logger than ' + PASSWORD_MIN_LENGTH;
+                }
+
                 console.debug("validated", Object.keys(this.errors));
                 let hasErrors = false;
                 Object.keys(this.errors).forEach(item => {
                     console.debug(item, this.errors[item]);
-                    hasErrors = hasErrors || ((this.errors[item] === false) ? false : true);
+                    hasErrors = hasErrors || !!this.errors[item]; // !! - convert to boolean
                 });
                 console.debug("validated, hasErrors=", hasErrors);
                 return hasErrors
