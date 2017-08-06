@@ -23,6 +23,9 @@
 
 <script>
     import Vue from 'vue'
+    import VueResource from 'vue-resource'
+    Vue.use(VueResource);
+
     // https://monterail.github.io/vuelidate/
     // https://github.com/monterail/vuelidate/tree/master/src/validators
     import required from 'vuelidate/lib/validators/required'

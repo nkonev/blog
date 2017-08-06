@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import '../../../../src/main/frontend/main' // contains vue-resource
 import Registration from "../../../main/frontend/components/Registration.vue"
 import { mount } from 'avoriaz';
 
