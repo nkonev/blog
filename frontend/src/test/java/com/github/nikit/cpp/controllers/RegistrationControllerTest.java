@@ -46,9 +46,6 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RegistrationControllerTest.class);
 
-    @Value("${spring.mail.port}")
-    private int port;
-
     @Rule
     public GreenMailRule greenMail = new GreenMailRule(ServerSetupTest.SMTP_IMAP);
 
