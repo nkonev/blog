@@ -3,6 +3,7 @@ package com.github.nikit.cpp.controllers;
 import com.github.nikit.cpp.AbstractUtTestRunner;
 import com.github.nikit.cpp.Constants;
 import com.github.nikit.cpp.dto.CreateUserDTO;
+import com.github.nikit.cpp.entity.redis.UserConfirmationToken;
 import com.github.nikit.cpp.repo.redis.UserConfirmationTokenRepository;
 import com.github.nikit.cpp.security.SecurityConfig;
 import com.github.nikit.cpp.util.UrlParser;
@@ -139,6 +140,17 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
 
     @Test
     public void testConfirmationUserNotFound() throws Exception {
+        String tokenUuid = UUID.randomUUID().toString(); // create random token
+        UserConfirmationToken token1 = new UserConfirmationToken(tokenUuid, -999L, 180);
+        userConfirmationTokenRepository.save(token1); // if random token exists we delete it
+
+        // create /confirm?uuid=<uuid>
+        String uri = UriComponentsBuilder.fromUriString(Constants.Uls.CONFIRM).queryParam(Constants.Uls.UUID, tokenUuid).build().toUriString();
+
+        mockMvc.perform(get(uri))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().string(HttpHeaders.LOCATION, "/confirm/registration/user-not-found"))
+        ;
 
     }
 
