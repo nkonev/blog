@@ -1,11 +1,17 @@
 package com.github.nikit.cpp.dto;
 
+import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.net.URL;
 
 public class CreateUserDTO extends UserAccountDTO {
     private static final long serialVersionUID = 4886815878934395026L;
 
+    @Size(min = 6, max = 30)
+    @NotEmpty
     private String password; // password which user desires
+
+    @NotEmpty
     private String email;
 
     public CreateUserDTO() { }

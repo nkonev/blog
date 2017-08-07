@@ -134,6 +134,51 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
 
     @Test
     public void testRegistrationPasswordIsRequired() throws Exception {
+        final String email = "newbie@example.com";
+        final String username = "newbie";
+
+        CreateUserDTO createUserDTO = new CreateUserDTO(username, null, null, email);
+
+        // register
+        MvcResult createAccountResult = mockMvc.perform(
+                post(Constants.Uls.API+Constants.Uls.REGISTER)
+                        .content(objectMapper.writeValueAsString(createUserDTO))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .with(csrf())
+        )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("validation error"))
+                .andExpect(jsonPath("$.message").value("validation error, see validationErrors[]"))
+                .andExpect(jsonPath("$.validationErrors[0].field").value("password"))
+                .andExpect(jsonPath("$.validationErrors[0].message").value("may not be empty"))
+                .andReturn();
+        String stringResponse = createAccountResult.getResponse().getContentAsString();
+        LOGGER.info(stringResponse);
+
+    }
+
+    @Test
+    public void testRegistrationPasswordNotEnoughLong() throws Exception {
+        final String email = "newbie@example.com";
+        final String username = "newbie";
+
+        CreateUserDTO createUserDTO = new CreateUserDTO(username, null, "123", email);
+
+        // register
+        MvcResult createAccountResult = mockMvc.perform(
+                post(Constants.Uls.API+Constants.Uls.REGISTER)
+                        .content(objectMapper.writeValueAsString(createUserDTO))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .with(csrf())
+        )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("validation error"))
+                .andExpect(jsonPath("$.message").value("validation error, see validationErrors[]"))
+                .andExpect(jsonPath("$.validationErrors[0].field").value("password"))
+                .andExpect(jsonPath("$.validationErrors[0].message").value("size must be between 6 and 30"))
+                .andReturn();
+        String stringResponse = createAccountResult.getResponse().getContentAsString();
+        LOGGER.info(stringResponse);
 
     }
 

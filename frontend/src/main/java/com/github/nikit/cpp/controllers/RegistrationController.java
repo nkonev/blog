@@ -18,7 +18,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 import java.time.Duration;
 import java.util.*;
 
@@ -85,7 +88,7 @@ public class RegistrationController {
 
     @PostMapping(value = Constants.Uls.API+Constants.Uls.REGISTER)
     @ResponseBody
-    public void register(@RequestBody CreateUserDTO userAccountDTO) {
+    public void register(@RequestBody @Valid CreateUserDTO userAccountDTO) {
         if(userAccountRepository.findByUsername(userAccountDTO.getLogin()).isPresent()){
             throw new UserAlreadyPresentException("User with login '" + userAccountDTO.getLogin() + "' is already present");
         }

@@ -1,5 +1,6 @@
 package com.github.nikit.cpp.dto;
 
+import org.hibernate.validator.constraints.NotEmpty;
 import java.io.Serializable;
 import java.net.URL;
 
@@ -11,6 +12,7 @@ public class UserAccountDTO implements Serializable {
 
     private Long id;
 
+    @NotEmpty
     private String login;
 
     private URL avatar;
