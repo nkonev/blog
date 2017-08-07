@@ -270,7 +270,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
     }
 
     @Test
-    public void testAttackerCannotStealDisabledUserAccount() throws Exception {
+    public void testAttackerCannotStealLockedUserAccount() throws Exception {
         String bobEmail = "bob@example.com";
         UserAccount bob = userAccountRepository.findByEmail(bobEmail).orElseThrow(()->new RuntimeException("bob not found in test"));
 
