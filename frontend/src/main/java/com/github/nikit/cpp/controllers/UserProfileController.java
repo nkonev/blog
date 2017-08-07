@@ -57,7 +57,7 @@ public class UserProfileController {
     @GetMapping(value = "/user/{id}")
     public UserAccountDTO getUser(@PathVariable("id") Long userId) {
 
-        return userAccountRepository.getById(userId).map(UserAccountConverter::convertToUserAccountDTO)
+        return userAccountRepository.findById(userId).map(UserAccountConverter::convertToUserAccountDTO)
                 .orElseThrow(() -> new RuntimeException("user with id="+ userId + " not found"));
     }
 }
