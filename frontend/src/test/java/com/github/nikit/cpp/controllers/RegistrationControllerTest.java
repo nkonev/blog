@@ -4,7 +4,9 @@ import com.github.nikit.cpp.AbstractUtTestRunner;
 import com.github.nikit.cpp.Constants;
 import com.github.nikit.cpp.TestConstants;
 import com.github.nikit.cpp.dto.CreateUserDTO;
+import com.github.nikit.cpp.entity.jpa.UserAccount;
 import com.github.nikit.cpp.entity.redis.UserConfirmationToken;
+import com.github.nikit.cpp.repo.jpa.UserAccountRepository;
 import com.github.nikit.cpp.repo.redis.UserConfirmationTokenRepository;
 import com.github.nikit.cpp.security.SecurityConfig;
 import com.github.nikit.cpp.util.UrlParser;
@@ -38,6 +40,9 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
 
     @Autowired
     private UserConfirmationTokenRepository userConfirmationTokenRepository;
+
+    @Autowired
+    private UserAccountRepository userAccountRepository;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RegistrationControllerTest.class);
 
@@ -135,7 +140,35 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
 
     @Test
     public void testRegistrationUserWithSameEmailAlreadyPresent() throws Exception {
+        final String email = "alice@example.com";
+        final String username = "newbie";
+        final String password = "password";
 
+        UserAccount userAccountBefore = userAccountRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("user account not found in test"));
+
+        CreateUserDTO createUserDTO = new CreateUserDTO(username, null, password, email);
+
+        // register
+        MvcResult createAccountResult = mockMvc.perform(
+                post(Constants.Uls.API+Constants.Uls.REGISTER)
+                        .content(objectMapper.writeValueAsString(createUserDTO))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .with(csrf())
+        )
+                .andExpect(status().isOk())
+                .andReturn();
+        String stringResponse = createAccountResult.getResponse().getContentAsString();
+        LOGGER.info(stringResponse);
+
+        UserAccount userAccountAfter = userAccountRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("user account not found in test"));
+
+        // check that initial user account is not affected
+        Assert.assertEquals(userAccountBefore.getId(), userAccountAfter.getId());
+        Assert.assertEquals(userAccountBefore.getAvatar(), userAccountAfter.getAvatar());
+        Assert.assertEquals(TestConstants.USER_ALICE, userAccountBefore.getUsername());
+        Assert.assertEquals(userAccountBefore.getUsername(), userAccountAfter.getUsername());
+        Assert.assertEquals(userAccountBefore.getPassword(), userAccountAfter.getPassword());
+        Assert.assertEquals(userAccountBefore.getRoles(), userAccountAfter.getRoles());
     }
 
 
