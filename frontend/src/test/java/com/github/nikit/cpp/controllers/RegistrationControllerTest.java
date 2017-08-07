@@ -157,7 +157,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
     public void testConfirmationUserNotFound() throws Exception {
         String tokenUuid = UUID.randomUUID().toString(); // create random token
         UserConfirmationToken token1 = new UserConfirmationToken(tokenUuid, -999L, 180);
-        userConfirmationTokenRepository.save(token1); // if random token exists we delete it
+        userConfirmationTokenRepository.save(token1); // save it
 
         // create /confirm?uuid=<uuid>
         String uri = UriComponentsBuilder.fromUriString(Constants.Uls.CONFIRM).queryParam(Constants.Uls.UUID, tokenUuid).build().toUriString();
