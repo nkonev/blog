@@ -3,7 +3,7 @@ package com.github.nikit.cpp.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.nikit.cpp.AbstractUtTestRunner;
 import com.github.nikit.cpp.Constants;
-import com.github.nikit.cpp.PageUtils;
+import com.github.nikit.cpp.utils.PageUtils;
 import com.github.nikit.cpp.TestConstants;
 import com.github.nikit.cpp.converter.CommentConverter;
 import com.github.nikit.cpp.dto.CommentDTO;

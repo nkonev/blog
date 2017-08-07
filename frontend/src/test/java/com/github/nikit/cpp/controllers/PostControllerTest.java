@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.nikit.cpp.AbstractUtTestRunner;
 import com.github.nikit.cpp.Constants;
-import com.github.nikit.cpp.PageUtils;
+import com.github.nikit.cpp.utils.PageUtils;
 import com.github.nikit.cpp.TestConstants;
 import com.github.nikit.cpp.dto.PostDTO;
 import org.junit.Assert;
@@ -21,7 +21,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.everyItem;
 import static org.hamcrest.core.Is.is;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;

@@ -1,7 +1,7 @@
 package com.github.nikit.cpp.controllers;
 
 import com.github.nikit.cpp.Constants;
-import com.github.nikit.cpp.PageUtils;
+import com.github.nikit.cpp.utils.PageUtils;
 import com.github.nikit.cpp.converter.CommentConverter;
 import com.github.nikit.cpp.dto.CommentDTO;
 import com.github.nikit.cpp.dto.CommentDTOWithAuthorization;

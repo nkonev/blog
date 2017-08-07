@@ -1,4 +1,4 @@
-package com.github.nikit.cpp;
+package com.github.nikit.cpp.utils;
 
 /**
  * Created by nik on 05.07.17.
