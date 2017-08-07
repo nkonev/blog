@@ -8,6 +8,8 @@ import com.github.nikit.cpp.entity.redis.UserConfirmationToken;
 import com.github.nikit.cpp.exception.UserAlreadyPresentException;
 import com.github.nikit.cpp.repo.jpa.UserAccountRepository;
 import com.github.nikit.cpp.repo.redis.UserConfirmationTokenRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -15,12 +17,10 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import java.time.Duration;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Controller
 @Transactional
@@ -55,6 +55,34 @@ public class RegistrationController {
     private static final String REG_LINK_PLACEHOLDER = "__REGISTRATION_LINK_PLACEHOLDER__";
 
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(RegistrationController.class);
+
+    private UserConfirmationToken createUserConfirmationToken(UserAccount userAccount) {
+        Assert.isTrue(!userAccount.isEnabled(), "user account mustn't be enabled");
+
+        Duration ttl = Duration.ofMinutes(userConfirmationTokenTtlMinutes);
+        long seconds = ttl.getSeconds(); // Redis requires seconds
+
+        UUID tokenUuid = UUID.randomUUID();
+        UserConfirmationToken userConfirmationToken = new UserConfirmationToken(tokenUuid.toString(), userAccount.getId(), seconds);
+        return userConfirmationTokenRepository.save(userConfirmationToken);
+    }
+
+    private void sendUserConfirmationToken(String email, UserConfirmationToken userConfirmationToken) {
+        // https://yandex.ru/support/mail-new/mail-clients.html
+        // https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-email.html
+        // http://docs.spring.io/spring/docs/4.3.10.RELEASE/spring-framework-reference/htmlsingle/#mail-usage-simple
+        SimpleMailMessage msg = new SimpleMailMessage();
+        msg.setFrom(from);
+        msg.setSubject(subject);
+        msg.setTo(email);
+
+        String text = textTemplate.replace(REG_LINK_PLACEHOLDER, baseUrl + Constants.Uls.CONFIRM+ "?"+Constants.Uls.UUID +"=" + userConfirmationToken.getToken());
+        msg.setText(text);
+
+        mailSender.send(msg);
+    }
+
     @PostMapping(value = Constants.Uls.API+Constants.Uls.REGISTER)
     @ResponseBody
     public void register(@RequestBody CreateUserDTO userAccountDTO) {
@@ -83,26 +111,8 @@ public class RegistrationController {
                 userAccountDTO.getEmail()
         );
         userAccount = userAccountRepository.save(userAccount);
-
-        Duration ttl = Duration.ofMinutes(userConfirmationTokenTtlMinutes);
-        long seconds = ttl.getSeconds(); // Redis requires seconds
-
-        UUID tokenUuid = UUID.randomUUID();
-        UserConfirmationToken userConfirmationToken = new UserConfirmationToken(tokenUuid.toString(), userAccount.getId(), seconds);
-        userConfirmationToken = userConfirmationTokenRepository.save(userConfirmationToken);
-
-        // https://yandex.ru/support/mail-new/mail-clients.html
-        // https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-email.html
-        // http://docs.spring.io/spring/docs/4.3.10.RELEASE/spring-framework-reference/htmlsingle/#mail-usage-simple
-        SimpleMailMessage msg = new SimpleMailMessage();
-        msg.setFrom(from);
-        msg.setSubject(subject);
-        msg.setTo(userAccount.getEmail());
-
-        String text = textTemplate.replace(REG_LINK_PLACEHOLDER, baseUrl + Constants.Uls.CONFIRM+ "?"+Constants.Uls.UUID +"=" + tokenUuid);
-        msg.setText(text);
-
-        mailSender.send(msg);
+        UserConfirmationToken userConfirmationToken = createUserConfirmationToken(userAccount);
+        sendUserConfirmationToken(userAccount.getEmail(), userConfirmationToken);
     }
 
     @PostMapping(value = Constants.Uls.API+"/reset-password")
@@ -132,6 +142,10 @@ public class RegistrationController {
         if (userAccount == null) {
             return "redirect:/confirm/registration/user-not-found";
         }
+        if (userAccount.isEnabled()) {
+            LOGGER.warn("Somebody attempts secondary confirm already confirmed user account with email='{}'", userAccount);
+            return Constants.Uls.ROOT;
+        }
 
         userAccount.setEnabled(true);
 
@@ -140,11 +154,21 @@ public class RegistrationController {
         return Constants.Uls.ROOT;
     }
 
-    @GetMapping(value = Constants.Uls.API+"/resend-email")
+    @PostMapping(value = Constants.Uls.API+Constants.Uls.RESEND_CONFIRMATION_EMAIL)
     @ResponseBody
-    public Map<String, String> resend() {
-        // send new
-        return null;
+    public void resend(String email) {
+        Optional<UserAccount> userAccountOptional = userAccountRepository.findByEmail(email);
+        if(!userAccountOptional.isPresent()){
+            return; // we care for for email leak
+        }
+        UserAccount userAccount = userAccountOptional.get();
+        if (userAccount.isEnabled()) {
+            // this account already confirmed
+            return; // we care for for email leak
+        }
+
+        UserConfirmationToken userConfirmationToken = createUserConfirmationToken(userAccount);
+        sendUserConfirmationToken(email, userConfirmationToken);
     }
 
 }

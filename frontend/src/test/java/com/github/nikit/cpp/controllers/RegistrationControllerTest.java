@@ -25,6 +25,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import javax.mail.Message;
 import java.net.URI;
 import java.util.UUID;
 import static com.github.nikit.cpp.security.SecurityConfig.PASSWORD_PARAMETER;
@@ -79,11 +81,23 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
         )
                 .andExpect(status().isUnauthorized());
 
+        // user lost email and reissues token
+        {
+            long tokenCountBeforeResend = userConfirmationTokenRepository.count();
+            mockMvc.perform(
+                    post(Constants.Uls.API + Constants.Uls.RESEND_CONFIRMATION_EMAIL + "?email=" + email)
+                            .with(csrf())
+            )
+                    .andExpect(status().isOk());
+            Assert.assertEquals(tokenCountBeforeResend+1, userConfirmationTokenRepository.count());
+        }
 
         // confirm
         // http://www.icegreen.com/greenmail/javadocs/com/icegreen/greenmail/util/Retriever.html
         try (Retriever r = new Retriever(greenMail.getImap())) {
-            IMAPMessage imapMessage = (IMAPMessage) r.getMessages(email)[0];
+            Message[] messages = r.getMessages(email);
+            Assert.assertEquals("backend should sent two email: a) during registration; b) during confirmation token reissue",2, messages.length);
+            IMAPMessage imapMessage = (IMAPMessage)messages[1];
             String content = (String) imapMessage.getContent();
 
             String parsedUrl = UrlParser.parseUrlFromMessage(content);
@@ -105,6 +119,17 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
                         .with(csrf())
         )
                 .andExpect(status().isOk());
+
+        // resend for already confirmed does nothing
+        {
+            long tokenCountBeforeResend = userConfirmationTokenRepository.count();
+            mockMvc.perform(
+                    post(Constants.Uls.API + Constants.Uls.RESEND_CONFIRMATION_EMAIL + "?email=" + email)
+                            .with(csrf())
+            )
+                    .andExpect(status().isOk());
+            Assert.assertEquals(tokenCountBeforeResend, userConfirmationTokenRepository.count());
+        }
     }
 
     @Test
@@ -197,6 +222,24 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
                 .andExpect(header().string(HttpHeaders.LOCATION, "/confirm/registration/user-not-found"))
         ;
 
+    }
+
+    @Test
+    public void testAttackerCannotStealDisabledUserAccount() throws Exception {
+        String bobEmail = "bob@example.com";
+        UserAccount bob = userAccountRepository.findByEmail(bobEmail).orElseThrow(()->new RuntimeException("bob not found in test"));
+
+        bob.setLocked(true);
+        bob = userAccountRepository.save(bob);
+
+        // attacker
+        long tokenCountBeforeResend = userConfirmationTokenRepository.count();
+        mockMvc.perform(
+                post(Constants.Uls.API+Constants.Uls.RESEND_CONFIRMATION_EMAIL+"?email="+bobEmail)
+                    .with(csrf())
+        )
+                .andExpect(status().isOk());
+        Assert.assertEquals("new token shouldn't appear when attacker attempts reactivate banned(locked) user", tokenCountBeforeResend, userConfirmationTokenRepository.count());
     }
 
 }

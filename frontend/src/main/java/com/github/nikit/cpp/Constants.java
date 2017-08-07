@@ -25,6 +25,7 @@ public class Constants {
         public static final String REGISTER = "/register";
         public static final String CONFIRM = "/confirm";
         public static final String UUID = "uuid";
+        public static final String RESEND_CONFIRMATION_EMAIL = "/resend-confirmation-email";
     }
 
     public static class PathVariables {
