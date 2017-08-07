@@ -23,6 +23,8 @@ public class Constants {
         public static final String COMMENT_ID = "/{commentId}";
         public static final String COMMENT = "/comment";
         public static final String REGISTER = "/register";
+        public static final String CONFIRM = "/confirm";
+        public static final String UUID = "uuid";
     }
 
     public static class PathVariables {

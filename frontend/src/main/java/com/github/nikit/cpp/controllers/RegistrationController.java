@@ -99,7 +99,7 @@ public class RegistrationController {
         msg.setSubject(subject);
         msg.setTo(userAccount.getEmail());
 
-        String text = textTemplate.replace(REG_LINK_PLACEHOLDER, baseUrl + "/confirm?uuid=" + tokenUuid);
+        String text = textTemplate.replace(REG_LINK_PLACEHOLDER, baseUrl + Constants.Uls.CONFIRM+ "?"+Constants.Uls.UUID +"=" + tokenUuid);
         msg.setText(text);
 
         mailSender.send(msg);
@@ -120,8 +120,8 @@ public class RegistrationController {
      * @param uuid
      * @return
      */
-    @GetMapping(value = "/confirm")
-    public String confirm(@RequestParam("uuid") UUID uuid) {
+    @GetMapping(value = Constants.Uls.CONFIRM)
+    public String confirm(@RequestParam(Constants.Uls.UUID) UUID uuid) {
         String stringUuid = uuid.toString();
         UserConfirmationToken userConfirmationToken = userConfirmationTokenRepository.findOne(stringUuid);
         if (userConfirmationToken == null) {

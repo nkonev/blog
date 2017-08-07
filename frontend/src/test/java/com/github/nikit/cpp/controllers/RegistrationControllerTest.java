@@ -2,14 +2,12 @@ package com.github.nikit.cpp.controllers;
 
 import com.github.nikit.cpp.AbstractUtTestRunner;
 import com.github.nikit.cpp.Constants;
-import com.github.nikit.cpp.TestConstants;
 import com.github.nikit.cpp.dto.CreateUserDTO;
 import com.github.nikit.cpp.repo.redis.UserConfirmationTokenRepository;
 import com.github.nikit.cpp.security.SecurityConfig;
 import com.github.nikit.cpp.util.UrlParser;
 import com.icegreen.greenmail.junit.GreenMailRule;
 import com.icegreen.greenmail.util.Retriever;
-import com.icegreen.greenmail.util.ServerSetup;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import com.sun.mail.imap.IMAPMessage;
 import org.junit.Assert;
@@ -19,21 +17,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.net.URL;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.UUID;
 
 import static com.github.nikit.cpp.security.SecurityConfig.PASSWORD_PARAMETER;
 import static com.github.nikit.cpp.security.SecurityConfig.USERNAME_PARAMETER;
-import static com.icegreen.greenmail.util.ServerSetupTest.IMAP;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -92,7 +88,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
 
             String parsedUrl = UrlParser.parseUrlFromMessage(content);
 
-            String tokenUuidString = UriComponentsBuilder.fromUri(new URI(parsedUrl)).build().getQueryParams().get("uuid").get(0);
+            String tokenUuidString = UriComponentsBuilder.fromUri(new URI(parsedUrl)).build().getQueryParams().get(Constants.Uls.UUID).get(0);
             Assert.assertTrue(userConfirmationTokenRepository.exists(tokenUuidString));
 
             // perform confirm
@@ -129,7 +125,16 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
 
     @Test
     public void testConfirmationTokenNotFound() throws Exception {
+        String token = UUID.randomUUID().toString(); // create random token
+        userConfirmationTokenRepository.delete(token); // if random token exists we delete it
 
+        // create /confirm?uuid=<uuid>
+        String uri = UriComponentsBuilder.fromUriString(Constants.Uls.CONFIRM).queryParam(Constants.Uls.UUID, token).build().toUriString();
+
+        mockMvc.perform(get(uri))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().string(HttpHeaders.LOCATION, "/confirm/registration/token-not-found"))
+        ;
     }
 
     @Test
