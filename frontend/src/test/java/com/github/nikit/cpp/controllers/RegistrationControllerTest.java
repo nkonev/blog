@@ -2,6 +2,7 @@ package com.github.nikit.cpp.controllers;
 
 import com.github.nikit.cpp.AbstractUtTestRunner;
 import com.github.nikit.cpp.Constants;
+import com.github.nikit.cpp.TestConstants;
 import com.github.nikit.cpp.dto.CreateUserDTO;
 import com.github.nikit.cpp.entity.redis.UserConfirmationToken;
 import com.github.nikit.cpp.repo.redis.UserConfirmationTokenRepository;
@@ -22,10 +23,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.util.UriComponentsBuilder;
-
 import java.net.URI;
 import java.util.UUID;
-
 import static com.github.nikit.cpp.security.SecurityConfig.PASSWORD_PARAMETER;
 import static com.github.nikit.cpp.security.SecurityConfig.USERNAME_PARAMETER;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -34,10 +33,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class RegistrationControllerTest extends AbstractUtTestRunner {
 
-//    @Autowired
-//    private MailClient mailClient;
+public class RegistrationControllerTest extends AbstractUtTestRunner {
 
     @Autowired
     private UserConfirmationTokenRepository userConfirmationTokenRepository;
@@ -115,7 +112,25 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
 
     @Test
     public void testRegistrationUserWithSameLoginAlreadyPresent() throws Exception {
+        final String email = "newbie@example.com";
+        final String username = TestConstants.USER_ALICE;
+        final String password = "password";
 
+        CreateUserDTO createUserDTO = new CreateUserDTO(username, null, password, email);
+
+        // register
+        MvcResult createAccountResult = mockMvc.perform(
+                post(Constants.Uls.API+Constants.Uls.REGISTER)
+                        .content(objectMapper.writeValueAsString(createUserDTO))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .with(csrf())
+        )
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.error").value("user already present"))
+                .andExpect(jsonPath("$.message").value("User with login 'alice' is already present"))
+                .andReturn();
+        String stringResponse = createAccountResult.getResponse().getContentAsString();
+        LOGGER.info(stringResponse);
     }
 
     @Test
