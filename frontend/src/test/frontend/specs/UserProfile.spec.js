@@ -3,7 +3,7 @@ import { mount } from 'avoriaz';
 
 describe("UserProfile.vue", function(){
 
-    it("draw", function() {
+    it("render", function() {
         expect(UserProfile).toBeDefined();
         const UserProfileComponent = mount(UserProfile);
         UserProfileComponent.setProps({
