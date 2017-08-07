@@ -59,7 +59,7 @@ public class BlogErrorControllerTest extends AbstractUtTestRunner {
 
         LOGGER.info(str);
 
-        Map<String, String> resp = objectMapper.readValue(str, new TypeReference<Map<String, String>>(){});
+        Map<String, Object> resp = objectMapper.readValue(str, new TypeReference<Map<String, Object>>(){});
         // check that Exception Handler hides Spring Security exceptions
         Assert.assertFalse(resp.containsKey("exception"));
         Assert.assertFalse(resp.containsKey("trace"));
@@ -106,7 +106,7 @@ public class BlogErrorControllerTest extends AbstractUtTestRunner {
 
         LOGGER.info(str);
 
-        Map<String, String> resp = objectMapper.readValue(str, new TypeReference<Map<String, String>>(){});
+        Map<String, Object> resp = objectMapper.readValue(str, new TypeReference<Map<String, Object>>(){});
         Assert.assertFalse(resp.containsKey("exception"));
         Assert.assertFalse(resp.containsKey("trace"));
         Assert.assertFalse(resp.containsValue(TestConstants.SQL_QUERY));
@@ -123,7 +123,7 @@ public class BlogErrorControllerTest extends AbstractUtTestRunner {
 
         LOGGER.info(str);
 
-        Map<String, String> resp = objectMapper.readValue(str, new TypeReference<Map<String, String>>(){});
+        Map<String, Object> resp = objectMapper.readValue(str, new TypeReference<Map<String, Object>>(){});
         Assert.assertFalse(resp.containsKey("exception"));
         Assert.assertFalse(resp.containsKey("trace"));
 
