@@ -21,8 +21,8 @@ public class Constants {
         public static final String MY = "/my";
         public static final String POST_ID = "/{postId}";
         public static final String COMMENT_ID = "/{commentId}";
-
         public static final String COMMENT = "/comment";
+        public static final String REGISTER = "/register";
     }
 
     public static class PathVariables {

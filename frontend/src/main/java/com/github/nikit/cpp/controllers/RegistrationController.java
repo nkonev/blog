@@ -12,11 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.WebRequest;
-
 import java.time.Duration;
 import java.util.HashSet;
 import java.util.Map;
@@ -34,6 +33,9 @@ public class RegistrationController {
 
     @Autowired
     private JavaMailSender mailSender;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Value("${custom.registration.email.from}")
     private String from;
@@ -53,7 +55,7 @@ public class RegistrationController {
     private static final String REG_LINK_PLACEHOLDER = "__REGISTRATION_LINK_PLACEHOLDER__";
 
 
-    @PostMapping(value = Constants.Uls.API+"/register")
+    @PostMapping(value = Constants.Uls.API+Constants.Uls.REGISTER)
     @ResponseBody
     public void register(@RequestBody CreateUserDTO userAccountDTO) {
         if(userAccountRepository.findByUsername(userAccountDTO.getLogin()).isPresent()){
@@ -72,7 +74,7 @@ public class RegistrationController {
 
         UserAccount userAccount = new UserAccount(
                 userAccountDTO.getLogin(),
-                userAccountDTO.getPassword(),
+                passwordEncoder.encode(userAccountDTO.getPassword()),
                 userAccountDTO.getAvatar(),
                 expired,
                 locked,

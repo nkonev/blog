@@ -11,7 +11,7 @@ custom.base-url: "http://127.0.0.1:${server.port}"
 spring.mail:
   testConnection: false
   host: 127.0.0.1 
-  port: 1025
+  port: 3025
   username: testEmailUsername 
   password: testEmailPassword 
   properties:

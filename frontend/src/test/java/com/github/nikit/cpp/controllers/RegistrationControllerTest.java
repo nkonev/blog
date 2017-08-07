@@ -1,17 +1,114 @@
 package com.github.nikit.cpp.controllers;
 
 import com.github.nikit.cpp.AbstractUtTestRunner;
+import com.github.nikit.cpp.Constants;
+import com.github.nikit.cpp.TestConstants;
+import com.github.nikit.cpp.dto.CreateUserDTO;
+import com.github.nikit.cpp.repo.redis.UserConfirmationTokenRepository;
+import com.github.nikit.cpp.security.SecurityConfig;
+import com.github.nikit.cpp.util.UrlParser;
+import com.icegreen.greenmail.junit.GreenMailRule;
+import com.icegreen.greenmail.util.Retriever;
+import com.icegreen.greenmail.util.ServerSetup;
+import com.icegreen.greenmail.util.ServerSetupTest;
+import com.sun.mail.imap.IMAPMessage;
+import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
+import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static com.github.nikit.cpp.security.SecurityConfig.PASSWORD_PARAMETER;
+import static com.github.nikit.cpp.security.SecurityConfig.USERNAME_PARAMETER;
+import static com.icegreen.greenmail.util.ServerSetupTest.IMAP;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class RegistrationControllerTest extends AbstractUtTestRunner {
 
+//    @Autowired
+//    private MailClient mailClient;
+
+    @Autowired
+    private UserConfirmationTokenRepository userConfirmationTokenRepository;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RegistrationControllerTest.class);
+
+    @Value("${spring.mail.port}")
+    private int port;
+
+    @Rule
+    public GreenMailRule greenMail = new GreenMailRule(ServerSetupTest.SMTP_IMAP);
+
     @Test
     public void testConfirmationSuccess() throws Exception {
+        final String email = "newbie@example.com";
+        final String username = "newbie";
+        final String password = "password";
+
+        CreateUserDTO createUserDTO = new CreateUserDTO(username, null, password, email);
+
         // register
+        MvcResult createAccountRequest = mockMvc.perform(
+                post(Constants.Uls.API+Constants.Uls.REGISTER)
+                        .content(objectMapper.writeValueAsString(createUserDTO))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .with(csrf())
+        )
+                .andExpect(status().isOk())
+                .andReturn();
+        String createAccountStr = createAccountRequest.getResponse().getContentAsString();
+        LOGGER.info(createAccountStr);
+
+        // login unconfirmed fail
+        mockMvc.perform(
+                post(SecurityConfig.API_LOGIN_URL)
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param(USERNAME_PARAMETER, username)
+                        .param(PASSWORD_PARAMETER, password)
+                        .with(csrf())
+        )
+                .andExpect(status().isUnauthorized());
+
 
         // confirm
+        // http://www.icegreen.com/greenmail/javadocs/com/icegreen/greenmail/util/Retriever.html
+        try (Retriever r = new Retriever(greenMail.getImap())) {
+            IMAPMessage imapMessage = (IMAPMessage) r.getMessages(email)[0];
+            String content = (String) imapMessage.getContent();
 
-        // login
+            String parsedUrl = UrlParser.parseUrlFromMessage(content);
+
+            String tokenUuidString = UriComponentsBuilder.fromUri(new URI(parsedUrl)).build().getQueryParams().get("uuid").get(0);
+            Assert.assertTrue(userConfirmationTokenRepository.exists(tokenUuidString));
+
+            // perform confirm
+            mockMvc.perform(get(parsedUrl)).andExpect(status().isOk());
+            Assert.assertFalse(userConfirmationTokenRepository.exists(tokenUuidString));
+        }
+
+        // login confirmed ok
+        mockMvc.perform(
+                post(SecurityConfig.API_LOGIN_URL)
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param(USERNAME_PARAMETER, username)
+                        .param(PASSWORD_PARAMETER, password)
+                        .with(csrf())
+        )
+                .andExpect(status().isOk());
     }
 
     @Test

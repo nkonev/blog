@@ -16,6 +16,10 @@ public class CreateUserDTO extends UserAccountDTO {
         this.email = email;
     }
 
+    public CreateUserDTO(String login, URL avatar, String password, String email) {
+        this(null, login, avatar, password, email);
+    }
+
     public String getPassword() {
         return password;
     }

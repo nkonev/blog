@@ -18,8 +18,8 @@ def INTEGRATION_TEST_YML_FILE = "${project.basedir}/../integration-test/src/test
 class ExportedConstants {
     public static final def PROD_PORT = 8080
     public static final def TEST_PORT = 9080
-    public static final def TEST_SMTP_PORT = 1025
-    public static final def TEST_IMAP_PORT = 1463
+    public static final def TEST_SMTP_PORT = 3025 // this is greenmail requirement
+    public static final def TEST_IMAP_PORT = 3143
     public static final def TEST_EMAIL_USERNAME = "testEmailUsername"
     public static final def TEST_EMAIL_PASSWORD = "testEmailPassword"
     public static final def SCHEME = 'http'
