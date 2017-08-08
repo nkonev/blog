@@ -59,7 +59,7 @@ public class ExceptionHandler {
     @org.springframework.web.bind.annotation.ExceptionHandler(PasswordResetTokenNotFoundException.class)
     public BlogError passwordResetTokenNotFound(PasswordResetTokenNotFoundException e) throws IOException {
 
-        return new BlogError(HttpStatus.BAD_REQUEST.value(), "password reset", e.getMessage(), new Date().toString());
+        return new BlogError(HttpStatus.FORBIDDEN.value(), "password reset", e.getMessage(), new Date().toString());
     }
 
 
