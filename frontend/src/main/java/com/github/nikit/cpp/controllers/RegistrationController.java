@@ -12,6 +12,7 @@ import com.github.nikit.cpp.repo.jpa.UserAccountRepository;
 import com.github.nikit.cpp.repo.jpa.PasswordResetTokenRepository;
 import com.github.nikit.cpp.repo.redis.UserConfirmationTokenRepository;
 import com.github.nikit.cpp.utils.TimeUtil;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,8 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -224,7 +227,11 @@ public class RegistrationController {
     }
 
     public static class PasswordSetDto {
+        @NotNull
         private UUID passwordResetToken;
+
+        @Size(min = Constants.MIN_PASSWORD_LENGTH, max = Constants.MAX_PASSWORD_LENGTH)
+        @NotEmpty
         private String newPassword;
 
         public PasswordSetDto() { }

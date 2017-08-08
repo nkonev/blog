@@ -394,6 +394,26 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
     }
 
     @Test
+    public void resetPasswordSetNewPasswordValidation() throws Exception {
+        String emptyPassword = null;
+        RegistrationController.PasswordSetDto passwordSetDto = new RegistrationController.PasswordSetDto(UUID.randomUUID(), emptyPassword);
+
+        mockMvc.perform(
+                post(Constants.Uls.API+Constants.Uls.PASSWORD_RESET_SET_NEW)
+                        .content(objectMapper.writeValueAsString(passwordSetDto))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .with(csrf())
+        )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("validation error"))
+                .andExpect(jsonPath("$.message").value("validation error, see validationErrors[]"))
+                .andExpect(jsonPath("$.validationErrors[0].field").value("newPassword"))
+                .andExpect(jsonPath("$.validationErrors[0].message").value("may not be empty"))
+        ;
+
+    }
+
+    @Test
     @Ignore
     public void fullyAuthenticatedUserCanChangeOwnPassword() {
 
