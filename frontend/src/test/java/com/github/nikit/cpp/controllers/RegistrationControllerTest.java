@@ -15,6 +15,7 @@ import com.icegreen.greenmail.util.Retriever;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import com.sun.mail.imap.IMAPMessage;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -286,5 +287,76 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
                 .andExpect(status().isOk());
         Assert.assertEquals("new token shouldn't appear when attacker attempts reactivate banned(locked) user", tokenCountBeforeResend, userConfirmationTokenRepository.count());
     }
+
+    // TODO https://www.owasp.org/index.php/Forgot_Password_Cheat_Sheet
+    // scheme simplified, suspect that user's email doesn't stolen
+    @Test
+    @Ignore
+    public void userCanResendPasswordOnlyOnOwnEmail() {
+        // invoke resend, this sends url /password-reset?uuid=<uuid> and confirm code to email
+
+        // after open link user see "input new password dialog"
+
+        // user inputs code, code compares with another in ResetPasswordToken
+
+        // ... this is changes his password
+    }
+
+    @Test
+    @Ignore
+    public void fullyAuthenticatedUserCanChangeOwnPassword() {
+
+    }
+
+    @Test
+    @Ignore
+    public void fullyAuthenticatedUserCannotChangeForeignPassword() {
+
+    }
+
+
+    @Test
+    @Ignore
+    public void adminCanChangeAnybodyPassword() {
+        // admin
+    }
+
+    // TODO mode to another Test
+    @Test
+    @Ignore
+    public void fullyAuthenticatedUserCanChangeHisProfile() {
+
+        // assert that password isn't affected
+    }
+
+    @Test
+    @Ignore
+    public void fullyAuthenticatedUserCannotChangeForeignProfile() {
+
+    }
+
+    @Test
+    @Ignore
+    public void adminCanChangeAnyProfile() {
+
+    }
+
+    @Test
+    @Ignore
+    public void adminCanSeeAnybodyProfileEmail() {
+
+    }
+
+    @Test
+    @Ignore
+    public void userCannotSeeAnybodyProfileEmail() {
+
+    }
+    @Test
+    @Ignore
+    public void userCanSeeOnlyOwnProfileEmail() {
+
+    }
+
 
 }
