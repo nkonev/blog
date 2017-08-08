@@ -50,14 +50,22 @@ public class RegistrationController {
     @Autowired
     private PasswordResetTokenRepository passwordResetTokenRepository;
 
-    @Value("${custom.registration.email.from}")
+    @Value("${custom.email.from}")
     private String from;
 
     @Value("${custom.registration.email.subject}")
-    private String subject;
+    private String registrationSubject;
 
     @Value("${custom.registration.email.text-template}")
-    private String textTemplate;
+    private String registrationTextTemplate;
+
+
+    @Value("${custom.password-reset.email.subject}")
+    private String passwordResetSubject;
+
+    @Value("${custom.password-reset.email.text-template}")
+    private String passwordResetTextTemplate;
+
 
     @Value("${custom.base-url}")
     private String baseUrl;
@@ -70,6 +78,7 @@ public class RegistrationController {
 
 
     private static final String REG_LINK_PLACEHOLDER = "__REGISTRATION_LINK_PLACEHOLDER__";
+    private static final String PASSWORD_RESET_LINK_PLACEHOLDER = "__PASSWORD_RESET_LINK_PLACEHOLDER__";
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RegistrationController.class);
@@ -91,10 +100,10 @@ public class RegistrationController {
         // http://docs.spring.io/spring/docs/4.3.10.RELEASE/spring-framework-reference/htmlsingle/#mail-usage-simple
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setFrom(from);
-        msg.setSubject(subject);
+        msg.setSubject(registrationSubject);
         msg.setTo(email);
 
-        String text = textTemplate.replace(REG_LINK_PLACEHOLDER, baseUrl + Constants.Uls.CONFIRM+ "?"+Constants.Uls.UUID +"=" + userConfirmationToken.getUuid());
+        String text = registrationTextTemplate.replace(REG_LINK_PLACEHOLDER, baseUrl + Constants.Uls.CONFIRM+ "?"+Constants.Uls.UUID +"=" + userConfirmationToken.getUuid());
         msg.setText(text);
 
         mailSender.send(msg);
@@ -103,14 +112,10 @@ public class RegistrationController {
     private void sendPasswordResetToken(String email, PasswordResetToken passwordResetToken) {
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setFrom(from);
-        msg.setSubject("password reset"); // todo
+        msg.setSubject(passwordResetSubject);
         msg.setTo(email);
 
-        // TODO
-        String LINK_PLACEHOLDER = "__LINK__";
-        String textTemplate2 = "Link "+LINK_PLACEHOLDER+" for reset your password. If you didn't issue password reset please contact us";
-
-        String text = textTemplate2.replace(LINK_PLACEHOLDER, baseUrl + "/password-reset"+ "?"+Constants.Uls.UUID +"=" + passwordResetToken.getUuid());
+        String text = passwordResetTextTemplate.replace(PASSWORD_RESET_LINK_PLACEHOLDER, baseUrl + Constants.Uls.PASSWORD_RESET+ "?"+Constants.Uls.UUID +"=" + passwordResetToken.getUuid());
         msg.setText(text);
 
         mailSender.send(msg);

@@ -26,9 +26,11 @@ public class Constants {
         public static final String COMMENT_ID = "/{commentId}";
         public static final String COMMENT = "/comment";
         public static final String REGISTER = "/register";
-        public static final String CONFIRM = "/confirm";
+        public static final String CONFIRM = "/confirm"; // html for handle link from email
         public static final String UUID = "uuid";
         public static final String RESEND_CONFIRMATION_EMAIL = "/resend-confirmation-email";
+        public static final String PASSWORD_RESET = "/password-reset"; // html for handle link from email
+
         public static final String REQUEST_PASSWORD_RESET = "/request-password-reset";
         public static final String PASSWORD_RESET_SET_NEW = "/password-reset-set-new";
     }

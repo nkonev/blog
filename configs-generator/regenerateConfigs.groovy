@@ -100,9 +100,10 @@ spring.mail:
 def custom(boolean test) {
     def str = """
 custom:
+  email:
+    from: ${!test ? '"username@yandex.ru"' : ExportedConstants.TEST_EMAIL_USERNAME+'@test.example.com'} 
   registration:
-    email:
-      from: ${!test ? '"username@yandex.ru"' : ExportedConstants.TEST_EMAIL_USERNAME+'@test.example.com'} 
+    email:  
       subject: "Registration confirmation"
       text-template: "Please open __REGISTRATION_LINK_PLACEHOLDER__ for complete registration."
   confirmation:
@@ -110,6 +111,9 @@ custom:
       token:
         ttl-minutes: 5
   password-reset:
+    email:
+      subject: "Password reset"
+      text-template: "Link __PASSWORD_RESET_LINK_PLACEHOLDER__ for reset your password. If you didn't issue password reset please contact us."
     token:
       ttl-minutes: 5
 """
