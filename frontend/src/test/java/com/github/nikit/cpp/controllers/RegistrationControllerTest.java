@@ -24,7 +24,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
@@ -323,12 +322,12 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
 
         // after open link user see "input new password dialog"
         // user inputs code, code compares with another in ResetPasswordToken
-        RegistrationController.PasswordSetDto passwordSetDto = new RegistrationController.PasswordSetDto(UUID.fromString(passwordResetTokenUuidString), newPassword);
+        RegistrationController.PasswordResetDto passwordResetDto = new RegistrationController.PasswordResetDto(UUID.fromString(passwordResetTokenUuidString), newPassword);
 
         // user click "set new password" button in modal
         mockMvc.perform(
                 post(Constants.Uls.API+Constants.Uls.PASSWORD_RESET_SET_NEW)
-                        .content(objectMapper.writeValueAsString(passwordSetDto))
+                        .content(objectMapper.writeValueAsString(passwordResetDto))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())
         ).andExpect(status().isOk());
@@ -355,11 +354,11 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
             passwordResetTokenRepository.delete(tokenUuid); // delete random if one is occasionally present
         }
 
-        RegistrationController.PasswordSetDto passwordSetDto = new RegistrationController.PasswordSetDto(tokenUuid, "qwqwqwqwqwqwqwqw");
+        RegistrationController.PasswordResetDto passwordResetDto = new RegistrationController.PasswordResetDto(tokenUuid, "qwqwqwqwqwqwqwqw");
 
         mockMvc.perform(
                 post(Constants.Uls.API+Constants.Uls.PASSWORD_RESET_SET_NEW)
-                        .content(objectMapper.writeValueAsString(passwordSetDto))
+                        .content(objectMapper.writeValueAsString(passwordResetDto))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())
         )
@@ -379,11 +378,11 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
         passwordResetToken = passwordResetTokenRepository.save(passwordResetToken);
 
 
-        RegistrationController.PasswordSetDto passwordSetDto = new RegistrationController.PasswordSetDto(tokenUuid, "qwqwqwqwqwqwqwqw");
+        RegistrationController.PasswordResetDto passwordResetDto = new RegistrationController.PasswordResetDto(tokenUuid, "qwqwqwqwqwqwqwqw");
 
         mockMvc.perform(
                 post(Constants.Uls.API+Constants.Uls.PASSWORD_RESET_SET_NEW)
-                        .content(objectMapper.writeValueAsString(passwordSetDto))
+                        .content(objectMapper.writeValueAsString(passwordResetDto))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())
         )
@@ -396,11 +395,11 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
     @Test
     public void resetPasswordSetNewPasswordValidation() throws Exception {
         String emptyPassword = null;
-        RegistrationController.PasswordSetDto passwordSetDto = new RegistrationController.PasswordSetDto(UUID.randomUUID(), emptyPassword);
+        RegistrationController.PasswordResetDto passwordResetDto = new RegistrationController.PasswordResetDto(UUID.randomUUID(), emptyPassword);
 
         mockMvc.perform(
                 post(Constants.Uls.API+Constants.Uls.PASSWORD_RESET_SET_NEW)
-                        .content(objectMapper.writeValueAsString(passwordSetDto))
+                        .content(objectMapper.writeValueAsString(passwordResetDto))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())
         )

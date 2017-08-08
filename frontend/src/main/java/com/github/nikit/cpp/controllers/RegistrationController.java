@@ -226,7 +226,7 @@ public class RegistrationController {
         sendPasswordResetToken(userAccount.getEmail(), passwordResetToken);
     }
 
-    public static class PasswordSetDto {
+    public static class PasswordResetDto {
         @NotNull
         private UUID passwordResetToken;
 
@@ -234,9 +234,9 @@ public class RegistrationController {
         @NotEmpty
         private String newPassword;
 
-        public PasswordSetDto() { }
+        public PasswordResetDto() { }
 
-        public PasswordSetDto(UUID passwordResetToken, String newPassword) {
+        public PasswordResetDto(UUID passwordResetToken, String newPassword) {
             this.passwordResetToken = passwordResetToken;
             this.newPassword = newPassword;
         }
@@ -260,12 +260,12 @@ public class RegistrationController {
 
     @PostMapping(value = Constants.Uls.API + Constants.Uls.PASSWORD_RESET_SET_NEW)
     @ResponseBody
-    public void resetPassword(@RequestBody @Valid PasswordSetDto passwordSetDto) {
+    public void resetPassword(@RequestBody @Valid PasswordResetDto passwordResetDto) {
 
         // webpage parses token uuid from URL
         // .. and js sends this request
 
-        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findOne(passwordSetDto.getPasswordResetToken());
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findOne(passwordResetDto.getPasswordResetToken());
         if (passwordResetToken == null) {
             throw new PasswordResetTokenNotFoundException("password reset token not found");
         }
@@ -279,7 +279,7 @@ public class RegistrationController {
 
         UserAccount userAccount = userAccountOptional.get();
 
-        userAccount.setPassword(passwordEncoder.encode(passwordSetDto.getNewPassword()));
+        userAccount.setPassword(passwordEncoder.encode(passwordResetDto.getNewPassword()));
 
         return;
     }
