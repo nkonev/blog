@@ -31,6 +31,9 @@ custom:
     registration:
       token:
         ttl-minutes: 5
+  password-reset:
+    token:
+      ttl-minutes: 5
 
 server.port: 9080
 

@@ -62,6 +62,10 @@ public class RegistrationController {
     @Value("${custom.confirmation.registration.token.ttl-minutes}")
     private long userConfirmationTokenTtlMinutes;
 
+    @Value("${custom.password-reset.token.ttl-minutes}")
+    private long passwordResetTokenTtlMinutes;
+
+
     private static final String REG_LINK_PLACEHOLDER = "__REGISTRATION_LINK_PLACEHOLDER__";
 
 
@@ -209,7 +213,7 @@ public class RegistrationController {
         }
         UserAccount userAccount = userAccountOptional.get();
 
-        Duration ttl = Duration.ofMinutes(20); // todo
+        Duration ttl = Duration.ofMinutes(passwordResetTokenTtlMinutes);
         LocalDateTime expireTime = TimeUtil.getNowUTC().plus(ttl);
 
         PasswordResetToken passwordResetToken = new PasswordResetToken(uuid, userAccount.getId(), expireTime);

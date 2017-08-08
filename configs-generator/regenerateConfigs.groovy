@@ -97,7 +97,7 @@ spring.mail:
     mail.smtp.writetimeout: 5000"""
 }
 
-def registration(boolean test) {
+def custom(boolean test) {
     def str = """
 custom:
   registration:
@@ -109,6 +109,9 @@ custom:
     registration:
       token:
         ttl-minutes: 5
+  password-reset:
+    token:
+      ttl-minutes: 5
 """
     return str
 }
@@ -129,7 +132,7 @@ logging.level.org.springframework.web.socket: INFO
 #logging.level.org.hibernate.SQL: DEBUG
 #logging.level.org.hibernate.type: TRACE
 ${common(false)}
-${registration(false)}
+${custom(false)}
 server.tomcat.accesslog.enabled: true
 server.tomcat.accesslog.pattern: '%t %a "%r" %s (%D ms)'
 server.port: ${ExportedConstants.PROD_PORT}
@@ -151,7 +154,7 @@ def FRONTEND_TEST_YML_CONTENT =
 """${AUTOGENERATE_SNIPPET}
 logging.level.: INFO
 ${common(true)}
-${registration(true)}
+${custom(true)}
 server.port: ${ExportedConstants.TEST_PORT}
 ${WEBSERVER_SNIPPET}
 ${TEST_USERS_SNIPPET}
@@ -164,7 +167,7 @@ def INTEGRATION_TEST_YML_CONTENT =
 """${AUTOGENERATE_SNIPPET}
 logging.level.: INFO
 ${common(true)}
-${registration(true)}
+${custom(true)}
 server.port: ${ExportedConstants.TEST_PORT}
 ${WEBSERVER_SNIPPET}
 custom.selenium.implicitly-wait-timeout: 10

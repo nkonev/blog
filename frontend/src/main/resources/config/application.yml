@@ -39,6 +39,9 @@ custom:
     registration:
       token:
         ttl-minutes: 5
+  password-reset:
+    token:
+      ttl-minutes: 5
 
 server.tomcat.accesslog.enabled: true
 server.tomcat.accesslog.pattern: '%t %a "%r" %s (%D ms)'
