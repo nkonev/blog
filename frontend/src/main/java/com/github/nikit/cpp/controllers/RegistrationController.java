@@ -6,12 +6,11 @@ import com.github.nikit.cpp.entity.jpa.UserAccount;
 import com.github.nikit.cpp.entity.jpa.UserRole;
 import com.github.nikit.cpp.entity.jpa.PasswordResetToken;
 import com.github.nikit.cpp.entity.redis.UserConfirmationToken;
-import com.github.nikit.cpp.exception.PasswordResetTokenNotFound;
+import com.github.nikit.cpp.exception.PasswordResetTokenNotFoundException;
 import com.github.nikit.cpp.exception.UserAlreadyPresentException;
 import com.github.nikit.cpp.repo.jpa.UserAccountRepository;
 import com.github.nikit.cpp.repo.jpa.PasswordResetTokenRepository;
 import com.github.nikit.cpp.repo.redis.UserConfirmationTokenRepository;
-import com.github.nikit.cpp.utils.CodeGenUtils;
 import com.github.nikit.cpp.utils.TimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -257,10 +256,10 @@ public class RegistrationController {
 
         PasswordResetToken passwordResetToken = passwordResetTokenRepository.findOne(passwordSetDto.getPasswordResetToken());
         if (passwordResetToken == null) {
-            throw new PasswordResetTokenNotFound("token not found");
+            throw new PasswordResetTokenNotFoundException("password reset token not found");
         }
         if (TimeUtil.getNowUTC().isAfter(passwordResetToken.getExpiredAt()) ) {
-            throw new PasswordResetTokenNotFound("token is expired");
+            throw new PasswordResetTokenNotFoundException("password reset token is expired");
         }
         Optional<UserAccount> userAccountOptional = userAccountRepository.findById(passwordResetToken.getUserId());
         if(!userAccountOptional.isPresent()) {

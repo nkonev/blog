@@ -4,12 +4,15 @@ import com.github.nikit.cpp.AbstractUtTestRunner;
 import com.github.nikit.cpp.Constants;
 import com.github.nikit.cpp.TestConstants;
 import com.github.nikit.cpp.dto.CreateUserDTO;
+import com.github.nikit.cpp.entity.jpa.PasswordResetToken;
 import com.github.nikit.cpp.entity.jpa.UserAccount;
 import com.github.nikit.cpp.entity.redis.UserConfirmationToken;
+import com.github.nikit.cpp.repo.jpa.PasswordResetTokenRepository;
 import com.github.nikit.cpp.repo.jpa.UserAccountRepository;
 import com.github.nikit.cpp.repo.redis.UserConfirmationTokenRepository;
 import com.github.nikit.cpp.security.SecurityConfig;
 import com.github.nikit.cpp.util.UrlParser;
+import com.github.nikit.cpp.utils.TimeUtil;
 import com.icegreen.greenmail.junit.GreenMailRule;
 import com.icegreen.greenmail.util.Retriever;
 import com.icegreen.greenmail.util.ServerSetupTest;
@@ -46,6 +49,9 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
 
     @Autowired
     private UserAccountRepository userAccountRepository;
+
+    @Autowired
+    private PasswordResetTokenRepository passwordResetTokenRepository;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RegistrationControllerTest.class);
 
@@ -340,6 +346,51 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
                 .andExpect(status().isOk());
 
 
+    }
+
+    @Test
+    public void handlePasswordResetTokenNotFound() throws Exception {
+        UUID tokenUuid = UUID.randomUUID();
+        if (passwordResetTokenRepository.exists(tokenUuid)) {
+            passwordResetTokenRepository.delete(tokenUuid); // delete random if one is occasionally present
+        }
+
+        RegistrationController.PasswordSetDto passwordSetDto = new RegistrationController.PasswordSetDto(tokenUuid, "qwqwqwqwqwqwqwqw");
+
+        mockMvc.perform(
+                post(Constants.Uls.API+Constants.Uls.PASSWORD_RESET_SET_NEW)
+                        .content(objectMapper.writeValueAsString(passwordSetDto))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .with(csrf())
+        )
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value("password reset token not found"))
+                .andExpect(jsonPath("$.error").value("password reset"))
+        ;
+    }
+
+    @Test
+    public void handlePasswordResetTokenExpired() throws Exception {
+        UUID tokenUuid = UUID.randomUUID();
+        if (passwordResetTokenRepository.exists(tokenUuid)) {
+            passwordResetTokenRepository.delete(tokenUuid); // delete random if one is occasionally present
+        }
+        PasswordResetToken passwordResetToken = new PasswordResetToken(tokenUuid, 1L, TimeUtil.getNowUTC().minusMinutes(10));
+        passwordResetToken = passwordResetTokenRepository.save(passwordResetToken);
+
+
+        RegistrationController.PasswordSetDto passwordSetDto = new RegistrationController.PasswordSetDto(tokenUuid, "qwqwqwqwqwqwqwqw");
+
+        mockMvc.perform(
+                post(Constants.Uls.API+Constants.Uls.PASSWORD_RESET_SET_NEW)
+                        .content(objectMapper.writeValueAsString(passwordSetDto))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .with(csrf())
+        )
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value("password reset token is expired"))
+                .andExpect(jsonPath("$.error").value("password reset"))
+        ;
     }
 
     @Test

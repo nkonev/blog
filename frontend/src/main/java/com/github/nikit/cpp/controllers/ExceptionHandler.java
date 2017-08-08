@@ -3,6 +3,7 @@ package com.github.nikit.cpp.controllers;
 import com.github.nikit.cpp.dto.BlogError;
 import com.github.nikit.cpp.dto.ValidationError;
 import com.github.nikit.cpp.exception.BadRequestException;
+import com.github.nikit.cpp.exception.PasswordResetTokenNotFoundException;
 import com.github.nikit.cpp.exception.UserAlreadyPresentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,9 +54,14 @@ public class ExceptionHandler {
         return new BlogError(HttpStatus.BAD_REQUEST.value(), "validation error", "validation error, see validationErrors[]", new Date().toString(), errors);
     }
 
-    // ((FieldError)((MethodArgumentNotValidException) e).getBindingResult().getAllErrors().get(0)).getField()
+    @ResponseBody
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @org.springframework.web.bind.annotation.ExceptionHandler(PasswordResetTokenNotFoundException.class)
+    public BlogError passwordResetTokenNotFound(PasswordResetTokenNotFoundException e) throws IOException {
 
-    // ((MethodArgumentNotValidException) e).getBindingResult().getAllErrors().get(0).getDefaultMessage()
+        return new BlogError(HttpStatus.BAD_REQUEST.value(), "password reset", e.getMessage(), new Date().toString());
+    }
+
 
     // we hide exceptions such as SQLException so SQL didn't be present in seponse
     @org.springframework.web.bind.annotation.ExceptionHandler(Throwable.class)
