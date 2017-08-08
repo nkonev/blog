@@ -3,11 +3,13 @@
 -- changeset nkonev:0_drop_schemas context:test failOnError: true
 DROP SCHEMA IF EXISTS auth cascade;
 DROP SCHEMA IF EXISTS posts cascade;
+DROP SCHEMA IF EXISTS historical cascade;
 
 -- changeset nkonev:0_initial_spring_security context:main failOnError: true
 -- https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#appendix-schema
 CREATE SCHEMA auth;
 CREATE SCHEMA posts;
+CREATE SCHEMA historical;
 
 SET search_path = auth, pg_catalog;
 
@@ -58,6 +60,13 @@ CREATE TABLE posts.comment (
   post_id BIGINT NOT NULL REFERENCES posts.post(id),
   owner_id BIGINT NOT NULL REFERENCES auth.users(id)
 );
+
+CREATE TABLE historical.password_reset_token (
+	uuid UUID PRIMARY KEY,
+	user_id BIGINT NOT NULL REFERENCES auth.users(id),
+	expired_at timestamp NOT NULL
+);
+
 
 -- changeset nkonev:2_test_data context:test failOnError: true
 -- insert test data

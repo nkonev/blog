@@ -26,6 +26,8 @@ public class Constants {
         public static final String CONFIRM = "/confirm";
         public static final String UUID = "uuid";
         public static final String RESEND_CONFIRMATION_EMAIL = "/resend-confirmation-email";
+        public static final String REQUEST_PASSWORD_RESET = "/request-password-reset";
+        public static final String PASSWORD_RESET_SET_NEW = "/password-reset-set-new";
     }
 
     public static class PathVariables {

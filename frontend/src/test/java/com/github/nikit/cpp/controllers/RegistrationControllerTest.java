@@ -288,18 +288,58 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
         Assert.assertEquals("new token shouldn't appear when attacker attempts reactivate banned(locked) user", tokenCountBeforeResend, userConfirmationTokenRepository.count());
     }
 
-    // TODO https://www.owasp.org/index.php/Forgot_Password_Cheat_Sheet
     // scheme simplified, suspect that user's email doesn't stolen
     @Test
-    @Ignore
-    public void userCanResendPasswordOnlyOnOwnEmail() {
+    public void userCanRequestPasswordOnlyOnOwnEmail() throws Exception {
+        final String user = TestConstants.USER_BOB;
+        final String email = user+"@example.com";
+        final String newPassword = "new-password";
+
         // invoke resend, this sends url /password-reset?uuid=<uuid> and confirm code to email
+        mockMvc.perform(
+                post(Constants.Uls.API+Constants.Uls.REQUEST_PASSWORD_RESET+"?email="+email)
+                        .with(csrf())
+        )
+                .andExpect(status().isOk());
+
+
+        String passwordResetTokenUuidString;
+        try (Retriever r = new Retriever(greenMail.getImap())) {
+            Message[] messages = r.getMessages(email);
+            Assert.assertEquals("backend should sent one email for password reset",1, messages.length);
+            IMAPMessage imapMessage = (IMAPMessage)messages[0];
+            String content = (String) imapMessage.getContent();
+
+            String parsedUrl = UrlParser.parseUrlFromMessage(content);
+
+            passwordResetTokenUuidString = UriComponentsBuilder.fromUri(new URI(parsedUrl)).build().getQueryParams().get(Constants.Uls.UUID).get(0);
+        }
 
         // after open link user see "input new password dialog"
-
         // user inputs code, code compares with another in ResetPasswordToken
+        RegistrationController.PasswordSetDto passwordSetDto = new RegistrationController.PasswordSetDto(UUID.fromString(passwordResetTokenUuidString), newPassword);
+
+        // user click "set new password" button in modal
+        mockMvc.perform(
+                post(Constants.Uls.API+Constants.Uls.PASSWORD_RESET_SET_NEW)
+                        .content(objectMapper.writeValueAsString(passwordSetDto))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .with(csrf())
+        ).andExpect(status().isOk());
+
 
         // ... this is changes his password
+        // login with new password ok
+        mockMvc.perform(
+                post(SecurityConfig.API_LOGIN_URL)
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param(USERNAME_PARAMETER, user)
+                        .param(PASSWORD_PARAMETER, newPassword)
+                        .with(csrf())
+        )
+                .andExpect(status().isOk());
+
+
     }
 
     @Test

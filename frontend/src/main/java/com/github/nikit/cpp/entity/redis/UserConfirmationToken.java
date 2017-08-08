@@ -7,7 +7,7 @@ import org.springframework.data.redis.core.TimeToLive;
 @RedisHash
 public class UserConfirmationToken {
     @Id
-    private String token;
+    private String uuid;
 
     private Long userId;
 
@@ -16,18 +16,18 @@ public class UserConfirmationToken {
 
     public UserConfirmationToken() { }
 
-    public UserConfirmationToken(String token, Long userId, long ttlSeconds) {
-        this.token = token;
+    public UserConfirmationToken(String uuid, Long userId, long ttlSeconds) {
+        this.uuid = uuid;
         this.userId = userId;
         this.ttlSeconds = ttlSeconds;
     }
 
-    public String getToken() {
-        return token;
+    public String getUuid() {
+        return uuid;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public Long getUserId() {
