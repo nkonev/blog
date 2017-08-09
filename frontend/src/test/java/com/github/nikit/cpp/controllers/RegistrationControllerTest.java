@@ -322,7 +322,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
 
         // after open link user see "input new password dialog"
         // user inputs code, code compares with another in ResetPasswordToken
-        RegistrationController.PasswordResetDto passwordResetDto = new RegistrationController.PasswordResetDto(UUID.fromString(passwordResetTokenUuidString), newPassword);
+        PasswordResetController.PasswordResetDto passwordResetDto = new PasswordResetController.PasswordResetDto(UUID.fromString(passwordResetTokenUuidString), newPassword);
 
         // user click "set new password" button in modal
         mockMvc.perform(
@@ -354,7 +354,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
             passwordResetTokenRepository.delete(tokenUuid); // delete random if one is occasionally present
         }
 
-        RegistrationController.PasswordResetDto passwordResetDto = new RegistrationController.PasswordResetDto(tokenUuid, "qwqwqwqwqwqwqwqw");
+        PasswordResetController.PasswordResetDto passwordResetDto = new PasswordResetController.PasswordResetDto(tokenUuid, "qwqwqwqwqwqwqwqw");
 
         mockMvc.perform(
                 post(Constants.Uls.API+Constants.Uls.PASSWORD_RESET_SET_NEW)
@@ -378,7 +378,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
         passwordResetToken = passwordResetTokenRepository.save(passwordResetToken);
 
 
-        RegistrationController.PasswordResetDto passwordResetDto = new RegistrationController.PasswordResetDto(tokenUuid, "qwqwqwqwqwqwqwqw");
+        PasswordResetController.PasswordResetDto passwordResetDto = new PasswordResetController.PasswordResetDto(tokenUuid, "qwqwqwqwqwqwqwqw");
 
         mockMvc.perform(
                 post(Constants.Uls.API+Constants.Uls.PASSWORD_RESET_SET_NEW)
@@ -395,7 +395,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
     @Test
     public void resetPasswordSetNewPasswordValidation() throws Exception {
         String emptyPassword = null;
-        RegistrationController.PasswordResetDto passwordResetDto = new RegistrationController.PasswordResetDto(UUID.randomUUID(), emptyPassword);
+        PasswordResetController.PasswordResetDto passwordResetDto = new PasswordResetController.PasswordResetDto(UUID.randomUUID(), emptyPassword);
 
         mockMvc.perform(
                 post(Constants.Uls.API+Constants.Uls.PASSWORD_RESET_SET_NEW)
@@ -411,62 +411,5 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
         ;
 
     }
-
-    @Test
-    @Ignore
-    public void fullyAuthenticatedUserCanChangeOwnPassword() {
-
-    }
-
-    @Test
-    @Ignore
-    public void fullyAuthenticatedUserCannotChangeForeignPassword() {
-
-    }
-
-
-    @Test
-    @Ignore
-    public void adminCanChangeAnybodyPassword() {
-        // admin
-    }
-
-    // TODO mode to another Test
-    @Test
-    @Ignore
-    public void fullyAuthenticatedUserCanChangeHisProfile() {
-
-        // assert that password isn't affected
-    }
-
-    @Test
-    @Ignore
-    public void fullyAuthenticatedUserCannotChangeForeignProfile() {
-
-    }
-
-    @Test
-    @Ignore
-    public void adminCanChangeAnyProfile() {
-
-    }
-
-    @Test
-    @Ignore
-    public void adminCanSeeAnybodyProfileEmail() {
-
-    }
-
-    @Test
-    @Ignore
-    public void userCannotSeeAnybodyProfileEmail() {
-
-    }
-    @Test
-    @Ignore
-    public void userCanSeeOnlyOwnProfileEmail() {
-
-    }
-
 
 }

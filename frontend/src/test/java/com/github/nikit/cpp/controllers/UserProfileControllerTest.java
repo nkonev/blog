@@ -3,6 +3,7 @@ package com.github.nikit.cpp.controllers;
 import com.github.nikit.cpp.AbstractUtTestRunner;
 import com.github.nikit.cpp.Constants;
 import com.github.nikit.cpp.TestConstants;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MvcResult;
@@ -22,6 +23,42 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
                 .andExpect(jsonPath("$.login").value("alice"))
                 .andExpect(jsonPath("$.password").doesNotExist())
                 .andReturn();
+    }
+
+    @Test
+    @Ignore
+    public void fullyAuthenticatedUserCanChangeHisProfile() {
+
+        // assert that password isn't affected
+    }
+
+    @Test
+    @Ignore
+    public void fullyAuthenticatedUserCannotChangeForeignProfile() {
+
+    }
+
+    @Test
+    @Ignore
+    public void adminCanChangeAnyProfile() {
+
+    }
+
+    @Test
+    @Ignore
+    public void adminCanSeeAnybodyProfileEmail() {
+
+    }
+
+    @Test
+    @Ignore
+    public void userCannotSeeAnybodyProfileEmail() {
+
+    }
+    @Test
+    @Ignore
+    public void userCanSeeOnlyOwnProfileEmail() {
+
     }
 
 }

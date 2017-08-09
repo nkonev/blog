@@ -4,34 +4,26 @@ import com.github.nikit.cpp.Constants;
 import com.github.nikit.cpp.dto.CreateUserDTO;
 import com.github.nikit.cpp.entity.jpa.UserAccount;
 import com.github.nikit.cpp.entity.jpa.UserRole;
-import com.github.nikit.cpp.entity.jpa.PasswordResetToken;
 import com.github.nikit.cpp.entity.redis.UserConfirmationToken;
-import com.github.nikit.cpp.exception.PasswordResetTokenNotFoundException;
 import com.github.nikit.cpp.exception.UserAlreadyPresentException;
 import com.github.nikit.cpp.repo.jpa.UserAccountRepository;
-import com.github.nikit.cpp.repo.jpa.PasswordResetTokenRepository;
 import com.github.nikit.cpp.repo.redis.UserConfirmationTokenRepository;
 import com.github.nikit.cpp.services.EmailService;
-import com.github.nikit.cpp.utils.TimeUtil;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 @Controller
 @Transactional
@@ -46,16 +38,10 @@ public class RegistrationController {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private PasswordResetTokenRepository passwordResetTokenRepository;
-
-    @Autowired
     private EmailService emailService;
 
     @Value("${custom.confirmation.registration.token.ttl-minutes}")
     private long userConfirmationTokenTtlMinutes;
-
-    @Value("${custom.password-reset.token.ttl-minutes}")
-    private long passwordResetTokenTtlMinutes;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RegistrationController.class);
 
@@ -137,7 +123,7 @@ public class RegistrationController {
 
     @PostMapping(value = Constants.Uls.API+Constants.Uls.RESEND_CONFIRMATION_EMAIL)
     @ResponseBody
-    public void resend(String email) {
+    public void resendConfirmationToken(String email) {
         Optional<UserAccount> userAccountOptional = userAccountRepository.findByEmail(email);
         if(!userAccountOptional.isPresent()){
             return; // we care for for email leak
@@ -151,91 +137,5 @@ public class RegistrationController {
         UserConfirmationToken userConfirmationToken = createUserConfirmationToken(userAccount);
         emailService.sendUserConfirmationToken(email, userConfirmationToken);
     }
-
-    /**
-     * https://www.owasp.org/index.php/Forgot_Password_Cheat_Sheet
-     * https://stackoverflow.com/questions/1102781/best-way-for-a-forgot-password-implementation/1102817#1102817
-     * Yes, if your email is stolen you can lost your account
-     * @param email
-     */
-    @PostMapping(value = Constants.Uls.API+Constants.Uls.REQUEST_PASSWORD_RESET)
-    @ResponseBody
-    public void requestPasswordReset(String email) {
-        UUID uuid = UUID.randomUUID();
-
-        Optional<UserAccount> userAccountOptional = userAccountRepository.findByEmail(email);
-        if (!userAccountOptional.isPresent()) {
-            return; // we care for for email leak
-        }
-        UserAccount userAccount = userAccountOptional.get();
-
-        Duration ttl = Duration.ofMinutes(passwordResetTokenTtlMinutes);
-        LocalDateTime expireTime = TimeUtil.getNowUTC().plus(ttl);
-
-        PasswordResetToken passwordResetToken = new PasswordResetToken(uuid, userAccount.getId(), expireTime);
-
-        passwordResetToken = passwordResetTokenRepository.save(passwordResetToken);
-
-        emailService.sendPasswordResetToken(userAccount.getEmail(), passwordResetToken);
-    }
-
-    public static class PasswordResetDto {
-        @NotNull
-        private UUID passwordResetToken;
-
-        @Size(min = Constants.MIN_PASSWORD_LENGTH, max = Constants.MAX_PASSWORD_LENGTH)
-        @NotEmpty
-        private String newPassword;
-
-        public PasswordResetDto() { }
-
-        public PasswordResetDto(UUID passwordResetToken, String newPassword) {
-            this.passwordResetToken = passwordResetToken;
-            this.newPassword = newPassword;
-        }
-
-        public UUID getPasswordResetToken() {
-            return passwordResetToken;
-        }
-
-        public void setPasswordResetToken(UUID passwordResetToken) {
-            this.passwordResetToken = passwordResetToken;
-        }
-
-        public String getNewPassword() {
-            return newPassword;
-        }
-
-        public void setNewPassword(String newPassword) {
-            this.newPassword = newPassword;
-        }
-    }
-
-    @PostMapping(value = Constants.Uls.API + Constants.Uls.PASSWORD_RESET_SET_NEW)
-    @ResponseBody
-    public void resetPassword(@RequestBody @Valid PasswordResetDto passwordResetDto) {
-
-        // webpage parses token uuid from URL
-        // .. and js sends this request
-
-        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findOne(passwordResetDto.getPasswordResetToken());
-        if (passwordResetToken == null) {
-            throw new PasswordResetTokenNotFoundException("password reset token not found");
-        }
-        if (TimeUtil.getNowUTC().isAfter(passwordResetToken.getExpiredAt()) ) {
-            throw new PasswordResetTokenNotFoundException("password reset token is expired");
-        }
-        Optional<UserAccount> userAccountOptional = userAccountRepository.findById(passwordResetToken.getUserId());
-        if(!userAccountOptional.isPresent()) {
-            return;
-        }
-
-        UserAccount userAccount = userAccountOptional.get();
-
-        userAccount.setPassword(passwordEncoder.encode(passwordResetDto.getNewPassword()));
-
-        return;
-    }
-
 
 }
