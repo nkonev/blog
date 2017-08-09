@@ -1,6 +1,5 @@
 package com.github.nikit.cpp.converter;
 
-import com.github.nikit.cpp.dto.CreateUserDTO;
 import com.github.nikit.cpp.dto.UserAccountDTO;
 import com.github.nikit.cpp.dto.UserAccountDetailsDTO;
 import com.github.nikit.cpp.entity.jpa.UserAccount;

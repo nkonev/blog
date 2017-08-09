@@ -2,6 +2,7 @@ package com.github.nikit.cpp.controllers;
 
 import com.github.nikit.cpp.Constants;
 import com.github.nikit.cpp.dto.EditUserDTO;
+import com.github.nikit.cpp.entity.jpa.UserAccount;
 import com.github.nikit.cpp.utils.PageUtils;
 import com.github.nikit.cpp.converter.UserAccountConverter;
 import com.github.nikit.cpp.dto.UserAccountDTO;
@@ -67,6 +68,11 @@ public class UserProfileController {
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount,
             EditUserDTO editUserDto
     ) {
+        if (userAccount == null) {
+            throw new RuntimeException("Not authenticated user can't edit any user account. It can occurs due inpatient refactoring.");
+        }
+
+        UserAccount exists = userAccountRepository.findById(userAccount.getId()).orElseThrow(()-> new RuntimeException("Authenticated user account not found in database"));
 
         return null;
     }
