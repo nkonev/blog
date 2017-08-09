@@ -3,7 +3,7 @@ package com.github.nikit.cpp.controllers;
 import com.github.nikit.cpp.AbstractUtTestRunner;
 import com.github.nikit.cpp.Constants;
 import com.github.nikit.cpp.TestConstants;
-import com.github.nikit.cpp.dto.CreateUserDTO;
+import com.github.nikit.cpp.dto.EditUserDTO;
 import com.github.nikit.cpp.entity.jpa.PasswordResetToken;
 import com.github.nikit.cpp.entity.jpa.UserAccount;
 import com.github.nikit.cpp.entity.redis.UserConfirmationToken;
@@ -63,7 +63,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
         final String username = "newbie";
         final String password = "password";
 
-        CreateUserDTO createUserDTO = new CreateUserDTO(username, null, password, email);
+        EditUserDTO createUserDTO = new EditUserDTO(username, null, password, email);
 
         // register
         MvcResult createAccountRequest = mockMvc.perform(
@@ -143,7 +143,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
         final String email = "newbie@example.com";
         final String username = "newbie";
 
-        CreateUserDTO createUserDTO = new CreateUserDTO(username, null, null, email);
+        EditUserDTO createUserDTO = new EditUserDTO(username, null, null, email);
 
         // register
         MvcResult createAccountResult = mockMvc.perform(
@@ -168,7 +168,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
         final String email = "newbie@example.com";
         final String username = "newbie";
 
-        CreateUserDTO createUserDTO = new CreateUserDTO(username, null, "123", email);
+        EditUserDTO createUserDTO = new EditUserDTO(username, null, "123", email);
 
         // register
         MvcResult createAccountResult = mockMvc.perform(
@@ -194,7 +194,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
         final String username = TestConstants.USER_ALICE;
         final String password = "password";
 
-        CreateUserDTO createUserDTO = new CreateUserDTO(username, null, password, email);
+        EditUserDTO createUserDTO = new EditUserDTO(username, null, password, email);
 
         // register
         MvcResult createAccountResult = mockMvc.perform(
@@ -219,7 +219,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
 
         UserAccount userAccountBefore = userAccountRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("user account not found in test"));
 
-        CreateUserDTO createUserDTO = new CreateUserDTO(username, null, password, email);
+        EditUserDTO createUserDTO = new EditUserDTO(username, null, password, email);
 
         // register
         MvcResult createAccountResult = mockMvc.perform(

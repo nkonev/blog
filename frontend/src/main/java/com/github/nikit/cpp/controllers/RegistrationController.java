@@ -1,7 +1,7 @@
 package com.github.nikit.cpp.controllers;
 
 import com.github.nikit.cpp.Constants;
-import com.github.nikit.cpp.dto.CreateUserDTO;
+import com.github.nikit.cpp.dto.EditUserDTO;
 import com.github.nikit.cpp.entity.jpa.UserAccount;
 import com.github.nikit.cpp.entity.jpa.UserRole;
 import com.github.nikit.cpp.entity.redis.UserConfirmationToken;
@@ -58,7 +58,7 @@ public class RegistrationController {
 
     @PostMapping(value = Constants.Uls.API+Constants.Uls.REGISTER)
     @ResponseBody
-    public void register(@RequestBody @Valid CreateUserDTO userAccountDTO) {
+    public void register(@RequestBody @Valid EditUserDTO userAccountDTO) {
         if(userAccountRepository.findByUsername(userAccountDTO.getLogin()).isPresent()){
             throw new UserAlreadyPresentException("User with login '" + userAccountDTO.getLogin() + "' is already present");
         }

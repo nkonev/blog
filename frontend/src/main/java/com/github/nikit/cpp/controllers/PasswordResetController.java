@@ -1,5 +1,6 @@
 package com.github.nikit.cpp.controllers;
 
+import com.github.nikit.cpp.ApiConstants;
 import com.github.nikit.cpp.Constants;
 import com.github.nikit.cpp.entity.jpa.PasswordResetToken;
 import com.github.nikit.cpp.entity.jpa.UserAccount;
@@ -73,7 +74,7 @@ public class PasswordResetController {
         @NotNull
         private UUID passwordResetToken;
 
-        @Size(min = Constants.MIN_PASSWORD_LENGTH, max = Constants.MAX_PASSWORD_LENGTH)
+        @Size(min = ApiConstants.MIN_PASSWORD_LENGTH, max = ApiConstants.MAX_PASSWORD_LENGTH)
         @NotEmpty
         private String newPassword;
 

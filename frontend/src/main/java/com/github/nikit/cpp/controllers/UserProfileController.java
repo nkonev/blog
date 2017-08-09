@@ -1,6 +1,7 @@
 package com.github.nikit.cpp.controllers;
 
 import com.github.nikit.cpp.Constants;
+import com.github.nikit.cpp.dto.EditUserDTO;
 import com.github.nikit.cpp.utils.PageUtils;
 import com.github.nikit.cpp.converter.UserAccountConverter;
 import com.github.nikit.cpp.dto.UserAccountDTO;
@@ -60,4 +61,14 @@ public class UserProfileController {
         return userAccountRepository.findById(userId).map(UserAccountConverter::convertToUserAccountDTO)
                 .orElseThrow(() -> new RuntimeException("user with id="+ userId + " not found"));
     }
+
+    @PostMapping(Constants.Uls.PROFILE)
+    public EditUserDTO editProfile(
+            @AuthenticationPrincipal UserAccountDetailsDTO userAccount,
+            EditUserDTO editUserDto
+    ) {
+
+        return null;
+    }
+
 }

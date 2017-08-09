@@ -12,9 +12,6 @@ public class Constants {
     public static final int COUNT = 50;
     public static final String FRONTEND_RESOURCES = "${custom.frontend.resources}";
 
-    public static final int MIN_PASSWORD_LENGTH = 6;
-    public static final int MAX_PASSWORD_LENGTH = 30;
-
     public static class Uls {
         public static final String ROOT = "/";
         public static final String API = "/api";
