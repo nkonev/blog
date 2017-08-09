@@ -39,7 +39,7 @@ public class UserProfileController {
         return UserAccountConverter.convertToUserAccountDTO(userAccount);
     }
 
-    @GetMapping(value = "/user")
+    @GetMapping(value = Constants.Uls.USER)
     public Collection<UserAccountDTO> getUsersGet(
             @RequestParam(value = "page", required=false, defaultValue = "0") int page,
             @RequestParam(value = "size", required=false, defaultValue = "0") int size
@@ -54,8 +54,8 @@ public class UserProfileController {
         return userAccountRepository.count();
     }
 
-    @GetMapping(value = "/user/{id}")
-    public UserAccountDTO getUser(@PathVariable("id") Long userId) {
+    @GetMapping(value = Constants.Uls.USER+Constants.Uls.USER_ID)
+    public UserAccountDTO getUser(@PathVariable(Constants.PathVariables.USER_ID) Long userId) {
 
         return userAccountRepository.findById(userId).map(UserAccountConverter::convertToUserAccountDTO)
                 .orElseThrow(() -> new RuntimeException("user with id="+ userId + " not found"));
