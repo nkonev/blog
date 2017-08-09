@@ -11,6 +11,7 @@ import com.github.nikit.cpp.exception.UserAlreadyPresentException;
 import com.github.nikit.cpp.repo.jpa.UserAccountRepository;
 import com.github.nikit.cpp.repo.jpa.PasswordResetTokenRepository;
 import com.github.nikit.cpp.repo.redis.UserConfirmationTokenRepository;
+import com.github.nikit.cpp.services.EmailService;
 import com.github.nikit.cpp.utils.TimeUtil;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
@@ -42,44 +43,19 @@ public class RegistrationController {
     private UserConfirmationTokenRepository userConfirmationTokenRepository;
 
     @Autowired
-    private JavaMailSender mailSender;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
     private PasswordResetTokenRepository passwordResetTokenRepository;
 
-    @Value("${custom.email.from}")
-    private String from;
-
-    @Value("${custom.registration.email.subject}")
-    private String registrationSubject;
-
-    @Value("${custom.registration.email.text-template}")
-    private String registrationTextTemplate;
-
-
-    @Value("${custom.password-reset.email.subject}")
-    private String passwordResetSubject;
-
-    @Value("${custom.password-reset.email.text-template}")
-    private String passwordResetTextTemplate;
-
-
-    @Value("${custom.base-url}")
-    private String baseUrl;
+    @Autowired
+    private EmailService emailService;
 
     @Value("${custom.confirmation.registration.token.ttl-minutes}")
     private long userConfirmationTokenTtlMinutes;
 
     @Value("${custom.password-reset.token.ttl-minutes}")
     private long passwordResetTokenTtlMinutes;
-
-
-    private static final String REG_LINK_PLACEHOLDER = "__REGISTRATION_LINK_PLACEHOLDER__";
-    private static final String PASSWORD_RESET_LINK_PLACEHOLDER = "__PASSWORD_RESET_LINK_PLACEHOLDER__";
-
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RegistrationController.class);
 
@@ -93,34 +69,6 @@ public class RegistrationController {
         UserConfirmationToken userConfirmationToken = new UserConfirmationToken(tokenUuid.toString(), userAccount.getId(), seconds);
         return userConfirmationTokenRepository.save(userConfirmationToken);
     }
-
-    private void sendUserConfirmationToken(String email, UserConfirmationToken userConfirmationToken) {
-        // https://yandex.ru/support/mail-new/mail-clients.html
-        // https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-email.html
-        // http://docs.spring.io/spring/docs/4.3.10.RELEASE/spring-framework-reference/htmlsingle/#mail-usage-simple
-        SimpleMailMessage msg = new SimpleMailMessage();
-        msg.setFrom(from);
-        msg.setSubject(registrationSubject);
-        msg.setTo(email);
-
-        String text = registrationTextTemplate.replace(REG_LINK_PLACEHOLDER, baseUrl + Constants.Uls.CONFIRM+ "?"+Constants.Uls.UUID +"=" + userConfirmationToken.getUuid());
-        msg.setText(text);
-
-        mailSender.send(msg);
-    }
-
-    private void sendPasswordResetToken(String email, PasswordResetToken passwordResetToken) {
-        SimpleMailMessage msg = new SimpleMailMessage();
-        msg.setFrom(from);
-        msg.setSubject(passwordResetSubject);
-        msg.setTo(email);
-
-        String text = passwordResetTextTemplate.replace(PASSWORD_RESET_LINK_PLACEHOLDER, baseUrl + Constants.Uls.PASSWORD_RESET+ "?"+Constants.Uls.UUID +"=" + passwordResetToken.getUuid());
-        msg.setText(text);
-
-        mailSender.send(msg);
-    }
-
 
     @PostMapping(value = Constants.Uls.API+Constants.Uls.REGISTER)
     @ResponseBody
@@ -151,7 +99,7 @@ public class RegistrationController {
         );
         userAccount = userAccountRepository.save(userAccount);
         UserConfirmationToken userConfirmationToken = createUserConfirmationToken(userAccount);
-        sendUserConfirmationToken(userAccount.getEmail(), userConfirmationToken);
+        emailService.sendUserConfirmationToken(userAccount.getEmail(), userConfirmationToken);
     }
 
     /**
@@ -201,7 +149,7 @@ public class RegistrationController {
         }
 
         UserConfirmationToken userConfirmationToken = createUserConfirmationToken(userAccount);
-        sendUserConfirmationToken(email, userConfirmationToken);
+        emailService.sendUserConfirmationToken(email, userConfirmationToken);
     }
 
     /**
@@ -228,7 +176,7 @@ public class RegistrationController {
 
         passwordResetToken = passwordResetTokenRepository.save(passwordResetToken);
 
-        sendPasswordResetToken(userAccount.getEmail(), passwordResetToken);
+        emailService.sendPasswordResetToken(userAccount.getEmail(), passwordResetToken);
     }
 
     public static class PasswordResetDto {
