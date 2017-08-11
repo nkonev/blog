@@ -23,9 +23,9 @@ import java.util.Collection;
 import java.util.Date;
 
 @RestControllerAdvice
-public class ExceptionHandler {
+public class BlogExceptionHandler {
 
-    private Logger LOGGER = LoggerFactory.getLogger(ExceptionHandler.class);
+    private Logger LOGGER = LoggerFactory.getLogger(BlogExceptionHandler.class);
 
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
