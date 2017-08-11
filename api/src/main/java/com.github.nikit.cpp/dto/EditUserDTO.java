@@ -1,9 +1,6 @@
 package com.github.nikit.cpp.dto;
 
-import com.github.nikit.cpp.ApiConstants;
 import org.hibernate.validator.constraints.NotEmpty;
-
-import javax.validation.constraints.Size;
 import java.net.URL;
 
 public class EditUserDTO {
@@ -12,8 +9,6 @@ public class EditUserDTO {
 
     private URL avatar;
 
-    @Size(min = ApiConstants.MIN_PASSWORD_LENGTH, max = ApiConstants.MAX_PASSWORD_LENGTH)
-    @NotEmpty
     private String password; // password which user desires
 
     @NotEmpty

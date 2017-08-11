@@ -27,9 +27,12 @@ public class ExceptionHandler {
 
     private Logger LOGGER = LoggerFactory.getLogger(ExceptionHandler.class);
 
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @org.springframework.web.bind.annotation.ExceptionHandler(BadRequestException.class)
-    public void badRequest(BadRequestException e, HttpServletResponse response) throws IOException {
-        response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+    public BlogError badRequest(BadRequestException e, HttpServletResponse response) throws IOException {
+        //response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+        return new BlogError(HttpStatus.BAD_REQUEST.value(), "validation error", e.getMessage(), new Date().toString());
     }
 
     @ResponseBody

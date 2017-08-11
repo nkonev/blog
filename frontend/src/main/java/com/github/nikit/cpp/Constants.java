@@ -39,7 +39,10 @@ public class Constants {
         public static final String POST_ID = "postId";
         public static final String COMMENT_ID = "commentId";
         public static final String USER_ID = "postId";
+    }
 
+    public static class Headers {
+        public static final String NEED_REFRESH_PROFILE = "X-BLOG-NEED-REFRESH-USER-PROFILE";
     }
 
     public static class Swagger {

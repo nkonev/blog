@@ -154,9 +154,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
         )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("validation error"))
-                .andExpect(jsonPath("$.message").value("validation error, see validationErrors[]"))
-                .andExpect(jsonPath("$.validationErrors[0].field").value("password"))
-                .andExpect(jsonPath("$.validationErrors[0].message").value("may not be empty"))
+                .andExpect(jsonPath("$.message").value("password must be set"))
                 .andReturn();
         String stringResponse = createAccountResult.getResponse().getContentAsString();
         LOGGER.info(stringResponse);
@@ -179,13 +177,10 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
         )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("validation error"))
-                .andExpect(jsonPath("$.message").value("validation error, see validationErrors[]"))
-                .andExpect(jsonPath("$.validationErrors[0].field").value("password"))
-                .andExpect(jsonPath("$.validationErrors[0].message").value("size must be between 6 and 30"))
+                .andExpect(jsonPath("$.message").value("password don't match requirements"))
                 .andReturn();
         String stringResponse = createAccountResult.getResponse().getContentAsString();
         LOGGER.info(stringResponse);
-
     }
 
     @Test

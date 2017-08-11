@@ -1,9 +1,9 @@
 package com.github.nikit.cpp.controllers;
 
 import com.github.nikit.cpp.Constants;
+import com.github.nikit.cpp.converter.UserAccountConverter;
 import com.github.nikit.cpp.dto.EditUserDTO;
 import com.github.nikit.cpp.entity.jpa.UserAccount;
-import com.github.nikit.cpp.entity.jpa.UserRole;
 import com.github.nikit.cpp.entity.redis.UserConfirmationToken;
 import com.github.nikit.cpp.exception.UserAlreadyPresentException;
 import com.github.nikit.cpp.repo.jpa.UserAccountRepository;
@@ -20,9 +20,7 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.time.Duration;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 @Controller
@@ -66,23 +64,8 @@ public class RegistrationController {
             return; // we care for user email leak
         }
 
-        Set<UserRole> newUserRoles = new HashSet<>();
-        newUserRoles.add(UserRole.ROLE_USER);
+        UserAccount userAccount = UserAccountConverter.buildUserAccountEntityForInsert(userAccountDTO, passwordEncoder);
 
-        boolean expired = false;
-        boolean locked = false;
-        boolean enabled = false;
-
-        UserAccount userAccount = new UserAccount(
-                userAccountDTO.getLogin(),
-                passwordEncoder.encode(userAccountDTO.getPassword()),
-                userAccountDTO.getAvatar(),
-                expired,
-                locked,
-                enabled,
-                newUserRoles,
-                userAccountDTO.getEmail()
-        );
         userAccount = userAccountRepository.save(userAccount);
         UserConfirmationToken userConfirmationToken = createUserConfirmationToken(userAccount);
         emailService.sendUserConfirmationToken(userAccount.getEmail(), userConfirmationToken);

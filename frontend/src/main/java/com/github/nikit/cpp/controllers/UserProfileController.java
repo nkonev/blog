@@ -3,6 +3,7 @@ package com.github.nikit.cpp.controllers;
 import com.github.nikit.cpp.Constants;
 import com.github.nikit.cpp.dto.EditUserDTO;
 import com.github.nikit.cpp.entity.jpa.UserAccount;
+import com.github.nikit.cpp.exception.UserAlreadyPresentException;
 import com.github.nikit.cpp.utils.PageUtils;
 import com.github.nikit.cpp.converter.UserAccountConverter;
 import com.github.nikit.cpp.dto.UserAccountDTO;
@@ -11,10 +12,19 @@ import com.github.nikit.cpp.repo.jpa.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.net.MalformedURLException;
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -30,6 +40,9 @@ public class UserProfileController {
 
     @Autowired
     private UserAccountRepository userAccountRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     /**
      *
@@ -66,7 +79,8 @@ public class UserProfileController {
     @PostMapping(Constants.Uls.PROFILE)
     public EditUserDTO editProfile(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount,
-            EditUserDTO editUserDto
+            @RequestBody @Valid EditUserDTO userAccountDTO,
+            HttpServletResponse httpServletResponse
     ) {
         if (userAccount == null) {
             throw new RuntimeException("Not authenticated user can't edit any user account. It can occurs due inpatient refactoring.");
@@ -74,7 +88,26 @@ public class UserProfileController {
 
         UserAccount exists = userAccountRepository.findById(userAccount.getId()).orElseThrow(()-> new RuntimeException("Authenticated user account not found in database"));
 
-        return null;
+        // check email already present
+        if (!exists.getEmail().equals(userAccountDTO.getEmail()) && userAccountRepository.findByEmail(userAccountDTO.getEmail()).isPresent()) {
+            // throw new UserAlreadyPresentException("User with email '" + userAccountDTO.getEmail() + "' is already present");
+            UserAccountConverter.convertToEditUserDto(exists); // we care for email leak...
+        }
+        // check login already present
+        if (!exists.getUsername().equals(userAccountDTO.getLogin()) && userAccountRepository.findByUsername(userAccountDTO.getLogin()).isPresent()) {
+            throw new UserAlreadyPresentException("User with login '" + userAccountDTO.getLogin() + "' is already present");
+        }
+
+        UserAccountConverter.updateUserAccountEntity(userAccountDTO, exists, passwordEncoder);
+        exists = userAccountRepository.save(exists);
+
+        sendNeedRefreshProfile(httpServletResponse);
+        return UserAccountConverter.convertToEditUserDto(exists);
     }
 
+    // will be in utility class in future
+    private void sendNeedRefreshProfile(HttpServletResponse httpServletResponse) {
+        httpServletResponse.setHeader(Constants.Headers.NEED_REFRESH_PROFILE, Boolean.TRUE.toString());
+        // offered via additional header which will be handled in js http client
+    }
 }
