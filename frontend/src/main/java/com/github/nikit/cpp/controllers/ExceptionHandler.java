@@ -66,7 +66,7 @@ public class ExceptionHandler {
     }
 
 
-    // we hide exceptions such as SQLException so SQL didn't be present in seponse
+    // we hide exceptions such as SQLException so SQL didn't be present in response
     @org.springframework.web.bind.annotation.ExceptionHandler(Throwable.class)
     public void throwable(Throwable e, HttpServletResponse response) throws Throwable {
         if (
