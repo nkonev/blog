@@ -34,6 +34,10 @@ module.exports = {
     },
 
     watch: NODE_ENV == DEVELOPMENT_ENV,
+    watchOptions: {
+        aggregateTimeout: 100,
+        poll: 250
+    },
 
     devtool: NODE_ENV == DEVELOPMENT_ENV ? "source-map" : false,
 
