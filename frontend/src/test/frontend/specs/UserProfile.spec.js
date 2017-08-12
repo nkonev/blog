@@ -5,11 +5,11 @@ describe("UserProfile.vue", function(){
 
     it("render", function() {
         expect(UserProfile).toBeDefined();
-        const UserProfileComponent = mount(UserProfile, { attachToDocument: true });
-        UserProfileComponent.setProps({
+        const UserProfileWrapper = mount(UserProfile, { attachToDocument: true });
+        UserProfileWrapper.setProps({
             id: 2,
         });
-        expect(UserProfileComponent.text()).toContain('Пользователь 2');
+        expect(UserProfileWrapper.text()).toContain('Пользователь 2');
     });
 
 });

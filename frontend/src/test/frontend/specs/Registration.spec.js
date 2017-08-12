@@ -14,12 +14,12 @@ describe("Registration.vue", function(){
 
     // https://scotch.io/tutorials/how-to-write-a-unit-test-for-vuejs
     it("email ok", function(done) {
-        const RegistrationComponent = mount(Registration, { attachToDocument: true });
-        expect(RegistrationComponent).toBeDefined();
+        const RegistrationWrapper = mount(Registration, { attachToDocument: true });
+        expect(RegistrationWrapper).toBeDefined();
 
-        expect(RegistrationComponent.data().submitEnabled).toBe(false);
+        expect(RegistrationWrapper.data().submitEnabled).toBe(false);
 
-        RegistrationComponent.setData({
+        RegistrationWrapper.setData({
             profile: {
                 email: "good@mail.co",
                 password: '123456',
@@ -28,7 +28,7 @@ describe("Registration.vue", function(){
         });
 
         // simulate event
-        const submit = RegistrationComponent.find('button#submit')[0];
+        const submit = RegistrationWrapper.find('button#submit')[0];
         submit.trigger('click');
 
         const request = jasmine.Ajax.requests.mostRecent();
@@ -48,22 +48,22 @@ describe("Registration.vue", function(){
 
 
         Vue.nextTick(() => {
-            expect(RegistrationComponent.data().profile.email).toBe('good@mail.co');
-            expect(RegistrationComponent.data().profile.password).toBe('123456');
-            expect(RegistrationComponent.data().profile.login).toBe('lol');
+            expect(RegistrationWrapper.data().profile.email).toBe('good@mail.co');
+            expect(RegistrationWrapper.data().profile.password).toBe('123456');
+            expect(RegistrationWrapper.data().profile.login).toBe('lol');
 
-            expect(RegistrationComponent.data().submitEnabled).toBe(true);
+            expect(RegistrationWrapper.data().submitEnabled).toBe(true);
 
             done();
         });
     });
 
     it("email and password fail", function(done) {
-        const RegistrationComponent = mount(Registration);
-        expect(RegistrationComponent).toBeDefined();
+        const RegistrationWrapper = mount(Registration);
+        expect(RegistrationWrapper).toBeDefined();
 
         // set input value
-        RegistrationComponent.setData({
+        RegistrationWrapper.setData({
             profile: {
                 email: "wrong mail no",
                 password: '12345',
@@ -71,12 +71,13 @@ describe("Registration.vue", function(){
             },
         });
 
+        // Since Vue.js bindings update asynchronously, you should use Vue.nextTick() when asserting DOM updates after changing the data.
         Vue.nextTick(() => {
-            // console.log(">>>", RegistrationComponent.text());
-            expect(RegistrationComponent.text()).toContain('Email is invalid');
-            expect(RegistrationComponent.text()).toContain('password must be logger than');
-            expect(RegistrationComponent.data().profile.email).toBe('wrong mail no');
-            expect(RegistrationComponent.data().submitEnabled).toBe(false);
+            // console.log(">>>", RegistrationWrapper.text());
+            expect(RegistrationWrapper.text()).toContain('Email is invalid');
+            expect(RegistrationWrapper.text()).toContain('password must be logger than');
+            expect(RegistrationWrapper.data().profile.email).toBe('wrong mail no');
+            expect(RegistrationWrapper.data().submitEnabled).toBe(false);
             done();
         });
     });
