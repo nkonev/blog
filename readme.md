@@ -55,6 +55,8 @@ npm run unit
 npm run unit -- --browsers=Chrome
 ```
 
+P. S. firefox is broken because avoriaz [didn't](https://github.com/eddyerburgh/avoriaz/blob/master/test/unit/setup/karma.conf.js#L8) test on Firefox
+
 ## Update js dependencies
 
 https://www.npmjs.com/package/npm-check-updates
