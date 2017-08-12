@@ -5,7 +5,7 @@ describe("UserProfile.vue", function(){
 
     it("render", function() {
         expect(UserProfile).toBeDefined();
-        const UserProfileComponent = mount(UserProfile);
+        const UserProfileComponent = mount(UserProfile, { attachToDocument: true });
         UserProfileComponent.setProps({
             id: 2,
         });

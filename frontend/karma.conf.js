@@ -81,6 +81,7 @@ module.exports = function(config) {
     concurrency: Infinity,
 
     client: {
+      clearContext: false,
       useIframe: true,
       captureConsole: true // append browser console to output or not
     },
