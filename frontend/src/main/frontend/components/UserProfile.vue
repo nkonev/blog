@@ -3,7 +3,7 @@
         <div v-if="me">
             <p>Это вы</p>
         </div>
-        <div>Пользователь {{ id }}</div>
+        <div>Пользователь {{ id }} {{testo}}</div>
     </div>
 </template>
 
@@ -17,7 +17,7 @@
         props: ['id'],
         data() {
             return {
-
+                testo: true
             }
         },
         computed: {
@@ -30,5 +30,10 @@
                 }
             },
         },
+        created() {
+            if (global.ddd) {
+                this.testo = false;
+            }
+        }
     };
 </script>
