@@ -14,7 +14,7 @@ describe("Registration.vue", function(){
 
     // https://scotch.io/tutorials/how-to-write-a-unit-test-for-vuejs
     it("email ok", function(done) {
-        const RegistrationWrapper = mount(Registration, { attachToDocument: true });
+        const RegistrationWrapper = mount(Registration, { attachToDocument: false });
         expect(RegistrationWrapper).toBeDefined();
 
         expect(RegistrationWrapper.data().submitEnabled).toBe(false);
