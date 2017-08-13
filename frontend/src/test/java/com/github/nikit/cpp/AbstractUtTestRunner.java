@@ -60,10 +60,10 @@ public abstract class AbstractUtTestRunner {
         return protocol+"://127.0.0.1:"+abstractConfigurableEmbeddedServletContainer.getPort()+abstractConfigurableEmbeddedServletContainer.getContextPath();
     }
 
-    @Value("${custom.it.user}")
+    @Value(CommonTestConstants.USER)
     protected String username;
 
-    @Value("${custom.it.password}")
+    @Value(CommonTestConstants.PASSWORD)
     protected String password;
 
     @Autowired

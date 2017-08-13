@@ -6,9 +6,9 @@ package com.github.nikit.cpp;
 public class IntegrationTestConstants {
 
     public static final String URL_PREFIX = "${custom.it.url.prefix}";
-    public static final String USER = "${custom.it.user}";
-    public static final String PASSWORD = "${custom.it.password}";
-    public static final String USER_ID = "${custom.it.user.id}";
+    public static final String USER = CommonTestConstants.USER;
+    public static final String PASSWORD = CommonTestConstants.PASSWORD;
+    public static final String USER_ID = CommonTestConstants.USER_ID;
 
     public static class Pages {
         public static final String INDEX_HTML = "/";

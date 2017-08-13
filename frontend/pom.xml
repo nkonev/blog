@@ -411,6 +411,14 @@
         </dependency>
         <dependency>
             <groupId>com.github.nikit.cpp</groupId>
+            <artifactId>common-test</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.github.nikit.cpp</groupId>
             <artifactId>api</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>

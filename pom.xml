@@ -38,6 +38,7 @@
     <modules>
         <module>configs-generator</module>
         <module>api</module>
+        <module>common-test</module>
         <module>frontend</module>
         <module>integration-test</module>
     </modules>
