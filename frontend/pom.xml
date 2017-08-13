@@ -348,13 +348,6 @@
             <version>${swagger-annotations.version}</version>
         </dependency>
 
-        <!-- disables template cache and make hot reload by adding own classloader when application is launched from IDE, and mkes another useful things -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <optional>true</optional>
-        </dependency>
-
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
