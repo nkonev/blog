@@ -7,12 +7,17 @@ const webpackResolve = require('./webpack/resolve');
 
 const DEVELOPMENT_ENV = 'dev';
 const KARMA_ENV = 'karma';
+const PRODUCTION_ENV = 'production';
 const NODE_ENV = process.env.NODE_ENV || DEVELOPMENT_ENV;
 
-let ENV_BROWSERS = process.env.KARMA_BROWSERS;
-ENV_BROWSERS=ENV_BROWSERS ? ENV_BROWSERS.split(",") : ['PhantomJS'];
-const browsers=ENV_BROWSERS;
-// console.log(browsers);
+
+let browsers;
+if (process.env.KARMA_BROWSERS) {
+    browsers = process.env.KARMA_BROWSERS.split(",")
+} else {
+    browsers = (NODE_ENV===PRODUCTION_ENV) ? ['PhantomJS'] : ['Firefox', 'Chrome'];
+}
+console.log("browsers (might be overwritten by --browsers option):", browsers);
 
 module.exports = function(config) {
   config.set({
@@ -81,7 +86,7 @@ module.exports = function(config) {
     concurrency: Infinity,
 
     client: {
-      clearContext: false,
+      clearContext: true, // clear test page context.html
       useIframe: true,
       captureConsole: true // append browser console to output or not
     },
@@ -119,7 +124,7 @@ module.exports = function(config) {
           new webpack.DefinePlugin({
               'process.env': {
                   KARMA_ENV:  JSON.stringify(KARMA_ENV),  // определяем окружение для того чтобы менять поведение компонентов. когда невозмножно сделать jasmine spy
-                  NODE_ENV:  JSON.stringify('production') // must be 'production' (with single quotes) for disable Vue warnings, which you can see it if drop_console: false
+                  NODE_ENV:  JSON.stringify(PRODUCTION_ENV) // must be 'production' (with single quotes) for disable Vue warnings, which you can see it if drop_console: false
               }
           }),
       ],
