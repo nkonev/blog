@@ -105,6 +105,19 @@ https://github.com/bonigarcia/webdrivermanager
                     <skip>true</skip>
                 </configuration>
             </plugin>
+            <!-- disable maven-jar-plugin http://stackoverflow.com/questions/2188746/what-is-the-best-way-to-avoid-maven-jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${maven-jar-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>default-jar</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 
