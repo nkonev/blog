@@ -16,7 +16,7 @@
                 <input id="password" type="password" v-model="profile.password" name="password" />
                 <span class="help-block" v-show="errors.password">{{ errors.password }}</span>
             </div>
-            <button id="submit" type="submit" @click.prevent="onSubmit" v-bind:disabled="!submitEnabled">Submit</button>
+            <button id="submit" type="submit" @click="onSubmit" >Submit</button>
         </form>
     </div>
 </template>
