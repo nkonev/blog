@@ -8,7 +8,7 @@
                     <input id="password" type="password" placeholder="Password" v-model="formPassword">
 
                     <div class="errors">
-                        <div v-show="formError" class="box-error-message">Wrong login or password</div>
+                        <div v-show="formError" class="box-error-message">{{formError}}</div>
                     </div>
                     <div class="button-set">
                         <button id="btn-submit" class="large-btn login-btn" type="submit" @click.prevent="doLogin">Login!</button>
@@ -44,6 +44,10 @@
                 modalName: LOGIN_MODAL
             }
         },
+        props: [
+            'onSuccessCallback',
+            'onFailCallback'
+        ],
         methods:{
             beforeOpen (event) {
                 this.formError = null;
@@ -57,10 +61,16 @@
 
                     store.dispatch(FETCH_USER_PROFILE);
                     bus.$emit(LOGIN, null);
+                    if(this.$props.onSuccessCallback){
+                        this.$props.onSuccessCallback();
+                    }
                 }, response => {
                     // error callback
                     // alert('Booh! Wrong credentials, try again!');
-                    this.formError = response;
+                    this.formError = response.body.message;
+                    if(this.$props.onFailCallback){
+                        this.$props.onFailCallback();
+                    }
                 });
 
             }
