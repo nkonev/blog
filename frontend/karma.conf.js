@@ -15,7 +15,7 @@ let browsers;
 if (process.env.KARMA_BROWSERS) {
     browsers = process.env.KARMA_BROWSERS.split(",")
 } else {
-    browsers = (NODE_ENV===PRODUCTION_ENV) ? ['PhantomJS'] : ['Firefox', 'Chrome'];
+    browsers = (NODE_ENV===PRODUCTION_ENV) ? ['PhantomJS'] : ['PhantomJS', 'Firefox', 'Chrome'];
 }
 console.log("browsers (might be overwritten by --browsers option):", browsers);
 
