@@ -4,7 +4,13 @@ import { mount } from 'avoriaz';
 
 describe("Registration.vue", function(){
 
+    let RegistrationWrapper;
+
     beforeEach(function() {
+        RegistrationWrapper = mount(Registration, { attachToDocument: false });
+        expect(RegistrationWrapper).toBeDefined();
+        expect(RegistrationWrapper.data().submitEnabled).toBe(false);
+
         jasmine.Ajax.install();
     });
 
@@ -14,10 +20,6 @@ describe("Registration.vue", function(){
 
     // https://scotch.io/tutorials/how-to-write-a-unit-test-for-vuejs
     it("email ok", function(done) {
-        const RegistrationWrapper = mount(Registration, { attachToDocument: false });
-        expect(RegistrationWrapper).toBeDefined();
-
-        expect(RegistrationWrapper.data().submitEnabled).toBe(false);
 
         RegistrationWrapper.setData({
             profile: {
@@ -49,7 +51,6 @@ describe("Registration.vue", function(){
                 "responseText": '{}' // Firefox requires this
             });
 
-
             expect(RegistrationWrapper.data().profile.email).toBe('good@mail.co');
             expect(RegistrationWrapper.data().profile.password).toBe('123456');
             expect(RegistrationWrapper.data().profile.login).toBe('lol');
@@ -61,8 +62,6 @@ describe("Registration.vue", function(){
     });
 
     it("email and password fail", function(done) {
-        const RegistrationWrapper = mount(Registration);
-        expect(RegistrationWrapper).toBeDefined();
 
         // set input value
         RegistrationWrapper.setData({
