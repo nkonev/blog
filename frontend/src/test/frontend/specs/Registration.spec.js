@@ -31,26 +31,23 @@ describe("Registration.vue", function(){
         const submit = RegistrationWrapper.find('button#submit')[0];
         submit.trigger('click');
 
+        const request = jasmine.Ajax.requests.mostRecent();
+        expect(request.url).toBe('/api/register');
+        expect(request.method).toBe('POST');
+        expect(request.data()).toEqual({
+            login: 'lol',
+            password: '123456',
+            email: 'good@mail.co'
+        });
+
+        request.respondWith({
+            "status": 200,
+            "contentType": 'application/json;charset=UTF-8',
+            "responseText": '{}' // Firefox requires this
+        });
 
 
         Vue.nextTick(() => {
-
-
-            const request = jasmine.Ajax.requests.mostRecent();
-            expect(request.url).toBe('/api/register');
-            expect(request.method).toBe('POST');
-            expect(request.data()).toEqual({
-                login: 'lol',
-                password: '123456',
-                email: 'good@mail.co'
-            });
-
-            request.respondWith({
-                "status": 200,
-                "contentType": 'application/json;charset=UTF-8',
-                "responseText": '{}' // Firefox requires this
-            });
-
 
             expect(RegistrationWrapper.data().profile.email).toBe('good@mail.co');
             expect(RegistrationWrapper.data().profile.password).toBe('123456');
