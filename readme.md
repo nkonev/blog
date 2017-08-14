@@ -12,6 +12,8 @@ There is highly recommends to shut down your application on 8080, although tests
 them can fails, with websocket for example.
 ```
 ./mvnw -P frontend clean package
+./mvnw -Dkarma.browsers=Firefox -Dcustom.selenium.browser=FIREFOX -P frontend clean package
+./mvnw -Dkarma.browsers=Chrome -Dcustom.selenium.browser=CHROME -P frontend clean package
 ```
 
 # Building without frontend and without webdriver tests
