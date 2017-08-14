@@ -6,9 +6,13 @@ cache:
   - frontend/node_modules
 jdk: oraclejdk8
 install: "/bin/true" # workaround https://github.com/Swagger2Markup/swagger2markup-maven-plugin/pull/24
+before_script:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - sleep 3 # give xvfb some time to start
 script:
   - (cd docker; docker-compose up -d)
-  - "./mvnw -P frontend clean package"
+#  - "./mvnw -P frontend clean package"
   - "./mvnw -Dkarma.browsers=Firefox -Dcustom.selenium.browser=FIREFOX -P frontend clean package"
 addons:
   firefox: "55.0.1"
