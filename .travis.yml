@@ -9,3 +9,6 @@ install: "/bin/true" # workaround https://github.com/Swagger2Markup/swagger2mark
 script:
   - (cd docker; docker-compose up -d)
   - "./mvnw -P frontend clean package"
+  - "./mvnw -Dkarma.browsers=Chrome -Dcustom.selenium.browser=CHROME -P frontend clean package"
+addons:
+  chrome: stable
