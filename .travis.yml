@@ -20,4 +20,4 @@ script:
   - "./mvnw -Dkarma.browsers=Chrome -Dcustom.selenium.browser=CHROME -P frontend clean package"
 addons:
   firefox: "55.0.1"
-  chrome: "57.0"
+  chrome: stable
