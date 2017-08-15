@@ -1,11 +1,13 @@
 package com.github.nikit.cpp.pages.object;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import com.github.nikit.cpp.pages.UserProfileIT;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
+import static com.github.nikit.cpp.integration.AbstractItTestRunner.CLICKABLE;
 
 /**
  * Created by nik on 12.07.17.
@@ -24,7 +26,7 @@ public class LoginModal {
         $("body").shouldHave(text("Пожалуйста, представьтесь"));
         $("input#username").setValue(user);
         $("input#password").setValue(password);
-        $(ID_SUBMIT).click();
+        $(ID_SUBMIT).shouldBe(CLICKABLE).click();
         $(".user-profile-nav-login").shouldHave(text("" + user));
     }
 
@@ -34,6 +36,6 @@ public class LoginModal {
     }
 
     public void openLoginModal() {
-        $(byText("login")).click();
+        $(byText("login")).shouldBe(CLICKABLE).click();
     }
 }

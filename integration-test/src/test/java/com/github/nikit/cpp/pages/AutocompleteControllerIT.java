@@ -20,9 +20,6 @@ import static com.github.nikit.cpp.IntegrationTestConstants.Pages.AUTOCOMPLETE;
  */
 public class AutocompleteControllerIT extends AbstractItTestRunner {
 
-    @Autowired
-    private WebDriver driver;
-
     @Test
     public void testUni() throws Exception {
 

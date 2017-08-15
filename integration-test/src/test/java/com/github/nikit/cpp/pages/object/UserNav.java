@@ -5,6 +5,7 @@ import com.codeborne.selenide.Condition;
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
+import static com.github.nikit.cpp.integration.AbstractItTestRunner.CLICKABLE;
 
 /**
  * Created by nik on 15.07.17.
@@ -15,15 +16,11 @@ public class UserNav {
     }
 
     public static void exit() {
-        // http://www.seleniumhq.org/docs/04_webdriver_advanced.jsp#expected-conditions
-        // clickable https://seleniumhq.github.io/selenium/docs/api/java/org/openqa/selenium/support/ui/ExpectedConditions.html#elementToBeClickable-org.openqa.selenium.By-
-        $(byText("exit")).should(be(enabled), be(visible));
-        $(byText("exit")).click();
+        $(byText("exit")).shouldBe(CLICKABLE).click();
     }
 
     public static void profile() {
-        $(byText("profile")).should(be(enabled), be(visible));
-        $(byText("profile")).click();
+        $(byText("profile")).shouldBe(CLICKABLE).click();
     }
 
 }

@@ -21,13 +21,14 @@ public class UserListIT extends AbstractItTestRunner {
         clearBrowserCookies();
     }
 
-
     public static class UsersPage {
         public static final String USERS_CONTAINER_SELECTOR = "#user-list";
 
         public static final String DISABLED_CLASS = "disabled";
         public static final String PREV_PAGE_LI_SELECTOR = "li.prev-item";
         public static final String NEXT_PAGE_LI_SELECTOR = "li.next-item";
+        public static final String ACTIVE_PAGE_LI_SELECTOR = "li .page-item,.active a";
+        public static final String PAGE_LINK_ITEM = "a.page-link-item";
         public static final String PREV_PAGE_A_SELECTOR = "a.prev-link-item";
         public static final String NEXT_PAGE_A_SELECTOR = "a.next-link-item";
         private String urlPrefix;
@@ -53,12 +54,11 @@ public class UserListIT extends AbstractItTestRunner {
          * @param expected
          */
         public void assertActivePaginatorPage(int expected) {
-            $("li .page-item,.active a").shouldHave(Condition.text(String.valueOf(expected)));
+            $(ACTIVE_PAGE_LI_SELECTOR).shouldHave(Condition.text(String.valueOf(expected)));
         }
 
         public void goNextPaginatorPage() {
-            $(NEXT_PAGE_A_SELECTOR).exists();
-            $(NEXT_PAGE_A_SELECTOR).click();
+            $(NEXT_PAGE_A_SELECTOR).shouldBe(CLICKABLE).click();
         }
 
         /**
@@ -66,7 +66,9 @@ public class UserListIT extends AbstractItTestRunner {
          * @param paginatorPage
          */
         public void goNthPaginatorPage(int paginatorPage) {
-            $$("a.page-link-item").findBy(Condition.text(String.valueOf(paginatorPage))).click();
+            $$(PAGE_LINK_ITEM).findBy(Condition.text(String.valueOf(paginatorPage)))
+                    .shouldBe(CLICKABLE)
+                    .click();
         }
     }
 
