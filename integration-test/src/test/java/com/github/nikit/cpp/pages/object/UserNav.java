@@ -12,7 +12,7 @@ import static com.github.nikit.cpp.integration.AbstractItTestRunner.CLICKABLE;
  */
 public class UserNav {
     public static void open() {
-        $(".user-profile-nav .multiselect").click();
+        $(".user-profile-nav .multiselect").shouldBe(CLICKABLE).click();
     }
 
     public static void exit() {
