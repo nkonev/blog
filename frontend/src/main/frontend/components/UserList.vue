@@ -21,7 +21,7 @@
         <div v-if="users.length>0" id="user-list">
             <user-item v-for="user in users" v-bind:userDTO="user" :key="user.id"></user-item>
         </div>
-        <div v-else>
+        <div v-else id="user-list">
             No data
         </div>
     </div>
