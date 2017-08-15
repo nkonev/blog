@@ -23,7 +23,7 @@ public abstract class AbstractItTestRunner {
 
     // http://www.seleniumhq.org/docs/04_webdriver_advanced.jsp#expected-conditions
     // clickable https://seleniumhq.github.io/selenium/docs/api/java/org/openqa/selenium/support/ui/ExpectedConditions.html#elementToBeClickable-org.openqa.selenium.By-
-    public static final Condition[] CLICKABLE = {Condition.enabled, Condition.visible};
+    public static final Condition[] CLICKABLE = {Condition.exist, Condition.enabled, Condition.visible};
 
     @Value(IntegrationTestConstants.URL_PREFIX)
     protected String urlPrefix;
