@@ -15,9 +15,9 @@ after_acript:
   - "sh -e /etc/init.d/xvfb stop"
 script:
   - (cd docker; docker-compose up -d)
-  - "./mvnw -P frontend clean package"
-  - "./mvnw -Dkarma.browsers=Firefox -Dcustom.selenium.browser=FIREFOX -P frontend clean package"
-  - "./mvnw -Dkarma.browsers=Chrome -Dcustom.selenium.browser=CHROME -P frontend clean package"
+  - "./mvnw -Dkarma.browsers=Firefox,Chrome,PhantomJS -P frontend clean package"
+#  - "./mvnw -Dkarma.browsers=Firefox -Dcustom.selenium.browser=FIREFOX -P frontend clean package"
+#  - "./mvnw -Dkarma.browsers=Chrome -Dcustom.selenium.browser=CHROME -P frontend clean package"
 addons:
   firefox: "55.0.1"
   chrome: stable
