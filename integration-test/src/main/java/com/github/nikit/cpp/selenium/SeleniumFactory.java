@@ -102,6 +102,7 @@ public class SeleniumFactory implements FactoryBean<WebDriver> {
         }
 
         driver.manage().window().setSize(new Dimension(seleniumConfiguration.getWindowWidth(), seleniumConfiguration.getWindowHeight()));
+        // http://www.seleniumhq.org/docs/04_webdriver_advanced.jsp#explicit-and-implicit-waits
         driver.manage().timeouts().implicitlyWait(seleniumConfiguration.getImplicitlyWaitTimeout(), TimeUnit.SECONDS); // wait for #findElement()
 
         WebDriverRunner.setWebDriver(driver);
