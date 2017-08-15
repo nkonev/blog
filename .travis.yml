@@ -15,6 +15,7 @@ after_acript:
   - "sh -e /etc/init.d/xvfb stop"
 script:
   - (cd docker; docker-compose up -d)
+  # if there isn't pointed explicitly PhantomJS will be used by default
   - "./mvnw -Dkarma.browsers=Chrome,PhantomJS -P frontend clean package"
   - "./mvnw -Dkarma.browsers=Firefox -Dcustom.selenium.browser=FIREFOX -P frontend clean package"
 #  - "./mvnw -Dkarma.browsers=Chrome -Dcustom.selenium.browser=CHROME -P frontend clean package"
