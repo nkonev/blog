@@ -67,6 +67,12 @@ ncu -u
 rm package-lock.json
 npm install
 ```
+
+# Embedded documentation
+
+Embedded documentation are available at `http://127.0.0.1:8080/docs/index.html`
+
+
 # Request version info 
 
 This will available after full package, e. g. after resource filtering of `git.template.json` and renaming result in `target/classes/static` dir to `git.json`

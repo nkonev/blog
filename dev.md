@@ -15,11 +15,6 @@ mvn -N io.takari:maven:wrapper
 ./mvnw clean package
 ```
 
-# Embedded documentation
-
-Embedded documentation are available at http://127.0.0.1:8080/docs/index.html
-
-
 # Documentation
 
  * https://github.com/Swagger2Markup/spring-swagger2markup-demo
