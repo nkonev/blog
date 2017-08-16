@@ -1,5 +1,4 @@
 {
   "git.build.version": "${git.build.version}",
-  "git.commit.id": "${git.commit.id}",
-  "git.dirty": "${git.dirty}"
+  "git.commit.id": "${git.commit.id}"
 }
