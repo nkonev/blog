@@ -6,7 +6,9 @@ import com.github.nikit.cpp.dto.UserAccountDetailsDTO;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
+@ApiIgnore
 @RestController
 public class UserAccountDetailsDTOController {
     @GetMapping(Constants.Uls.API + TestConstants.USER_DETAILS)

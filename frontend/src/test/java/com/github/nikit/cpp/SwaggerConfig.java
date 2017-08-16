@@ -1,5 +1,6 @@
 package com.github.nikit.cpp;
 
+import com.github.nikit.cpp.dto.UserAccountDetailsDTO;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -10,6 +11,9 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+import java.net.URL;
+import java.net.URLStreamHandler;
 
 /**
  * Created by nik on 28.05.17.
@@ -22,6 +26,7 @@ public class SwaggerConfig {
     @Bean
     public Docket restApi() {
         return new Docket(DocumentationType.SWAGGER_2)
+                .ignoredParameterTypes(UserAccountDetailsDTO.class, URLStreamHandler.class, URL.class)
                 .apiInfo(apiInfo())
                 .select()
                 .paths(input ->
@@ -33,8 +38,8 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("Good parts Application")
-//                .description("Checklist Application API Description")
+                .title("Blog API Reference")
+//                .description("Description")
 //                .contact(new Contact("TestName", "http:/test-url.com", "test@test.de"))
 //                .license("Apache 2.0")
 //                .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")
