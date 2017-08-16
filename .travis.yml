@@ -11,10 +11,11 @@ before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3 # give xvfb some time to start
+  - (cd docker; docker-compose up -d)
 after_acript:
   - "sh -e /etc/init.d/xvfb stop"
+  - (cd docker; docker-compose down)
 script:
-  - (cd docker; docker-compose up -d)
   # if there isn't pointed explicitly PhantomJS will be used by default for webdriver integration test and all 3 for js unit test
   - "./mvnw -Dkarma.browsers=Chrome,PhantomJS -P frontend clean package"
   - "./mvnw -Dkarma.browsers=Firefox -Dcustom.selenium.browser=FIREFOX -P frontend clean package"
