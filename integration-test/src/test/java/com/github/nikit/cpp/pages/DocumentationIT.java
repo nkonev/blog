@@ -27,6 +27,6 @@ public class DocumentationIT extends AbstractItTestRunner {
         open(urlPrefix+ INDEX_HTML);
 
         $(ID_DOC).click();
-        $("body").shouldHave(text("Good parts"));
+        $("body").shouldHave(text("Blog API Reference"));
     }
 }
