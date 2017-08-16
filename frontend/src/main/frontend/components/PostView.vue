@@ -1,8 +1,13 @@
 <template>
     <div class="post">
         <template v-if="postDTO">
-            <img class="title-img" :src="postDTO.titleImg"/>
-            <h2>{{postDTO.title}}</h2>
+            <div class="img-container">
+                <img class="title-img" :src="postDTO.titleImg"/>
+            </div>
+            <div class="post-head">
+                <h2>{{postDTO.title}}</h2>
+                <img class="edit-container-pen" src="../assets/pen.png"/>
+            </div>
             <div class="post-content" v-html="postDTO.text">
                 <hr/>
             </div>
@@ -43,8 +48,29 @@
 
 <style lang="stylus" scoped>
     .post {
-        .title-img {
-            max-width 100%
+        .post-head {
+            display flex
+            flex-direction row
+            justify-content space-between
+            // flex-wrap wrap
+            align-items: baseline
+
+            h1 {
+            }
+            img.edit-container-pen {
+                height 32px;
+                cursor pointer
+            }
+        }
+
+        .img-container {
+            display flex
+            flex-direction row
+            justify-content center
+
+            .title-img {
+                max-width 100%
+            }
         }
     }
 </style>
