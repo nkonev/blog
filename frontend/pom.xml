@@ -39,6 +39,9 @@
         <karma.browsers>PhantomJS</karma.browsers>
         <node.js.version>v8.2.1</node.js.version>
         <npm.version>5.3.0</npm.version>
+
+        <git-template-json>git.template.json</git-template-json>
+        <git-json>git.json</git-json>
     </properties>
 
     <pluginRepositories>
@@ -65,17 +68,19 @@
 
     <build>
         <resources>
-            <resource>
-                <directory>${basedir}/src/main/resources</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>**/git.properties</include>
-                </includes>
-            </resource>
+            <!-- copy properties such as liquibase.yml -->
             <resource>
                 <directory>${basedir}/src/main/resources</directory>
             </resource>
 
+            <!-- placeholders will be replaced with git-commit-id plugin -->
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/${git-template-json}</include>
+                </includes>
+            </resource>
         </resources>
 
         <pluginManagement>
@@ -186,6 +191,24 @@
                         <configuration>
                             <failOnNoGitDirectory>false</failOnNoGitDirectory>
                             <failOnUnableToExtractRepoInfo>false</failOnUnableToExtractRepoInfo>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.coderplus.maven.plugins</groupId>
+                <artifactId>copy-rename-maven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                    <execution>
+                        <id>rename-file</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>rename</goal>
+                        </goals>
+                        <configuration>
+                            <sourceFile>${project.build.outputDirectory}/static/${git-template-json}</sourceFile>
+                            <destinationFile>${project.build.outputDirectory}/static/${git-json}</destinationFile>
                         </configuration>
                     </execution>
                 </executions>

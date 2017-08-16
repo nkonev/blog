@@ -67,3 +67,10 @@ ncu -u
 rm package-lock.json
 npm install
 ```
+# Request version info 
+
+This will available after full pachage, e. g. after resources filtering of `git.template.json` and renaming result in `target/classes/ststic` dir to `git.json`
+
+```
+curl -i http://127.0.0.1:8080/git.json
+```
