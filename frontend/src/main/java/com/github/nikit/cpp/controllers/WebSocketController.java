@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Date;
 
+// TODO @ApiIgnore
 @Controller
 public class WebSocketController {
     private SimpMessagingTemplate template;
