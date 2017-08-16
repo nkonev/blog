@@ -12,6 +12,7 @@ const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const WebpackOnBuildPlugin = require('on-build-webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const LiveReloadPlugin = require('webpack-livereload-plugin');
 
 const webpackModule = require('./webpack/module');
 const webpackResolve = require('./webpack/resolve');
@@ -84,6 +85,15 @@ module.exports = {
 
     module: webpackModule(true)
 };
+
+if (NODE_ENV === DEVELOPMENT_ENV) {
+    module.exports.plugins.push(
+        new LiveReloadPlugin({
+            appendScriptTag: true
+        })
+    );
+}
+
 
 if (NODE_ENV !== DEVELOPMENT_ENV) {
     module.exports.plugins.push(
