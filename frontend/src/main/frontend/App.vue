@@ -76,7 +76,7 @@
       margin: auto;
 
       color: #2c3e50;
-      margin-top: 60px;
+      margin-top: 10px;
 
       #content {
         padding: 4px;

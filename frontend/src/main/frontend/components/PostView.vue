@@ -4,6 +4,9 @@
             <div class="img-container">
                 <img class="title-img" :src="postDTO.titleImg"/>
             </div>
+            <aside class="left"></aside>
+            <aside class="right"></aside>
+
             <div class="post-head">
                 <h2>{{postDTO.title}}</h2>
                 <img class="edit-container-pen" src="../assets/pen.png"/>
@@ -11,6 +14,7 @@
             <div class="post-content" v-html="postDTO.text">
                 <hr/>
             </div>
+
         </template>
         <template v-else>
             Error
@@ -20,8 +24,7 @@
 </template>
 
 <script>
-
-    const api_prefix = '/api/post/';
+    import {API_POST} from '../constants'
 
     export default {
         name: 'post-view',
@@ -37,7 +40,7 @@
         },
         created(){
             console.log("PostView created");
-            this.$http.get(api_prefix+this.$route.params.id, { }).then((res) => {
+            this.$http.get(API_POST+'/'+this.$route.params.id, { }).then((res) => {
                 this.postDTO = res.body; // add data from server's response
             });
 
@@ -47,6 +50,37 @@
 </script>
 
 <style lang="stylus" scoped>
+    aside {
+        position fixed
+        border-color #8135ff
+        border-width 1px
+        // border-style solid
+        cursor pointer
+        height 100%
+        width: 15%
+        top 0
+        z-index -1
+        @keyframes translating {
+            0%   { transform: scaleX(1.5); opacity 0.5; }
+            50% { transform: scaleX(1); opacity 1; }
+            100% { transform: scaleX(1.5); opacity 0.5; }
+        }
+        &:hover {
+            // transform: scaleX(1.5);
+            // transition: 0.2s all;
+            animation: translating 0.8s linear infinite;
+            background rgba(0, 134, 179, 0.5)
+        }
+        &.left {
+            left 0
+            float left
+        }
+        &.right {
+            right 0
+            float right
+        }
+    }
+
     .post {
         .post-head {
             display flex

@@ -25,10 +25,10 @@
     import PostItem from './PostItem.vue'
     import InfiniteLoading from 'vue-infinite-loading';
     import debounce from "lodash/debounce"
+    import {API_POST} from '../constants'
     const Stomp = require("@stomp/stompjs/lib/stomp.js").Stomp; // https://github.com/jmesnil/stomp-websocket/issues/119 https://stomp-js.github.io/stomp-websocket/codo/extra/docs-src/Usage.md.html
 
     // https://peachscript.github.io/vue-infinite-loading/#!/getting-started/with-filter
-    const api = '/api/post';
     const POSTS_PAGE_SIZE = 20;
     const MAX_PAGES = 10;
 
@@ -48,7 +48,7 @@
         },
         methods: {
             onInfinite() {
-                this.$http.get(api, {
+                this.$http.get(API_POST, {
                     params: {
                         searchString: this.searchString,
                         page: Math.floor(this.posts.length / POSTS_PAGE_SIZE),
