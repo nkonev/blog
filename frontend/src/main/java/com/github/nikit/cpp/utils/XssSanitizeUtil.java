@@ -7,7 +7,7 @@ public class XssSanitizeUtil {
     // https://www.owasp.org/index.php/OWASP_Java_HTML_Sanitizer_Project
     private static final PolicyFactory SANITIZER_POLICY = new HtmlPolicyBuilder()
             .allowElements(
-                    "a", "b", "img", "p", "strong", "em", "s",
+                    "a", "b", "img", "p", "strong", "em", "s", "u",
                     "blockquote", "br", "pre",
                     "h1","h2","h3","h4","h5","h6",
                     "ol", "ul", "li",
