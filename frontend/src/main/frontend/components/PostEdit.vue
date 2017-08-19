@@ -71,6 +71,20 @@
                 }
             }
         },
+        mounted() {
+            this.quillInstance = this.$refs.myQuillEditor.quill;
+            /**
+             * https://quilljs.com/playground/#class-vs-inline-style
+             *   Quill uses classes for most inline styles.
+             The exception is background and color,
+             where it uses inline styles.
+             This demo shows how to change this.
+             */
+            // https://quilljs.com/guides/how-to-customize-quill/#content-and-formatting
+        },
+        beforeDestroy(){
+            this.quillInstance = null;
+        },
         methods: {
             onEditorBlur(editor) {
                 // console.debug('editor blur!')
@@ -84,13 +98,11 @@
             startSending() {
                 console.log('start submitting');
                 this.submitting = true;
-                const quillInstance = this.$refs.myQuillEditor.quill;
-                quillInstance.enable(false);
+                this.quillInstance.enable(false);
             },
             finishSending() {
                 this.submitting = false;
-                const quillInstance = this.$refs.myQuillEditor.quill;
-                quillInstance.enable(true);
+                this.quillInstance.enable(true);
                 console.log('end submitting');
             },
             onBtnSave() {
