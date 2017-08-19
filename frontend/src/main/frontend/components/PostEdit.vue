@@ -25,6 +25,8 @@
     import Vue from 'vue'
     import { quillEditor } from 'vue-quill-editor'
     import Spinner from 'vue-simple-spinner'  // https://github.com/dzwillia/vue-simple-spinner/blob/master/examples-src/App.vue
+    import bus from '../bus'
+    import {LOGIN, LOGOUT} from '../bus'
 
     const MIN_LENGTH = 10;
 
@@ -53,8 +55,6 @@
         [{ 'header': [1, 2, 3, 4, false] }],
 
         [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-        [{ 'font': [] }],
-        [{ 'align': [] }],
 
         ['clean']                                         // remove formatting button
     ];
@@ -66,7 +66,6 @@
         data () {
             return {
                 submitting: false,
-                // content: 'Input something',
                 editorOption: {
                     modules: {
                         toolbar: toolbarOptions
@@ -76,36 +75,34 @@
         },
         methods: {
             onEditorBlur(editor) {
-                console.debug('editor blur!')
+                // console.debug('editor blur!')
             },
             onEditorFocus(editor) {
-                console.debug('editor focus!')
+                // console.debug('editor focus!')
             },
             onEditorReady(editor) {
-                console.debug('editor ready!')
+                // console.debug('editor ready!')
             },
-            onBtnSave() {
-                const self = this;
+            startSending() {
                 console.log('start submitting');
                 this.submitting = true;
-                const quillInstance = self.$refs.myQuillEditor.quill;
+                const quillInstance = this.$refs.myQuillEditor.quill;
                 quillInstance.enable(false);
-
-//                setTimeout(()=>{
-//                    self.submitting = false;
-//                    quillInstance.enable(true);
-//                    console.log('end submitting');
-//                }, 4000);
-
+            },
+            finishSending() {
+                this.submitting = false;
+                const quillInstance = this.$refs.myQuillEditor.quill;
+                quillInstance.enable(true);
+                console.log('end submitting');
+            },
+            onBtnSave() {
+                this.startSending();
                 this.$http.put('/api/post', this.postDTO, {}).then(response => {
-                    self.submitting = false;
-                    quillInstance.enable(true);
-                    console.log('end submitting');
+                    this.finishSending();
                     this.$parent.afterSubmit();
                 }, response => {
-                    // error callback
-                    // alert('Booh! Wrong credentials, try again!');
                     console.error("Error on send post", response);
+                    this.finishSending();
                 });
             },
             onBtnCancel() {
@@ -113,7 +110,7 @@
             },
             hasInvalidText() {
                 return strip(this.postDTO.text).length < MIN_LENGTH;
-            }
+            },
         },
         components: {
             quillEditor,
@@ -133,14 +130,12 @@
     @import "../buttons.styl"
 
     .command-buttons {
-
         .send {
             display inline
 
             .send-spinner {
                 margin: 2px;
             }
-
             .save-btn {
                 height 32px
                 min-width 64px
@@ -162,7 +157,5 @@
                 }
             }
         }
-
     }
-
 </style>
