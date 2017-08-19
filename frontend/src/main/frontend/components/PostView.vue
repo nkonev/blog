@@ -47,7 +47,7 @@
             }
         },
         created(){
-            console.log("PostView created");
+            // console.log("PostView created");
             this.$http.get(API_POST+'/'+this.$route.params.id, { }).then((res) => {
                 this.postDTO = res.body; // add data from server's response
             });
@@ -59,8 +59,20 @@
             setEdit() {
                 this.isEditing = true;
             },
+            /**
+             * method with which child editorcancel editing -- e. g. hide edit input
+             * @param html
+             */
             cancel() {
                 this.isEditing = false;
+            },
+            /**
+             * method with which child editor component will update html
+             * @param html
+             */
+            setText(html) {
+                this.postDTO.text = html;
+                console.debug("PostView", this.postDTO.text);
             }
         }
     }

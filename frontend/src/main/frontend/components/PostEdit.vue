@@ -23,12 +23,17 @@
 
 <script>
     import Vue from 'vue'
-    import VueQuillEditor from 'vue-quill-editor'
+    // import VueQuillEditor from 'vue-quill-editor'
     import { quillEditor } from 'vue-quill-editor'
     import Spinner from 'vue-simple-spinner'  // https://github.com/dzwillia/vue-simple-spinner/blob/master/examples-src/App.vue
 
     const MIN_LENGTH = 10;
 
+    /**
+     * removes html tags
+     * @param html
+     * @return {string|string}
+     */
     function strip(html) {
         const tmp = document.implementation.createHTMLDocument("New").body;
         tmp.innerHTML = html;
@@ -102,8 +107,9 @@
             Spinner
         },
         watch: {
-            content:  function (val) {
-                console.log(val);
+            content(html) {
+                console.debug("PostEdit", html);
+                this.$parent.setText(html);
             },
         }
     }
