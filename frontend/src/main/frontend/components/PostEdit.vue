@@ -16,6 +16,7 @@
                 <spinner v-if="submitting" class="send-spinner" :line-size="10" :spacing="20" :speed="0.4" size="55" :font-size="20" message="Sending..."></spinner>
                 <button v-if="!submitting" class="save-btn" @click="onBtnSave" v-bind:disabled="hasInvalidText()">Сохранить</button>
             </div>
+            <button v-if="!submitting" class="save-btn" @click="onBtnCancel">Отмена</button>
         </div>
     </div>
 </template>
@@ -88,6 +89,9 @@
                     console.log('end submitting');
                 }, 4000);
 
+            },
+            onBtnCancel() {
+                this.$parent.cancel();
             },
             hasInvalidText() {
                 return strip(this.content).length < MIN_LENGTH;

@@ -7,11 +7,16 @@
             <aside class="left" > << </aside>
             <aside class="right"> >> </aside>
 
-            <div class="post-head" v-if="postDTO.canEdit">
-                <h2>{{postDTO.title}}</h2>
-                <img class="edit-container-pen" src="../assets/pen.png"/>
-            </div>
-            <div class="post-content" v-html="postDTO.text"></div>
+            <template v-if="isEditing">
+                <PostEdit/>
+            </template>
+            <template v-else>
+                <div class="post-head" v-if="postDTO.canEdit" @click="setEdit()">
+                    <h2>{{postDTO.title}}</h2>
+                    <img class="edit-container-pen" src="../assets/pen.png"/>
+                </div>
+                <div class="post-content" v-html="postDTO.text"></div>
+            </template>
             <hr/>
 
         </template>
@@ -24,6 +29,7 @@
 
 <script>
     import {API_POST} from '../constants'
+    const PostEdit = () => import('./PostEdit.vue');
 
     export default {
         name: 'post-view',
@@ -36,7 +42,8 @@
                     text: `<b>Lorem Ipsum</b> - это текст-"рыба", часто используемый в печати и вэб-дизайне`,
                     canEdit: false,
                     canDelete: false
-                }
+                },
+                isEditing: false
             }
         },
         created(){
@@ -44,8 +51,17 @@
             this.$http.get(API_POST+'/'+this.$route.params.id, { }).then((res) => {
                 this.postDTO = res.body; // add data from server's response
             });
-
-
+        },
+        components: {
+            'PostEdit': PostEdit
+        },
+        methods: {
+            setEdit() {
+                this.isEditing = true;
+            },
+            cancel() {
+                this.isEditing = false;
+            }
         }
     }
 </script>
