@@ -4,16 +4,15 @@
             <div class="img-container">
                 <img class="title-img" :src="postDTO.titleImg"/>
             </div>
-            <aside class="left"></aside>
-            <aside class="right"></aside>
+            <aside class="left" > << </aside>
+            <aside class="right"> >> </aside>
 
-            <div class="post-head">
+            <div class="post-head" v-if="postDTO.canEdit">
                 <h2>{{postDTO.title}}</h2>
                 <img class="edit-container-pen" src="../assets/pen.png"/>
             </div>
-            <div class="post-content" v-html="postDTO.text">
-                <hr/>
-            </div>
+            <div class="post-content" v-html="postDTO.text"></div>
+            <hr/>
 
         </template>
         <template v-else>
@@ -34,7 +33,9 @@
                     id: 0,
                     title: 'Заголовок загружается',
                     titleImg: 'https://vuejs.org/images/components.png',
-                    text: `<b>Lorem Ipsum</b> - это текст-"рыба", часто используемый в печати и вэб-дизайне`
+                    text: `<b>Lorem Ipsum</b> - это текст-"рыба", часто используемый в печати и вэб-дизайне`,
+                    canEdit: false,
+                    canDelete: false
                 }
             }
         },
@@ -60,16 +61,18 @@
         width: 15%
         top 0
         z-index -1
-        @keyframes translating {
-            0%   { transform: scaleX(1.5); opacity 0.5; }
-            50% { transform: scaleX(1); opacity 1; }
-            100% { transform: scaleX(1.5); opacity 0.5; }
-        }
+
+        font-family monospace
+        text-shadow: 4px 4px 4px black
+        opacity 0.1
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align center
+        font-size 30ch
+        transform: scale(1, 2.5); // scale text vertically
         &:hover {
-            // transform: scaleX(1.5);
-            // transition: 0.2s all;
-            animation: translating 0.8s linear infinite;
-            background rgba(0, 134, 179, 0.5)
+            opacity 0.2
         }
         &.left {
             left 0
