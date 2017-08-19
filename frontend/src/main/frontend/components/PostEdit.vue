@@ -1,9 +1,9 @@
 <template>
     <div>
-        <h1>Post editing</h1>
+        <input v-model="postDTO.title"/>
 
         <!-- bidirectional data binding -->
-        <quill-editor v-model="content"
+        <quill-editor v-model="postDTO.text"
                       ref="myQuillEditor"
                       :options="editorOption"
                       @blur="onEditorBlur($event)"
@@ -23,7 +23,6 @@
 
 <script>
     import Vue from 'vue'
-    // import VueQuillEditor from 'vue-quill-editor'
     import { quillEditor } from 'vue-quill-editor'
     import Spinner from 'vue-simple-spinner'  // https://github.com/dzwillia/vue-simple-spinner/blob/master/examples-src/App.vue
 
@@ -61,10 +60,13 @@
     ];
 
     export default {
+        props : [
+            'postDTO'
+        ],
         data () {
             return {
                 submitting: false,
-                content: 'Input something',
+                // content: 'Input something',
                 editorOption: {
                     modules: {
                         toolbar: toolbarOptions
@@ -88,18 +90,29 @@
                 this.submitting = true;
                 const quillInstance = self.$refs.myQuillEditor.quill;
                 quillInstance.enable(false);
-                setTimeout(()=>{
+
+//                setTimeout(()=>{
+//                    self.submitting = false;
+//                    quillInstance.enable(true);
+//                    console.log('end submitting');
+//                }, 4000);
+
+                this.$http.put('/api/post', this.postDTO, {}).then(response => {
                     self.submitting = false;
                     quillInstance.enable(true);
                     console.log('end submitting');
-                }, 4000);
-
+                    this.$parent.afterSubmit();
+                }, response => {
+                    // error callback
+                    // alert('Booh! Wrong credentials, try again!');
+                    console.error("Error on send post", response);
+                });
             },
             onBtnCancel() {
                 this.$parent.cancel();
             },
             hasInvalidText() {
-                return strip(this.content).length < MIN_LENGTH;
+                return strip(this.postDTO.text).length < MIN_LENGTH;
             }
         },
         components: {
@@ -107,10 +120,10 @@
             Spinner
         },
         watch: {
-            content(html) {
-                console.debug("PostEdit", html);
-                this.$parent.setText(html);
-            },
+            //content(html) {
+            //    console.debug("PostEdit", html);
+            //    this.$parent.setText(html);
+            //},
         }
     }
 </script>

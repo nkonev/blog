@@ -29,7 +29,7 @@
         name: 'user-profile-nav',
         props: ['currentUser'],
         mounted() {
-            console.debug('user-profile-nav loaded', this.$props);
+            // console.debug('user-profile-nav loaded', this.$props);
         },
         data () {
             return {

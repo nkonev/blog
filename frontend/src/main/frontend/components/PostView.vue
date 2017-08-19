@@ -8,7 +8,7 @@
             <aside class="right"> >> </aside>
 
             <template v-if="isEditing">
-                <PostEdit/>
+                <PostEdit :postDTO="postDTO" />
             </template>
             <template v-else>
                 <div class="post-head" v-if="postDTO.canEdit" @click="setEdit()">
@@ -29,6 +29,9 @@
 
 <script>
     import {API_POST} from '../constants'
+    import bus from '../bus'
+    import {LOGIN, LOGOUT} from '../bus'
+
     const PostEdit = () => import('./PostEdit.vue');
 
     export default {
@@ -48,14 +51,30 @@
         },
         created(){
             // console.log("PostView created");
-            this.$http.get(API_POST+'/'+this.$route.params.id, { }).then((res) => {
-                this.postDTO = res.body; // add data from server's response
-            });
+            this.fetchData();
+            bus.$on(LOGIN, this.onLogin);
+            bus.$on(LOGOUT, this.onLogout);
+        },
+        destroyed(){
+            bus.$off(LOGIN, this.onLogin);
+            bus.$off(LOGOUT, this.onLogout);
         },
         components: {
             'PostEdit': PostEdit
         },
         methods: {
+            fetchData() {
+                this.$http.get(API_POST+'/'+this.$route.params.id, { }).then((res) => {
+                    this.postDTO = res.body; // add data from server's response
+                });
+            },
+            onLogin() {
+                this.fetchData();
+            },
+            onLogout() {
+                this.fetchData();
+            },
+
             setEdit() {
                 this.isEditing = true;
             },
@@ -65,6 +84,10 @@
              */
             cancel() {
                 this.isEditing = false;
+            },
+            afterSubmit() {
+                this.cancel();
+                this.fetchData();
             },
             /**
              * method with which child editor component will update html
