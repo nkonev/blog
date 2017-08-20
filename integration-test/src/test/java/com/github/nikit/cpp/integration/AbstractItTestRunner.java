@@ -7,12 +7,17 @@ package com.github.nikit.cpp.integration;
 import com.codeborne.selenide.Condition;
 import com.github.nikit.cpp.IntegrationTestConstants;
 import com.github.nikit.cpp.Launcher;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import static com.codeborne.selenide.Selenide.clearBrowserCookies;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(
@@ -37,4 +42,11 @@ public abstract class AbstractItTestRunner {
     @Autowired
     protected WebDriver driver;
 
+    private Logger LOGGER = LoggerFactory.getLogger(AbstractItTestRunner.class);
+
+    @Before
+    public void before() {
+        LOGGER.info("Executing before");
+        clearBrowserCookies();
+    }
 }

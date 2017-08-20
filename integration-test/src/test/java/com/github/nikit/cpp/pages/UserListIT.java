@@ -3,9 +3,7 @@ package com.github.nikit.cpp.pages;
 import com.codeborne.selenide.Condition;
 import com.github.nikit.cpp.integration.AbstractItTestRunner;
 import com.github.nikit.cpp.pages.object.LoginModal;
-import org.junit.Before;
 import org.junit.Test;
-
 import static com.codeborne.selenide.Selenide.*;
 import static com.github.nikit.cpp.IntegrationTestConstants.Pages.USERS_LIST;
 
@@ -15,11 +13,6 @@ import static com.github.nikit.cpp.IntegrationTestConstants.Pages.USERS_LIST;
  */
 
 public class UserListIT extends AbstractItTestRunner {
-
-    @Before
-    public void before(){
-        clearBrowserCookies();
-    }
 
     public static class UsersPage {
         public static final String USERS_CONTAINER_SELECTOR = "#user-list";

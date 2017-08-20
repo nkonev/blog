@@ -1,10 +1,7 @@
 package com.github.nikit.cpp.pages;
 
-import com.github.nikit.cpp.IntegrationTestConstants;
 import com.github.nikit.cpp.integration.AbstractItTestRunner;
-import org.junit.Before;
 import org.junit.Test;
-
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.*;
 import static com.github.nikit.cpp.IntegrationTestConstants.Pages.INDEX_HTML;
@@ -15,12 +12,6 @@ import static com.github.nikit.cpp.IntegrationTestConstants.Pages.INDEX_HTML;
 public class DocumentationIT extends AbstractItTestRunner {
 
     private static final String ID_DOC = "#a-doc";
-
-
-    @Before
-    public void before(){
-        clearBrowserCookies();
-    }
 
     @Test
     public void testDocumentationIsPresent() throws Exception {

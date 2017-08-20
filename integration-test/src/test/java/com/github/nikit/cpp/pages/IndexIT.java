@@ -12,17 +12,11 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.clearBrowserCookies;
 import static com.codeborne.selenide.Selenide.open;
 import static com.github.nikit.cpp.IntegrationTestConstants.Pages.INDEX_HTML;
 
 public class IndexIT extends AbstractItTestRunner {
-    @Before
-    public void before(){
-        clearBrowserCookies();
-    }
 
     @Autowired
     private WebSocketController webSocketController;

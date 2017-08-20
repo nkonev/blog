@@ -4,17 +4,11 @@ import com.codeborne.selenide.Selenide;
 import com.github.nikit.cpp.IntegrationTestConstants;
 import com.github.nikit.cpp.integration.AbstractItTestRunner;
 import com.github.nikit.cpp.pages.object.LoginModal;
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
-
 import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.clearBrowserCookies;
 import static com.codeborne.selenide.Selenide.open;
-import static com.github.nikit.cpp.IntegrationTestConstants.Pages.INDEX_HTML;
 import static com.github.nikit.cpp.IntegrationTestConstants.Pages.USER;
 
 /**
@@ -25,11 +19,6 @@ public class UserProfileIT extends AbstractItTestRunner {
 
     @Value(IntegrationTestConstants.USER_ID)
     private int userId;
-
-    @Before
-    public void before(){
-        clearBrowserCookies();
-    }
 
     public static class UserProfilePage {
         private String urlPrefix;
