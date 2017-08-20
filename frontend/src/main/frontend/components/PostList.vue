@@ -18,6 +18,7 @@
                 </span>
             </infinite-loading>
         </div>
+        <div class="fab"><!--<button>+</button>--><router-link to="/post/add">+</router-link></div>
     </div>
 </template>
 
@@ -115,7 +116,31 @@
 </script>
 
 <style lang="stylus" scoped>
+    $fabSize=40px
     .search {
         margin-top 4px;
+    }
+    .fab {
+        position fixed
+        right 20px
+        bottom 20px
+
+        a {
+            display block
+            text-align center
+            text-decoration none
+            cursor pointer
+            background-color #0086B3
+            color white
+            height $fabSize
+            width $fabSize
+            border-radius $fabSize
+            border-width 0px
+            transition: 0.1s all;
+            &:hover {
+                color: mix(#8b8c8d, black, 80%);
+                box-shadow: 0 0 40px black;
+            }
+        }
     }
 </style>
