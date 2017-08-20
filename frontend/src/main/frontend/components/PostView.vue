@@ -98,7 +98,15 @@
                 this.postDTO.text = html;
                 console.debug("PostView", this.postDTO.text);
             }
-        }
+        },
+        watch: {
+            'postDTO': {
+                handler: function (val, oldVal) {
+                    console.log("PostView changing postDTO", val.title, val.text)
+                },
+                deep: true
+            }
+        },
     }
 </script>
 

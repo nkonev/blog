@@ -1,9 +1,12 @@
 <template>
     <div>
-        <input v-model="postDTO.title"/>
-
-        <!-- bidirectional data binding -->
-        <quill-editor v-model="postDTO.text"
+        <!--
+            You shouldn't chane parent postDTO here, if you do it you will have bugs
+            https://vuejs.org/v2/guide/components.html#Composing-Components
+            see also created() hook
+        -->
+        <input v-model="editPostDTO.title"/>
+        <quill-editor v-model="editPostDTO.text"
                       ref="myQuillEditor"
                       :options="editorOption"
                       @blur="onEditorBlur($event)"
@@ -69,7 +72,8 @@
                     modules: {
                         toolbar: toolbarOptions,
                     }
-                }
+                },
+                editPostDTO: {} // will be overriden below in created()
             }
         },
         mounted() {
@@ -98,20 +102,20 @@
                 // console.debug('editor ready!')
             },
             startSending() {
-                console.log('start submitting');
+                // console.log('start submitting', this.editPostDTO.title, this.editPostDTO.text);
                 this.submitting = true;
                 this.quillInstance.enable(false);
             },
             finishSending() {
                 this.submitting = false;
                 this.quillInstance.enable(true);
-                console.log('end submitting');
+                // console.log('end submitting', this.editPostDTO.title, this.editPostDTO.text);
             },
             onBtnSave() {
                 this.startSending();
-                if (this.postDTO.id) {
+                if (this.editPostDTO.id) {
                     // edit / update
-                    this.$http.put(API_POST, this.postDTO, {}).then(response => {
+                    this.$http.put(API_POST, this.editPostDTO, {}).then(response => {
                         this.finishSending();
                         if (this.$props.onAfterSubmit){
                             this.$props.onAfterSubmit(response.body);
@@ -122,7 +126,7 @@
                     });
                 } else {
                     // create
-                    this.$http.post(API_POST, this.postDTO, {}).then(response => {
+                    this.$http.post(API_POST, this.editPostDTO, {}).then(response => {
                         this.finishSending();
                         if (this.$props.onAfterSubmit){
                             this.$props.onAfterSubmit(response.body);
@@ -139,7 +143,7 @@
                 }
             },
             hasInvalidText() {
-                return strip(this.postDTO.text).length < MIN_LENGTH;
+                return strip(this.editPostDTO.text).length < MIN_LENGTH;
             },
         },
         components: {
@@ -147,9 +151,15 @@
             Spinner
         },
         watch: {
-            //content(html) {
-            //    console.debug("PostEdit", html);
-            //},
+            'editPostDTO': {
+                handler: function (val, oldVal) {
+                    console.log("PostEdit changing editPostDTO", val.title, val.text);
+                },
+                deep: true
+            }
+        },
+        created(){
+            this.editPostDTO = Vue.util.extend({}, this.postDTO); // deep copy prevent parent postDTO mutations
         }
     }
 </script>
