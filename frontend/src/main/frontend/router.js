@@ -28,7 +28,6 @@ const router = new Router({
             component: PostList
         },
         { name: useProfileName, path: '/user/:id?', component: UserProfile, props: true, },
-        // { path: usersWithPage, component: UserList, name: "users", props: true },
         { path: users, component: UserList},
         { path: '/autocomplete', component: Autocomplete},
         { path: '/registration', component: Registration },
