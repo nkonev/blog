@@ -1,7 +1,9 @@
 <template>
     <div>
         <!--
-            You shouldn't chane parent postDTO here, if you do it you will have bugs
+            You shouldn't change parent postDTO here, if you do it you will have bugs
+            1) your changes will reset on server 401 response
+            2) your changes corrupts parent's data when you click Cancel button
             https://vuejs.org/v2/guide/components.html#Composing-Components
             see also created() hook
         -->
@@ -28,8 +30,6 @@
     import Vue from 'vue'
     import { quillEditor } from 'vue-quill-editor'
     import Spinner from 'vue-simple-spinner'  // https://github.com/dzwillia/vue-simple-spinner/blob/master/examples-src/App.vue
-    import bus from '../bus'
-    import {LOGIN, LOGOUT} from '../bus'
     import {API_POST} from '../constants'
 
     const MIN_LENGTH = 10;
