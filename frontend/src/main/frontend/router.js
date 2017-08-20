@@ -15,6 +15,7 @@ const PostEdit = () => import('./components/PostEdit.vue');
 Vue.use(Router);
 
 const root = '/';
+const root_name = 'root';
 const users = '/users';
 const useProfileName = 'user-profile';
 const post = 'post';
@@ -22,17 +23,21 @@ const post = 'post';
 const router = new Router({
     mode: 'history',
     routes: [
-        {
-            path: root,
-            component: PostList
-        },
+        { name: root_name, path: root, component: PostList},
         { name: useProfileName, path: '/user/:id?', component: UserProfile, props: true, },
         { path: users, component: UserList},
         { path: '/autocomplete', component: Autocomplete},
         { path: '/registration', component: Registration },
-        { path: '/post/add', component: PostEdit, props: {postDTO: createPostDto(), onAfterSubmit: (savedOnServerPostDto)=>{
-            router.push({ name: post, params: { id: savedOnServerPostDto.id }})
-        }}},
+        { path: '/post/add', component: PostEdit, props: {
+            postDTO: createPostDto(),
+            onAfterSubmit: (savedOnServerPostDto)=>{
+                router.push({ name: post, params: { id: savedOnServerPostDto.id }})
+            },
+            onCancel: () => {
+                router.push({ name: root_name })
+            }
+        }
+        },
         { name: post, path: '/post/:id', component: PostView},
         { path: '*', component: NotFoundComponent },
     ]
