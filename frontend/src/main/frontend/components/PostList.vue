@@ -138,7 +138,9 @@
             border-radius $fabSize
             border-width 0px
             transition: 0.1s all;
+            opacity 0.8
             &:hover {
+                opacity 1
                 color: mix(#8b8c8d, black, 80%);
                 box-shadow: 0 0 40px black;
             }
