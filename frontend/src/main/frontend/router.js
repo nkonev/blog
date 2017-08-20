@@ -7,6 +7,8 @@ import Autocomplete from './components/Autocomplete.vue'
 import Registration from './components/Registration.vue'
 import PostList from './components/PostList.vue'
 import PostView from './components/PostView.vue'
+import createPostDto from './factories/PostDtoFactory'
+const PostEdit = () => import('./components/PostEdit.vue');
 
 // This installs <router-view> and <router-link>,
 // and injects $router and $route to all router-enabled child components
@@ -30,6 +32,9 @@ const router = new Router({
         { path: users, component: UserList},
         { path: '/autocomplete', component: Autocomplete},
         { path: '/registration', component: Registration },
+        { path: '/post/add', component: PostEdit, props: {postDTO: createPostDto(), onAfterSubmit: (savedOnServerPostDto)=>{
+            router.push({ name: post, params: { id: savedOnServerPostDto.id }})
+        }}},
         { name: post, path: '/post/:id', component: PostView},
         { path: '*', component: NotFoundComponent },
     ]

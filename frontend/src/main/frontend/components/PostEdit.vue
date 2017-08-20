@@ -27,6 +27,7 @@
     import Spinner from 'vue-simple-spinner'  // https://github.com/dzwillia/vue-simple-spinner/blob/master/examples-src/App.vue
     import bus from '../bus'
     import {LOGIN, LOGOUT} from '../bus'
+    import {API_POST} from '../constants'
 
     const MIN_LENGTH = 10;
 
@@ -59,7 +60,7 @@
 
     export default {
         props : [
-            'postDTO'
+            'postDTO', 'onAfterSubmit', 'onCancel', 'onError'
         ],
         data () {
             return {
@@ -108,16 +109,34 @@
             },
             onBtnSave() {
                 this.startSending();
-                this.$http.put('/api/post', this.postDTO, {}).then(response => {
-                    this.finishSending();
-                    this.$parent.afterSubmit();
-                }, response => {
-                    console.error("Error on send post", response);
-                    this.finishSending();
-                });
+                if (this.postDTO.id) {
+                    // edit / update
+                    this.$http.put(API_POST, this.postDTO, {}).then(response => {
+                        this.finishSending();
+                        if (this.$props.onAfterSubmit){
+                            this.$props.onAfterSubmit(response.body);
+                        }
+                    }, response => {
+                        console.error("Error on edit post", response);
+                        this.finishSending();
+                    });
+                } else {
+                    // create
+                    this.$http.post(API_POST, this.postDTO, {}).then(response => {
+                        this.finishSending();
+                        if (this.$props.onAfterSubmit){
+                            this.$props.onAfterSubmit(response.body);
+                        }
+                    }, response => {
+                        console.error("Error on add post", response);
+                        this.finishSending();
+                    });
+                }
             },
             onBtnCancel() {
-                this.$parent.cancel();
+                if (this.$props.onCancel){
+                    this.$props.onCancel();
+                }
             },
             hasInvalidText() {
                 return strip(this.postDTO.text).length < MIN_LENGTH;
@@ -130,7 +149,6 @@
         watch: {
             //content(html) {
             //    console.debug("PostEdit", html);
-            //    this.$parent.setText(html);
             //},
         }
     }

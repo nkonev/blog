@@ -8,7 +8,7 @@
             <aside class="right"> >> </aside>
 
             <template v-if="isEditing">
-                <PostEdit :postDTO="postDTO" />
+                <PostEdit :postDTO="postDTO" :onAfterSubmit="afterSubmit" :onCancel="cancel" />
             </template>
             <template v-else>
                 <div class="post-head" v-if="postDTO.canEdit" @click="setEdit()">
