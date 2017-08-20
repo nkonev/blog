@@ -16,7 +16,6 @@ Vue.use(Router);
 
 const root = '/';
 const users = '/users';
-const usersWithPage = users + '/:page?'; // '?' means not necessary as in RegExp
 const useProfileName = 'user-profile';
 const post = 'post';
 
@@ -44,7 +43,6 @@ export  {
     router as default,
     root,
     users,
-    usersWithPage,
     useProfileName,
     post
 }
