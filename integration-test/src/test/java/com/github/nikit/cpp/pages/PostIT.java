@@ -80,8 +80,8 @@ public class PostIT extends AbstractItTestRunner {
             open(createdPost);
             postViewPage.edit();
 
-            final String newText = "autotest_edited_titile";
-            final String newTitle = "New post edited from autotest with love";
+            final String newTitle = "autotest edited title";
+            final String newText = "New post edited from autotest with love";
             postEditPage.setText(newText);
             postEditPage.setTitle(newTitle);
             postEditPage.save();
