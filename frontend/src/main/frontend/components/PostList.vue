@@ -124,10 +124,11 @@
         position fixed
         right 20px
         bottom 20px
-
+        line-height: $fabSize - 5px
         a {
             display block
             text-align center
+            vertical-align: middle;
             text-decoration none
             cursor pointer
             background-color #0086B3
