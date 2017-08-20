@@ -35,7 +35,7 @@ public class AutocompleteControllerIT extends AbstractItTestRunner {
         // e.sendKeys("t"); // not necessary
         new Actions(driver).keyDown(e, Keys.CONTROL).keyUp(e, Keys.CONTROL).perform();
 
-        $(".vue-instant__suggestions").shouldHave(text("United Arab Emirates"));
+        $(".vue-instant__suggestions").shouldBe(CLICKABLE).shouldHave(text("United Arab Emirates"));
 
         //TimeUnit.SECONDS.sleep(9999);
     }
