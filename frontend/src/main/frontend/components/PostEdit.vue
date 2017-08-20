@@ -7,7 +7,7 @@
             https://vuejs.org/v2/guide/components.html#Composing-Components
             see also created() hook
         -->
-        <input v-model="editPostDTO.title"/>
+        <input class="title" v-model="editPostDTO.title"/>
         <quill-editor v-model="editPostDTO.text"
                       ref="myQuillEditor"
                       :options="editorOption"
