@@ -81,6 +81,7 @@
              This demo shows how to change this.
              */
             // https://quilljs.com/guides/how-to-customize-quill/#content-and-formatting
+            // warning: "// if you need register quill modules, you need to introduce and register before the vue program is instantiated" @ https://github.com/surmon-china/vue-quill-editor
         },
         beforeDestroy(){
             this.quillInstance = null;

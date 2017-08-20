@@ -32,6 +32,7 @@
     import bus from '../bus'
     import {LOGIN, LOGOUT} from '../bus'
 
+    // Lazy load heavy component https://router.vuejs.org/en/advanced/lazy-loading.html. see also in .babelrc
     const PostEdit = () => import('./PostEdit.vue');
 
     export default {

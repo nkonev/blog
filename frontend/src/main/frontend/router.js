@@ -6,8 +6,6 @@ import UserList from './components/UserList.vue'
 import Autocomplete from './components/Autocomplete.vue'
 import Registration from './components/Registration.vue'
 import PostList from './components/PostList.vue'
-// Lazy load heavy component https://router.vuejs.org/en/advanced/lazy-loading.html. see also in .babelrc
-const PostEdit = () => import('./components/PostEdit.vue');
 import PostView from './components/PostView.vue'
 
 // This installs <router-view> and <router-link>,
@@ -32,7 +30,6 @@ const router = new Router({
         { path: users, component: UserList},
         { path: '/autocomplete', component: Autocomplete},
         { path: '/registration', component: Registration },
-        { path: '/post/edit', component: PostEdit },
         { name: post, path: '/post/:id', component: PostView},
         { path: '*', component: NotFoundComponent },
     ]
