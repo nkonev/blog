@@ -15,8 +15,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import static com.codeborne.selenide.Selenide.clearBrowserCookies;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -43,6 +43,9 @@ public abstract class AbstractItTestRunner {
     protected WebDriver driver;
 
     private Logger LOGGER = LoggerFactory.getLogger(AbstractItTestRunner.class);
+
+    @Autowired
+    protected TestRestTemplate testRestTemplate;
 
     @Before
     public void before() {
