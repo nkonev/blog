@@ -27,9 +27,9 @@ public class AutocompleteControllerIT extends AbstractItTestRunner {
 
         final String SELECTOR = "input.sbx-google__input";
 
-        $(SELECTOR).getWrappedElement().sendKeys("Uni");
+        $(SELECTOR).shouldBe(CLICKABLE).getWrappedElement().sendKeys("Uni");
 
-        WebElement e = $(SELECTOR).getWrappedElement();
+        WebElement e = $(SELECTOR).shouldBe(CLICKABLE).getWrappedElement();
 
         // root cause -- send custom KEYUP event for vue-instant (https://stackoverflow.com/questions/25012780/how-do-i-enter-text-in-textfield-with-onkeyup-onfocus-javascript/25030094#25030094)
         // e.sendKeys("t"); // not necessary
