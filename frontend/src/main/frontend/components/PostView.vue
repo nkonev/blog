@@ -4,9 +4,10 @@
             <div class="img-container">
                 <img class="title-img" :src="postDTO.titleImg"/>
             </div>
-            <aside class="left" > << </aside>
-            <aside class="right"> >> </aside>
-
+            <template v-if="postDTO.id"> <!-- draw only if id == true (!=0) -->
+                <aside class="left" @click="goLeft()"> << </aside>
+                <aside class="right" @click="goRight()"> >> </aside>
+            </template>
             <template v-if="isEditing">
                 <PostEdit :postDTO="postDTO" :onAfterSubmit="afterSubmit" :onCancel="cancel" />
             </template>
@@ -31,6 +32,7 @@
     import {API_POST} from '../constants'
     import bus from '../bus'
     import {LOGIN, LOGOUT} from '../bus'
+    import {post} from '../router'
 
     // Lazy load heavy component https://router.vuejs.org/en/advanced/lazy-loading.html. see also in .babelrc
     const PostEdit = () => import('./PostEdit.vue');
@@ -97,6 +99,16 @@
             setText(html) {
                 this.postDTO.text = html;
                 console.debug("PostView", this.postDTO.text);
+            },
+            goLeft() {
+                this.postDTO.id--;
+                this.$router.push({ name: post, params: { id: this.postDTO.id }});
+                this.fetchData();
+            },
+            goRight() {
+                this.postDTO.id++;
+                this.$router.push({ name: post, params: { id: this.postDTO.id }});
+                this.fetchData();
             }
         },
         watch: {
