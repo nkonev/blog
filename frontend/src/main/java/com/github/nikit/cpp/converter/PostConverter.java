@@ -1,10 +1,12 @@
 package com.github.nikit.cpp.converter;
 
 import com.github.nikit.cpp.dto.PostDTO;
+import com.github.nikit.cpp.dto.PostDTOExtended;
 import com.github.nikit.cpp.dto.PostDTOWithAuthorization;
 import com.github.nikit.cpp.dto.UserAccountDetailsDTO;
 import com.github.nikit.cpp.entity.jpa.Permissions;
 import com.github.nikit.cpp.entity.jpa.Post;
+import com.github.nikit.cpp.repo.jpa.PostRepository;
 import com.github.nikit.cpp.security.BlogSecurityService;
 import com.github.nikit.cpp.utils.XssSanitizeUtil;
 import org.jsoup.Jsoup;
@@ -17,6 +19,9 @@ public class PostConverter {
     @Autowired
     private BlogSecurityService blogSecurityService;
 
+    @Autowired
+    private PostRepository postRepository;
+
     public PostDTOWithAuthorization convertToDto(Post saved, UserAccountDetailsDTO userAccount) {
         Assert.notNull(saved, "Post can't be null");
 
@@ -28,6 +33,25 @@ public class PostConverter {
                 UserAccountConverter.convertToUserAccountDTO(saved.getOwner()),
                 blogSecurityService.hasPostPermission(saved, userAccount, Permissions.EDIT),
                 blogSecurityService.hasPostPermission(saved, userAccount, Permissions.DELETE)
+        );
+    }
+
+    public PostDTOExtended convertToDtoExtended(Post saved, UserAccountDetailsDTO userAccount) {
+        Assert.notNull(saved, "Post can't be null");
+
+        Post left = postRepository.getLeft(saved.getId());
+        Post right = postRepository.getRight(saved.getId());
+
+        return new PostDTOExtended(
+                saved.getId(),
+                saved.getTitle(),
+                (saved.getText()),
+                saved.getTitleImg(),
+                UserAccountConverter.convertToUserAccountDTO(saved.getOwner()),
+                blogSecurityService.hasPostPermission(saved, userAccount, Permissions.EDIT),
+                blogSecurityService.hasPostPermission(saved, userAccount, Permissions.DELETE),
+                left != null ? left.getId() : null,
+                right != null ? right.getId() : null
         );
     }
 

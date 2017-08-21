@@ -1,6 +1,7 @@
 package com.github.nikit.cpp.controllers;
 
 import com.github.nikit.cpp.Constants;
+import com.github.nikit.cpp.dto.PostDTOExtended;
 import com.github.nikit.cpp.utils.PageUtils;
 import com.github.nikit.cpp.converter.PostConverter;
 import com.github.nikit.cpp.dto.PostDTO;
@@ -53,13 +54,13 @@ public class PostController {
     }
 
     @GetMapping(Constants.Uls.API+Constants.Uls.POST+Constants.Uls.POST_ID)
-    public PostDTOWithAuthorization getPost(
+    public PostDTOExtended getPost(
             @PathVariable(Constants.PathVariables.POST_ID) long id,
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount // null if not authenticated
     ) {
         return postRepository
                 .findById(id)
-                .map(post -> postConverter.convertToDto(post, userAccount))
+                .map(post -> postConverter.convertToDtoExtended(post, userAccount))
                 .orElseThrow(()-> new RuntimeException("Post " + id + " not found"));
     }
 

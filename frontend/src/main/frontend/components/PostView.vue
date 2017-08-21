@@ -4,10 +4,10 @@
             <div class="img-container">
                 <img class="title-img" :src="postDTO.titleImg"/>
             </div>
-            <template v-if="postDTO.id"> <!-- draw only if id == true (!=0) -->
-                <aside class="left" @click="goLeft()"> << </aside>
-                <aside class="right" @click="goRight()"> >> </aside>
-            </template>
+            <!-- draw only if id == true (!=0) -->
+            <aside class="left" @click="goLeft()" v-if="postDTO.id && !isEditing && postDTO.left"> << </aside>
+            <aside class="right" @click="goRight()" v-if="postDTO.id && !isEditing && postDTO.right"> >> </aside>
+
             <template v-if="isEditing">
                 <PostEdit :postDTO="postDTO" :onAfterSubmit="afterSubmit" :onCancel="cancel" />
             </template>
@@ -30,8 +30,7 @@
 
 <script>
     import {API_POST} from '../constants'
-    import bus from '../bus'
-    import {LOGIN, LOGOUT} from '../bus'
+    import bus, {LOGIN, LOGOUT} from '../bus'
     import {post} from '../router'
 
     // Lazy load heavy component https://router.vuejs.org/en/advanced/lazy-loading.html. see also in .babelrc
@@ -75,7 +74,7 @@
                 this.fetchData();
             },
             onLogout() {
-                this.fetchData();
+                // this.fetchData(); // TODO introduce new event for real logout. this event is emitted for authentication error
             },
 
             setEdit() {
@@ -101,13 +100,11 @@
                 console.debug("PostView", this.postDTO.text);
             },
             goLeft() {
-                this.postDTO.id--;
-                this.$router.push({ name: post, params: { id: this.postDTO.id }});
+                this.$router.push({ name: post, params: { id: this.postDTO.left }});
                 this.fetchData();
             },
             goRight() {
-                this.postDTO.id++;
-                this.$router.push({ name: post, params: { id: this.postDTO.id }});
+                this.$router.push({ name: post, params: { id: this.postDTO.right }});
                 this.fetchData();
             }
         },
