@@ -11,9 +11,9 @@
                 <PostEdit :postDTO="postDTO" :onAfterSubmit="afterSubmit" :onCancel="cancel" />
             </template>
             <template v-else>
-                <div class="post-head" v-if="postDTO.canEdit" @click="setEdit()">
+                <div class="post-head">
                     <h2>{{postDTO.title}}</h2>
-                    <img class="edit-container-pen" src="../assets/pen.png"/>
+                    <img class="edit-container-pen" src="../assets/pen.png" v-if="postDTO.canEdit" @click="setEdit()"/>
                 </div>
                 <div class="post-content" v-html="postDTO.text"></div>
             </template>
