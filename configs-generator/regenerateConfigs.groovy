@@ -13,7 +13,7 @@ println string
 
 def FRONTEND_MAIN_YML_FILE = "${project.basedir}/../frontend/src/main/resources/config/application.yml";
 def FRONTEND_TEST_YML_FILE = "${project.basedir}/../frontend/src/test/resources/config/application.yml";
-def INTEGRATION_TEST_YML_FILE = "${project.basedir}/../integration-test/src/test/resources/config/application.yml";
+def INTEGRATION_TEST_YML_FILE = "${project.basedir}/../webdriver-test/src/test/resources/config/application.yml";
 
 class ExportedConstants {
     public static final def PROD_PORT = 8080

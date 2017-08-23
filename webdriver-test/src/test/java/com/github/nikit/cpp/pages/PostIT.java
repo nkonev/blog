@@ -18,10 +18,10 @@ public class PostIT extends AbstractItTestRunner {
 
     public static class PostViewPage {
         public void assertTitle(String expected) {
-            $(".post .post-head").should(Condition.have(Condition.text(expected)));
+            $(".post .post-head").shouldBe(CLICKABLE).should(Condition.have(Condition.text(expected)));
         }
         public void assertText(String expected) {
-            $(".post .post-content").should(Condition.have(Condition.text(expected)));
+            $(".post .post-content").shouldBe(CLICKABLE).should(Condition.have(Condition.text(expected)));
         }
         public void edit() {
             $(".edit-container-pen").shouldBe(CLICKABLE).click();

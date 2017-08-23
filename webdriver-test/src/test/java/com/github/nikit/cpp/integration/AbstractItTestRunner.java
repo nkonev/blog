@@ -49,7 +49,7 @@ public abstract class AbstractItTestRunner {
 
     @Before
     public void before() {
-        LOGGER.info("Executing before");
+        LOGGER.debug("Executing before");
         clearBrowserCookies();
     }
 }

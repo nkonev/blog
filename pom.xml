@@ -40,7 +40,7 @@
         <module>api</module>
         <module>common-test</module>
         <module>frontend</module>
-        <module>integration-test</module>
+        <module>webdriver-test</module>
     </modules>
 
     <url>https://github.com/nikit-cpp/blog.git</url>
