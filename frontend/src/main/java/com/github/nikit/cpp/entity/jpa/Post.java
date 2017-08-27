@@ -17,7 +17,7 @@ public class Post {
 
     private String title;
     private String text;
-    private URL titleImg;
+    private String titleImg;
 
     @ManyToOne
     @JoinColumn(name="owner_id")
@@ -25,14 +25,14 @@ public class Post {
 
     public Post() { }
 
-    public Post(Long id, String title, String text, URL titleImg) {
+    public Post(Long id, String title, String text, String titleImg) {
         this.id = id;
         this.title = title;
         this.text = text;
         this.titleImg = titleImg;
     }
 
-    public Post(Long id, String title, String text, URL titleImg, UserAccount owner) {
+    public Post(Long id, String title, String text, String titleImg, UserAccount owner) {
         this(id, title, text, titleImg);
         this.owner = owner;
     }
@@ -61,11 +61,11 @@ public class Post {
         this.text = text;
     }
 
-    public URL getTitleImg() {
+    public String getTitleImg() {
         return titleImg;
     }
 
-    public void setTitleImg(URL titleImg) {
+    public void setTitleImg(String titleImg) {
         this.titleImg = titleImg;
     }
 

@@ -11,7 +11,7 @@ public class PostDTOWithAuthorization extends PostDTO {
             long id,
             String title,
             String text,
-            URL titleImg,
+            String titleImg,
             UserAccountDTO userAccountDTO,
             boolean canEdit,
             boolean canDelete

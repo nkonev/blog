@@ -7,7 +7,26 @@
             https://vuejs.org/v2/guide/components.html#Composing-Components
             see also created() hook
         -->
-        <input class="title" v-model="editPostDTO.title"/>
+
+        <!-- https://zhanziyang.github.io/vue-croppa/#/file-input -->
+        <div>
+            <croppa v-model="myCroppa"
+                    :width="400"
+                    :height="250"
+                    :file-size-limit="1 * 1024 * 1024"
+                    placeholder="Choose title image"
+                    :initial-image="editPostDTO.titleImg"
+                    :placeholder-font-size="0"
+                    :disabled="false"
+                    :prevent-white-space="true"
+                    :show-remove-button="true"
+                    @file-choose="handleCroppaFileChoose"
+                    @file-size-exceed="handleCroppaFileSizeExceed"
+                    @file-type-mismatch="handleCroppaFileTypeMismatch"
+                    >
+            </croppa >
+        </div>
+        <input class="title" placeholder="Title of your megapost" v-model="editPostDTO.title"/>
         <quill-editor v-model="editPostDTO.text"
                       ref="myQuillEditor"
                       :options="editorOption"
@@ -19,7 +38,7 @@
         <div class="command-buttons">
             <div class="send">
                 <spinner v-if="submitting" class="send-spinner" :line-size="10" :spacing="20" :speed="0.4" size="55" :font-size="20" message="Sending..."></spinner>
-                <button v-if="!submitting" class="save-btn" @click="onBtnSave" v-bind:disabled="hasInvalidText()">Сохранить</button>
+                <button v-if="!submitting" class="save-btn" @click="onBtnSave" v-bind:disabled="!isPostValid()">Сохранить</button>
             </div>
             <button v-if="!submitting" class="save-btn" @click="onBtnCancel">Отмена</button>
         </div>
@@ -27,10 +46,14 @@
 </template>
 
 <script>
+    import 'vue-croppa/dist/vue-croppa.css'
     import Vue from 'vue'
     import { quillEditor } from 'vue-quill-editor'
     import Spinner from 'vue-simple-spinner'  // https://github.com/dzwillia/vue-simple-spinner/blob/master/examples-src/App.vue
     import {API_POST} from '../constants'
+    import Croppa from 'vue-croppa'
+
+    Vue.use(Croppa);
 
     const MIN_LENGTH = 10;
 
@@ -73,7 +96,8 @@
                         toolbar: toolbarOptions,
                     }
                 },
-                editPostDTO: {} // will be overriden below in created()
+                editPostDTO: {}, // will be overriden below in created()
+                myCroppa: {}
             }
         },
         mounted() {
@@ -113,6 +137,10 @@
             },
             onBtnSave() {
                 this.startSending();
+                const dataUrl = this.myCroppa.generateDataUrl();
+                this.editPostDTO.titleImg = dataUrl;
+                console.debug('titleImg=', this.editPostDTO.titleImg);
+
                 if (this.editPostDTO.id) {
                     // edit / update
                     this.$http.put(API_POST, this.editPostDTO, {}).then(response => {
@@ -142,9 +170,22 @@
                     this.$props.onCancel();
                 }
             },
-            hasInvalidText() {
-                return strip(this.editPostDTO.text).length < MIN_LENGTH;
+            isPostValid() {
+               return this.hasValidText() && this.editPostDTO.title
             },
+            hasValidText() {
+                return !(strip(this.editPostDTO.text).length < MIN_LENGTH);
+            },
+            handleCroppaFileTypeMismatch() {
+                alert('Image wrong type');
+            },
+            handleCroppaFileSizeExceed() {
+                // see :file-size-limit
+                alert('Image size must be < than 1 Mb');
+            },
+            handleCroppaFileChoose(e) {
+                console.debug('chosen');
+            }
         },
         components: {
             quillEditor,
@@ -153,7 +194,7 @@
         watch: {
             'editPostDTO': {
                 handler: function (val, oldVal) {
-                    console.log("PostEdit changing editPostDTO", val.title, val.text);
+                    // console.log("PostEdit changing editPostDTO", val.title, val.text);
                 },
                 deep: true
             }

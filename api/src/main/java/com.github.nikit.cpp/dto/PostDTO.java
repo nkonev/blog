@@ -6,11 +6,11 @@ public class PostDTO {
     private long id;
     private String title;
     private String text;
-    private URL titleImg;
+    private String titleImg;
 
     public PostDTO() { }
 
-    public PostDTO(long id, String title, String text, URL titleImg) {
+    public PostDTO(long id, String title, String text, String titleImg) {
         this.id = id;
         this.title = title;
         this.text = text;
@@ -42,11 +42,11 @@ public class PostDTO {
         this.text = text;
     }
 
-    public URL getTitleImg() {
+    public String getTitleImg() {
         return titleImg;
     }
 
-    public void setTitleImg(URL titleImg) {
+    public void setTitleImg(String titleImg) {
         this.titleImg = titleImg;
     }
 

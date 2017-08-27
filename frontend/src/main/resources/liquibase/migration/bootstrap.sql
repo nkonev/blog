@@ -49,7 +49,7 @@ CREATE TABLE posts.post (
   id BIGSERIAL PRIMARY KEY,
   title CHARACTER VARYING(256) NOT NULL,
   text TEXT NOT NULL,
-  title_img CHARACTER VARYING(256) NOT NULL,
+  title_img TEXT NOT NULL,
   owner_id BIGINT NOT NULL REFERENCES auth.users(id),
   UNIQUE (title)
 );

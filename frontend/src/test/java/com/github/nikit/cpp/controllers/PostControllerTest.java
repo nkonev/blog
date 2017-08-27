@@ -41,16 +41,12 @@ public class PostControllerTest extends AbstractUtTestRunner {
         public static class Instance {
             private final PostDTO postDTO;
             {
-                try {
-                    postDTO = new PostDTO(
-                            0,
-                            "default new post title",
-                            "default new post text",
-                            new URL("https://postgrespro.ru/img/logo_mono.png")
-                    );
-                } catch (MalformedURLException e) {
-                    throw new RuntimeException(e);
-                }
+                postDTO = new PostDTO(
+                        0,
+                        "default new post title",
+                        "default new post text",
+                        new String("https://postgrespro.ru/img/logo_mono.png")
+                );
             }
             public PostDTO build() {
                 return postDTO;

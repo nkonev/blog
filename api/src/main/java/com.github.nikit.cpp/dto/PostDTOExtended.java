@@ -8,7 +8,7 @@ public class PostDTOExtended extends PostDTOWithAuthorization {
 
     public PostDTOExtended() { }
 
-    public PostDTOExtended(long id, String title, String text, URL titleImg, UserAccountDTO userAccountDTO, boolean canEdit, boolean canDelete, Long left, Long right) {
+    public PostDTOExtended(long id, String title, String text, String titleImg, UserAccountDTO userAccountDTO, boolean canEdit, boolean canDelete, Long left, Long right) {
         super(id, title, text, titleImg, userAccountDTO, canEdit, canDelete);
         this.left = left;
         this.right = right;

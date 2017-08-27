@@ -1,9 +1,6 @@
 <template>
     <div class="post">
         <template v-if="postDTO">
-            <div class="img-container">
-                <img class="title-img" :src="postDTO.titleImg"/>
-            </div>
             <!-- draw only if id == true (!=0) -->
             <aside class="left" @click="goLeft()" v-if="postDTO.id && !isEditing && postDTO.left"> << </aside>
             <aside class="right" @click="goRight()" v-if="postDTO.id && !isEditing && postDTO.right"> >> </aside>
@@ -12,6 +9,9 @@
                 <PostEdit :postDTO="postDTO" :onAfterSubmit="afterSubmit" :onCancel="cancel" />
             </template>
             <template v-else>
+                <div class="img-container">
+                    <img class="title-img" :src="postDTO.titleImg"/>
+                </div>
                 <div class="post-head">
                     <h2>{{postDTO.title}}</h2>
                     <img class="edit-container-pen" src="../assets/pen.png" v-if="postDTO.canEdit" @click="setEdit()"/>
