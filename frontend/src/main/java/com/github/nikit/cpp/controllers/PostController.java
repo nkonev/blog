@@ -96,7 +96,7 @@ public class PostController {
             throw new BadRequestException("id cannot be set");
         }
         Post fromWeb = postConverter.convertToPost(postDTO, null);
-        UserAccount ua = userAccountRepository.findOne(userAccount.getId()); // TODO check Hibernate cache for it
+        UserAccount ua = userAccountRepository.findOne(userAccount.getId()); // Hibernate caches it
         Assert.notNull(ua, "User account not found");
         fromWeb.setOwner(ua);
         Post saved = postRepository.save(fromWeb);

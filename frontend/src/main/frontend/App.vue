@@ -8,7 +8,6 @@
             <nav>
                 <router-link to="/" exact>Posts</router-link>
                 <router-link to="/users">Users</router-link>
-                <router-link to="/autocomplete">Autocomplete</router-link>
                 <a id="a-doc" href="/docs/index.html">Docs</a>
                 <router-link to="/registration">Registration</router-link>
 

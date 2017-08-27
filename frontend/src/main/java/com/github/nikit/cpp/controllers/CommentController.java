@@ -75,7 +75,7 @@ public class CommentController {
 
         Comment comment = commentConverter.convertFromDto(commentDTO, postId, null);
 
-        UserAccount ua = userAccountRepository.findOne(userAccount.getId()); // TODO check Hibernate cache for it
+        UserAccount ua = userAccountRepository.findOne(userAccount.getId()); // Hibernate caches it
         Assert.notNull(ua, "User account not found");
         comment.setOwner(ua);
         Comment saved = commentRepository.save(comment);
