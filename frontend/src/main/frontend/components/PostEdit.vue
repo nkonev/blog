@@ -37,7 +37,7 @@
 
         <div class="command-buttons">
             <div class="send">
-                <spinner v-if="submitting" class="send-spinner" :line-size="10" :spacing="20" :speed="0.4" size="55" :font-size="20" message="Sending..."></spinner>
+                <blog-spinner v-if="submitting" message="Sending..."></blog-spinner>
                 <button v-if="!submitting" class="save-btn" @click="onBtnSave" v-bind:disabled="!isPostValid()">Сохранить</button>
             </div>
             <button v-if="!submitting" class="save-btn" @click="onBtnCancel">Отмена</button>
@@ -49,7 +49,7 @@
     import 'vue-croppa/dist/vue-croppa.css'
     import Vue from 'vue'
     import { quillEditor } from 'vue-quill-editor'
-    import Spinner from 'vue-simple-spinner'  // https://github.com/dzwillia/vue-simple-spinner/blob/master/examples-src/App.vue
+    import BlogSpinner from './BlogSpinner.vue'
     import {API_POST} from '../constants'
     import Croppa from 'vue-croppa'
 
@@ -189,7 +189,7 @@
         },
         components: {
             quillEditor,
-            Spinner
+            BlogSpinner
         },
         watch: {
             'editPostDTO': {
@@ -213,9 +213,6 @@
         .send {
             display inline
 
-            .send-spinner {
-                margin: 2px;
-            }
             .save-btn {
                 height 32px
                 min-width 64px

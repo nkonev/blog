@@ -17,7 +17,7 @@
                   {{ noMoreMessage }}
                 </span>
                 <span slot="spinner">
-                  <spinner class="send-spinner" :line-size="10" :spacing="20" :speed="0.4" size="55" :font-size="20" message="Receiving..."></spinner>
+                  <blog-spinner message="Receiving..."></blog-spinner>
                 </span>
             </infinite-loading>
         </div>
@@ -30,7 +30,7 @@
     import InfiniteLoading from 'vue-infinite-loading';
     import debounce from "lodash/debounce"
     import {API_POST} from '../constants'
-    import Spinner from 'vue-simple-spinner'  // https://github.com/dzwillia/vue-simple-spinner/blob/master/examples-src/App.vue
+    import BlogSpinner from './BlogSpinner.vue'
     const Stomp = require("@stomp/stompjs/lib/stomp.js").Stomp; // https://github.com/jmesnil/stomp-websocket/issues/119 https://stomp-js.github.io/stomp-websocket/codo/extra/docs-src/Usage.md.html
 
     // https://peachscript.github.io/vue-infinite-loading/#!/getting-started/with-filter
@@ -51,7 +51,7 @@
         components: {
             PostItem,
             InfiniteLoading,
-            Spinner
+            BlogSpinner
         },
         methods: {
             onInfinite() {
