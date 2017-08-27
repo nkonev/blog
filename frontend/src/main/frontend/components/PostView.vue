@@ -15,7 +15,11 @@
                     </div>
                     <div class="post-head">
                         <h2>{{postDTO.title}}</h2>
-                        <img class="edit-container-pen" src="../assets/pen.png" v-if="postDTO.canEdit" @click="setEdit()"/>
+
+                        <span class="manage-buttons">
+                            <img class="edit-container-pen" src="../assets/pen.png" v-if="postDTO.canEdit" @click="setEdit()"/>
+                            <img class="remove-container-x" src="../assets/remove.png" v-if="postDTO.canDelete" @click="doDelete()"/>
+                        </span>
                     </div>
                     <div class="post-content" v-html="postDTO.text"></div>
                 </template>
@@ -37,7 +41,7 @@
 <script>
     import {API_POST} from '../constants'
     import bus, {LOGIN, LOGOUT} from '../bus'
-    import {post} from '../router'
+    import {root, post} from '../router'
     import postFactory from "../factories/PostDtoFactory"
     import BlogSpinner from "./BlogSpinner.vue"
     import PostAddFab from './PostAddFab.vue'
@@ -72,8 +76,11 @@
         methods: {
             fetchData() {
                 this.isLoading = true;
-                this.$http.get(API_POST+'/'+this.$route.params.id, { }).then((res) => {
-                    this.postDTO = res.body; // add data from server's response
+                this.$http.get(API_POST+'/'+this.$route.params.id, { }).then((response) => {
+                    this.postDTO = response.body; // add data from server's response
+                    this.isLoading = false;
+                }, response => {
+                    console.error("Error on fetch post", response);
                     this.isLoading = false;
                 });
             },
@@ -106,13 +113,32 @@
                 this.postDTO.text = html;
                 console.debug("PostView", this.postDTO.text);
             },
-            goLeft() {
-                this.$router.push({ name: post, params: { id: this.postDTO.left }});
+            goto(postId){
+                this.$router.push({ name: post, params: { id: postId }});
                 this.fetchData();
             },
+            goLeft() {
+                this.goto(this.postDTO.left);
+            },
             goRight() {
-                this.$router.push({ name: post, params: { id: this.postDTO.right }});
-                this.fetchData();
+                this.goto(this.postDTO.right);
+            },
+            doDelete() {
+                this.isLoading = true;
+                console.log("Deleting");
+                this.$http.delete(API_POST+'/'+this.$route.params.id, { }).then((response) => {
+                    this.isLoading = false;
+                    if (this.postDTO.right) {
+                        this.goto(this.postDTO.right);
+                    } else if (this.postDTO.left) {
+                        this.goto(this.postDTO.left);
+                    } else {
+                        this.$router.push({ name: root });
+                    }
+                }, response => {
+                    console.error("Error on delete post", response);
+                    this.isLoading = false;
+                });
             }
         },
         watch: {
@@ -171,6 +197,10 @@
             h1 {
             }
             img.edit-container-pen {
+                height 32px;
+                cursor pointer
+            }
+            img.remove-container-x {
                 height 32px;
                 cursor pointer
             }
