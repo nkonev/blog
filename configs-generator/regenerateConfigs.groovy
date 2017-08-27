@@ -140,6 +140,7 @@ ${custom(false)}
 server.tomcat.accesslog.enabled: true
 server.tomcat.accesslog.pattern: '%t %a "%r" %s (%D ms)'
 server.port: ${ExportedConstants.PROD_PORT}
+server.session.persistent: true
 ${WEBSERVER_SNIPPET}
 
 # this is URL
