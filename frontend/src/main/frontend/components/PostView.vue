@@ -105,14 +105,6 @@
                 this.cancel();
                 this.fetchData();
             },
-            /**
-             * method with which child editor component will update html
-             * @param html
-             */
-            setText(html) {
-                this.postDTO.text = html;
-                console.debug("PostView", this.postDTO.text);
-            },
             goto(postId){
                 this.$router.push({ name: post, params: { id: postId }});
                 this.fetchData();
