@@ -97,6 +97,10 @@ https://github.com/bonigarcia/webdrivermanager
             <artifactId>common-test</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.icegreen</groupId>
+            <artifactId>greenmail</artifactId>
+        </dependency>
 
     </dependencies>
 

@@ -5,6 +5,7 @@ package com.github.nikit.cpp.integration;
  */
 
 import com.codeborne.selenide.Condition;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.nikit.cpp.IntegrationTestConstants;
 import com.github.nikit.cpp.Launcher;
 import org.junit.Before;
@@ -46,6 +47,9 @@ public abstract class AbstractItTestRunner {
 
     @Autowired
     protected TestRestTemplate testRestTemplate;
+
+    @Autowired
+    protected ObjectMapper objectMapper;
 
     @Before
     public void before() {

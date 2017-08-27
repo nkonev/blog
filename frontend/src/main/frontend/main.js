@@ -37,10 +37,8 @@ Vue.http.interceptors.push((request, next) => {
             if (request.url!==(GET_PROFILE_URL)) {
                 vm.$modal.show(LOGIN_MODAL);
             }
-        } else {
-            if (!response.ok) {
-                Notifications.networkError();
-            }
+        } else if (response.status === 500) {
+            Notifications.unexpectedError();
         }
     });
 });

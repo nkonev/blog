@@ -1,5 +1,5 @@
 <template>
-    <span>
+    <span class="successfully-confirmed">
         You successfully confirmed, now you can <a href="#" @click.prevent="login">login</a>
     </span>
 </template>

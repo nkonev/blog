@@ -18,6 +18,10 @@
             </div>
             <button id="submit" type="submit" @click.prevent="onSubmit" v-bind:disabled="!submitEnabled">Submit</button>
             <blog-spinner v-if="submitting" message="Sending data"/>
+
+            <div class="field">
+                <span class="help-block" v-show="errors.server">{{ errors.server }}</span>
+            </div>
         </form>
         <div v-else>
             Your confirmation email successfully sent. Open your mail '{{profile.email}}' and follow confirmation link.
@@ -79,6 +83,7 @@
                 console.log('start submitting');
                 this.submitEnabled = false;
                 this.submitting = true;
+                this.errors.server = null;
 
                 this.$http.post('/api/register', this.profile).then(response => {
                     this.submitEnabled = true;
@@ -90,6 +95,7 @@
                     console.error(response);
                     // alert(response);
                     this.submitting = false;
+                    this.errors.server = response.body.message;
                 });
             },
             hasFormErrors(){
@@ -141,7 +147,7 @@
         div {
             .help-block {
                 margin-left 4px;
-                position absolute
+                // position absolute
                 color $errorColor
             }
         }
