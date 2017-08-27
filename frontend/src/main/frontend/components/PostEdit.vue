@@ -139,7 +139,7 @@
                 this.startSending();
                 const dataUrl = this.myCroppa.generateDataUrl();
                 this.editPostDTO.titleImg = dataUrl;
-                console.debug('titleImg=', this.editPostDTO.titleImg);
+                // console.debug('titleImg=', this.editPostDTO.titleImg);
 
                 if (this.editPostDTO.id) {
                     // edit / update
@@ -184,7 +184,7 @@
                 alert('Image size must be < than 1 Mb');
             },
             handleCroppaFileChoose(e) {
-                console.debug('chosen');
+                console.debug('image chosen');
             }
         },
         components: {

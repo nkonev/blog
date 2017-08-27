@@ -14,7 +14,10 @@
 
             <infinite-loading :on-infinite="onInfinite" ref="infiniteLoading">
                 <span slot="no-more">
-                  There is no more posts :(
+                  {{ noMoreMessage }}
+                </span>
+                <span slot="spinner">
+                  <spinner class="send-spinner" :line-size="10" :spacing="20" :speed="0.4" size="55" :font-size="20" message="Receiving..."></spinner>
                 </span>
             </infinite-loading>
         </div>
@@ -27,6 +30,7 @@
     import InfiniteLoading from 'vue-infinite-loading';
     import debounce from "lodash/debounce"
     import {API_POST} from '../constants'
+    import Spinner from 'vue-simple-spinner'  // https://github.com/dzwillia/vue-simple-spinner/blob/master/examples-src/App.vue
     const Stomp = require("@stomp/stompjs/lib/stomp.js").Stomp; // https://github.com/jmesnil/stomp-websocket/issues/119 https://stomp-js.github.io/stomp-websocket/codo/extra/docs-src/Usage.md.html
 
     // https://peachscript.github.io/vue-infinite-loading/#!/getting-started/with-filter
@@ -40,12 +44,14 @@
         data() {
             return {
                 posts: [ ],
-                searchString: ''
+                searchString: '',
+                noMoreMessage: 'There is no more posts :(',
             }
         },
         components: {
             PostItem,
-            InfiniteLoading
+            InfiniteLoading,
+            Spinner
         },
         methods: {
             onInfinite() {
@@ -60,6 +66,7 @@
                         this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded');
 
                         if (Math.floor(this.posts.length / POSTS_PAGE_SIZE) === MAX_PAGES) {
+                            this.noMoreMessage = `You reached max pages limit (${MAX_PAGES}). We want to stop to overwhelming your RAM.`;
                             console.log("Overwhelming prevention");
                             this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
                         }
