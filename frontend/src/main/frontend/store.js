@@ -38,11 +38,11 @@ const store = new Vuex.Store({
         [FETCH_USER_PROFILE](context) {
             Vue.http.get(GET_PROFILE_URL).then(response => {
                 const userProfile = response.body;
-                console.info('User Profile:', userProfile);
+                // console.info('User Profile:', userProfile);
                 context.commit(SET_USER, userProfile);
             }, response => {
                 // error callback
-                console.error("Can\'t get user profile!", response);
+                // console.error("Can\'t get user profile!", response);
             });
         }
     }
