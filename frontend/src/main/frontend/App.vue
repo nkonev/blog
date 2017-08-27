@@ -6,11 +6,9 @@
 
             <img id="logo" src="./assets/logo.png">
             <nav>
-                <router-link to="/" exact>Posts</router-link>
-                <router-link to="/users">Users</router-link>
-                <a id="a-doc" href="/docs/index.html">Docs</a>
-                <router-link to="/registration">Registration</router-link>
-
+                <router-link class="router-link" to="/" exact>Posts</router-link>
+                <router-link  class="router-link" to="/users">Users</router-link>
+                <a class="router-link" id="a-doc" href="/docs/index.html">Docs</a>
                 <user-profile-nav v-bind:currentUser="currentUser"/>
             </nav>
             <router-view></router-view>
@@ -80,14 +78,16 @@
       }
 
       nav {
-          a {
+          a.router-link,
+          span.router-link {
               padding 12px
               display flex
               flex-direction column
               justify-content center
           }
 
-          a.router-link-active {
+          a.router-link-active,
+          span.router-link-active {
               color white
               background-color #003eff
               border-radius 2px

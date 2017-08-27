@@ -1,16 +1,15 @@
 <template>
-    <div class="user-profile-nav">
-        <template v-if="currentUser">
-            <div class="user-profile-nav-login">
-                <multiselect :placeholder="currentUser.login" :show-labels="false" :options="actions" :searchable="false" :reset-after="true" @select="dispatchAction"></multiselect>
-            </div>
-            <img :src="currentUser.avatar"/>
-        </template>
-        <div class="user-profile-nav-not-registegred" v-else>
-            <a href="#" @click.prevent="login">login</a>
+    <div v-if="currentUser" class="user-profile-nav">
+        <div class="user-profile-nav-login">
+            <multiselect :placeholder="currentUser.login" :show-labels="false" :options="actions" :searchable="false" :reset-after="true" @select="dispatchAction"></multiselect>
         </div>
-
+        <img :src="currentUser.avatar"/>
     </div>
+    <span class="user-profile-nav-anonymous" v-else>
+        <a class="router-link" href="#" @click.prevent="login">login</a>
+        <span class="router-link">or</span>
+        <router-link class="router-link" to="/registration">Registration</router-link>
+    </span>
 </template>
 
 <script>
@@ -83,5 +82,11 @@
             height 48px;
             width 48px;
         }
+    }
+
+    .user-profile-nav-anonymous {
+        display flex
+        flex-direction row
+        justify-content flex-end
     }
 </style>
