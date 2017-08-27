@@ -3,7 +3,6 @@ import Router from 'vue-router'
 import UserProfile from './components/UserProfile.vue'
 import NotFoundComponent from './components/NotFoundComponent.vue'
 import UserList from './components/UserList.vue'
-import Autocomplete from './components/Autocomplete.vue'
 import Registration from './components/Registration.vue'
 import PostList from './components/PostList.vue'
 import PostView from './components/PostView.vue'
@@ -26,7 +25,6 @@ const router = new Router({
         { name: root_name, path: root, component: PostList},
         { name: useProfileName, path: '/user/:id?', component: UserProfile, props: true, },
         { path: users, component: UserList},
-        { path: '/autocomplete', component: Autocomplete},
         { path: '/registration', component: Registration },
         { path: '/post/add', component: PostEdit, props: {
             postDTO: createPostDto(),
