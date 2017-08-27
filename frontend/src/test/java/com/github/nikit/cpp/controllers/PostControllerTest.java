@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.nikit.cpp.AbstractUtTestRunner;
 import com.github.nikit.cpp.Constants;
+import com.github.nikit.cpp.repo.jpa.PostRepository;
 import com.github.nikit.cpp.utils.PageUtils;
 import com.github.nikit.cpp.TestConstants;
 import com.github.nikit.cpp.dto.PostDTO;
@@ -16,7 +17,9 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -36,6 +39,10 @@ public class PostControllerTest extends AbstractUtTestRunner {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    // need for perform flush for apply real database constraints
+    @Autowired
+    private EntityManager entityManager;
 
     public static class PostDtoBuilder {
         public static class Instance {
@@ -292,18 +299,38 @@ public class PostControllerTest extends AbstractUtTestRunner {
 
     }
 
+    @Autowired
+    private PostRepository postRepository;
+
     @WithUserDetails(TestConstants.USER_ADMIN)
     @Test
     public void testAdminCanDeleteForeignPost() throws Exception {
         final long foreignPostId = FOREIGN_POST;
 
-        MvcResult addPostRequest = mockMvc.perform(
+        // add some comments
+        {
+            MvcResult addCommentRequest = mockMvc.perform(
+                    post(Constants.Uls.API+Constants.Uls.POST+"/"+foreignPostId+"/"+Constants.Uls.COMMENT)
+                            .content(objectMapper.writeValueAsString(CommentControllerTest.CommentDtoBuilder.startBuilding().build()))
+                            .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                            .with(csrf())
+            )
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.owner.login").value(TestConstants.USER_ADMIN))
+                    .andExpect(jsonPath("$.canEdit").value(true))
+                    .andExpect(jsonPath("$.canDelete").value(true))
+                    .andReturn();
+        }
+
+
+        MvcResult deletePostRequest = mockMvc.perform(
                 delete(Constants.Uls.API+Constants.Uls.POST+"/"+foreignPostId).with(csrf())
                         .with(csrf())
         )
                 .andExpect(status().isOk())
                 .andReturn();
-        LOGGER.info(addPostRequest.getResponse().getContentAsString());
+
+        LOGGER.info(deletePostRequest.getResponse().getContentAsString());
     }
 
 

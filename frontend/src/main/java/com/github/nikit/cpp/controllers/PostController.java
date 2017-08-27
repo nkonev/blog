@@ -2,6 +2,7 @@ package com.github.nikit.cpp.controllers;
 
 import com.github.nikit.cpp.Constants;
 import com.github.nikit.cpp.dto.PostDTOExtended;
+import com.github.nikit.cpp.repo.jpa.CommentRepository;
 import com.github.nikit.cpp.utils.PageUtils;
 import com.github.nikit.cpp.converter.PostConverter;
 import com.github.nikit.cpp.dto.PostDTO;
@@ -35,6 +36,9 @@ public class PostController {
 
     @Autowired
     private PostConverter postConverter;
+
+    @Autowired
+    private CommentRepository commentRepository;
 
     @GetMapping(Constants.Uls.API+Constants.Uls.POST)
     public List<PostDTO> getPosts(
@@ -124,6 +128,8 @@ public class PostController {
             @PathVariable(Constants.PathVariables.POST_ID) long postId
     ) {
         Assert.notNull(userAccount, "UserAccountDetailsDTO can't be null");
+        commentRepository.deleteByPostId(postId);
         postRepository.delete(postId);
+        postRepository.flush();
     }
 }
