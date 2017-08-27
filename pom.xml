@@ -33,6 +33,7 @@
         <webdrivermanager.version>1.7.1</webdrivermanager.version>
 
         <postgresql.version>42.1.4</postgresql.version>
+        <greenmail.version>1.5.5</greenmail.version>
     </properties>
 
     <modules>
@@ -147,6 +148,19 @@
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>${postgresql.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.icegreen</groupId>
+                <artifactId>greenmail</artifactId>
+                <version>${greenmail.version}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.sun.mail</groupId>
+                        <artifactId>javax.mail</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
         </dependencies>

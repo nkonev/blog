@@ -7,6 +7,9 @@ import Registration from './components/Registration.vue'
 import PostList from './components/PostList.vue'
 import PostView from './components/PostView.vue'
 import createPostDto from './factories/PostDtoFactory'
+import Confirm from './components/Confirm.vue'
+import ConfirmTokenNotFound from './components/ConfirmTokenNotFound.vue'
+import ConfirmUserNotFound from './components/ConfirmUserNotFound.vue'
 const PostEdit = () => import('./components/PostEdit.vue');
 
 // This installs <router-view> and <router-link>,
@@ -37,6 +40,9 @@ const router = new Router({
         }
         },
         { name: post, path: '/post/:id', component: PostView},
+        { path: '/confirm', component: Confirm},
+        { path: '/confirm/registration/token-not-found', component: ConfirmTokenNotFound},
+        { path: '/confirm/registration/user-not-found', component: ConfirmUserNotFound},
         { path: '*', component: NotFoundComponent },
     ]
 });
@@ -45,6 +51,7 @@ const router = new Router({
 export  {
     router as default,
     root,
+    root_name,
     users,
     useProfileName,
     post

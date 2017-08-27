@@ -94,14 +94,14 @@ public class RegistrationController {
         }
         if (userAccount.isEnabled()) {
             LOGGER.warn("Somebody attempts secondary confirm already confirmed user account with email='{}'", userAccount);
-            return Constants.Uls.ROOT;
+            return Constants.Uls.ROOT;  // respond static
         }
 
         userAccount.setEnabled(true);
 
         userConfirmationTokenRepository.delete(stringUuid);
 
-        return Constants.Uls.ROOT;
+        return Constants.Uls.ROOT; // respond static
     }
 
     @PostMapping(value = Constants.Uls.API+Constants.Uls.RESEND_CONFIRMATION_EMAIL)

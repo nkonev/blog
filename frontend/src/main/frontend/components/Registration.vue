@@ -1,6 +1,6 @@
 <template>
     <div class="registration" id="registration">
-        <form>
+        <form v-if="!emailSuccessfullySent">
             <div class="field">
                 <label for="login">Login <span class="required-mark">*</span></label>
                 <input id="login" v-model="profile.login" name="login" autofocus/>
@@ -17,7 +17,11 @@
                 <span class="help-block" v-show="errors.password">{{ errors.password }}</span>
             </div>
             <button id="submit" type="submit" @click.prevent="onSubmit" v-bind:disabled="!submitEnabled">Submit</button>
+            <blog-spinner v-if="submitting" message="Sending data"/>
         </form>
+        <div v-else>
+            Your confirmation email successfully sent. Open your mail '{{profile.email}}' and follow confirmation link.
+        </div>
     </div>
 </template>
 
@@ -30,6 +34,7 @@
     // https://github.com/monterail/vuelidate/tree/master/src/validators
     import required from 'vuelidate/lib/validators/required'
     import email from 'vuelidate/lib/validators/email'
+    import BlogSpinner from './BlogSpinner.vue'
 
     const PASSWORD_MIN_LENGTH = 6;
 
@@ -49,7 +54,9 @@
                             // 'error message' if error present
                     // ...
                 },
-                submitEnabled: false
+                submitEnabled: false, // is submit button enabled
+                submitting: false,
+                emailSuccessfullySent: false
             }
         },
         watch: {
@@ -60,22 +67,29 @@
                 deep: true
             }
         },
+        components: {
+            BlogSpinner
+        },
         methods: {
             onSubmit() {
                 if (this.hasFormErrors()) {
                     return false;
                 }
 
-                const self = this;
                 console.log('start submitting');
                 this.submitEnabled = false;
+                this.submitting = true;
 
                 this.$http.post('/api/register', this.profile).then(response => {
-                    self.submitEnabled = true;
+                    this.submitEnabled = true;
                     console.log('end submitting');
+                    this.submitting = false;
+                    this.emailSuccessfullySent = true;
                 }, response => {
+                    this.submitEnabled = true;
                     console.error(response);
                     // alert(response);
+                    this.submitting = false;
                 });
             },
             hasFormErrors(){
@@ -95,13 +109,13 @@
                     this.errors.password = this.profile.password.length >= PASSWORD_MIN_LENGTH ? false : 'password must be logger than ' + PASSWORD_MIN_LENGTH;
                 }
 
-                console.debug("validated", Object.keys(this.errors));
+                // console.debug("validated", Object.keys(this.errors));
                 let hasErrors = false;
                 Object.keys(this.errors).forEach(item => {
-                    console.debug(item, this.errors[item]);
+                    // console.debug(item, this.errors[item]);
                     hasErrors = hasErrors || !!this.errors[item]; // !! - convert to boolean
                 });
-                console.debug("validated, hasErrors=", hasErrors);
+                // console.debug("validated, hasErrors=", hasErrors);
                 return hasErrors
             }
         }
