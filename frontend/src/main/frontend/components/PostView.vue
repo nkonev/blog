@@ -22,6 +22,7 @@
                 <template v-else>
                     <blog-spinner message="Loading post"></blog-spinner>
                 </template>
+                <post-add-fab/>
             </template>
             <hr/>
 
@@ -39,6 +40,7 @@
     import {post} from '../router'
     import postFactory from "../factories/PostDtoFactory"
     import BlogSpinner from "./BlogSpinner.vue"
+    import PostAddFab from './PostAddFab.vue'
 
     // Lazy load heavy component https://router.vuejs.org/en/advanced/lazy-loading.html. see also in .babelrc
     const PostEdit = () => import('./PostEdit.vue');
@@ -64,7 +66,8 @@
         },
         components: {
             'PostEdit': PostEdit,
-            'blog-spinner': BlogSpinner
+            'blog-spinner': BlogSpinner,
+            PostAddFab
         },
         methods: {
             fetchData() {

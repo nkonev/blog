@@ -21,7 +21,7 @@
                 </span>
             </infinite-loading>
         </div>
-        <div class="fab"><!--<button>+</button>--><router-link to="/post/add">+</router-link></div>
+        <post-add-fab/>
     </div>
 </template>
 
@@ -31,6 +31,8 @@
     import debounce from "lodash/debounce"
     import {API_POST} from '../constants'
     import BlogSpinner from './BlogSpinner.vue'
+    import PostAddFab from './PostAddFab.vue'
+
     const Stomp = require("@stomp/stompjs/lib/stomp.js").Stomp; // https://github.com/jmesnil/stomp-websocket/issues/119 https://stomp-js.github.io/stomp-websocket/codo/extra/docs-src/Usage.md.html
 
     // https://peachscript.github.io/vue-infinite-loading/#!/getting-started/with-filter
@@ -51,7 +53,8 @@
         components: {
             PostItem,
             InfiniteLoading,
-            BlogSpinner
+            BlogSpinner,
+            PostAddFab
         },
         methods: {
             onInfinite() {
@@ -123,34 +126,7 @@
 </script>
 
 <style lang="stylus" scoped>
-    $fabSize=40px
     .search {
         margin-top 4px;
-    }
-    .fab {
-        position fixed
-        right 20px
-        bottom 20px
-        line-height: $fabSize - 5px
-        a {
-            display block
-            text-align center
-            vertical-align: middle;
-            text-decoration none
-            cursor pointer
-            background-color #0086B3
-            color white
-            height $fabSize
-            width $fabSize
-            border-radius $fabSize
-            border-width 0px
-            transition: 0.1s all;
-            opacity 0.8
-            &:hover {
-                opacity 1
-                color: mix(#8b8c8d, black, 80%);
-                box-shadow: 0 0 40px black;
-            }
-        }
     }
 </style>
