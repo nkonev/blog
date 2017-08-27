@@ -9,14 +9,19 @@
                 <PostEdit :postDTO="postDTO" :onAfterSubmit="afterSubmit" :onCancel="cancel" />
             </template>
             <template v-else>
-                <div class="img-container">
-                    <img class="title-img" :src="postDTO.titleImg"/>
-                </div>
-                <div class="post-head">
-                    <h2>{{postDTO.title}}</h2>
-                    <img class="edit-container-pen" src="../assets/pen.png" v-if="postDTO.canEdit" @click="setEdit()"/>
-                </div>
-                <div class="post-content" v-html="postDTO.text"></div>
+                <template v-if="!isLoading">
+                    <div class="img-container">
+                        <img class="title-img" :src="postDTO.titleImg"/>
+                    </div>
+                    <div class="post-head">
+                        <h2>{{postDTO.title}}</h2>
+                        <img class="edit-container-pen" src="../assets/pen.png" v-if="postDTO.canEdit" @click="setEdit()"/>
+                    </div>
+                    <div class="post-content" v-html="postDTO.text"></div>
+                </template>
+                <template v-else>
+                    <blog-spinner message="Loading post"></blog-spinner>
+                </template>
             </template>
             <hr/>
 
@@ -32,6 +37,8 @@
     import {API_POST} from '../constants'
     import bus, {LOGIN, LOGOUT} from '../bus'
     import {post} from '../router'
+    import postFactory from "../factories/PostDtoFactory"
+    import BlogSpinner from "./BlogSpinner.vue"
 
     // Lazy load heavy component https://router.vuejs.org/en/advanced/lazy-loading.html. see also in .babelrc
     const PostEdit = () => import('./PostEdit.vue');
@@ -40,15 +47,9 @@
         name: 'post-view',
         data(){
             return{
-                postDTO: {
-                    id: 0,
-                    title: 'Заголовок загружается',
-                    titleImg: 'https://vuejs.org/images/components.png',
-                    text: `<b>Lorem Ipsum</b> - это текст-"рыба", часто используемый в печати и вэб-дизайне`,
-                    canEdit: false,
-                    canDelete: false
-                },
-                isEditing: false
+                postDTO: postFactory(),
+                isEditing: false,
+                isLoading: true
             }
         },
         created(){
@@ -62,12 +63,15 @@
             bus.$off(LOGOUT, this.onLogout);
         },
         components: {
-            'PostEdit': PostEdit
+            'PostEdit': PostEdit,
+            'blog-spinner': BlogSpinner
         },
         methods: {
             fetchData() {
+                this.isLoading = true;
                 this.$http.get(API_POST+'/'+this.$route.params.id, { }).then((res) => {
                     this.postDTO = res.body; // add data from server's response
+                    this.isLoading = false;
                 });
             },
             onLogin() {
@@ -111,7 +115,7 @@
         watch: {
             'postDTO': {
                 handler: function (val, oldVal) {
-                    console.log("PostView changing postDTO", val.title, val.text)
+                    // console.log("PostView changing postDTO", val.title, val.text)
                 },
                 deep: true
             }
