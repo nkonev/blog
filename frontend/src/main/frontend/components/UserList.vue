@@ -35,7 +35,7 @@
     import Paginate from 'vuejs-paginate';
     import {users} from '../router';
     import bus from '../bus'
-    import {LOGIN, LOGOUT} from '../bus'
+    import {LOGIN, LOGOUT, UNAUTHORIZED} from '../bus'
 
     Vue.component('paginate', Paginate);
 
@@ -98,11 +98,13 @@
 
             bus.$on(LOGIN, this.onLogin);
             bus.$on(LOGOUT, this.onLogout);
+            bus.$on(UNAUTHORIZED, this.onLogout);
         },
         destroyed() {
             //console.log("destroyed");
             bus.$off(LOGIN, this.onLogin);
             bus.$off(LOGOUT, this.onLogout);
+            bus.$off(UNAUTHORIZED, this.onLogout);
         }
     };
 </script>

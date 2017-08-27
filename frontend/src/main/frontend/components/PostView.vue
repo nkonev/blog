@@ -88,7 +88,8 @@
                 this.fetchData();
             },
             onLogout() {
-                // this.fetchData(); // TODO introduce new event for real logout. this event is emitted for authentication error
+                console.log("onLogout");
+                this.fetchData();
             },
 
             setEdit() {
