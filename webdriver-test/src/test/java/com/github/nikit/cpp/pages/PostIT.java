@@ -94,6 +94,7 @@ public class PostIT extends AbstractItTestRunner {
             loginModal.login();
 
             postEditPage.save();
+            assertPoll(() -> postRepository.findByTitle(title)!=null, 15);
 
             // TimeUnit.SECONDS.sleep(3);
             postViewPage.assertText(text);

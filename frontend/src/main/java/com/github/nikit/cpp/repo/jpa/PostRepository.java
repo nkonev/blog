@@ -11,6 +11,7 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotNull;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 @Validated
 @Repository
@@ -28,4 +29,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query(value = "SELECT p.* FROM posts.post p WHERE p.id > :post ORDER BY id ASC LIMIT 1", nativeQuery = true)
     Post getRight(@Param("post") @NotNull Long post);
+
+    Post findByTitle(@NotNull String title);
 }
