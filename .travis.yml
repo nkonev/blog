@@ -21,5 +21,5 @@ script:
   - "./mvnw -Dkarma.browsers=Firefox -Dcustom.selenium.browser=FIREFOX -P frontend clean package"
   - "./mvnw -Dkarma.browsers=Chrome -Dcustom.selenium.browser=CHROME -P frontend clean package"
 addons:
-  firefox: "55.0.1"
+  firefox: "55.0.3"
   chrome: stable
