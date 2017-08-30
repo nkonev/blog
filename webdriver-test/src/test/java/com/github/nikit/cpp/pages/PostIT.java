@@ -6,15 +6,11 @@ import com.github.nikit.cpp.integration.AbstractItTestRunner;
 import com.github.nikit.cpp.pages.object.IndexPage;
 import com.github.nikit.cpp.pages.object.LoginModal;
 import com.github.nikit.cpp.repo.jpa.PostRepository;
-import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import java.net.URL;
-import java.util.concurrent.TimeUnit;
-
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
 
@@ -142,11 +138,8 @@ public class PostIT extends AbstractItTestRunner {
 
         postViewPage.delete();
 
-        for (int i=0; i<10 && postRepository.findById(id).isPresent(); ++i) {
-            TimeUnit.SECONDS.sleep(1);
-        }
-
-        Assert.assertNotEquals(deletablePageUrl, driver.getCurrentUrl());
-
+        assertPoll(()-> !postRepository.findById(id).isPresent(), 10);
+        assertPoll(()-> !deletablePageUrl.equals(driver.getCurrentUrl()), 10);
     }
+
 }

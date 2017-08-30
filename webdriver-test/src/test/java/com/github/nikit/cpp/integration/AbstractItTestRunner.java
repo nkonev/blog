@@ -18,6 +18,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
+
 import static com.codeborne.selenide.Selenide.clearBrowserCookies;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -55,5 +59,24 @@ public abstract class AbstractItTestRunner {
     public void before() {
         LOGGER.debug("Executing before");
         clearBrowserCookies();
+    }
+
+    /**
+     *
+     * @param f условие выхода из цикла
+     * @param seconds
+     * @throws Exception
+     */
+    protected void assertPoll(Supplier<Boolean> f, int seconds) throws Exception {
+        boolean success = false;
+        for (int i=0; i<seconds && !success; ++i) {
+            if (i > 0) {
+                TimeUnit.SECONDS.sleep(1);
+            }
+            success = f.get();
+        }
+        if (!success) {
+            throw new RuntimeException("Not get success after " + seconds + " seconds");
+        }
     }
 }
