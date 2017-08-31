@@ -1,10 +1,10 @@
 <template>
-    <div>
+    <div class="resend-registration-confirmation-token">
         Enter email for resend confirmation
         <input v-model="email"/>
         <span class="help-block" v-show="errors.email">{{ errors.email }}</span>
         <button @click="resend()" v-bind:disabled="!submitEnabled">Resend</button>
-        <span v-if="emailSuccessfullySent">Sent</span>
+        <span class="sent" v-if="emailSuccessfullySent">Sent</span>
         <span class="help-block" v-show="errors.server">{{ errors.server }}</span>
     </div>
 </template>

@@ -175,6 +175,12 @@ ${common(true)}
 ${custom(true)}
 server.port: ${ExportedConstants.TEST_PORT}
 ${WEBSERVER_SNIPPET}
+# this is URL
+spring.mvc.static-path-pattern: /**
+# You need to remove "file:..." element for production or you can to remove spring.resources.static-locations
+# first element - for eliminate manual restart app in IntelliJ for copy compiled js to target/classes, last slash is important,, second element - for documentation
+spring.resources.static-locations: file:../frontend/src/main/resources/static/, classpath:/static/
+
 custom.selenium.implicitly-wait-timeout: 10
 custom.selenium.browser: PHANTOM
 custom.selenium.window-height: 900

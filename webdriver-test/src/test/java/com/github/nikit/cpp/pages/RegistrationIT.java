@@ -67,11 +67,20 @@ public class RegistrationIT extends AbstractItTestRunner {
         // we must wait here before invoke greenMail.getImap()
         $(".registration").should(Condition.text("Your confirmation email successfully sent"));
 
+        // Resend
+        $(".registration a.router-link")
+                .waitUntil(Condition.visible, 10 * 1000)
+                .waitUntil(Condition.enabled, 10 * 1000)
+                .click();
+        $(".resend-registration-confirmation-token input").shouldBe(Condition.visible).shouldHave(Condition.value(email));
+        $(".resend-registration-confirmation-token button").shouldBe(CLICKABLE).click();
+        $(".resend-registration-confirmation-token span.sent").shouldBe(Condition.visible);
+
         // confirm
         try (Retriever r = new Retriever(greenMail.getImap())) {
             Message[] messages = r.getMessages(email);
-            Assert.assertEquals("backend should sent one email during registration",1, messages.length);
-            IMAPMessage imapMessage = (IMAPMessage)messages[0];
+            Assert.assertEquals("backend should sent one email during registration and I request resend",2, messages.length);
+            IMAPMessage imapMessage = (IMAPMessage)messages[1];
             String content = (String) imapMessage.getContent();
 
             String parsedUrl = UrlParser.parseUrlFromMessage(content);
