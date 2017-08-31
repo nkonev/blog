@@ -44,9 +44,6 @@ public class RegistrationIT extends AbstractItTestRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RegistrationIT.class);
 
-    {
-        GreenMailConfiguration greenMailConfiguration = new GreenMailConfiguration();
-    }
     @Rule
     public GreenMailRule greenMail = new GreenMailRule(ServerSetupTest.SMTP_IMAP)/*.withConfiguration(new GreenMailConfiguration().withDisabledAuthentication())*/;
 
