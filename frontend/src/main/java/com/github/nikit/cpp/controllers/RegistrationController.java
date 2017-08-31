@@ -106,7 +106,7 @@ public class RegistrationController {
 
     @PostMapping(value = Constants.Uls.API+Constants.Uls.RESEND_CONFIRMATION_EMAIL)
     @ResponseBody
-    public void resendConfirmationToken(String email) {
+    public void resendConfirmationToken(@RequestParam(value = "email") String email) {
         Optional<UserAccount> userAccountOptional = userAccountRepository.findByEmail(email);
         if(!userAccountOptional.isPresent()){
             return; // we care for for email leak

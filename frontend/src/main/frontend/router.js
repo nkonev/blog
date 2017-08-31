@@ -10,6 +10,7 @@ import createPostDto from './factories/PostDtoFactory'
 import Confirm from './components/Confirm.vue'
 import ConfirmTokenNotFound from './components/ConfirmTokenNotFound.vue'
 import ConfirmUserNotFound from './components/ConfirmUserNotFound.vue'
+import ResendRegistrationConfirmationToken from './components/ResendRegistrationConfirmationToken.vue'
 const PostEdit = () => import('./components/PostEdit.vue');
 
 // This installs <router-view> and <router-link>,
@@ -24,6 +25,7 @@ const post = 'post';
 
 const router = new Router({
     mode: 'history',
+    // https://router.vuejs.org/en/api/options.html#routes
     routes: [
         { name: root_name, path: root, component: PostList},
         { name: useProfileName, path: '/user/:id?', component: UserProfile, props: true, },
@@ -43,6 +45,7 @@ const router = new Router({
         { path: '/confirm', component: Confirm},
         { path: '/confirm/registration/token-not-found', component: ConfirmTokenNotFound},
         { path: '/confirm/registration/user-not-found', component: ConfirmUserNotFound},
+        { path: '/registration-confirmation-resend', component: ResendRegistrationConfirmationToken},
         { path: '*', component: NotFoundComponent },
     ]
 });

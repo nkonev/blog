@@ -25,6 +25,7 @@
         </form>
         <div v-else>
             Your confirmation email successfully sent. Open your mail '{{profile.email}}' and follow confirmation link.
+            Didn't get email ? Click <router-link class="router-link" :to="{ path: '/registration-confirmation-resend', query: { email: profile.email }}">here</router-link>
         </div>
     </div>
 </template>
@@ -80,14 +81,14 @@
                     return false;
                 }
 
-                console.log('start submitting');
+                // console.log('start submitting');
                 this.submitEnabled = false;
                 this.submitting = true;
                 this.errors.server = null;
 
                 this.$http.post('/api/register', this.profile).then(response => {
                     this.submitEnabled = true;
-                    console.log('end submitting');
+                    // console.log('end submitting');
                     this.submitting = false;
                     this.emailSuccessfullySent = true;
                 }, response => {
