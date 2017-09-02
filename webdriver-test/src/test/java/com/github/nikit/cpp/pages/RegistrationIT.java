@@ -68,13 +68,13 @@ public class RegistrationIT extends AbstractItTestRunner {
         $(".registration").should(Condition.text("Your confirmation email successfully sent"));
 
         // Resend
-        $(".registration a.router-link")
+        $(".registration a.registration-confirmation-resend")
                 .waitUntil(Condition.visible, 10 * 1000)
                 .waitUntil(Condition.enabled, 10 * 1000)
                 .click();
         $(".resend-registration-confirmation-token input").shouldBe(Condition.visible).shouldHave(Condition.value(email));
         $(".resend-registration-confirmation-token button").shouldBe(CLICKABLE).click();
-        $(".resend-registration-confirmation-token span.sent").shouldBe(Condition.visible);
+        $(".resend-registration-confirmation-token span.email-successfully-sent").shouldBe(Condition.visible);
 
         // confirm
         try (Retriever r = new Retriever(greenMail.getImap())) {

@@ -1,6 +1,7 @@
 package com.github.nikit.cpp.pages;
 
 import com.codeborne.selenide.Condition;
+import com.github.nikit.cpp.CommonTestConstants;
 import com.github.nikit.cpp.IntegrationTestConstants;
 import com.github.nikit.cpp.configuration.SeleniumConfiguration;
 import com.github.nikit.cpp.integration.AbstractItTestRunner;
@@ -86,11 +87,11 @@ public class PostIT extends AbstractItTestRunner {
             $("div.ql-editor").shouldBe(CLICKABLE).setValue(newText);
         }
 
-        public void setTitleImage(String absolutePath) {
+        public void setTitleImage(String absoluteFilePath) {
             final By croppaId = By.cssSelector(".croppa-container input");
             final Wait<WebDriver> wait = new FluentWait<WebDriver>(driver).withMessage("croppa upload element was not found").withTimeout(10, TimeUnit.SECONDS).pollingEvery(1, TimeUnit.SECONDS);
             wait.until(webDriver -> ExpectedConditions.visibilityOf(driver.findElement(croppaId)));
-            driver.findElement(croppaId).sendKeys(absolutePath);
+            driver.findElement(croppaId).sendKeys(absoluteFilePath);
         }
 
         public void save() {
@@ -144,7 +145,7 @@ public class PostIT extends AbstractItTestRunner {
             postEditPage.setTitle(newTitle);
 
             if (seleniumConfiguration.getBrowser()== Browser.CHROME) {
-                postEditPage.setTitleImage(getExistsFile("../frontend/src/main/frontend/assets/pen.png", "frontend/src/main/frontend/assets/pen.png").getCanonicalPath());
+                postEditPage.setTitleImage(getExistsFile("../"+CommonTestConstants.TEST_IMAGE, CommonTestConstants.TEST_IMAGE).getCanonicalPath());
             }
             postEditPage.save();
 
@@ -157,14 +158,14 @@ public class PostIT extends AbstractItTestRunner {
         }
     }
 
-    private File getExistsFile(String... ops) {
-        for(String op1: ops) {
-            File f1 = new File(op1);
-            if (f1.exists()) {
-                return f1;
+    private File getExistsFile(String... fileCandidates) {
+        for(String fileCandidate: fileCandidates) {
+            File file = new File(fileCandidate);
+            if (file.exists()) {
+                return file;
             }
         }
-        throw new RuntimeException("exists file not found among " + Arrays.toString(ops));
+        throw new RuntimeException("exists file not found among " + Arrays.toString(fileCandidates));
     }
 
     private long getPostId(URL url) {

@@ -25,7 +25,7 @@
         </form>
         <div v-else>
             Your confirmation email successfully sent. Open your mail '{{profile.email}}' and follow confirmation link.
-            Didn't get email ? Click <router-link class="router-link" :to="{ path: '/registration-confirmation-resend', query: { email: profile.email }}">here</router-link>
+            Didn't get email ? Click <router-link class="registration-confirmation-resend" :to="{ path: '/registration-confirmation-resend', query: { email: profile.email }}">here</router-link>
         </div>
     </div>
 </template>
