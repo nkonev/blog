@@ -5,7 +5,9 @@ const def = () => {
         text: '',
         titleImg: '',
         canEdit: false,
-        canDelete: false
+        canDelete: false,
+        left: 0,
+        right: 0,
     }
 };
 

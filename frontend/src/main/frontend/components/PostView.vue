@@ -60,7 +60,9 @@
         },
         created(){
             // console.log("PostView created");
-            this.fetchData();
+            if (!process.env.KARMA_ENV) {
+                this.fetchData();
+            }
             bus.$on(LOGIN, this.onLogin);
             bus.$on(LOGOUT, this.onLogout);
         },
@@ -75,9 +77,10 @@
         },
         methods: {
             fetchData() {
+                // console.log("fetching post...");
                 this.isLoading = true;
                 this.$http.get(API_POST+'/'+this.$route.params.id, { }).then((response) => {
-                    this.postDTO = response.body; // add data from server's response
+                    this.postDTO = JSON.parse(response.bodyText); // add data from server's response
                     this.isLoading = false;
                 }, response => {
                     console.error("Error on fetch post", response);
