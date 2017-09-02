@@ -51,6 +51,10 @@
 
     export default {
         name: 'post-view',
+        props: [
+            'onGetPostSuccess',
+            'onGetPostFail'
+        ],
         data(){
             return{
                 postDTO: postFactory(),
@@ -82,9 +86,15 @@
                 this.$http.get(API_POST+'/'+this.$route.params.id, { }).then((response) => {
                     this.postDTO = JSON.parse(response.bodyText); // add data from server's response
                     this.isLoading = false;
+                    if (this.$props.onGetPostSuccess) {
+                        this.$props.onGetPostSuccess(this.postDTO);
+                    }
                 }, response => {
                     console.error("Error on fetch post", response);
                     this.isLoading = false;
+                    if (this.$props.onGetPostFail) {
+                        this.$props.onGetPostFail(this.postDTO);
+                    }
                 });
             },
             onLogin() {

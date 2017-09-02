@@ -1,19 +1,15 @@
+import Vue from 'vue'
 import PostView from "../../../main/frontend/components/PostView.vue"
 import postFactory from "../../../main/frontend/factories/PostDtoFactory"
 import { mount } from 'avoriaz';
 
 
 describe("PostView.vue", () => {
+    let PostViewWrapper;
     beforeEach(function() {
         jasmine.Ajax.install();
-    });
 
-    afterEach(function() {
-        jasmine.Ajax.uninstall();
-    });
-
-    it("tap left", () => {
-        const PostViewWrapper = mount(PostView, { attachToDocument: false });
+        PostViewWrapper = mount(PostView, { attachToDocument: false });
         expect(PostViewWrapper).toBeDefined();
 
         let routeId = 1234;
@@ -36,6 +32,14 @@ describe("PostView.vue", () => {
                 };
             },
         });
+    });
+
+    afterEach(function() {
+        jasmine.Ajax.uninstall();
+        PostViewWrapper = null;
+    });
+
+    it("tap left", (done) => {
 
         const postDto = postFactory();
         postDto.id = 1234;
@@ -44,6 +48,13 @@ describe("PostView.vue", () => {
         PostViewWrapper.setData({
             isLoading: false,
             postDTO: postDto,
+        });
+
+        PostViewWrapper.setProps({
+            onGetPostSuccess: (pd)=>{
+                expect(pd.id).toBe(1233);
+                done();
+            }
         });
 
         PostViewWrapper.vm.goLeft();
@@ -67,30 +78,7 @@ describe("PostView.vue", () => {
 
     });
 
-    it("tap right", () => {
-        const PostViewWrapper = mount(PostView, { attachToDocument: false });
-        expect(PostViewWrapper).toBeDefined();
-
-        let routeId = 1234;
-        Object.defineProperty(PostViewWrapper.vm, '$route', {
-            get() {
-                return {
-                    params: {
-                        id: routeId
-                    }
-                };
-            }
-        });
-        Object.defineProperty(PostViewWrapper.vm, '$router', {
-            get() {
-                return {
-                    push(o) {
-                        console.log("router push ", o);
-                        routeId = o.params.id;
-                    }
-                };
-            },
-        });
+    it("tap right", (done) => {
 
         const postDto = postFactory();
         postDto.id = 1234;
@@ -99,6 +87,13 @@ describe("PostView.vue", () => {
         PostViewWrapper.setData({
             isLoading: false,
             postDTO: postDto,
+        });
+
+        PostViewWrapper.setProps({
+            onGetPostSuccess: (pd)=>{
+                expect(pd.id).toBe(1235);
+                done();
+            }
         });
 
         PostViewWrapper.vm.goRight();
