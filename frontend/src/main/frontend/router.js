@@ -11,6 +11,9 @@ import Confirm from './components/Confirm.vue'
 import ConfirmTokenNotFound from './components/ConfirmTokenNotFound.vue'
 import ConfirmUserNotFound from './components/ConfirmUserNotFound.vue'
 import ResendRegistrationConfirmationToken from './components/ResendRegistrationConfirmationToken.vue'
+import RestorePassword from './components/RestorePassword.vue'
+import PasswordReset from './components/PasswordReset.vue'
+import Help from './components/Help.vue'
 const PostEdit = () => import('./components/PostEdit.vue');
 
 // This installs <router-view> and <router-link>,
@@ -46,6 +49,9 @@ const router = new Router({
         { path: '/confirm/registration/token-not-found', component: ConfirmTokenNotFound},
         { path: '/confirm/registration/user-not-found', component: ConfirmUserNotFound},
         { path: '/registration-confirmation-resend', component: ResendRegistrationConfirmationToken},
+        { path: '/help', component: Help},
+        { path: '/restore-password', component: RestorePassword },
+        { path: '/password-reset', component: PasswordReset },
         { path: '*', component: NotFoundComponent },
     ]
 });

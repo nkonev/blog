@@ -9,6 +9,7 @@
                 <router-link class="router-link" to="/" exact>Posts</router-link>
                 <router-link class="router-link" to="/users">Users</router-link>
                 <a class="router-link" id="a-doc" href="/docs/index.html">API</a>
+                <router-link class="router-link" to="/help">Help</router-link>
                 <user-profile-nav v-bind:currentUser="currentUser"/>
             </nav>
             <router-view></router-view>
