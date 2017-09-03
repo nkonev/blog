@@ -12,7 +12,7 @@ public class XssSanitizeUtil {
                     "h1","h2","h3","h4","h5","h6",
                     "ol", "ul", "li",
                     "sub", "sup",
-                    "span", "img"
+                    "span", "img", "code"
             )
             .allowUrlProtocols("https", "http", "data") // "data" - for quill img
             .allowAttributes("href", "target").onElements("a")
@@ -21,6 +21,7 @@ public class XssSanitizeUtil {
             .allowAttributes("class").onElements("p")
             .allowAttributes("style", "class").onElements("span")
             .allowAttributes("src").onElements("img") // for quill img
+            .allowAttributes("class").onElements("li")
             .requireRelNofollowOnLinks()
             .toFactory();
     private static final XssHtmlChangeListener XSS_HTML_CHANGE_LISTENER = new XssHtmlChangeListener();

@@ -111,7 +111,7 @@
                 stompClient.subscribe("/topic/posts", (data) => {
                     const message = data.body;
                     const obj = JSON.parse(message);
-                    console.log(message);
+                    // console.log(message);
                     this.posts.unshift(obj);
                 });
             });
