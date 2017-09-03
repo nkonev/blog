@@ -31,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
+import static com.github.nikit.cpp.CommonTestConstants.NON_DELETABLE_POST_TITLE;
 import static com.github.nikit.cpp.security.SecurityConfig.PASSWORD_PARAMETER;
 import static com.github.nikit.cpp.security.SecurityConfig.USERNAME_PARAMETER;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -98,6 +99,7 @@ public class RegistrationIT extends AbstractItTestRunner {
         $(".successfully-confirmed a").shouldBe(CLICKABLE).click(); // it open login modal
         LoginModal loginModal = new LoginModal(username, password);
         loginModal.login();
+        $("body").shouldHave(Condition.text(NON_DELETABLE_POST_TITLE));
     }
 
 

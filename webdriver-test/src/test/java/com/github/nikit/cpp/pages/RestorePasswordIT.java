@@ -19,6 +19,7 @@ import javax.mail.Message;
 import java.net.URI;
 
 import static com.codeborne.selenide.Selenide.$;
+import static com.github.nikit.cpp.CommonTestConstants.NON_DELETABLE_POST_TITLE;
 
 public class RestorePasswordIT extends AbstractItTestRunner {
     // http://127.0.0.1:8080/restore-password
@@ -60,7 +61,7 @@ public class RestorePasswordIT extends AbstractItTestRunner {
         LoginModal loginModal = new LoginModal(user, newPassword);
         loginModal.openLoginModal();
         loginModal.login();
-
+        $("body").shouldHave(Condition.text(NON_DELETABLE_POST_TITLE));
     }
 
 }
