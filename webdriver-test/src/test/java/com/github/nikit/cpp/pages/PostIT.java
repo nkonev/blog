@@ -84,7 +84,11 @@ public class PostIT extends AbstractItTestRunner {
         }
 
         public void setText(String newText) {
-            $("div.ql-editor").shouldBe(CLICKABLE).setValue(newText);
+            $("div.ql-editor")
+                    .waitUntil(Condition.exist, 20 * 1000)
+                    .waitUntil(Condition.visible, 20 * 1000)
+                    .waitUntil(Condition.enabled, 20 * 1000)
+                    .shouldBe(CLICKABLE).setValue(newText);
         }
 
         public void setTitleImage(String absoluteFilePath) {
@@ -95,7 +99,11 @@ public class PostIT extends AbstractItTestRunner {
         }
 
         public void save() {
-            $("button.save-btn").shouldBe(CLICKABLE).click(); // this can open login modal if you unauthenticated
+            $("button.save-btn")
+                    .waitUntil(Condition.exist, 20 * 1000)
+                    .waitUntil(Condition.visible, 20 * 1000)
+                    .waitUntil(Condition.enabled, 20 * 1000)
+                    .shouldBe(CLICKABLE).click(); // this can open login modal if you unauthenticated
         }
     }
 
