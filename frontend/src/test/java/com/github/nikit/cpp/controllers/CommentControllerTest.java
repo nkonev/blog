@@ -81,9 +81,9 @@ public class CommentControllerTest extends AbstractUtTestRunner {
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
         )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()").value(PageUtils.DEFAULT_SIZE))
-                .andExpect(jsonPath("$.[*].canEdit").value(everyItem(is(false))))
-                .andExpect(jsonPath("$.[*].canDelete").value(everyItem(is(false))))
+                .andExpect(jsonPath("$.data.size()").value(PageUtils.DEFAULT_SIZE))
+                .andExpect(jsonPath("$.data.[*].canEdit").value(everyItem(is(false))))
+                .andExpect(jsonPath("$.data.[*].canDelete").value(everyItem(is(false))))
                 .andReturn();
     }
 

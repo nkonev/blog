@@ -2,6 +2,7 @@ package com.github.nikit.cpp.controllers;
 
 import com.github.nikit.cpp.Constants;
 import com.github.nikit.cpp.dto.EditUserDTO;
+import com.github.nikit.cpp.dto.Wrapper;
 import com.github.nikit.cpp.entity.jpa.UserAccount;
 import com.github.nikit.cpp.exception.UserAlreadyPresentException;
 import com.github.nikit.cpp.utils.PageUtils;
@@ -55,18 +56,17 @@ public class UserProfileController {
     }
 
     @GetMapping(value = Constants.Uls.USER)
-    public Collection<UserAccountDTO> getUsersGet(
+    public Wrapper<UserAccountDTO> getUsersGet(
             @RequestParam(value = "page", required=false, defaultValue = "0") int page,
             @RequestParam(value = "size", required=false, defaultValue = "0") int size
     ) {
         PageRequest springDataPage = new PageRequest(PageUtils.fixPage(page), PageUtils.fixSize(size), Sort.Direction.ASC, "id");
 
-        return userAccountRepository.findAll(springDataPage).getContent().stream().map(UserAccountConverter::convertToUserAccountDTO).collect(Collectors.toList());
-    }
-
-    @GetMapping(value = "/user-count")
-    public long getUsersCount() {
-        return userAccountRepository.count();
+        return new Wrapper<>(
+                userAccountRepository.findAll(springDataPage).getContent().stream()
+                        .map(UserAccountConverter::convertToUserAccountDTO).collect(Collectors.toList()),
+                userAccountRepository.count()
+        );
     }
 
     @GetMapping(value = Constants.Uls.USER+Constants.Uls.USER_ID)

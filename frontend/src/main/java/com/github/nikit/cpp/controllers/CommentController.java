@@ -1,6 +1,7 @@
 package com.github.nikit.cpp.controllers;
 
 import com.github.nikit.cpp.Constants;
+import com.github.nikit.cpp.dto.Wrapper;
 import com.github.nikit.cpp.utils.PageUtils;
 import com.github.nikit.cpp.converter.CommentConverter;
 import com.github.nikit.cpp.dto.CommentDTO;
@@ -44,7 +45,7 @@ public class CommentController {
      * @return
      */
     @GetMapping(Constants.Uls.API+Constants.Uls.POST+Constants.Uls.POST_ID +Constants.Uls.COMMENT)
-    public Collection<CommentDTOWithAuthorization> getPostComments(
+    public Wrapper<CommentDTOWithAuthorization> getPostComments(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // nullable
             @PathVariable(Constants.PathVariables.POST_ID) long postId,
             @RequestParam(value = "page", required=false, defaultValue = "0") int page,
@@ -53,12 +54,15 @@ public class CommentController {
 
         PageRequest springDataPage = new PageRequest(PageUtils.fixPage(page), PageUtils.fixSize(size));
 
+        long count = commentRepository.countByPostId(postId);
         List<Comment> comments = commentRepository.findCommentByPostIdOrderByIdAsc(springDataPage, postId);
 
-        return comments
+        Collection<CommentDTOWithAuthorization> commentsCollection =  comments
                 .stream()
                 .map(comment -> commentConverter.convertToDto(comment, userAccount))
                 .collect(Collectors.toList());
+
+        return new Wrapper<CommentDTOWithAuthorization>(commentsCollection, count);
     }
 
     @PreAuthorize("isAuthenticated()")

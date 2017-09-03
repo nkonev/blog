@@ -18,12 +18,11 @@ public class Constants {
         public static final String ADMIN = "/admin";
         public static final String POST = "/post";
         public static final String PROFILE = "/profile";
-        public static final String REPOPULATE = "/repopulate";
-        public static final String AUTOCOMPLETE = "/autocomplete";
         public static final String MY = "/my";
         public static final String POST_ID = "/{"+ PathVariables.POST_ID+"}";
         public static final String COMMENT_ID = "/{"+PathVariables.COMMENT_ID+"}";
         public static final String COMMENT = "/comment";
+        public static final String COMMENT_COUNT = "/comment-count";
         public static final String REGISTER = "/register";
         public static final String CONFIRM = "/confirm"; // html for handle link from email
         public static final String UUID = "uuid";

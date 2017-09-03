@@ -50,31 +50,23 @@
         },
         methods: {
             reloadPage: function(pageNum) {
-                // this.$router.push({path: users + "/" + pageNum});
                 this.$router.push({path: users, query: {page: pageNum}});
                 console.log("opening page ", pageNum);
 
                 // API request
-                this.$http.get('/api/user?page='+(pageNum-1)+'&size='+PAGE_SIZE).then(response => {
-                    this.users = response.body;
-                }, response => {
-                    console.error(response);
-                    // alert(response);
-                });
-            },
-            initPageCount() {
-                // get page count
-                this.$http.get('/api/user-count').then(response => {
-                    const userCount = response.body;
-                    this.pageCount = Math.ceil(userCount / PAGE_SIZE);
-                }, response => {
-                    console.error(response);
-                    // alert(response);
-                });
+                this.$http.get('/api/user?page='+(pageNum-1)+'&size='+PAGE_SIZE).then(
+                    response => {
+                        const userCount = response.body.count;
+                        this.pageCount = Math.ceil(userCount / PAGE_SIZE);
+                        this.users = response.body.data;
+                    }, response => {
+                        console.error(response);
+                        // alert(response);
+                    }
+                );
             },
             onLogin(ignore) {
                 this.reloadPage(this.initialPageIndex+1);
-                this.initPageCount();
             },
             onLogout(ignore) {
                 this.pageCount=0;
@@ -94,7 +86,6 @@
             //console.log("created");
             const page = this.initialPageIndex+1;
             this.reloadPage(page);
-            this.initPageCount();
 
             bus.$on(LOGIN, this.onLogin);
             bus.$on(LOGOUT, this.onLogout);
