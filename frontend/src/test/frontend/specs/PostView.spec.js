@@ -7,7 +7,7 @@ Vue.use(VueResource);
 
 describe("PostView.vue", () => {
     let PostViewWrapper;
-    beforeEach(function() {
+    beforeEach(() => {
         jasmine.Ajax.install();
 
         const instance = Vue.extend();
@@ -21,7 +21,6 @@ describe("PostView.vue", () => {
         const $router = {
             push(o) {
                 console.log("router push ", o);
-                //routeId = o.params.id;
                 $route.params.id = o.params.id;
             }
         };
@@ -33,7 +32,7 @@ describe("PostView.vue", () => {
         expect(PostViewWrapper).toBeDefined();
     });
 
-    afterEach(function() {
+    afterEach(() => {
         jasmine.Ajax.uninstall();
         PostViewWrapper = null;
     });
