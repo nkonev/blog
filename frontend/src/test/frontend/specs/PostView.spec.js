@@ -104,7 +104,7 @@ describe("PostView.vue", () => {
             "contentType": 'application/json;charset=UTF-8',
             "responseText": `{
                 "id": 1235,
-                "title": "Title original",
+                "title": "Title righter",
                 "text": "Text with html",
                 "titleImg": "data-png",
                 "canEdit": false,
