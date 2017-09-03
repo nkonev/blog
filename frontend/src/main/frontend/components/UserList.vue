@@ -41,7 +41,6 @@
 
     export default {
         components: {UserItem}, // говорим, из каких компонентов могут быть извлечены тэги
-        // props: ['page'], // see in router.js
         data() {
             return {
                 users: [],
@@ -74,18 +73,14 @@
             }
         },
         computed: {
-            /*
-             The index of initial page which selected. default: 0
-             */
+            // The index of initial page which selected. default: 0
             initialPageIndex() {
-                // return this.$props.page ? parseInt(this.$props.page-1) : 0;
                 return this.$route.query.page ? parseInt(this.$route.query.page-1) : 0;
             }
         },
         created() {
             //console.log("created");
-            const page = this.initialPageIndex+1;
-            this.reloadPage(page);
+            this.reloadPage(this.initialPageIndex+1);
 
             bus.$on(LOGIN, this.onLogin);
             bus.$on(LOGOUT, this.onLogout);
@@ -101,46 +96,5 @@
 </script>
 
 <style lang="stylus">
-    .pagination {
-        li {
-            display: inline-block
-        }
-
-        .page-link-item {
-            min-width 26px;
-            text-align center;
-        }
-
-        .active {
-            background-color: #4CAF50;
-            border-radius 2px;
-            .page-link-item {
-                color: white;
-            }
-            :hover {
-                color: black;
-            }
-        }
-
-        .disabled  {
-            pointer-events: none;
-            cursor: default;
-            .arrow-link-item {
-                color #aaabac
-                text-decoration line-through
-            }
-        }
-
-        a {
-            color: black;
-            // float: left; // float makes it as block(synonym for followed line), see https://habrahabr.ru/post/136588/
-            display block
-            padding: 8px 16px;
-            text-decoration: none;
-        }
-
-        a:hover {
-            background-color: #ddd
-        }
-    }
+    @import "./pageable.styl"
 </style>

@@ -28,8 +28,7 @@
                 </template>
                 <post-add-fab/>
             </template>
-            <hr/>
-
+            <CommentList/>
         </template>
         <template v-else>
             Error
@@ -40,11 +39,12 @@
 
 <script>
     import {API_POST} from '../constants'
-    import bus, {LOGIN, LOGOUT} from '../bus'
+    import bus, {LOGIN, LOGOUT, POST_SWITCHED} from '../bus'
     import {root, post} from '../router'
     import postFactory from "../factories/PostDtoFactory"
     import BlogSpinner from "./BlogSpinner.vue"
     import PostAddFab from './PostAddFab.vue'
+    import CommentList from './CommentList.vue'
 
     // Lazy load heavy component https://router.vuejs.org/en/advanced/lazy-loading.html. see also in .babelrc
     const PostEdit = () => import('./PostEdit.vue');
@@ -77,15 +77,20 @@
         components: {
             'PostEdit': PostEdit,
             'blog-spinner': BlogSpinner,
-            PostAddFab
+            PostAddFab,
+            CommentList
         },
         methods: {
+            getId(){
+                return this.$route.params.id;
+            },
             fetchData() {
                 // console.log("fetching post...");
                 this.isLoading = true;
-                this.$http.get(API_POST+'/'+this.$route.params.id, { }).then((response) => {
+                this.$http.get(API_POST+'/'+this.getId(), { }).then((response) => {
                     this.postDTO = JSON.parse(response.bodyText); // add data from server's response
                     this.isLoading = false;
+                    bus.$emit(POST_SWITCHED, this.postDTO.id);
                     if (this.$props.onGetPostSuccess) {
                         this.$props.onGetPostSuccess(this.postDTO);
                     }
@@ -132,7 +137,7 @@
             doDelete() {
                 this.isLoading = true;
                 console.log("Deleting");
-                this.$http.delete(API_POST+'/'+this.$route.params.id, { }).then((response) => {
+                this.$http.delete(API_POST+'/'+this.getId(), { }).then((response) => {
                     this.isLoading = false;
                     if (this.postDTO.right) {
                         this.goto(this.postDTO.right);

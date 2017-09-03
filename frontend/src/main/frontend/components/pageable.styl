@@ -1,0 +1,42 @@
+.pagination {
+  li {
+    display: inline-block
+  }
+
+  .page-link-item {
+    min-width 26px;
+    text-align center;
+  }
+
+  .active {
+    background-color: #4CAF50;
+    border-radius 2px;
+    .page-link-item {
+      color: white;
+    }
+    :hover {
+      color: black;
+    }
+  }
+
+  .disabled  {
+    pointer-events: none;
+    cursor: default;
+    .arrow-link-item {
+      color #aaabac
+      text-decoration line-through
+    }
+  }
+
+  a {
+    color: black;
+  // float: left; // float makes it as block(synonym for followed line), see https://habrahabr.ru/post/136588/
+    display block
+    padding: 8px 16px;
+    text-decoration: none;
+  }
+
+  a:hover {
+    background-color: #ddd
+  }
+}
