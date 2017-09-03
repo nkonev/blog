@@ -1,6 +1,7 @@
 package com.github.nikit.cpp.config;
 
-import com.github.nikit.cpp.listener.hibernate.BlogPersistListener;
+import com.github.nikit.cpp.listener.hibernate.BlogInsertListener;
+import com.github.nikit.cpp.listener.hibernate.BlogUpdateListener;
 import org.hibernate.SessionFactory;
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;
@@ -24,16 +25,20 @@ public class DbConfig {
     private EntityManagerFactory entityManagerFactory;
 
     @Autowired
-    private BlogPersistListener blogPersistListener;
+    private BlogInsertListener blogInsertListener;
 
+    @Autowired
+    private BlogUpdateListener blogUpdateListener;
 
     @PostConstruct
     public void registerListeners() {
         // https://stackoverflow.com/questions/27570641/no-transactional-entitymanager-available-in-postconstruct/27571252#27571252
         // http://docs.jboss.org/hibernate/orm/4.3/topical/html/registries/ServiceRegistries.html
         // https://n1njahacks.wordpress.com/2016/10/07/jpa-callbacks-with-hibernates-sessionfactory-and-no-entitymanager/
+        // http://www.wideskills.com/hibernate/hibernate-interceptors-and-events
         SessionFactory sessionFactory = entityManagerFactory.unwrap(SessionFactory.class);
         EventListenerRegistry registry = ((SessionFactoryImpl) sessionFactory).getServiceRegistry().getService(EventListenerRegistry.class);
-        registry.getEventListenerGroup(EventType.PERSIST).appendListener(blogPersistListener);
+        registry.getEventListenerGroup(EventType.POST_INSERT).appendListener(blogInsertListener);
+        registry.getEventListenerGroup(EventType.POST_UPDATE).appendListener(blogUpdateListener);
     }
 }
