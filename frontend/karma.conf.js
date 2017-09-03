@@ -5,7 +5,7 @@ const webpack = require('webpack');
 const webpackModule = require('./webpack/module');
 const webpackResolve = require('./webpack/resolve');
 
-const DEVELOPMENT_ENV = 'dev';
+const DEVELOPMENT_ENV = 'development';
 const KARMA_ENV = 'karma';
 const PRODUCTION_ENV = 'production';
 const NODE_ENV = process.env.NODE_ENV || DEVELOPMENT_ENV;

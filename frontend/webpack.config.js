@@ -5,7 +5,7 @@ const srcDir = path.join(__dirname, 'src/main/frontend');
 const buildDir = path.join(__dirname, 'src/main/resources/static/build');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-const DEVELOPMENT_ENV = 'dev';
+const DEVELOPMENT_ENV = 'development';
 const NODE_ENV = process.env.NODE_ENV || DEVELOPMENT_ENV;
 
 const webpack = require('webpack');
