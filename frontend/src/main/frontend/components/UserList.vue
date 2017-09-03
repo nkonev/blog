@@ -1,6 +1,10 @@
 <template>
     <div>
         <h1>Пользователи</h1>
+        <div class="search">
+            <label for="search">Search</label>
+            <input id="search" v-model="searchString" @input="onChangeSearchString()"/> <button @click="onClearButton()">clear</button>
+        </div>
 
         <paginate
                 :page-count="pageCount"
@@ -36,6 +40,7 @@
     import {users} from '../router';
     import bus from '../bus'
     import {LOGIN, LOGOUT, UNAUTHORIZED} from '../bus'
+    import debounce from "lodash/debounce"
 
     Vue.component('paginate', Paginate);
 
@@ -45,6 +50,7 @@
             return {
                 users: [],
                 pageCount: 0,
+                searchString: '',
             }
         },
         methods: {
@@ -53,7 +59,14 @@
                 console.log("opening page ", pageNum);
 
                 // API request
-                this.$http.get('/api/user?page='+(pageNum-1)+'&size='+PAGE_SIZE).then(
+                this.$http.get('/api/user',
+                    {
+                        params: {
+                            searchString: this.searchString,
+                            page: (pageNum-1),
+                            size: PAGE_SIZE
+                        },
+                    }).then(
                     response => {
                         this.pageCount = Math.ceil(response.body.totalCount / PAGE_SIZE);
                         this.users = response.body.data;
@@ -69,7 +82,20 @@
             onLogout(ignore) {
                 this.pageCount=0;
                 this.users=[];
-            }
+            },
+            onChangeSearchString() {
+                console.debug('onChangeSearchString');
+                this.users = [];
+                const initPage = 0;
+                this.reloadPage(initPage+1);
+                this.$refs.paginate.selected = initPage;
+            },
+            onClearButton() {
+                if (this.searchString !== '') {
+                    this.searchString = '';
+                    this.onChangeSearchString();
+                }
+            },
         },
         computed: {
             // The index of initial page which selected. default: 0
@@ -84,6 +110,7 @@
             bus.$on(LOGIN, this.onLogin);
             bus.$on(LOGOUT, this.onLogout);
             bus.$on(UNAUTHORIZED, this.onLogout);
+            this.onChangeSearchString = debounce(this.onChangeSearchString, 500);
         },
         destroyed() {
             //console.log("destroyed");
