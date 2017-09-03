@@ -7,6 +7,8 @@ package com.github.nikit.cpp;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.nikit.cpp.controllers.CommentControllerTest;
 import com.github.nikit.cpp.dto.PostDTO;
+import com.github.nikit.cpp.repo.redis.UserConfirmationTokenRepository;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -49,6 +51,9 @@ public abstract class AbstractUtTestRunner {
 //    protected String contextPath;
 
     @Autowired
+    protected UserConfirmationTokenRepository userConfirmationTokenRepository;
+
+    @Autowired
     protected TestRestTemplate restTemplate;
 
     @Autowired
@@ -80,5 +85,10 @@ public abstract class AbstractUtTestRunner {
         String getStr = getPostRequest.getResponse().getContentAsString();
         LOGGER.debug(getStr);
         return objectMapper.readValue(getStr, PostDTO.class);
+    }
+
+    @Before
+    public void before() {
+        userConfirmationTokenRepository.deleteAll();
     }
 }

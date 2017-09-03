@@ -44,9 +44,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class RegistrationControllerTest extends AbstractUtTestRunner {
 
     @Autowired
-    private UserConfirmationTokenRepository userConfirmationTokenRepository;
-
-    @Autowired
     private UserAccountRepository userAccountRepository;
 
     @Autowired
