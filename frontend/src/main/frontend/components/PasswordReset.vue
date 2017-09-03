@@ -13,7 +13,7 @@
 
 <script>
     import bus, {LOGIN} from '../bus'
-    import {root_name} from '../router'
+    import {root_name} from '../routes'
 
     const setNewPassword = '/api/password-reset-set-new';
 

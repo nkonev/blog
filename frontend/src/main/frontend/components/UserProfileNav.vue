@@ -20,9 +20,7 @@
     import {LOGIN_MODAL} from '../constants'
     import bus from '../bus'
     import {LOGOUT} from '../bus'
-
-    import router from  '../router'
-    import {useProfileName} from  '../router'
+    import {useProfileName} from  '../routes'
 
     export default {
         name: 'user-profile-nav',
@@ -55,7 +53,7 @@
                         );
                         break;
                     case 'profile':
-                        router.push({name: useProfileName, params: {id: this.$props.currentUser.id}});
+                        this.$router.push({name: useProfileName, params: {id: this.$props.currentUser.id}});
                         break;
                 }
             },

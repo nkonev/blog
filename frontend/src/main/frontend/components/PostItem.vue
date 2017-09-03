@@ -14,7 +14,7 @@
 </template>
 
 <script>
-    import {post} from '../router';
+    import {post} from '../routes';
 
     export default {
         name: 'post-item',

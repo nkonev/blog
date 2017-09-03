@@ -37,7 +37,7 @@
     import UserItem from "./UserItem.vue";
     import {PAGE_SIZE} from "../constants";
     import Paginate from 'vuejs-paginate';
-    import {users} from '../router';
+    import {users} from '../routes';
     import bus from '../bus'
     import {LOGIN, LOGOUT, UNAUTHORIZED} from '../bus'
     import debounce from "lodash/debounce"

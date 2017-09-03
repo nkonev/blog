@@ -6,7 +6,7 @@
 
 <script>
     import {LOGIN_MODAL} from '../constants'
-    import {root_name} from '../router'
+    import {root_name} from '../routes'
     import bus, {LOGIN} from '../bus'
 
     export default {

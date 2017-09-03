@@ -14,17 +14,13 @@ import ResendRegistrationConfirmationToken from './components/ResendRegistration
 import RestorePassword from './components/RestorePassword.vue'
 import PasswordReset from './components/PasswordReset.vue'
 import Help from './components/Help.vue'
+import {root, root_name, users, useProfileName, post} from './routes'
 const PostEdit = () => import('./components/PostEdit.vue');
 
 // This installs <router-view> and <router-link>,
 // and injects $router and $route to all router-enabled child components
+// WARNING You shouldn't include it in tests, else avoriaz's glogals won't works (https://github.com/eddyerburgh/avoriaz/issues/124)
 Vue.use(Router);
-
-const root = '/';
-const root_name = 'root';
-const users = '/users';
-const useProfileName = 'user-profile';
-const post = 'post';
 
 const router = new Router({
     mode: 'history',
@@ -57,11 +53,4 @@ const router = new Router({
 });
 
 
-export  {
-    router as default,
-    root,
-    root_name,
-    users,
-    useProfileName,
-    post
-}
+export default router;

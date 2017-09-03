@@ -40,7 +40,7 @@
 <script>
     import {API_POST} from '../constants'
     import bus, {LOGIN, LOGOUT, POST_SWITCHED} from '../bus'
-    import {root, post} from '../router'
+    import {root, post} from '../routes'
     import postFactory from "../factories/PostDtoFactory"
     import BlogSpinner from "./BlogSpinner.vue"
     import PostAddFab from './PostAddFab.vue'
