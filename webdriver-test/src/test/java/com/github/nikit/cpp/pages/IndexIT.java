@@ -28,7 +28,7 @@ public class IndexIT extends AbstractItTestRunner {
 
         PostDTO postDTO = new PostDTO(2_000_000, "Post via websocket", "Пост, пришедший через вебсокет " + new Date(), null);
 
-        webSocketservice.sendPostDto(postDTO);
+        webSocketservice.sendInsertPostEvent(postDTO);
 
         indexPage.contains("Пост, пришедший через вебсокет");
 

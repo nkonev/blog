@@ -108,7 +108,7 @@
 
             stompClient.connect({ }, (frame) => {
                 // subscribe
-                stompClient.subscribe("/topic/posts", (data) => {
+                stompClient.subscribe("/topic/posts/insert", (data) => {
                     const message = data.body;
                     const obj = JSON.parse(message);
                     // console.log(message);

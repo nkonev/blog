@@ -30,7 +30,7 @@ public class BlogInsertListener implements PostInsertEventListener {
         if (event.getEntity() instanceof Post) {
             Post post = (Post) event.getEntity();
             PostDTO postDTO = postConverter.convertToPostDTOWithCleanTags(post);
-            webSocketService.sendPostDto(postDTO);
+            webSocketService.sendInsertPostEvent(postDTO);
             LOGGER.debug("sql insert: {}", post);
         }
     }
