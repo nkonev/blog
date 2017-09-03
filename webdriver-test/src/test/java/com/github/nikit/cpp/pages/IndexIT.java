@@ -1,18 +1,22 @@
 package com.github.nikit.cpp.pages;
 
-import com.github.nikit.cpp.controllers.WebSocketController;
+import com.github.nikit.cpp.dto.PostDTO;
+import com.github.nikit.cpp.services.WebSocketService;
 import com.github.nikit.cpp.integration.AbstractItTestRunner;
 import com.github.nikit.cpp.pages.object.IndexPage;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Date;
+
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
 
 public class IndexIT extends AbstractItTestRunner {
 
     @Autowired
-    private WebSocketController webSocketController;
+    private WebSocketService webSocketservice;
 
     @Test
     public void testWebsocketPush() throws Exception {
@@ -22,7 +26,9 @@ public class IndexIT extends AbstractItTestRunner {
 
         indexPage.contains("Lorem Ipsum является стандартной \"рыбой\" для текстов на латинице с начала XVI века.");
 
-        webSocketController.greet();
+        PostDTO postDTO = new PostDTO(2_000_000, "Post via websocket", "Пост, пришедший через вебсокет " + new Date(), null);
+
+        webSocketservice.sendPostDto(postDTO);
 
         indexPage.contains("Пост, пришедший через вебсокет");
 
