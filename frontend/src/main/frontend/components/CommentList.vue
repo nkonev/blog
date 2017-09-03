@@ -57,7 +57,7 @@
                 this.postIdCache = postId;
                 this.$http.get('/api/post/'+postId+'/comment?page='+(pageNum-1)+'&size='+PAGE_SIZE).then(
                     response => {
-                        this.pageCount = Math.ceil(response.body.count / PAGE_SIZE);
+                        this.pageCount = Math.ceil(response.body.totalCount / PAGE_SIZE);
                         this.comments = response.body.data;
                     }, response => {
                         console.error(response);

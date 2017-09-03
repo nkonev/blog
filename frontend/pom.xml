@@ -38,7 +38,7 @@
         <npm.production.env>production</npm.production.env>
         <karma.browsers>PhantomJS</karma.browsers>
         <node.js.version>v8.2.1</node.js.version>
-        <npm.version>5.3.0</npm.version>
+        <npm.version>5.4.0</npm.version>
 
         <git-template-json>git.template.json</git-template-json>
         <git-json>git.json</git-json>

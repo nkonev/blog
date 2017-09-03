@@ -21,8 +21,20 @@ mvn -N io.takari:maven:wrapper
  * http://docs.spring.io/spring-restdocs/docs/1.2.1.RELEASE/reference/html5/
  * https://springfox.github.io/springfox/docs/current/
 
-# Call goal in sub-project
+# execute frontend plugin goal
 
-```
+```bash
 ./mvnw -pl frontend frontend:install-node-and-npm
+```
+
+
+For get cli analogs of any `<configuration>` property see its Expression (Ctrl + Q in IntelliJ IDEA)
+and pass it with `-D`:
+
+```bash
+./mvnw -Dfrontend.npm.arguments=version -pl frontend frontend:npm
+```
+
+```bash
+./mvnw -Dfrontend.npm.arguments='run dev' -pl frontend frontend:npm
 ```

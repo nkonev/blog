@@ -7,23 +7,15 @@ public class Wrapper<T> {
     /**
      * total count
      */
-    private long count;
+    private long totalCount;
 
     private Collection<T> data;
 
     public Wrapper() { }
 
-    public Wrapper(Collection<T> data, long count) {
-        this.count = count;
+    public Wrapper(Collection<T> data, long totalCount) {
         this.data = data;
-    }
-
-    public long getCount() {
-        return count;
-    }
-
-    public void setCount(long count) {
-        this.count = count;
+        this.totalCount = totalCount;
     }
 
     public Collection<T> getData() {
@@ -32,5 +24,13 @@ public class Wrapper<T> {
 
     public void setData(Collection<T> data) {
         this.data = data;
+    }
+
+    public long getTotalCount() {
+        return totalCount;
+    }
+
+    public void setTotalCount(long totalCount) {
+        this.totalCount = totalCount;
     }
 }

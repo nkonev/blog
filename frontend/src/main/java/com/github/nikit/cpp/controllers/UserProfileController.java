@@ -11,6 +11,7 @@ import com.github.nikit.cpp.dto.UserAccountDTO;
 import com.github.nikit.cpp.dto.UserAccountDetailsDTO;
 import com.github.nikit.cpp.repo.jpa.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
@@ -62,10 +63,11 @@ public class UserProfileController {
     ) {
         PageRequest springDataPage = new PageRequest(PageUtils.fixPage(page), PageUtils.fixSize(size), Sort.Direction.ASC, "id");
 
+        Page<UserAccount> resultPage = userAccountRepository.findAll(springDataPage);
         return new Wrapper<>(
-                userAccountRepository.findAll(springDataPage).getContent().stream()
+                resultPage.getContent().stream()
                         .map(UserAccountConverter::convertToUserAccountDTO).collect(Collectors.toList()),
-                userAccountRepository.count()
+                resultPage.getTotalElements()
         );
     }
 

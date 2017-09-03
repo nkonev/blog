@@ -55,8 +55,7 @@
                 // API request
                 this.$http.get('/api/user?page='+(pageNum-1)+'&size='+PAGE_SIZE).then(
                     response => {
-                        const userCount = response.body.count;
-                        this.pageCount = Math.ceil(userCount / PAGE_SIZE);
+                        this.pageCount = Math.ceil(response.body.totalCount / PAGE_SIZE);
                         this.users = response.body.data;
                     }, response => {
                         console.error(response);
