@@ -6,11 +6,17 @@
 * Docker 1.12.3 +
 * docker-compose 1.8.0 +
 
+# @Before
+
+```bash
+(cd docker; docker-compose up -d)
+```
+
 # Building with frontend (just turn on `frontend` profile)
 
 There is highly recommends to shut down your application on 8080, although tests uses 8090, some of
 them can fails, with websocket for example.
-```
+```bash
 ./mvnw -P frontend clean package
 ```
 
@@ -18,13 +24,13 @@ This will run tests on PhantomJS.
 See `.travis.yml` for Firefox and Chrome test examples
 
 # Building without frontend and without webdriver tests
-```
+```bash
 ./mvnw clean package
 ```
 
 
 # Run
-```
+```bash
 java -jar frontend/target/frontend-1.0-SNAPSHOT-exec.jar
 ```
 
