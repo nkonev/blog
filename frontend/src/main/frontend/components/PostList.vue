@@ -134,6 +134,9 @@
                     if (foundPost) {
                         console.debug("found and deleted");
                     }
+                    if (this.posts.length === 0) {
+                        this.$refs.infiniteLoading.$emit('$InfiniteLoading:reset');
+                    }
                 });
             });
         },
