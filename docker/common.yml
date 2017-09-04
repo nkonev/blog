@@ -1,0 +1,18 @@
+version: '2.1'
+
+services:
+  blog-service:
+    restart: unless-stopped
+    image: 'java:8-jre'
+    working_dir: '/opt/blog'
+    volumes:
+      - '../frontend/target/frontend-1.0-SNAPSHOT-exec.jar:/opt/blog/blog.jar'
+    environment:
+      liquibase.drop-first: 'true'
+      liquibase.contexts: 'main,test'
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "1"
+    entrypoint: ['java', '-jar', 'blog.jar']

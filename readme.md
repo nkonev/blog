@@ -4,7 +4,7 @@
 
 * JDK 8
 * Docker 1.12.3 +
-* docker-compose 1.8.0 +
+* docker-compose 1.16.0 +
 
 # @Before
 

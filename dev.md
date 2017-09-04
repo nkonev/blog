@@ -38,3 +38,8 @@ and pass it with `-D`:
 ```bash
 ./mvnw -Dfrontend.npm.arguments='run dev' -pl frontend frontend:npm
 ```
+
+# Docker-compose
+```bash
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+```
