@@ -37,6 +37,8 @@ java -jar frontend/target/frontend-1.0-SNAPSHOT-exec.jar
 java -Dliquibase.contexts=main,test -jar frontend/target/frontend-1.0-SNAPSHOT-exec.jar
 ```
 
+Test user credentials can be found in `frontend/src/main/resources/liquibase/migration/bootstrap.sql`:74
+
 # Development
 ## Changing version
 ```
