@@ -70,7 +70,10 @@ public class PostIT extends AbstractItTestRunner {
         }
 
         public void delete() {
-            $(".remove-container-x").shouldBe(CLICKABLE).click();
+            $(".remove-container-x")
+                    .waitUntil(Condition.visible, 20 * 1000)
+                    .waitUntil(Condition.enabled, 20 * 1000)
+                    .shouldBe(CLICKABLE).click();
         }
     }
 
@@ -195,7 +198,7 @@ public class PostIT extends AbstractItTestRunner {
 
         postViewPage.delete();
 
-        assertPoll(()-> !postRepository.findById(id).isPresent(), 10);
+        assertPoll(()-> !postRepository.findById(id).isPresent(), 15);
         assertPoll(()-> !deletablePageUrl.equals(driver.getCurrentUrl()), 10);
     }
 
