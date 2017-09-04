@@ -23,7 +23,7 @@ them can fails, with websocket for example.
 This will run tests on PhantomJS.
 See `.travis.yml` for Firefox and Chrome test examples
 
-# Building without frontend and without webdriver tests
+## Building without frontend and without webdriver tests
 ```bash
 ./mvnw clean package
 ```
@@ -31,15 +31,19 @@ See `.travis.yml` for Firefox and Chrome test examples
 
 # Run
 ```bash
+# By default
 java -jar frontend/target/frontend-1.0-SNAPSHOT-exec.jar
+# .. or with pre-generated content
+java -Dliquibase.contexts=main,test -jar frontend/target/frontend-1.0-SNAPSHOT-exec.jar
 ```
 
-# Changing version
+# Development
+## Changing version
 ```
 ./mvnw -DnewVersion=1.0.0 versions:set versions:commit
 ```
 
-# Check for update maven dependency versions
+## Check for update maven dependency versions
 ```
 ./mvnw -DlogOutput=false -DprocessDependencyManagement=false versions:display-dependency-updates | less
 ./mvnw -DlogOutput=false versions:display-property-updates | less
@@ -48,15 +52,15 @@ java -jar frontend/target/frontend-1.0-SNAPSHOT-exec.jar
 
 ```
 
-# Frontend development
+## Frontend development
 
-## Run webpack
+### Run webpack
 ```
 cd frontend
 npm run dev
 ```
 
-## Run KarmaJS with PhantomJS browser (Chrome will be if not specified)
+### Run KarmaJS with PhantomJS browser (Chrome will be if not specified)
 ```
 cd frontend
 npm run unit
@@ -64,7 +68,7 @@ npm run unit
 npm run unit -- --browsers=Chrome
 ```
 
-## Update js dependencies
+### Update js dependencies
 
 https://www.npmjs.com/package/npm-check-updates
 
@@ -74,12 +78,12 @@ rm package-lock.json
 npm install
 ```
 
-# Embedded documentation
+## Embedded documentation
 
 Embedded documentation are available at `http://127.0.0.1:8080/docs/index.html`
 
 
-# Request version info 
+## Request version info 
 
 This will available after full package, e. g. after resource filtering of `git.template.json` and renaming result in `target/classes/static` dir to `git.json`
 
