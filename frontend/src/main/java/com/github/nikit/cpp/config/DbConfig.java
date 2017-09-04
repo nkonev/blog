@@ -1,5 +1,6 @@
 package com.github.nikit.cpp.config;
 
+import com.github.nikit.cpp.listener.hibernate.BlogDeleteListener;
 import com.github.nikit.cpp.listener.hibernate.BlogInsertListener;
 import com.github.nikit.cpp.listener.hibernate.BlogUpdateListener;
 import org.hibernate.SessionFactory;
@@ -30,6 +31,9 @@ public class DbConfig {
     @Autowired
     private BlogUpdateListener blogUpdateListener;
 
+    @Autowired
+    private BlogDeleteListener blogDeleteListener;
+
     @PostConstruct
     public void registerListeners() {
         // https://stackoverflow.com/questions/27570641/no-transactional-entitymanager-available-in-postconstruct/27571252#27571252
@@ -40,5 +44,6 @@ public class DbConfig {
         EventListenerRegistry registry = ((SessionFactoryImpl) sessionFactory).getServiceRegistry().getService(EventListenerRegistry.class);
         registry.getEventListenerGroup(EventType.POST_INSERT).appendListener(blogInsertListener);
         registry.getEventListenerGroup(EventType.POST_UPDATE).appendListener(blogUpdateListener);
+        registry.getEventListenerGroup(EventType.POST_DELETE).appendListener(blogDeleteListener);
     }
 }

@@ -13,7 +13,7 @@ public class TestConstants {
     public static final String SQL_QUERY = "select * from users;";
     public static final String USER_DETAILS = "/user-details-vuln";
 
-    public static final String USER_ALICE = "alice";
-    public static final String USER_ADMIN  ="admin";
-    public static final String USER_BOB = "bob";
+    public static final String USER_ALICE = CommonTestConstants.USER_ALICE;
+    public static final String USER_ADMIN  = CommonTestConstants.USER_ADMIN;
+    public static final String USER_BOB = CommonTestConstants.USER_BOB;
 }

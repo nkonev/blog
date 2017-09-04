@@ -4,6 +4,8 @@ import com.github.nikit.cpp.converter.PostConverter;
 import com.github.nikit.cpp.dto.PostDTO;
 import com.github.nikit.cpp.entity.jpa.Post;
 import com.github.nikit.cpp.services.WebSocketService;
+import org.hibernate.event.spi.PostDeleteEvent;
+import org.hibernate.event.spi.PostDeleteEventListener;
 import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PostUpdateEventListener;
 import org.hibernate.persister.entity.EntityPersister;
@@ -13,25 +15,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class BlogUpdateListener implements PostUpdateEventListener {
+public class BlogDeleteListener implements PostDeleteEventListener {
     private static final long serialVersionUID = 3341150678491703105L;
 
-    private static transient final Logger LOGGER = LoggerFactory.getLogger(BlogUpdateListener.class);
+    private static transient final Logger LOGGER = LoggerFactory.getLogger(BlogDeleteListener.class);
 
     @Autowired
     private WebSocketService webSocketService;
 
-    @Autowired
-    private PostConverter postConverter;
-
     @Override
-    public void onPostUpdate(PostUpdateEvent event) {
+    public void onPostDelete(PostDeleteEvent event) {
         if (event.getEntity() instanceof Post) {
             Post post = (Post) event.getEntity();
-            PostDTO postDTO = postConverter.convertToPostDTOWithCleanTags(post);
-            webSocketService.sendUpdatePostEvent(postDTO);
-            LOGGER.debug("sql update: {}", post);
+            webSocketService.sendDeletePostEvent(post.getId());
+            LOGGER.debug("sql delete: {}", post);
         }
+
     }
 
     @Override

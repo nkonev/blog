@@ -53,4 +53,8 @@ public class IndexPage {
     public void clickAddPost() {
         $(ADD_POST).shouldBe(CLICKABLE).click();
     }
+
+    public void clearSearchButton() {
+        $("#clear-button").shouldBe(CLICKABLE).click();
+    }
 }

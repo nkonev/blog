@@ -2,7 +2,7 @@
     <div>
         <div class="search">
             <label for="search">Search</label>
-            <input id="search" v-model="searchString" @input="onChangeSearchString()"/> <button @click="onClearButton()">clear</button>
+            <input id="search" v-model="searchString" @input="onChangeSearchString()"/> <button @click="onClearButton()" id="clear-button">clear</button>
         </div>
         <div class="post-list">
             <div v-if="posts.length>0">
@@ -113,6 +113,27 @@
                     const obj = JSON.parse(message);
                     // console.log(message);
                     this.posts.unshift(obj);
+                });
+                stompClient.subscribe("/topic/posts/update", (data) => {
+                    const message = data.body;
+                    const obj = JSON.parse(message);
+                    // console.log(message);
+                    const foundPost = this.posts.find((element, index, array)=>{
+                        return element.id === obj.id ? (this.posts.splice(index, 1, obj), true) : false;
+                    });
+                    if (foundPost) {
+                        console.debug("found and updated");
+                    }
+                });
+                stompClient.subscribe("/topic/posts/delete", (data) => {
+                    const message = data.body;
+                    const id = parseInt(message);
+                    const foundPost = this.posts.find((element, index, array)=>{
+                        return element.id === id ? (this.posts.splice(index, 1), true) : false;
+                    });
+                    if (foundPost) {
+                        console.debug("found and deleted");
+                    }
                 });
             });
         },

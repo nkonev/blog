@@ -15,6 +15,14 @@ public class WebSocketService {
     }
 
     public void sendInsertPostEvent(PostDTO postDTO) {
-        this.template.convertAndSend("/topic/posts/insert", postDTO);
+        template.convertAndSend("/topic/posts/insert", postDTO);
+    }
+
+    public void sendUpdatePostEvent(PostDTO postDTO) {
+        template.convertAndSend("/topic/posts/update", postDTO);
+    }
+
+    public void sendDeletePostEvent(long id) {
+        template.convertAndSend("/topic/posts/delete", id);
     }
 }

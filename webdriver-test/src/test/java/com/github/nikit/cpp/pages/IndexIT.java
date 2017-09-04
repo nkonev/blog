@@ -1,41 +1,75 @@
 package com.github.nikit.cpp.pages;
 
+import com.codeborne.selenide.Condition;
+import com.github.nikit.cpp.CommonTestConstants;
+import com.github.nikit.cpp.controllers.PostController;
 import com.github.nikit.cpp.dto.PostDTO;
-import com.github.nikit.cpp.services.WebSocketService;
+import com.github.nikit.cpp.dto.UserAccountDetailsDTO;
 import com.github.nikit.cpp.integration.AbstractItTestRunner;
 import com.github.nikit.cpp.pages.object.IndexPage;
+import com.github.nikit.cpp.security.BlogUserDetailsService;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
 import java.util.Date;
 
 import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.open;
 
 public class IndexIT extends AbstractItTestRunner {
 
     @Autowired
-    private WebSocketService webSocketservice;
+    private PostController postController;
+
+    @Autowired
+    private BlogUserDetailsService blogUserDetailsService;
+
+    /**
+     * You should call SecurityContextHolder.clearContext(); in @After
+     * @param username
+     * @return
+     */
+    private UserAccountDetailsDTO authenticateAs(String username) {
+        UserAccountDetailsDTO accountDetailsDTO = blogUserDetailsService.loadUserByUsername(username);
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(accountDetailsDTO, accountDetailsDTO.getPassword(), accountDetailsDTO.getAuthorities());
+        SecurityContextImpl securityContext = new SecurityContextImpl();
+        securityContext.setAuthentication(usernamePasswordAuthenticationToken);
+        SecurityContextHolder.setContext(securityContext);
+        return accountDetailsDTO;
+    }
+
+    @After
+    public void after() {
+        SecurityContextHolder.clearContext();
+    }
 
     @Test
     public void testWebsocketPush() throws Exception {
-
         IndexPage indexPage = new IndexPage(urlPrefix);
         indexPage.openPage();
-
         indexPage.contains("Lorem Ipsum является стандартной \"рыбой\" для текстов на латинице с начала XVI века.");
 
-        PostDTO postDTO = new PostDTO(2_000_000, "Post via websocket", "Пост, пришедший через вебсокет " + new Date(), null);
+        PostDTO postDTO = new PostDTO(0, "Added via websocket", "Пост, пришедший через вебсокет " + new Date(), "image.png");
+        UserAccountDetailsDTO accountDetailsDTO = authenticateAs(CommonTestConstants.USER_ADMIN);
+        PostDTO added = postController.addPost(accountDetailsDTO, postDTO);
 
-        webSocketservice.sendInsertPostEvent(postDTO);
-
-        indexPage.contains("Пост, пришедший через вебсокет");
+        indexPage.contains("Added via websocket");
 
         indexPage.setSearchString("234");
-
         indexPage.contains("generated_post_234");
         indexPage.contains("generated_post_1234");
+        indexPage.clearSearchButton();
+
+        added.setTitle("Updated via websocket");
+        postController.updatePost(accountDetailsDTO, added);
+
+        indexPage.contains("Updated via websocket");
+
+        postController.deletePost(accountDetailsDTO, added.getId());
+        $("body").waitUntil(Condition.not(Condition.text("Updated via websocket")), 1000 * 6);
     }
 
     /**
