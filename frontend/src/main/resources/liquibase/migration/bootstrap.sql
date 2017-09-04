@@ -128,3 +128,9 @@ INSERT INTO posts.comment (text, post_id, owner_id)
     END
 	FROM generate_series(0, 500) AS i;
 
+-- insert additional post with comment for delete
+INSERT INTO posts.post (title, text, title_img, owner_id) VALUES
+	('for delete with comments', 'text. This post will be deleted.', 'https://postgrespro.ru/img/logo_mono.png', (SELECT id FROM auth.users WHERE username = 'nikita'));
+
+INSERT INTO posts.comment (text, post_id, owner_id) VALUES
+	('commment', (SELECT id from posts.post ORDER BY id DESC LIMIT 1), (SELECT id FROM auth.users WHERE username = 'alice'));
