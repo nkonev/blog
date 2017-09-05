@@ -41,5 +41,5 @@ and pass it with `-D`:
 
 # Docker-compose
 ```bash
-docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+docker-compose -f docker-compose.yml -f docker-compose.demo.yml up -d
 ```

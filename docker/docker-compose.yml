@@ -2,50 +2,75 @@ version: '2.1'
 
 services:
   #enviroment
-   postgresql:
+  postgresql:
     image : postgres:${POSTGRESL_VERSION}
     hostname: postgresql
     # имена контейнеров не должны пересекаться с уже существующими
     container_name: postgresql-blog-dev
     restart: unless-stopped
     ports:
-     - 5432
+      - 5432
     environment:
-     - POSTGRES_PASSWORD=postgresqlPassword
+      - POSTGRES_PASSWORD=postgresqlPassword
     volumes :
-     - ./postgresql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-     - postgresql_blog_dev_data_dir:/var/lib/postgresql/data
+      - ./postgresql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - postgresql_blog_dev_data_dir:/var/lib/postgresql/data
     networks:
-     blog-dev:
-      ipv4_address: 172.22.0.2
+      blog-dev:
+        ipv4_address: 172.22.0.2
     logging:
-     driver: "json-file"
-     options:
-       max-size: "50m"
-       max-file: "1"
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "1"
 
-   redis:
+  redis:
     image: redis:${REDIS_VERSION}
     hostname: redis
     container_name: redis-blog-dev
     restart: unless-stopped
     ports:
-     - 6379
+      - 6379
     volumes :
-     - redis_blog_dev_data_dir:/data
+      - redis_blog_dev_data_dir:/data
     networks:
-     blog-dev:
-      ipv4_address: 172.22.0.3
+      blog-dev:
+        ipv4_address: 172.22.0.3
     logging:
-     driver: "json-file"
-     options:
-       max-size: "50m"
-       max-file: "1"
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "1"
+
+  rabbitmq:
+    # image : rabbitmq:3.6.11-management
+    build:
+      context: ./rabbitmq
+    hostname: rabbitmq
+    container_name: rabbitmq-blog-dev
+    ports:
+      - 15672
+      - 5672
+      - 61613
+      - 15674
+    environment:
+      - RABBITMQ_DEFAULT_USER=blog
+      - RABBITMQ_DEFAULT_PASS=blogPazZw0rd
+    volumes :
+      - rabbitmq_data_dir:/var/lib/rabbitmq/mnesia
+    networks:
+      blog-dev:
+        ipv4_address: 172.22.0.4
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
 
 volumes:
   #enviroment
   postgresql_blog_dev_data_dir:
   redis_blog_dev_data_dir:
+  rabbitmq_data_dir:
 
 networks:
   blog-dev:
