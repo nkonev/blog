@@ -9,7 +9,7 @@ services:
     container_name: postgresql-blog-dev
     restart: unless-stopped
     ports:
-      - 5432
+      - 25432:5432
     environment:
       - POSTGRES_PASSWORD=postgresqlPassword
     volumes :
@@ -30,7 +30,7 @@ services:
     container_name: redis-blog-dev
     restart: unless-stopped
     ports:
-      - 6379
+      - 26379:6379
     volumes :
       - redis_blog_dev_data_dir:/data
     networks:
@@ -49,10 +49,10 @@ services:
     hostname: rabbitmq
     container_name: rabbitmq-blog-dev
     ports:
-      - 15672
-      - 5672
-      - 61613
-      - 15674
+      - 45672:15672
+      - 35672:5672
+      - 60613:61613
+      - 35674:15674
     environment:
       - RABBITMQ_DEFAULT_USER=blog
       - RABBITMQ_DEFAULT_PASS=blogPazZw0rd

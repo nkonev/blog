@@ -94,7 +94,17 @@ spring.mail:
     ${ (!test ? '' : '# ') + 'mail.smtp.ssl.enable: "true"'}
     mail.smtp.connectiontimeout: 5000
     mail.smtp.timeout: 3000
-    mail.smtp.writetimeout: 5000"""
+    mail.smtp.writetimeout: 5000
+
+custom.stomp.broker:
+  host: "172.22.0.4"
+  port: 61613
+  virtual-host: /
+  client-login: blog
+  client-password: blogPazZw0rd
+  system-login: blog
+  system-password: blogPazZw0rd
+"""
 }
 
 def custom(boolean test) {

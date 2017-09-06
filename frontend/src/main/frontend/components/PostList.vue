@@ -107,14 +107,15 @@
             stompClient.reconnect_delay = 5000; // reconnect after 5 sec
 
             stompClient.connect({ }, (frame) => {
+                // allowed prefixes here http://www.rabbitmq.com/stomp.html#d
                 // subscribe
-                stompClient.subscribe("/topic/posts/insert", (data) => {
+                stompClient.subscribe("/topic/posts.insert", (data) => {
                     const message = data.body;
                     const obj = JSON.parse(message);
                     // console.log(message);
                     this.posts.unshift(obj);
                 });
-                stompClient.subscribe("/topic/posts/update", (data) => {
+                stompClient.subscribe("/topic/posts.update", (data) => {
                     const message = data.body;
                     const obj = JSON.parse(message);
                     // console.log(message);
@@ -125,7 +126,7 @@
                         console.debug("found and updated");
                     }
                 });
-                stompClient.subscribe("/topic/posts/delete", (data) => {
+                stompClient.subscribe("/topic/posts.delete", (data) => {
                     const message = data.body;
                     const id = parseInt(message);
                     const foundPost = this.posts.find((element, index, array)=>{
