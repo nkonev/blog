@@ -48,6 +48,7 @@ services:
       context: ./rabbitmq
     hostname: rabbitmq
     container_name: rabbitmq-blog-dev
+    restart: unless-stopped
     ports:
       - 45672:15672
       - 35672:5672
