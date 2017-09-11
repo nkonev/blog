@@ -92,3 +92,21 @@ This will available after full package, e. g. after resource filtering of `git.t
 ```
 curl -i http://127.0.0.1:8080/git.json
 ```
+
+# Running on Windows without docker.
+
+First you should install redis, postgres, Rabbit MQ and setup them (create database, schema user for Postgres, install web stomp plugin and create user for RabbitMQ).
+
+Redis Windows x86 which works on my PC
+http://bitsandpieces.it/redis-x86-32bit-builds-for-windows
+2.8.2104 http://fratuz610.s3.amazonaws.com/upload/public/redis-builds/x86/redis-windows-x86-2.8.2104.zip
+
+run
+```
+redis-server.exe --maxheap 8Mb
+```
+
+Next you can run with redefine IP addessses to localhost and disable asciidoctor:
+```
+mvnw -Dasciidoctor.skip=true -Dcustom.stomp.broker.host=127.0.0.1 -Dspring.datasource.url=jdbc:postgresql://127.0.0.1:5432/blog?connectTimeout=10 -Dspring.redis.url=redis://127.0.0.1:6379/0 clean package -e
+```
