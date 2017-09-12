@@ -518,7 +518,37 @@
             </build>
         </profile>
 
-
+		<profile>
+            <id>local</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+			<build>
+				<plugins>
+				  <plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>${maven.surefire.plugin.version}</version>
+					<configuration>
+					  <systemProperties>
+						<property>
+						  <name>custom.stomp.broker.host</name>
+						  <value>127.0.0.1</value>
+						</property>
+						<property>
+						  <name>spring.datasource.url</name>
+						  <value>jdbc:postgresql://127.0.0.1:5432/blog?connectTimeout=10</value>
+						</property>
+						<property>
+						  <name>spring.redis.url</name>
+						  <value>redis://127.0.0.1:6379/0</value>
+						</property>
+					  </systemProperties>
+					</configuration>
+				  </plugin>
+				</plugins>
+			</build>
+        </profile>
     </profiles>
 
 

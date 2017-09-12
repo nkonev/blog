@@ -110,3 +110,15 @@ Next you can run with redefine IP addessses to localhost and disable asciidoctor
 ```
 mvnw -Dasciidoctor.skip=true -Dcustom.stomp.broker.host=127.0.0.1 -Dspring.datasource.url=jdbc:postgresql://127.0.0.1:5432/blog?connectTimeout=10 -Dspring.redis.url=redis://127.0.0.1:6379/0 clean package -e
 ```
+
+Or you can use shortcut
+```
+mvnw -P local clean test
+```
+
+# FAQ
+
+Q: I suddenly get http 403 error in JUnit mockMvc tests.
+
+A: Add `.with(csrf())` to MockMvcRequestBuilder chain
+

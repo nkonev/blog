@@ -67,6 +67,10 @@ CREATE TABLE historical.password_reset_token (
 	expired_at timestamp NOT NULL
 );
 
+CREATE TABLE posts.post_title_image (
+	post_id BIGSERIAL PRIMARY KEY REFERENCES posts.post(id),
+	img BYTEA NOT NULL
+);
 
 -- changeset nkonev:2_test_data context:test failOnError: true
 -- insert test data
