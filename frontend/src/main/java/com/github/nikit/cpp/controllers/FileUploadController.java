@@ -47,16 +47,15 @@ public class FileUploadController {
     }
 	
 	@GetMapping("/api/post/{id}/title-image")
-    public ResponseEntity<byte[]> getImage(@PathVariable("id")long postId) throws SQLException {
+    public byte[] getImage(@PathVariable("id")long postId) throws SQLException {
         try( Connection conn = dataSource.getConnection();) {
             try (PreparedStatement ps = conn.prepareStatement("SELECT img FROM posts.post_title_image WHERE post_id = ?");) {
                 ps.setLong(1, postId);
                 try (ResultSet rs = ps.executeQuery();) {
 					if(rs.next()) {
-						// TODO remove byte[]
+						// TODO remove byte[] - pass stream
 						byte[] imgBytes = rs.getBytes("img");
-                        ResponseEntity<byte[]> re = new ResponseEntity<byte[]>(imgBytes, HttpStatus.OK);
-						return re;
+						return imgBytes;
 					} else {
 						throw new RuntimeException("Title image not found for post " + postId);
 					}
