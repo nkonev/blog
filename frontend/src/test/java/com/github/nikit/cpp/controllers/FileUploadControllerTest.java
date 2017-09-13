@@ -26,7 +26,7 @@ import org.junit.Assert;
 
 public class FileUploadControllerTest extends AbstractUtTestRunner {
 
-	private static final String PUT_IMAGE_URL_TEMPLATE = "/api/post/{id}/title-image";
+	private static final String PUT_IMAGE_URL_TEMPLATE = com.github.nikit.cpp.controllers.FileUploadController.IMAGE_URL_TEMPLATE;
 
     @WithUserDetails(TestConstants.USER_ALICE)
     @Test

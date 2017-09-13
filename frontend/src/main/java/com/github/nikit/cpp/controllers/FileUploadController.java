@@ -26,16 +26,24 @@ public class FileUploadController {
 
     @Autowired
     private DataSource dataSource;
+	
+	private static final long MAX_IMAGE_SIZE_BYTES = 2 * 1024 * 1024; // 2 MB
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileUploadController.class);
+	
+	public static final String IMAGE_URL_TEMPLATE = "/api/post/{id}/title-image";
 
-    @PutMapping("/api/post/{id}/title-image")
+    @PutMapping(IMAGE_URL_TEMPLATE)
     @PreAuthorize("isAuthenticated()")
     public void putImage(InputStream is, @RequestHeader HttpHeaders headers, @PathVariable("id")long postId) throws SQLException {
         // https://jdbc.postgresql.org/documentation/head/binary-data.html
-		// TODO check content-length
 		// TODO delete
 		// TODO store not only for image title
+		long contentLength = headers.getContentLength();
+		if (contentLength > MAX_IMAGE_SIZE_BYTES) {
+			throw new RuntimeException("Image > "+ MAX_IMAGE_SIZE_BYTES);
+		}
+
         try( Connection conn = dataSource.getConnection();) {
 		    try (PreparedStatement ps = conn.prepareStatement("INSERT INTO posts.post_title_image VALUES (?, NULL) ON CONFLICT(post_id) DO NOTHING");) {
                 ps.setLong(1, postId);
@@ -43,7 +51,6 @@ public class FileUploadController {
             }
 
             try (PreparedStatement ps = conn.prepareStatement("UPDATE posts.post_title_image SET img = ? WHERE post_id = ?");) {
-                long contentLength = headers.getContentLength();
                 ps.setLong(2, postId);
                 ps.setBinaryStream(1, is, (int) contentLength);
                 ps.executeUpdate();
@@ -51,7 +58,7 @@ public class FileUploadController {
         } 
     }
 	
-	@GetMapping("/api/post/{id}/title-image")
+	@GetMapping(IMAGE_URL_TEMPLATE)
     public void getImage(@PathVariable("id")long postId, OutputStream response) throws SQLException, java.io.IOException {
         try( Connection conn = dataSource.getConnection();) {
             try (PreparedStatement ps = conn.prepareStatement("SELECT img FROM posts.post_title_image WHERE post_id = ?");) {
