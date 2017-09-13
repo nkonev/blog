@@ -69,7 +69,7 @@ CREATE TABLE historical.password_reset_token (
 
 CREATE TABLE posts.post_title_image (
 	post_id BIGINT PRIMARY KEY REFERENCES posts.post(id),
-	img BYTEA NOT NULL
+	img BYTEA
 );
 
 -- changeset nkonev:2_test_data context:test failOnError: true

@@ -34,14 +34,18 @@ public class FileUploadController {
     public void putImage(InputStream is, @RequestHeader HttpHeaders headers, @PathVariable("id")long postId) throws SQLException {
         // https://jdbc.postgresql.org/documentation/head/binary-data.html
 		// TODO check content-length
-		// TODO UPSERT
 		// TODO delete
 		// TODO store not only for image title
         try( Connection conn = dataSource.getConnection();) {
-            try (PreparedStatement ps = conn.prepareStatement("INSERT INTO posts.post_title_image VALUES (?, ?)");) {
-                long contentLength = headers.getContentLength();
+		    try (PreparedStatement ps = conn.prepareStatement("INSERT INTO posts.post_title_image VALUES (?, NULL) ON CONFLICT(post_id) DO NOTHING");) {
                 ps.setLong(1, postId);
-                ps.setBinaryStream(2, is, (int) contentLength);
+                ps.executeUpdate();
+            }
+
+            try (PreparedStatement ps = conn.prepareStatement("UPDATE posts.post_title_image SET img = ? WHERE post_id = ?");) {
+                long contentLength = headers.getContentLength();
+                ps.setLong(2, postId);
+                ps.setBinaryStream(1, is, (int) contentLength);
                 ps.executeUpdate();
             }
         } 

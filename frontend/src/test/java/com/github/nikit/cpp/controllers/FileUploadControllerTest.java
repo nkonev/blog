@@ -26,14 +26,23 @@ import org.junit.Assert;
 
 public class FileUploadControllerTest extends AbstractUtTestRunner {
 
+	private static final String PUT_IMAGE_URL_TEMPLATE = "/api/post/{id}/title-image";
+
     @WithUserDetails(TestConstants.USER_ALICE)
     @Test
     public void putImage() throws Exception {
-        byte[] bytes = {(byte)0xFF, (byte)0x01, (byte)0x1A};
 		final long postId = 1;
 
+		byte[] img0 = {(byte)0xFF, (byte)0x01, (byte)0x1A};
+        putImage(postId, img0);
+		
+		byte[] img1 = {(byte)0xAA, (byte)0xBB, (byte)0xCC, (byte)0xDD, (byte)0xCC};
+		putImage(postId, img1);
+    }
+	
+	private void putImage(long postId, byte[] bytes) throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders.put("/api/post/{id}/title-image", postId)
+                MockMvcRequestBuilders.put(PUT_IMAGE_URL_TEMPLATE, postId)
 				.header("Content-Length", bytes.length)
                 .content(bytes)
 				.with(csrf())
@@ -41,7 +50,7 @@ public class FileUploadControllerTest extends AbstractUtTestRunner {
                 .andExpect(status().isOk());
 				
 		MvcResult result =mockMvc.perform(
-                MockMvcRequestBuilders.get("/api/post/{id}/title-image", postId)
+                MockMvcRequestBuilders.get(PUT_IMAGE_URL_TEMPLATE, postId)
         )
                 .andExpect(status().isOk())
 				.andReturn()
@@ -50,5 +59,4 @@ public class FileUploadControllerTest extends AbstractUtTestRunner {
 		
 		Assert.assertArrayEquals(bytes, content);
     }
-	
 }
