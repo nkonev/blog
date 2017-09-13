@@ -19,6 +19,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import org.springframework.web.bind.annotation.RequestHeader;
+import java.io.OutputStream;
 
 @RestController
 public class FileUploadController {
@@ -47,15 +48,15 @@ public class FileUploadController {
     }
 	
 	@GetMapping("/api/post/{id}/title-image")
-    public byte[] getImage(@PathVariable("id")long postId) throws SQLException {
+    public void getImage(@PathVariable("id")long postId, OutputStream response) throws SQLException, java.io.IOException {
         try( Connection conn = dataSource.getConnection();) {
             try (PreparedStatement ps = conn.prepareStatement("SELECT img FROM posts.post_title_image WHERE post_id = ?");) {
                 ps.setLong(1, postId);
                 try (ResultSet rs = ps.executeQuery();) {
 					if(rs.next()) {
-						// TODO remove byte[] - pass stream
-						byte[] imgBytes = rs.getBytes("img");
-						return imgBytes;
+						try(InputStream imgStream = rs.getBinaryStream("img");){
+							copy(imgStream, response);
+						}
 					} else {
 						throw new RuntimeException("Title image not found for post " + postId);
 					}
@@ -63,5 +64,13 @@ public class FileUploadController {
             }
         }
     }
+	
+	private void copy(InputStream from, OutputStream to) throws java.io.IOException {
+		byte[] buffer = new byte[4 * 1024];
+		int len;
+		while ((len = from.read(buffer)) != -1) {
+			to.write(buffer, 0, len);
+		}
+	}
 }
  
