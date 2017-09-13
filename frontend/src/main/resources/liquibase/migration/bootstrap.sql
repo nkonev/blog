@@ -68,7 +68,7 @@ CREATE TABLE historical.password_reset_token (
 );
 
 CREATE TABLE posts.post_title_image (
-	post_id BIGSERIAL PRIMARY KEY REFERENCES posts.post(id),
+	post_id BIGINT PRIMARY KEY REFERENCES posts.post(id),
 	img BYTEA NOT NULL
 );
 
