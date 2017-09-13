@@ -7,9 +7,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,8 +28,12 @@ public class FileUploadController {
 
     @PutMapping("/api/post/{id}/title-image")
     @PreAuthorize("isAuthenticated()")
-    public void putImage(InputStream is, @RequestHeader HttpHeaders headers, @PathVariable("id")long postId) {
+    public void putImage(InputStream is, @RequestHeader HttpHeaders headers, @PathVariable("id")long postId) throws SQLException {
         // https://jdbc.postgresql.org/documentation/head/binary-data.html
+		// TODO check content-length
+		// TODO UPSERT
+		// TODO delete
+		// TODO store not only for image title
         try( Connection conn = dataSource.getConnection();) {
             try (PreparedStatement ps = conn.prepareStatement("INSERT INTO posts.post_title_image VALUES (?, ?)");) {
                 long contentLength = headers.getContentLength();
@@ -35,8 +41,25 @@ public class FileUploadController {
                 ps.setBinaryStream(2, is, (int) contentLength);
                 ps.executeUpdate();
             }
-        } catch (SQLException e) {
-            LOGGER.error("SQL Exception on put post {} title", postId, e);
+        } 
+    }
+	
+	@GetMapping("/api/post/{id}/title-image")
+    public byte[] getImage(@PathVariable("id")long postId) throws SQLException {
+        try( Connection conn = dataSource.getConnection();) {
+            try (PreparedStatement ps = conn.prepareStatement("SELECT img FROM posts.post_title_image WHERE post_id = ?");) {
+                ps.setLong(1, postId);
+                try (ResultSet rs = ps.executeQuery();) {
+					if(rs.next()) {
+						// TODO remove byte[]
+						byte[] imgBytes = rs.getBytes("img");
+						return imgBytes;
+					} else {
+						throw new RuntimeException("Title image not found for post " + postId);
+					}
+				}
+            }
         }
     }
 }
+ 

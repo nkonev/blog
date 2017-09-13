@@ -21,20 +21,34 @@ import java.nio.file.Path;
 import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import org.springframework.test.web.servlet.MvcResult;
+import org.junit.Assert;
 
 public class FileUploadControllerTest extends AbstractUtTestRunner {
 
     @WithUserDetails(TestConstants.USER_ALICE)
     @Test
     public void putImage() throws Exception {
-        byte[] bytes = "image bytes байты".getBytes(StandardCharsets.UTF_8);
+        byte[] bytes = {(byte)0xFF, (byte)0x01, (byte)0x1A};
+		final long postId = 1;
 
         mockMvc.perform(
-                MockMvcRequestBuilders.put("/api/post/{id}/title-image", 1)
+                MockMvcRequestBuilders.put("/api/post/{id}/title-image", postId)
+				.header("Content-Length", bytes.length)
                 .content(bytes)
 				.with(csrf())
         )
                 .andExpect(status().isOk());
+				
+		MvcResult result =mockMvc.perform(
+                MockMvcRequestBuilders.get("/api/post/{id}/title-image", postId)
+        )
+                .andExpect(status().isOk())
+				.andReturn()
+				;
+		byte[] content = result.getResponse().getContentAsByteArray();
+		
+		Assert.assertEquals(java.util.Base64.getEncoder().encode(bytes), content);
     }
-
+	
 }
