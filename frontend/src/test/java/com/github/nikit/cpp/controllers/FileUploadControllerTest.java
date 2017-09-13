@@ -48,7 +48,7 @@ public class FileUploadControllerTest extends AbstractUtTestRunner {
 				;
 		byte[] content = result.getResponse().getContentAsByteArray();
 		
-		Assert.assertEquals(java.util.Base64.getEncoder().encode(bytes), content);
+		Assert.assertArrayEquals(bytes, content);
     }
 	
 }

@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -45,7 +47,7 @@ public class FileUploadController {
     }
 	
 	@GetMapping("/api/post/{id}/title-image")
-    public byte[] getImage(@PathVariable("id")long postId) throws SQLException {
+    public ResponseEntity<byte[]> getImage(@PathVariable("id")long postId) throws SQLException {
         try( Connection conn = dataSource.getConnection();) {
             try (PreparedStatement ps = conn.prepareStatement("SELECT img FROM posts.post_title_image WHERE post_id = ?");) {
                 ps.setLong(1, postId);
@@ -53,7 +55,8 @@ public class FileUploadController {
 					if(rs.next()) {
 						// TODO remove byte[]
 						byte[] imgBytes = rs.getBytes("img");
-						return imgBytes;
+                        ResponseEntity<byte[]> re = new ResponseEntity<byte[]>(imgBytes, HttpStatus.OK);
+						return re;
 					} else {
 						throw new RuntimeException("Title image not found for post " + postId);
 					}
