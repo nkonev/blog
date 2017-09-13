@@ -35,13 +35,13 @@ public class FileUploadController {
 
     @PutMapping(IMAGE_URL_TEMPLATE)
     @PreAuthorize("isAuthenticated()")
-    public void putImage(InputStream is, @RequestHeader HttpHeaders headers, @PathVariable("id")long postId) throws SQLException {
+    public void putImage(InputStream request, @RequestHeader HttpHeaders headers, @PathVariable("id")long postId) throws SQLException {
         // https://jdbc.postgresql.org/documentation/head/binary-data.html
 		// TODO delete
 		// TODO store not only for image title
 		long contentLength = headers.getContentLength();
 		if (contentLength > MAX_IMAGE_SIZE_BYTES) {
-			throw new RuntimeException("Image > "+ MAX_IMAGE_SIZE_BYTES);
+			throw new RuntimeException("Image > "+ MAX_IMAGE_SIZE_BYTES + " bytes");
 		}
 
         try( Connection conn = dataSource.getConnection();) {
@@ -52,7 +52,7 @@ public class FileUploadController {
 
             try (PreparedStatement ps = conn.prepareStatement("UPDATE posts.post_title_image SET img = ? WHERE post_id = ?");) {
                 ps.setLong(2, postId);
-                ps.setBinaryStream(1, is, (int) contentLength);
+                ps.setBinaryStream(1, request, (int) contentLength);
                 ps.executeUpdate();
             }
         } 
@@ -75,7 +75,7 @@ public class FileUploadController {
             }
         }
     }
-	
+		
 	private void copy(InputStream from, OutputStream to) throws java.io.IOException {
 		byte[] buffer = new byte[4 * 1024];
 		int len;
