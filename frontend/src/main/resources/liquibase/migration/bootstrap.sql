@@ -69,7 +69,8 @@ CREATE TABLE historical.password_reset_token (
 
 CREATE TABLE posts.post_title_image (
 	post_id BIGINT PRIMARY KEY REFERENCES posts.post(id),
-	img BYTEA
+	img BYTEA,
+	owner_id BIGINT NOT NULL REFERENCES auth.users(id)
 );
 
 -- changeset nkonev:2_test_data context:test failOnError: true
