@@ -36,8 +36,9 @@ public class FileUploadController {
 	public static final String IMAGE_URL_TEMPLATE = "/api/post/{id}/title-image";
 
     @PutMapping(IMAGE_URL_TEMPLATE)
+	@PreAuthorize("@blogSecurityService.hasImagePermission(#postId, #imageType, #userAccount, T(com.github.nikit.cpp.entity.jpa.Permissions).EDIT)")
     @PreAuthorize("isAuthenticated()")
-    public void putImage(InputStream request, @RequestHeader HttpHeaders headers, @PathVariable("id")long postId, @AuthenticationPrincipal UserAccountDetailsDTO userAccount) throws SQLException {
+    public void putImage(InputStream request, @RequestHeader HttpHeaders headers, @RequestHeader ImageType imageType, @PathVariable("id")long postId, @AuthenticationPrincipal UserAccountDetailsDTO userAccount) throws SQLException {
 		Assert.notNull(userAccount, "UserAccountDetailsDTO can't be null");
 		long ownerId = userAccount.getId();
         // https://jdbc.postgresql.org/documentation/head/binary-data.html
@@ -48,7 +49,7 @@ public class FileUploadController {
 			throw new RuntimeException("Image > "+ MAX_IMAGE_SIZE_BYTES + " bytes");
 		}
 
-        try( Connection conn = dataSource.getConnection();) {
+        try(Connection conn = dataSource.getConnection();) {
 		    try (PreparedStatement ps = conn.prepareStatement("INSERT INTO posts.post_title_image VALUES (?, NULL, ?) ON CONFLICT(post_id) DO NOTHING");) {
                 ps.setLong(1, postId);
 				ps.setLong(2, ownerId);
@@ -63,9 +64,36 @@ public class FileUploadController {
         } 
     }
 	
+	public enum ImageType {
+		POST_TITLE,
+		POST_CONTENT,
+		AVATAR
+	}
+	
+	/*private String getHeaderValue(String headerName) {
+		List<String> headerValues = postId.getHeader("X-IMAGE-TYPE");
+		if (headerValues!=null && !headerValues.isEmpty()) {
+			return headerValues.get(0);
+		} else {
+			return null;
+		}
+	}
+	
+	private ImageType getImageType(String headerName) {
+		if (headerName == null) {
+			throw new IllegalArgumentException("header name cannot be null");
+		} else {
+			String headerValue = getHeaderValue(headerName);
+			if (headerValue== null) {
+				throw new IllegalArgumentException("header value " + headerName + " cannot be null");
+			}
+			return ImageType.valueOf(headerValue);
+		}
+	}*/
+	
 	@GetMapping(IMAGE_URL_TEMPLATE)
     public void getImage(@PathVariable("id")long postId, OutputStream response) throws SQLException, java.io.IOException {
-        try( Connection conn = dataSource.getConnection();) {
+        try(Connection conn = dataSource.getConnection();) {
             try (PreparedStatement ps = conn.prepareStatement("SELECT img FROM posts.post_title_image WHERE post_id = ?");) {
                 ps.setLong(1, postId);
                 try (ResultSet rs = ps.executeQuery();) {

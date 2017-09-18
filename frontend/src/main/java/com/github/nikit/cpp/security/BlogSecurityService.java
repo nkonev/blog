@@ -81,4 +81,12 @@ public class BlogSecurityService {
 
         return false;
     }
+	
+	
+	
+	public boolean hasImagePermission(long postId, ImageType imageType, UserAccountDetailsDTO userAccount, Permissions permission) {
+		if (userAccount == null) {return false;}
+		
+		
+	}
 }
