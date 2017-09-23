@@ -14,5 +14,7 @@ create database blog with owner blog;
 \connect blog;
 
 create extension if not exists "uuid-ossp" schema pg_catalog;
+-- create extension if not exists fuzzystrmatch with schema pg_catalog;
+-- create extension if not exists pg_trgm with schema pg_catalog;
 -- create extension if not exists "hstore" schema pg_catalog;
 

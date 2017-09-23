@@ -122,3 +122,26 @@ Q: I suddenly get http 403 error in JUnit mockMvc tests.
 
 A: Add `.with(csrf())` to MockMvcRequestBuilder chain
 
+
+
+
+pg search
+==========
+https://www.postgresql.org/docs/9.6/static/functions-textsearch.html
+https://postgrespro.ru/docs/postgrespro/9.5/textsearch-controls
+
+select * from posts.post where to_tsvector('russian', text) @@ phraseto_tsquery('russian', 'печатников создали');
+
+select title, ts_headline('russian', text, plainto_tsquery('russian', 'печатников размеры частый'), 'StartSel="<b>", StopSel="</b>"') from posts.post where to_tsvector('russian', text) @@ plainto_tsquery('russian', 'печатников размеры частый');
+
+with tsq as (select plainto_tsquery('russian', 'печатников размеры частый')) select title, ts_headline('russian', text, (select * from tsq), 'StartSel="<b>", StopSel="</b>"') from posts.post where to_tsvector('russian', text) @@ (select * from tsq);
+
+with tsq as (select plainto_tsquery('russian', 'печатников размеры частый generated')) select ts_headline('russian', title, (select * from tsq), 'StartSel="<u>", StopSel="</u>"'), ts_headline('russian', text, (select * from tsq), 'StartSel="<b>", StopSel="</b>"') from posts.post where to_tsvector('russian', title || ' ' || text) @@ (select * from tsq);
+
+
+
+
+with lng as (select 'russian'::regconfig), tsq as (select plainto_tsquery((select * from lng), 'печатников размеры частый')) select title, ts_headline((select * from lng), text, (select * from tsq), 'StartSel="<b>", StopSel="</b>"') from posts.post where to_tsvector((select * from lng), text) @@ (select * from tsq);
+
+with lng as (select 'russian'::regconfig), tsq as (select plainto_tsquery((select * from lng), 'печатников размеры частый posted')) select ts_headline((select * from lng), title, (select * from tsq), 'StartSel="<u>", StopSel="</u>"'), ts_headline((select * from lng), text, (select * from tsq), 'StartSel="<b>", StopSel="</b>"') from posts.post where to_tsvector((select * from lng), title || ' ' || text) @@ (select * from tsq);
+
