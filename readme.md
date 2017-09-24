@@ -130,7 +130,7 @@ pg search
 https://www.postgresql.org/docs/9.6/static/functions-textsearch.html
 https://postgrespro.ru/docs/postgrespro/9.5/textsearch-controls
 
-select * from posts.post where to_tsvector('russian', text) @@ phraseto_tsquery('russian', 'печатников создали');
+select * from posts.post where to_tsvector('russian', text) @@ plainto_tsquery('russian', 'печатников создали');
 
 select title, ts_headline('russian', text, plainto_tsquery('russian', 'печатников размеры частый'), 'StartSel="<b>", StopSel="</b>"') from posts.post where to_tsvector('russian', text) @@ plainto_tsquery('russian', 'печатников размеры частый');
 
@@ -145,3 +145,15 @@ with lng as (select 'russian'::regconfig), tsq as (select plainto_tsquery((selec
 
 with lng as (select 'russian'::regconfig), tsq as (select plainto_tsquery((select * from lng), 'печатников размеры частый posted')) select ts_headline((select * from lng), title, (select * from tsq), 'StartSel="<u>", StopSel="</u>"'), ts_headline((select * from lng), text, (select * from tsq), 'StartSel="<b>", StopSel="</b>"') from posts.post where to_tsvector((select * from lng), title || ' ' || text) @@ (select * from tsq);
 
+optimized(do not touch second 'russian') else index didn't work
+---------------------------------------------------------------
+with 
+ lng as (select 'russian'::regconfig), 
+ tsq as (select plainto_tsquery((select * from lng), 'печатников размеры частый posted')) 
+select
+ ts_headline((select * from lng), title, (select * from tsq), 'StartSel="<u>", StopSel="</u>"'), 
+ ts_headline((select * from lng), text, (select * from tsq), 'StartSel="<b>", StopSel="</b>"')
+from posts.post 
+where to_tsvector('russian'::regconfig, title || ' ' || text) @@ (select * from tsq);
+
+create index title_text_idx on posts.post using gin (to_tsvector('russian', title || ' ' || text));
