@@ -156,4 +156,19 @@ select
 from posts.post 
 where to_tsvector('russian'::regconfig, title || ' ' || text) @@ (select * from tsq);
 
+
+
+final optimized 
+---------------
+with tsq as (select plainto_tsquery('russian'::regconfig, 'частый текстов рыбы posted')) 
+select
+ id, 
+ ts_headline('russian'::regconfig, title, (select * from tsq), 'StartSel="<u>", StopSel="</u>"'), 
+ ts_headline('russian'::regconfig, text, (select * from tsq), 'StartSel="<b>", StopSel="</b>"') 
+from (
+  select id, title, text 
+  from posts.post 
+  where to_tsvector('russian'::regconfig, title || ' ' || text) @@ (select * from tsq) order by id desc limit 50
+) as foo;
+
 create index title_text_idx on posts.post using gin (to_tsvector('russian', title || ' ' || text));
