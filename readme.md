@@ -163,8 +163,8 @@ final optimized
 with tsq as (select plainto_tsquery('russian'::regconfig, 'частый текстов рыбы posted')) 
 select
  id, 
- ts_headline('russian'::regconfig, title, (select * from tsq), 'StartSel="<u>", StopSel="</u>"'), 
- ts_headline('russian'::regconfig, text, (select * from tsq), 'StartSel="<b>", StopSel="</b>"') 
+ ts_headline('russian'::regconfig, title, (select * from tsq), 'StartSel="<u>", StopSel="</u>"') as title, 
+ ts_headline('russian'::regconfig, text, (select * from tsq), 'StartSel="<b>", StopSel="</b>"') as text
 from (
   select id, title, text 
   from posts.post 
