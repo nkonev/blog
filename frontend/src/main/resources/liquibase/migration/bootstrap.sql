@@ -49,6 +49,7 @@ CREATE TABLE posts.post (
   id BIGSERIAL PRIMARY KEY,
   title CHARACTER VARYING(256) NOT NULL,
   text TEXT NOT NULL,
+	text_no_tags TEXT NOT NULL,
   title_img TEXT NOT NULL,
   owner_id BIGINT NOT NULL REFERENCES auth.users(id),
   UNIQUE (title)
@@ -115,9 +116,10 @@ INSERT INTO auth.user_roles(user_id, role_id) VALUES
 	((SELECT id FROM auth.users WHERE username = 'forgive-password-user'), 1);
 
 
-INSERT INTO posts.post (title, text, title_img, owner_id)
+INSERT INTO posts.post (title, text, text_no_tags, title_img, owner_id)
 	SELECT
 		'generated_post_' || i,
+		'Lorem Ipsum - это текст-"рыба", часто используемый в печати и вэб-дизайне. Lorem Ipsum является стандартной "рыбой" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem Ipsum для распечатки образцов. Lorem Ipsum не только успешно пережил без заметных изменений пять веков, но и перешагнул в электронный дизайн. Его популяризации в новое время послужили публикация листов Letraset с образцами Lorem Ipsum в 60-х годах и, в более недавнее время, программы электронной вёрстки типа Aldus PageMaker, в шаблонах которых используется Lorem Ipsum.',
 		'Lorem Ipsum - это текст-"рыба", часто используемый в печати и вэб-дизайне. Lorem Ipsum является стандартной "рыбой" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem Ipsum для распечатки образцов. Lorem Ipsum не только успешно пережил без заметных изменений пять веков, но и перешагнул в электронный дизайн. Его популяризации в новое время послужили публикация листов Letraset с образцами Lorem Ipsum в 60-х годах и, в более недавнее время, программы электронной вёрстки типа Aldus PageMaker, в шаблонах которых используется Lorem Ipsum.',
 		'https://postgrespro.ru/img/logo_mono.png',
 		(SELECT id FROM auth.users WHERE username = 'nikita')
@@ -134,11 +136,11 @@ INSERT INTO posts.comment (text, post_id, owner_id)
 	FROM generate_series(0, 500) AS i;
 
 -- insert additional post with comment for delete
-INSERT INTO posts.post (title, text, title_img, owner_id) VALUES
-	('for delete with comments', 'text. This post will be deleted.', 'https://postgrespro.ru/img/logo_mono.png', (SELECT id FROM auth.users WHERE username = 'nikita'));
+INSERT INTO posts.post (title, text, text_no_tags, title_img, owner_id) VALUES
+	('for delete with comments', 'text. This post will be deleted.', 'text. This post will be deleted.', 'https://postgrespro.ru/img/logo_mono.png', (SELECT id FROM auth.users WHERE username = 'nikita'));
 
 INSERT INTO posts.comment (text, post_id, owner_id) VALUES
 	('commment', (SELECT id from posts.post ORDER BY id DESC LIMIT 1), (SELECT id FROM auth.users WHERE username = 'alice'));
 
 -- changeset nkonev:3_fulltext context:main failOnError: true
-create index title_text_idx on posts.post using gin (to_tsvector('russian', title || ' ' || text));
+create index title_text_idx on posts.post using gin (to_tsvector('russian', title || ' ' || text_no_tags));

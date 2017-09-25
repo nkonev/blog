@@ -17,6 +17,10 @@ public class Post {
 
     private String title;
     private String text;
+    /**
+     * text without html tags used for fulltext search and main page displaying
+     */
+    private String textNoTags;
     private String titleImg;
 
     @ManyToOne
@@ -25,15 +29,16 @@ public class Post {
 
     public Post() { }
 
-    public Post(Long id, String title, String text, String titleImg) {
+    public Post(Long id, String title, String text, String textNoTags, String titleImg) {
         this.id = id;
         this.title = title;
         this.text = text;
+        this.textNoTags = textNoTags;
         this.titleImg = titleImg;
     }
 
-    public Post(Long id, String title, String text, String titleImg, UserAccount owner) {
-        this(id, title, text, titleImg);
+    public Post(Long id, String title, String text, String textNoTags, String titleImg, UserAccount owner) {
+        this(id, title, text, textNoTags, titleImg);
         this.owner = owner;
     }
 
@@ -75,5 +80,13 @@ public class Post {
 
     public void setOwner(UserAccount owner) {
         this.owner = owner;
+    }
+
+    public String getTextNoTags() {
+        return textNoTags;
+    }
+
+    public void setTextNoTags(String textNoTags) {
+        this.textNoTags = textNoTags;
     }
 }

@@ -59,7 +59,9 @@ public class PostConverter {
         Assert.notNull(postDTO, "postDTO can't be null");
 
         if (forUpdate == null){ forUpdate = new Post(); }
-        forUpdate.setText(XssSanitizeUtil.sanitize(postDTO.getText()));
+        String sanitizedHtml = XssSanitizeUtil.sanitize(postDTO.getText());
+        forUpdate.setText(sanitizedHtml);
+        forUpdate.setTextNoTags(cleanHtmlTags(sanitizedHtml));
         forUpdate.setTitle(postDTO.getTitle());
         forUpdate.setTitleImg(postDTO.getTitleImg());
         return forUpdate;
@@ -79,7 +81,7 @@ public class PostConverter {
      */
     public PostDTO convertToPostDTOWithCleanTags(Post post) {
         if (post==null) {return null;}
-        return new PostDTO(post.getId(), post.getTitle(), cleanHtmlTags(post.getText()), post.getTitleImg() );
+        return new PostDTO(post.getId(), post.getTitle(), post.getTextNoTags(), post.getTitleImg() );
     }
 
 }

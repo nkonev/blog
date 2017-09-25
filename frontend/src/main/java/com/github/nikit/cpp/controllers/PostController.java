@@ -72,13 +72,13 @@ public class PostController {
         final RowMapper<PostDTO> rowMapper = (resultSet, i) -> new PostDTO(
                 resultSet.getLong("id"),
                 resultSet.getString("title"),
-                resultSet.getString("text"),
+                resultSet.getString("text_column"),
                 resultSet.getString("title_img")
         );
 
         if (StringUtils.isEmpty(searchString)) {
             posts = jdbcTemplate.query(
-                    "  select id, title, text, title_img \n" +
+                    "  select id, title, text_no_tags as text_column, title_img \n" +
                      "  from posts.post \n" +
                      "  order by id desc " +
                      "limit :limit offset :offset\n",
@@ -86,18 +86,17 @@ public class PostController {
                     rowMapper
             );
         } else {
-            final String regConfig = "'russian'::regconfig"; // TODO to application.yml
             posts = jdbcTemplate.query(
                        "with tsq as (select plainto_tsquery("+regConfig+", :search)) \n" +
                             "select\n" +
                             " id, \n" +
                             " ts_headline("+regConfig+", title, (select * from tsq), 'StartSel=\"<u>\", StopSel=\"</u>\"') as title, \n" +
-                            " ts_headline("+regConfig+", text, (select * from tsq), 'StartSel=\"<b>\", StopSel=\"</b>\"') as text, \n" +
+                            " ts_headline("+regConfig+", text_no_tags, (select * from tsq), 'StartSel=\"<b>\", StopSel=\"</b>\"') as text_column, \n" +
                             " title_img\n" +
                             "from (\n" +
-                            "  select id, title, text, title_img \n" +
+                            "  select id, title, text_no_tags, title_img \n" +
                             "  from posts.post \n" +
-                            "  where to_tsvector("+regConfig+", title || ' ' || text) @@ (select * from tsq) order by id desc " +
+                            "  where to_tsvector("+regConfig+", title || ' ' || text_no_tags) @@ (select * from tsq) order by id desc " +
                             "limit :limit offset :offset\n" +
                             ") as foo;",
                     params,
