@@ -139,3 +139,6 @@ INSERT INTO posts.post (title, text, title_img, owner_id) VALUES
 
 INSERT INTO posts.comment (text, post_id, owner_id) VALUES
 	('commment', (SELECT id from posts.post ORDER BY id DESC LIMIT 1), (SELECT id FROM auth.users WHERE username = 'alice'));
+
+-- changeset nkonev:3_fulltext context:main failOnError: true
+create index title_text_idx on posts.post using gin (to_tsvector('russian', title || ' ' || text));

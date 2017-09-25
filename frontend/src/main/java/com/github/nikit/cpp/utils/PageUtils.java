@@ -15,4 +15,7 @@ public class PageUtils {
         return (size > MAX_SIZE || size<1) ? DEFAULT_SIZE : size;
     }
 
+    public static int getOffset(int page, int size) {
+        return page * size;
+    }
 }

@@ -89,6 +89,31 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andReturn();
     }
 
+    @Test
+    public void testTrimmed() throws Exception {
+        MvcResult getPostsRequest = mockMvc.perform(
+                get(Constants.Uls.API+Constants.Uls.POST+"?searchString= ")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(PageUtils.DEFAULT_SIZE))
+                .andReturn();
+    }
+
+    @Test
+    public void testFulltext() throws Exception {
+        MvcResult getPostsRequest = mockMvc.perform(
+                get(Constants.Uls.API+Constants.Uls.POST+"?searchString=частый рыбами posted")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(PageUtils.DEFAULT_SIZE))
+                .andExpect(jsonPath("$.[0].title").value("generated_<u>post</u>_2000"))
+                .andExpect(jsonPath("$.[0].text").value("Lorem Ipsum - это текст-\"<b>рыба</b>\", <b>часто</b> используемый в печати и вэб-дизайне. Lorem Ipsum является"))
+                .andReturn();
+    }
+
+
     @WithUserDetails(TestConstants.USER_ALICE)
     @Test
     public void testUserCanAddAndUpdateAndCannotDeletePost() throws Exception {

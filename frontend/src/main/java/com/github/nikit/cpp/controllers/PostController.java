@@ -15,13 +15,20 @@ import com.github.nikit.cpp.repo.jpa.PostRepository;
 import com.github.nikit.cpp.repo.jpa.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.NotNull;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Transactional
@@ -40,6 +47,9 @@ public class PostController {
     @Autowired
     private CommentRepository commentRepository;
 
+    @Autowired
+    private NamedParameterJdbcTemplate jdbcTemplate;
+
     @GetMapping(Constants.Uls.API+Constants.Uls.POST)
     public List<PostDTO> getPosts(
             @RequestParam(value = "page", required=false, defaultValue = "0") int page,
@@ -48,13 +58,52 @@ public class PostController {
     ) {
         page = PageUtils.fixPage(page);
         size = PageUtils.fixSize(size);
-        PageRequest springDataPage = new PageRequest(page, size);
+        searchString = StringUtils.trimWhitespace(searchString);
 
-        return postRepository
-                .findByTextContainsOrTitleContainsOrderByIdDesc(springDataPage, searchString, searchString).getContent()
-                .stream()
-                .map(postConverter::convertToPostDTOWithCleanTags)
-                .collect(Collectors.toList());
+        Map<String, Object> params = new HashMap<>();
+        params.put("search", searchString);
+        params.put("offset", PageUtils.getOffset(page, size));
+        params.put("limit", size);
+
+        List<PostDTO> posts;
+
+        final RowMapper<PostDTO> rowMapper = (resultSet, i) -> new PostDTO(
+                resultSet.getLong("id"),
+                resultSet.getString("title"),
+                resultSet.getString("text"),
+                resultSet.getString("title_img")
+        );
+
+        if (StringUtils.isEmpty(searchString)) {
+            posts = jdbcTemplate.query(
+                    "  select id, title, text, title_img \n" +
+                     "  from posts.post \n" +
+                     "  order by id desc " +
+                     "limit :limit offset :offset\n",
+                    params,
+                    rowMapper
+            );
+        } else {
+            final String regConfig = "'russian'::regconfig"; // TODO to application.yml
+            posts = jdbcTemplate.query(
+                       "with tsq as (select plainto_tsquery("+regConfig+", :search)) \n" +
+                            "select\n" +
+                            " id, \n" +
+                            " ts_headline("+regConfig+", title, (select * from tsq), 'StartSel=\"<u>\", StopSel=\"</u>\"') as title, \n" +
+                            " ts_headline("+regConfig+", text, (select * from tsq), 'StartSel=\"<b>\", StopSel=\"</b>\"') as text, \n" +
+                            " title_img\n" +
+                            "from (\n" +
+                            "  select id, title, text, title_img \n" +
+                            "  from posts.post \n" +
+                            "  where to_tsvector("+regConfig+", title || ' ' || text) @@ (select * from tsq) order by id desc " +
+                            "limit :limit offset :offset\n" +
+                            ") as foo;",
+                    params,
+                    rowMapper
+            );
+        }
+
+        return posts;
     }
 
     @GetMapping(Constants.Uls.API+Constants.Uls.POST+Constants.Uls.POST_ID)
