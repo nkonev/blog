@@ -14,6 +14,7 @@ import com.github.nikit.cpp.exception.BadRequestException;
 import com.github.nikit.cpp.repo.jpa.PostRepository;
 import com.github.nikit.cpp.repo.jpa.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -24,8 +25,6 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.NotNull;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +48,9 @@ public class PostController {
 
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
+
+    @Value("${custom.postgres.fulltext.reg-config}")
+    private String regConfig;
 
     @GetMapping(Constants.Uls.API+Constants.Uls.POST)
     public List<PostDTO> getPosts(

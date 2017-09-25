@@ -63,6 +63,8 @@ liquibase:
 
 spring.redis.url: redis://172.22.0.3:6379/0
 spring.data.redis.repositories.enabled: false
+# Also see index in bootstrap.sql
+custom.postgres.fulltext.reg-config: "'russian'::regconfig"
 """};
 
 def WEBSERVER_SNIPPET =
