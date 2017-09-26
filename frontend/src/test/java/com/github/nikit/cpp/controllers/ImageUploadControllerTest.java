@@ -2,33 +2,25 @@ package com.github.nikit.cpp.controllers;
 
 import com.github.nikit.cpp.AbstractUtTestRunner;
 import com.github.nikit.cpp.TestConstants;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.junit.Test;
-import org.junit.experimental.results.ResultMatchers;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.util.FileSystemUtils;
 
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
-import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import org.springframework.test.web.servlet.MvcResult;
 import org.junit.Assert;
 
-public class FileUploadControllerTest extends AbstractUtTestRunner {
+public class ImageUploadControllerTest extends AbstractUtTestRunner {
 
-	private static final String PUT_IMAGE_URL_TEMPLATE = com.github.nikit.cpp.controllers.FileUploadController.IMAGE_URL_TEMPLATE;
+	private static final Logger LOGGER = LoggerFactory.getLogger(ImageUploadControllerTest.class);
 
-    @WithUserDetails(TestConstants.USER_ALICE)
+	private static final String PUT_IMAGE_URL_TEMPLATE = com.github.nikit.cpp.controllers.ImageUploadController.POST_TITLE_IMAGE_URL_TEMPLATE;
+
+    @WithUserDetails(TestConstants.USER_NIKITA)
     @Test
     public void putImage() throws Exception {
 		final long postId = 1;
@@ -41,16 +33,19 @@ public class FileUploadControllerTest extends AbstractUtTestRunner {
     }
 	
 	private void putImage(long postId, byte[] bytes) throws Exception {
-        mockMvc.perform(
-                MockMvcRequestBuilders.put(PUT_IMAGE_URL_TEMPLATE, postId)
-				.header("Content-Length", bytes.length)
-                .content(bytes)
-				.with(csrf())
-        )
-                .andExpect(status().isOk());
-				
-		MvcResult result =mockMvc.perform(
-                MockMvcRequestBuilders.get(PUT_IMAGE_URL_TEMPLATE, postId)
+		MockMultipartFile imgPart = new MockMultipartFile(ImageUploadController.IMAGE_PART, "lol.png", "image/png", bytes);
+		MvcResult mvcResult = mockMvc.perform(
+		MockMvcRequestBuilders.fileUpload(PUT_IMAGE_URL_TEMPLATE, postId)
+				.file(imgPart).with(csrf())
+		)
+				.andExpect(status().isOk())
+				.andReturn()
+		;
+		String urlResponse = mvcResult.getResponse().getContentAsString();
+		LOGGER.info("responsed image url: {}", urlResponse);
+
+		MvcResult result = mockMvc.perform(
+                MockMvcRequestBuilders.get(urlResponse)
         )
                 .andExpect(status().isOk())
 				.andReturn()

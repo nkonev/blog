@@ -40,10 +40,6 @@ public class PostControllerTest extends AbstractUtTestRunner {
     @Autowired
     private ObjectMapper objectMapper;
 
-    // need for perform flush for apply real database constraints
-    @Autowired
-    private EntityManager entityManager;
-
     public static class PostDtoBuilder {
         public static class Instance {
             private final PostDTO postDTO;
@@ -323,9 +319,6 @@ public class PostControllerTest extends AbstractUtTestRunner {
         LOGGER.info(addStr);
 
     }
-
-    @Autowired
-    private PostRepository postRepository;
 
     @WithUserDetails(TestConstants.USER_ADMIN)
     @Test

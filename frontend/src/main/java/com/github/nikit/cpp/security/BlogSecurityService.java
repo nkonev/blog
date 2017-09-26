@@ -35,9 +35,14 @@ public class BlogSecurityService {
         return hasPostPermission(dto.getId(), userAccount, permission);
     }
 
-    public boolean hasPostPermission(long id, UserAccountDetailsDTO userAccount, Permissions permission) {
+    private Post getPostOrException(long id) {
         Post post = postRepository.findOne(id);
         Assert.notNull(post, "Post with id "+id+" not found");
+        return post;
+    }
+
+    public boolean hasPostPermission(long id, UserAccountDetailsDTO userAccount, Permissions permission) {
+        Post post = getPostOrException(id);
         return hasPostPermission(post, userAccount, permission);
     }
 
@@ -84,9 +89,17 @@ public class BlogSecurityService {
 	
 	
 	
-	public boolean hasImagePermission(long postId, ImageType imageType, UserAccountDetailsDTO userAccount, Permissions permission) {
+	public boolean hasImagePermission(long postId, UserAccountDetailsDTO userAccount, Permissions permission) {
 		if (userAccount == null) {return false;}
-		
-		
+        if (roleHierarchy.getReachableGrantedAuthorities(userAccount.getAuthorities()).contains(new SimpleGrantedAuthority(UserRole.ROLE_MODERATOR.name()))){
+            return true;
+        }
+        Post post = getPostOrException(postId);
+        if (post.getOwner().getId().equals(userAccount.getId())){
+            if (permission==Permissions.DELETE) { return false; }
+            return true;
+        }
+
+        return false;
 	}
 }

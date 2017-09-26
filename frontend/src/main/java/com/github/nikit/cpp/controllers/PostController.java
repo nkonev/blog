@@ -25,6 +25,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.NotNull;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -178,6 +179,7 @@ public class PostController {
             @PathVariable(Constants.PathVariables.POST_ID) long postId
     ) {
         Assert.notNull(userAccount, "UserAccountDetailsDTO can't be null");
+        jdbcTemplate.update("delete from posts.post_title_image where post_id = :postId", Collections.singletonMap("postId", postId));
         commentRepository.deleteByPostId(postId);
         postRepository.delete(postId);
         postRepository.flush();

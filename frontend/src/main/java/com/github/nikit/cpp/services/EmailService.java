@@ -1,6 +1,7 @@
 package com.github.nikit.cpp.services;
 
 import com.github.nikit.cpp.Constants;
+import com.github.nikit.cpp.config.CustomConfig;
 import com.github.nikit.cpp.entity.jpa.PasswordResetToken;
 import com.github.nikit.cpp.entity.redis.UserConfirmationToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,8 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    @Value("${custom.base-url}")
-    private String baseUrl;
+    @Autowired
+    private CustomConfig customConfig;
 
     @Value("${custom.email.from}")
     private String from;
@@ -49,7 +50,7 @@ public class EmailService {
         msg.setSubject(registrationSubject);
         msg.setTo(email);
 
-        String text = registrationTextTemplate.replace(REG_LINK_PLACEHOLDER, baseUrl + Constants.Uls.CONFIRM+ "?"+Constants.Uls.UUID +"=" + userConfirmationToken.getUuid());
+        String text = registrationTextTemplate.replace(REG_LINK_PLACEHOLDER, customConfig.getBaseUrl() + Constants.Uls.CONFIRM+ "?"+Constants.Uls.UUID +"=" + userConfirmationToken.getUuid());
         msg.setText(text);
 
         mailSender.send(msg);
@@ -61,7 +62,7 @@ public class EmailService {
         msg.setSubject(passwordResetSubject);
         msg.setTo(email);
 
-        String text = passwordResetTextTemplate.replace(PASSWORD_RESET_LINK_PLACEHOLDER, baseUrl + Constants.Uls.PASSWORD_RESET+ "?"+Constants.Uls.UUID +"=" + passwordResetToken.getUuid());
+        String text = passwordResetTextTemplate.replace(PASSWORD_RESET_LINK_PLACEHOLDER, customConfig.getBaseUrl() + Constants.Uls.PASSWORD_RESET+ "?"+Constants.Uls.UUID +"=" + passwordResetToken.getUuid());
         msg.setText(text);
 
         mailSender.send(msg);
