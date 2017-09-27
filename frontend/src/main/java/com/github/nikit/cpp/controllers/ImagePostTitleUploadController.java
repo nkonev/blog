@@ -34,44 +34,34 @@ public class ImagePostTitleUploadController extends AbstractImageUploadControlle
             @PathVariable("post_id")long postId,
             @NotNull @AuthenticationPrincipal UserAccountDetailsDTO userAccount
     ) throws SQLException, IOException {
-        return super.putImage(imagePart, toComplexId(postId), userAccount);
-    }
-
-    private static final String POST_ID = "post_id";
-
-    private Map<String, Object> toComplexId(long postId) {
-        return Collections.singletonMap(POST_ID, postId);
-    }
-
-    private long toLongId(Map<String, Object> id) {
-        return (long) id.get(POST_ID);
-    }
-
-    @Override
-    protected PreparedStatement buildNoConflictInsertPreparedStatement(Connection conn, Map<String, Object> id) throws SQLException {
-        PreparedStatement ps = conn.prepareStatement("INSERT INTO images.post_title_image(post_id, img, content_type) VALUES (?, NULL, NULL) ON CONFLICT(post_id) DO NOTHING RETURNING 0");
-        ps.setLong(1, toLongId(id));
-        return ps;
-    }
-
-    @Override
-    protected PreparedStatement buildUpdatePreparedStatement(Connection conn, Map<String, Object> id, Optional<Map<String, Object>> intermediateIdentificators, String contentType, InputStream is, long contentLength) throws SQLException {
-        PreparedStatement ps = conn.prepareStatement("UPDATE images.post_title_image SET img = ?, content_type = ? WHERE post_id = ?");
-        ps.setLong(3, toLongId(id));
-        ps.setString(2, contentType);
-        ps.setBinaryStream(1, is, (int) contentLength);
-        return ps;
+        return super.putImage(
+            imagePart,
+            (Connection conn) -> {
+                try (PreparedStatement ps = conn.prepareStatement("INSERT INTO images.post_title_image(post_id, img, content_type) VALUES (?, NULL, NULL) ON CONFLICT(post_id) DO NOTHING")){
+                    ps.setLong(1, postId);
+                    ps.executeUpdate();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            },
+            (conn, contentLength, contentType) -> {
+                try (PreparedStatement ps = conn.prepareStatement("UPDATE images.post_title_image SET img = ?, content_type = ? WHERE post_id = ?")){
+                    ps.setLong(3, postId);
+                    ps.setString(2, contentType);
+                    ps.setBinaryStream(1, imagePart.getInputStream(), (int) contentLength);
+                    ps.executeUpdate();
+                } catch (SQLException | IOException e) {
+                    throw new RuntimeException(e);
+                }
+            },
+            multipartFile -> UriComponentsBuilder.fromUriString(customConfig.getBaseUrl() + POST_TITLE_IMAGE_URL_TEMPLATE_WITH_FILENAME)
+                    .buildAndExpand(postId, generateFileName(imagePart.getOriginalFilename()))
+                    .toUriString()
+        );
     }
 
     private String generateFileName(String originFileName) {
         return "title."+getExtension(originFileName);
-    }
-
-    @Override
-    protected String getUrl(Map<String, Object> id, Optional<Map<String, Object>> intermediateIdentificators, String originFilename) {
-        return UriComponentsBuilder.fromUriString(customConfig.getBaseUrl() + POST_TITLE_IMAGE_URL_TEMPLATE_WITH_FILENAME)
-                .buildAndExpand(toLongId(id), generateFileName(originFilename))
-                .toUriString();
     }
 
     ///////////////////////////////////////////////////////////////////
@@ -81,22 +71,29 @@ public class ImagePostTitleUploadController extends AbstractImageUploadControlle
     public HttpHeaders getImage(
             @PathVariable("post_id")long postId,
             @PathVariable("filename")String filename,
-            OutputStream response) throws SQLException, IOException {
-        return super.getImage(toComplexId(postId), response);
-    }
-
-    @Override
-    protected PreparedStatement buildSelectImage(Connection conn, Map<String, Object> id) throws SQLException {
-        PreparedStatement ps = conn.prepareStatement("SELECT img, content_type FROM images.post_title_image WHERE post_id = ?");
-        ps.setLong(1, toLongId(id));
-        return ps;
-    }
-
-    @Override
-    protected void copyToOutputStream(ResultSet rs, OutputStream response) throws SQLException, IOException {
-        try(InputStream imgStream = rs.getBinaryStream("img");){
-            copy(imgStream, response);
-        }
+            OutputStream response
+    ) throws SQLException, IOException {
+        return super.getImage(
+            (Connection conn) -> {
+                try (PreparedStatement ps = conn.prepareStatement("SELECT img, content_type FROM images.post_title_image WHERE post_id = ?");) {
+                    ps.setLong(1, postId);
+                    try (ResultSet rs = ps.executeQuery();) {
+                        if (rs.next()) {
+                            try(InputStream imgStream = rs.getBinaryStream("img");){
+                                copy(imgStream, response);
+                            } catch (SQLException | IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                            return buildHeaders(rs);
+                        } else {
+                            throw new RuntimeException("post title image with id '"+postId+"' not found");
+                        }
+                    }
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        );
     }
 
     @Override

@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
 public class ImagePostContentUploadController extends AbstractImageUploadController {
@@ -34,9 +35,38 @@ public class ImagePostContentUploadController extends AbstractImageUploadControl
             @PathVariable("post_id")long postId,
             @NotNull @AuthenticationPrincipal UserAccountDetailsDTO userAccount
     ) throws SQLException, IOException {
-        Map<String, Object> map = new HashMap<>();
-        map.put(POST_ID, postId);
-        return super.putImage(imagePart, map, userAccount);
+        AtomicLong idWr = new AtomicLong();
+        return super.putImage(
+            imagePart,
+            (Connection conn) -> {
+                try(PreparedStatement psI = conn.prepareStatement("INSERT INTO images.post_content_image(post_id, id, img, content_type) VALUES (?, DEFAULT, NULL, NULL) RETURNING id;");) {
+                    psI.setLong(1, postId);
+                    try(ResultSet ids = psI.executeQuery()) {
+                        if(ids.next()) {
+                            idWr.set(ids.getLong("id"));
+                        } else {
+                            throw new RuntimeException("id did not returned");
+                        }
+                    }
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            },
+            (conn, contentLength, contentType) -> {
+                try(PreparedStatement psU = conn.prepareStatement("UPDATE images.post_content_image SET img = ?, content_type = ? WHERE id = ? and post_id = ?");) {
+                    psU.setLong(4, postId);
+                    psU.setLong(3, idWr.get());
+                    psU.setString(2, contentType);
+                    psU.setBinaryStream(1, imagePart.getInputStream(), (int) contentLength);
+                    psU.executeUpdate();
+                } catch (IOException | SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            },
+            multipartFile -> UriComponentsBuilder.fromUriString(customConfig.getBaseUrl() + POST_CONTENT_IMAGE_URL_TEMPLATE_WITH_FILENAME)
+                    .buildAndExpand(postId, idWr.get(), getExtension(imagePart.getOriginalFilename()))
+                    .toUriString()
+        );
     }
 
     private static final String ID = "id";
@@ -57,41 +87,6 @@ public class ImagePostContentUploadController extends AbstractImageUploadControl
         return (long) id.get(POST_ID);
     }
 
-    @Override
-    protected PreparedStatement buildNoConflictInsertPreparedStatement(Connection conn, Map<String, Object> id) throws SQLException {
-        // only this SQL returns id and post_id always. If ON CONFLICT present it can not return ids
-        PreparedStatement ps = conn.prepareStatement("INSERT INTO images.post_content_image(post_id, id, img, content_type) VALUES (?, DEFAULT, NULL, NULL) RETURNING id, post_id;");
-        ps.setLong(1, toLongPostId(id));
-        return ps;
-    }
-
-    @Override
-    protected Map<String, Object> getIdentificators(ResultSet identificators) throws SQLException {
-        long id = identificators.getLong("id");
-        long postId = identificators.getLong("post_id");
-        return toComplexId(id, postId);
-    }
-
-
-    @Override
-    protected PreparedStatement buildUpdatePreparedStatement(Connection conn, Map<String, Object> id, Optional<Map<String, Object>> intermediateIdentificators, String contentType, InputStream is, long contentLength) throws SQLException {
-        Map<String, Object> ii = intermediateIdentificators.orElseThrow(()->new RuntimeException("Intermediate identificators didn't been provided"));
-        PreparedStatement ps = conn.prepareStatement("UPDATE images.post_content_image SET img = ?, content_type = ? WHERE id = ? and post_id = ?");
-
-        ps.setLong(4, toLongPostId(ii));
-        ps.setLong(3, toLongId(ii));
-        ps.setString(2, contentType);
-        ps.setBinaryStream(1, is, (int) contentLength);
-        return ps;
-    }
-
-    @Override
-    protected String getUrl(Map<String, Object> id, Optional<Map<String, Object>> intermediateIdentificators, String originFilename) {
-        Map<String, Object> ii = intermediateIdentificators.orElseThrow(()->new RuntimeException("Intermediate identificators didn't been provided"));
-        return UriComponentsBuilder.fromUriString(customConfig.getBaseUrl() + POST_CONTENT_IMAGE_URL_TEMPLATE_WITH_FILENAME)
-                .buildAndExpand(toLongPostId(ii), toLongId(ii), getExtension(originFilename))
-                .toUriString();
-    }
 
     ///////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////
@@ -102,22 +97,28 @@ public class ImagePostContentUploadController extends AbstractImageUploadControl
             @PathVariable("id")long id,
             OutputStream response
     ) throws SQLException, IOException {
-        return super.getImage(toComplexId(id, postId), response);
-    }
-
-    @Override
-    protected PreparedStatement buildSelectImage(Connection conn, Map<String, Object> id) throws SQLException {
-        PreparedStatement ps = conn.prepareStatement("SELECT img, content_type FROM images.post_content_image WHERE id = ? AND post_id = ?");
-        ps.setLong(2, toLongPostId(id));
-        ps.setLong(1, toLongId(id));
-        return ps;
-    }
-
-    @Override
-    protected void copyToOutputStream(ResultSet rs, OutputStream response) throws SQLException, IOException {
-        try(InputStream imgStream = rs.getBinaryStream("img");){
-            copy(imgStream, response);
-        }
+        return super.getImage(
+                (Connection conn) -> {
+                    try (PreparedStatement ps = conn.prepareStatement("SELECT img, content_type FROM images.post_content_image WHERE id = ? AND post_id = ?");) {
+                        ps.setLong(1, id);
+                        ps.setLong(2, postId);
+                        try (ResultSet rs = ps.executeQuery();) {
+                            if (rs.next()) {
+                                try(InputStream imgStream = rs.getBinaryStream("img");){
+                                    copy(imgStream, response);
+                                } catch (SQLException | IOException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                return buildHeaders(rs);
+                            } else {
+                                throw new RuntimeException("post content image with id '"+id+"' not found");
+                            }
+                        }
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+        );
     }
 
     @Override
