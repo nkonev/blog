@@ -17,10 +17,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.function.*;
 
 public abstract class AbstractImageUploadController {
 
@@ -53,7 +50,7 @@ public abstract class AbstractImageUploadController {
             MultipartFile imagePart,
             Consumer<Connection> insertOrNothing,
             UpdateImage updateImage,
-            Function<MultipartFile, String> produceUrl
+            Supplier<String> produceUrl
 	) throws SQLException, IOException {
 		long contentLength = getCorrectContentLength(imagePart.getSize());
         String contentType = imagePart.getContentType();
@@ -63,7 +60,7 @@ public abstract class AbstractImageUploadController {
             insertOrNothing.accept(conn);
             updateImage.updateImage(conn, contentLength, contentType);
         }
-        return produceUrl.apply(imagePart);
+        return produceUrl.get();
     }
 
     private long getCorrectContentLength(long contentLength) {
@@ -96,7 +93,7 @@ public abstract class AbstractImageUploadController {
 
     protected abstract String getContentType(ResultSet rs) throws SQLException;
 
-    protected void copy(InputStream from, OutputStream to) throws IOException {
+    protected void copyStream(InputStream from, OutputStream to) throws IOException {
 		byte[] buffer = new byte[4 * 1024];
 		int len;
 		while ((len = from.read(buffer)) != -1) {

@@ -2,7 +2,6 @@ package com.github.nikit.cpp.controllers;
 
 import com.github.nikit.cpp.dto.UserAccountDetailsDTO;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +16,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
 
 @RestController
 public class ImagePostTitleUploadController extends AbstractImageUploadController {
@@ -54,7 +50,7 @@ public class ImagePostTitleUploadController extends AbstractImageUploadControlle
                     throw new RuntimeException(e);
                 }
             },
-            multipartFile -> UriComponentsBuilder.fromUriString(customConfig.getBaseUrl() + POST_TITLE_IMAGE_URL_TEMPLATE_WITH_FILENAME)
+            () -> UriComponentsBuilder.fromUriString(customConfig.getBaseUrl() + POST_TITLE_IMAGE_URL_TEMPLATE_WITH_FILENAME)
                     .buildAndExpand(postId, generateFileName(imagePart.getOriginalFilename()))
                     .toUriString()
         );
@@ -80,7 +76,7 @@ public class ImagePostTitleUploadController extends AbstractImageUploadControlle
                     try (ResultSet rs = ps.executeQuery();) {
                         if (rs.next()) {
                             try(InputStream imgStream = rs.getBinaryStream("img");){
-                                copy(imgStream, response);
+                                copyStream(imgStream, response);
                             } catch (SQLException | IOException e) {
                                 throw new RuntimeException(e);
                             }

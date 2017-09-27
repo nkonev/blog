@@ -16,10 +16,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
@@ -35,7 +31,7 @@ public class ImagePostContentUploadController extends AbstractImageUploadControl
             @PathVariable("post_id")long postId,
             @NotNull @AuthenticationPrincipal UserAccountDetailsDTO userAccount
     ) throws SQLException, IOException {
-        AtomicLong idWr = new AtomicLong();
+        AtomicLong idWrapper = new AtomicLong();
         return super.putImage(
             imagePart,
             (Connection conn) -> {
@@ -43,7 +39,7 @@ public class ImagePostContentUploadController extends AbstractImageUploadControl
                     psI.setLong(1, postId);
                     try(ResultSet ids = psI.executeQuery()) {
                         if(ids.next()) {
-                            idWr.set(ids.getLong("id"));
+                            idWrapper.set(ids.getLong("id"));
                         } else {
                             throw new RuntimeException("id did not returned");
                         }
@@ -55,7 +51,7 @@ public class ImagePostContentUploadController extends AbstractImageUploadControl
             (conn, contentLength, contentType) -> {
                 try(PreparedStatement psU = conn.prepareStatement("UPDATE images.post_content_image SET img = ?, content_type = ? WHERE id = ? and post_id = ?");) {
                     psU.setLong(4, postId);
-                    psU.setLong(3, idWr.get());
+                    psU.setLong(3, idWrapper.get());
                     psU.setString(2, contentType);
                     psU.setBinaryStream(1, imagePart.getInputStream(), (int) contentLength);
                     psU.executeUpdate();
@@ -63,8 +59,8 @@ public class ImagePostContentUploadController extends AbstractImageUploadControl
                     throw new RuntimeException(e);
                 }
             },
-            multipartFile -> UriComponentsBuilder.fromUriString(customConfig.getBaseUrl() + POST_CONTENT_IMAGE_URL_TEMPLATE_WITH_FILENAME)
-                    .buildAndExpand(postId, idWr.get(), getExtension(imagePart.getOriginalFilename()))
+            () -> UriComponentsBuilder.fromUriString(customConfig.getBaseUrl() + POST_CONTENT_IMAGE_URL_TEMPLATE_WITH_FILENAME)
+                    .buildAndExpand(postId, idWrapper.get(), getExtension(imagePart.getOriginalFilename()))
                     .toUriString()
         );
     }
@@ -87,7 +83,7 @@ public class ImagePostContentUploadController extends AbstractImageUploadControl
                         try (ResultSet rs = ps.executeQuery();) {
                             if (rs.next()) {
                                 try(InputStream imgStream = rs.getBinaryStream("img");){
-                                    copy(imgStream, response);
+                                    copyStream(imgStream, response);
                                 } catch (SQLException | IOException e) {
                                     throw new RuntimeException(e);
                                 }
