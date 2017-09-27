@@ -108,9 +108,11 @@ public class UserProfileController {
         return UserAccountConverter.convertToEditUserDto(exists);
     }
 
-    // will be in utility class in future
+    // TODO will be in utility class in future
     private void sendNeedRefreshProfile(HttpServletResponse httpServletResponse) {
         httpServletResponse.setHeader(Constants.Headers.NEED_REFRESH_PROFILE, Boolean.TRUE.toString());
         // offered via additional header which will be handled in js http client
     }
+
+    // TODO delete user with delete avatar
 }
