@@ -157,7 +157,7 @@ INSERT INTO posts.post (title, text, text_no_tags, title_img, owner_id) VALUES
 INSERT INTO posts.comment (text, post_id, owner_id) VALUES
 	('commment', (SELECT id from posts.post ORDER BY id DESC LIMIT 1), (SELECT id FROM auth.users WHERE username = 'alice'));
 INSERT INTO images.post_title_image(post_id, img, content_type) VALUES ((SELECT id from posts.post ORDER BY id DESC LIMIT 1), E'\\176\\177'::bytea, 'image/png');
-INSERT INTO images.post_content_image(id, post_id, img, content_type) VALUES (DEFAULT, (SELECT id from posts.post ORDER BY id DESC LIMIT 1), E'\\178\\179'::bytea, 'image/png');
+INSERT INTO images.post_content_image(id, post_id, img, content_type) VALUES (DEFAULT, (SELECT id from posts.post ORDER BY id DESC LIMIT 1), E'\\170\\171'::bytea, 'image/png');
 
 -- changeset nkonev:3_fulltext context:main failOnError: true
 create index title_text_idx on posts.post using gin (to_tsvector('russian', title || ' ' || text_no_tags));
