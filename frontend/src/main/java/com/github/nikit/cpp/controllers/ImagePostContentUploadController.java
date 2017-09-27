@@ -69,24 +69,6 @@ public class ImagePostContentUploadController extends AbstractImageUploadControl
         );
     }
 
-    private static final String ID = "id";
-    private static final String POST_ID = "post_id";
-
-    private Map<String, Object> toComplexId(long id, long postId) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(ID, id);
-        map.put(POST_ID, postId);
-        return map;
-    }
-
-    private long toLongId(Map<String, Object> id) {
-        return (long) id.get(ID);
-    }
-
-    private long toLongPostId(Map<String, Object> id) {
-        return (long) id.get(POST_ID);
-    }
-
 
     ///////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////
