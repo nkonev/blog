@@ -49,14 +49,14 @@ public class ImagePostTitleUploadController extends AbstractImageUploadControlle
 
     @Override
     protected PreparedStatement buildNoConflictInsertPreparedStatement(Connection conn, Map<String, Object> id) throws SQLException {
-        PreparedStatement ps = conn.prepareStatement("INSERT INTO posts.post_title_image(post_id, img, content_type) VALUES (?, NULL, NULL) ON CONFLICT(post_id) DO NOTHING RETURNING 0");
+        PreparedStatement ps = conn.prepareStatement("INSERT INTO images.post_title_image(post_id, img, content_type) VALUES (?, NULL, NULL) ON CONFLICT(post_id) DO NOTHING RETURNING 0");
         ps.setLong(1, toLongId(id));
         return ps;
     }
 
     @Override
     protected PreparedStatement buildUpdatePreparedStatement(Connection conn, Map<String, Object> id, Optional<Map<String, Object>> intermediateIdentificators, String contentType, InputStream is, long contentLength) throws SQLException {
-        PreparedStatement ps = conn.prepareStatement("UPDATE posts.post_title_image SET img = ?, content_type = ? WHERE post_id = ?");
+        PreparedStatement ps = conn.prepareStatement("UPDATE images.post_title_image SET img = ?, content_type = ? WHERE post_id = ?");
         ps.setLong(3, toLongId(id));
         ps.setString(2, contentType);
         ps.setBinaryStream(1, is, (int) contentLength);
@@ -87,7 +87,7 @@ public class ImagePostTitleUploadController extends AbstractImageUploadControlle
 
     @Override
     protected PreparedStatement buildSelectImage(Connection conn, Map<String, Object> id) throws SQLException {
-        PreparedStatement ps = conn.prepareStatement("SELECT img, content_type FROM posts.post_title_image WHERE post_id = ?");
+        PreparedStatement ps = conn.prepareStatement("SELECT img, content_type FROM images.post_title_image WHERE post_id = ?");
         ps.setLong(1, toLongId(id));
         return ps;
     }

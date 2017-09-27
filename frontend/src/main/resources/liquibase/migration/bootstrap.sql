@@ -4,12 +4,14 @@
 DROP SCHEMA IF EXISTS auth cascade;
 DROP SCHEMA IF EXISTS posts cascade;
 DROP SCHEMA IF EXISTS historical cascade;
+DROP SCHEMA IF EXISTS images cascade;
 
 -- changeset nkonev:0_initial_spring_security context:main failOnError: true
 -- https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#appendix-schema
 CREATE SCHEMA auth;
 CREATE SCHEMA posts;
 CREATE SCHEMA historical;
+CREATE SCHEMA images;
 
 SET search_path = auth, pg_catalog;
 
@@ -68,13 +70,19 @@ CREATE TABLE historical.password_reset_token (
 	expired_at timestamp NOT NULL
 );
 
-CREATE TABLE posts.post_title_image (
+CREATE TABLE images.post_title_image (
 	post_id BIGINT PRIMARY KEY REFERENCES posts.post(id),
 	img BYTEA,
 	content_type VARCHAR(64)
 );
 
-CREATE TABLE posts.post_content_image (
+CREATE TABLE images.user_avatar_image (
+	post_id BIGINT PRIMARY KEY REFERENCES posts.post(id),
+	img BYTEA,
+	content_type VARCHAR(64)
+);
+
+CREATE TABLE images.post_content_image (
 	id BIGSERIAL,
 	post_id BIGINT REFERENCES posts.post(id),
 	img BYTEA,
@@ -146,11 +154,10 @@ INSERT INTO posts.comment (text, post_id, owner_id)
 -- insert additional post with comment and images for delete
 INSERT INTO posts.post (title, text, text_no_tags, title_img, owner_id) VALUES
 	('for delete with comments', 'text. This post will be deleted.', 'text. This post will be deleted.', 'https://postgrespro.ru/img/logo_mono.png', (SELECT id FROM auth.users WHERE username = 'nikita'));
-
 INSERT INTO posts.comment (text, post_id, owner_id) VALUES
 	('commment', (SELECT id from posts.post ORDER BY id DESC LIMIT 1), (SELECT id FROM auth.users WHERE username = 'alice'));
-
-INSERT INTO posts.post_title_image(post_id, img, content_type) VALUES ((SELECT id from posts.post ORDER BY id DESC LIMIT 1), E'\\176\\177'::bytea, 'image/png');
+INSERT INTO images.post_title_image(post_id, img, content_type) VALUES ((SELECT id from posts.post ORDER BY id DESC LIMIT 1), E'\\176\\177'::bytea, 'image/png');
+INSERT INTO images.post_content_image(id, post_id, img, content_type) VALUES (DEFAULT, (SELECT id from posts.post ORDER BY id DESC LIMIT 1), E'\\178\\179'::bytea, 'image/png');
 
 -- changeset nkonev:3_fulltext context:main failOnError: true
 create index title_text_idx on posts.post using gin (to_tsvector('russian', title || ' ' || text_no_tags));

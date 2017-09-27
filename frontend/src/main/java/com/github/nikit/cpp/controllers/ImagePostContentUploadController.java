@@ -60,7 +60,7 @@ public class ImagePostContentUploadController extends AbstractImageUploadControl
     @Override
     protected PreparedStatement buildNoConflictInsertPreparedStatement(Connection conn, Map<String, Object> id) throws SQLException {
         // only this SQL returns id and post_id always. If ON CONFLICT present it can not return ids
-        PreparedStatement ps = conn.prepareStatement("INSERT INTO posts.post_content_image(post_id, id, img, content_type) VALUES (?, DEFAULT, NULL, NULL) RETURNING id, post_id;");
+        PreparedStatement ps = conn.prepareStatement("INSERT INTO images.post_content_image(post_id, id, img, content_type) VALUES (?, DEFAULT, NULL, NULL) RETURNING id, post_id;");
         ps.setLong(1, toLongPostId(id));
         return ps;
     }
@@ -76,7 +76,7 @@ public class ImagePostContentUploadController extends AbstractImageUploadControl
     @Override
     protected PreparedStatement buildUpdatePreparedStatement(Connection conn, Map<String, Object> id, Optional<Map<String, Object>> intermediateIdentificators, String contentType, InputStream is, long contentLength) throws SQLException {
         Map<String, Object> ii = intermediateIdentificators.orElseThrow(()->new RuntimeException("Intermediate identificators didn't been provided"));
-        PreparedStatement ps = conn.prepareStatement("UPDATE posts.post_content_image SET img = ?, content_type = ? WHERE id = ? and post_id = ?");
+        PreparedStatement ps = conn.prepareStatement("UPDATE images.post_content_image SET img = ?, content_type = ? WHERE id = ? and post_id = ?");
 
         ps.setLong(4, toLongPostId(ii));
         ps.setLong(3, toLongId(ii));
@@ -107,7 +107,7 @@ public class ImagePostContentUploadController extends AbstractImageUploadControl
 
     @Override
     protected PreparedStatement buildSelectImage(Connection conn, Map<String, Object> id) throws SQLException {
-        PreparedStatement ps = conn.prepareStatement("SELECT img, content_type FROM posts.post_content_image WHERE id = ? AND post_id = ?");
+        PreparedStatement ps = conn.prepareStatement("SELECT img, content_type FROM images.post_content_image WHERE id = ? AND post_id = ?");
         ps.setLong(2, toLongPostId(id));
         ps.setLong(1, toLongId(id));
         return ps;
