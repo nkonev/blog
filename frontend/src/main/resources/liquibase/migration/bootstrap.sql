@@ -74,6 +74,14 @@ CREATE TABLE posts.post_title_image (
 	content_type VARCHAR(64)
 );
 
+CREATE TABLE posts.post_content_image (
+	id BIGSERIAL,
+	post_id BIGINT REFERENCES posts.post(id),
+	img BYTEA,
+	content_type VARCHAR(64),
+	PRIMARY KEY(id, post_id)
+);
+
 -- changeset nkonev:2_test_data context:test failOnError: true
 -- insert test data
 INSERT INTO auth.users(username, password, avatar, email) VALUES

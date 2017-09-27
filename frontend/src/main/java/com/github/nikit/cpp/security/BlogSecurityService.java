@@ -86,20 +86,26 @@ public class BlogSecurityService {
 
         return false;
     }
-	
-	
-	
-	public boolean hasImagePermission(long postId, UserAccountDetailsDTO userAccount, Permissions permission) {
-		if (userAccount == null) {return false;}
+
+    private boolean hasPostContentPermission(long postId, UserAccountDetailsDTO userAccount, Permissions permissio) {
+        if (userAccount == null) {return false;}
         if (roleHierarchy.getReachableGrantedAuthorities(userAccount.getAuthorities()).contains(new SimpleGrantedAuthority(UserRole.ROLE_MODERATOR.name()))){
             return true;
         }
         Post post = getPostOrException(postId);
         if (post.getOwner().getId().equals(userAccount.getId())){
-            if (permission==Permissions.DELETE) { return false; }
             return true;
         }
 
         return false;
+    }
+	
+	public boolean hasPostTitleImagePermission(long postId, UserAccountDetailsDTO userAccount, Permissions permission) {
+        return hasPostContentPermission(postId, userAccount, permission);
 	}
+
+    public boolean hasPostContentImagePermission(long postId, UserAccountDetailsDTO userAccount, Permissions permission) {
+        return hasPostContentPermission(postId, userAccount, permission);
+    }
+
 }
