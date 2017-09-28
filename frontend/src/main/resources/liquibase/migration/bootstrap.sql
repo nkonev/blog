@@ -77,7 +77,7 @@ CREATE TABLE images.post_title_image (
 );
 
 CREATE TABLE images.user_avatar_image (
-	post_id BIGINT PRIMARY KEY REFERENCES posts.post(id),
+	user_id BIGINT PRIMARY KEY REFERENCES auth.users(id),
 	img BYTEA,
 	content_type VARCHAR(64)
 );
