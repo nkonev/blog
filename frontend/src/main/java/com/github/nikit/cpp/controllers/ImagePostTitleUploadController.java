@@ -1,6 +1,7 @@
 package com.github.nikit.cpp.controllers;
 
 import com.github.nikit.cpp.dto.UserAccountDetailsDTO;
+import com.github.nikit.cpp.exception.DataNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -82,7 +83,7 @@ public class ImagePostTitleUploadController extends AbstractImageUploadControlle
                             }
                             return buildHeaders(rs);
                         } else {
-                            throw new RuntimeException("post title image with id '"+postId+"' not found");
+                            throw new DataNotFoundException("post title image with id '"+postId+"' not found");
                         }
                     }
                 } catch (SQLException e) {

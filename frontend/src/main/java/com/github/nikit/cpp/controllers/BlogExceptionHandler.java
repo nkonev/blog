@@ -3,6 +3,7 @@ package com.github.nikit.cpp.controllers;
 import com.github.nikit.cpp.dto.BlogError;
 import com.github.nikit.cpp.dto.ValidationError;
 import com.github.nikit.cpp.exception.BadRequestException;
+import com.github.nikit.cpp.exception.DataNotFoundException;
 import com.github.nikit.cpp.exception.PasswordResetTokenNotFoundException;
 import com.github.nikit.cpp.exception.UserAlreadyPresentException;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.security.authentication.rcp.RemoteAuthenticationExcep
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -40,6 +42,13 @@ public class BlogExceptionHandler {
     @org.springframework.web.bind.annotation.ExceptionHandler(UserAlreadyPresentException.class)
     public BlogError userAlreadyPresent(UserAlreadyPresentException e) throws IOException {
         return new BlogError(HttpStatus.FORBIDDEN.value(), "user already present", e.getMessage(), new Date().toString());
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @org.springframework.web.bind.annotation.ExceptionHandler(DataNotFoundException.class)
+    public BlogError dataNotFound(DataNotFoundException e) {
+        return new BlogError(HttpStatus.NOT_FOUND.value(), "data not found", e.getMessage(), new Date().toString());
     }
 
     @ResponseBody

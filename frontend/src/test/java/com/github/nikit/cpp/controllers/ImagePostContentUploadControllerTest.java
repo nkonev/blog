@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class ImagePostContentUploadControllerTest extends AbstractUtTestRunner {
@@ -19,8 +20,10 @@ public class ImagePostContentUploadControllerTest extends AbstractUtTestRunner {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ImagePostContentUploadControllerTest.class);
 
 	private static final String PUT_IMAGE_URL_TEMPLATE = ImagePostContentUploadController.POST_CONTENT_IMAGE_URL_TEMPLATE;
+	private static final String POST_CONTENT_IMAGE_URL_TEMPLATE_WITH_FILENAME = ImagePostContentUploadController.POST_CONTENT_IMAGE_URL_TEMPLATE_WITH_FILENAME;
 
-    @WithUserDetails(TestConstants.USER_NIKITA)
+
+	@WithUserDetails(TestConstants.USER_NIKITA)
     @Test
     public void putImage() throws Exception {
 		final long postId = 1;
@@ -35,7 +38,22 @@ public class ImagePostContentUploadControllerTest extends AbstractUtTestRunner {
 		byte[] content0 = getImage(url0);
 		Assert.assertArrayEquals(img0, content0);
     }
-	
+
+	@Test
+	public void getUnexistingImage() throws Exception {
+		final long notExistsPostContentImageId = 100_000_000;
+
+		MvcResult result = mockMvc.perform(
+				MockMvcRequestBuilders.get(POST_CONTENT_IMAGE_URL_TEMPLATE_WITH_FILENAME, 1, notExistsPostContentImageId, "png")
+		)
+				.andExpect(status().isNotFound())
+				.andExpect(jsonPath("$.error").value("data not found"))
+				.andExpect(jsonPath("$.message").value("post content image with id '100000000' not found"))
+				.andReturn()
+				;
+	}
+
+
 	private String putImage(long postId, byte[] bytes) throws Exception {
 		MockMultipartFile imgPart = new MockMultipartFile(ImagePostTitleUploadController.IMAGE_PART, "lol-content.png", "image/png", bytes);
 		MvcResult mvcResult = mockMvc.perform(

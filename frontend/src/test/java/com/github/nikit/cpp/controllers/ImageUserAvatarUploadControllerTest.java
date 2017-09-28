@@ -11,7 +11,11 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static org.hamcrest.CoreMatchers.everyItem;
+import static org.hamcrest.core.Is.is;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class ImageUserAvatarUploadControllerTest extends AbstractUtTestRunner {
@@ -19,6 +23,7 @@ public class ImageUserAvatarUploadControllerTest extends AbstractUtTestRunner {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ImageUserAvatarUploadControllerTest.class);
 
 	private static final String PUT_IMAGE_URL_TEMPLATE = ImageUserAvatarUploadController.AVATAR_IMAGE_URL_TEMPLATE;
+	private static final String AVATAR_IMAGE_URL_TEMPLATE_WITH_FILENAME  = ImageUserAvatarUploadController.AVATAR_IMAGE_URL_TEMPLATE_WITH_FILENAME;
 
     @WithUserDetails(TestConstants.USER_ALICE)
     @Test
@@ -31,11 +36,25 @@ public class ImageUserAvatarUploadControllerTest extends AbstractUtTestRunner {
 		byte[] img1 = {(byte)0xAA, (byte)0xBB, (byte)0xCC, (byte)0xDD, (byte)0xCC};
 		putImage(userId, img1);
     }
+
+	@Test
+	public void getUnexistingImage() throws Exception {
+		final long notExistsUserId = 100_000_000;
+
+		MvcResult result = mockMvc.perform(
+				MockMvcRequestBuilders.get(AVATAR_IMAGE_URL_TEMPLATE_WITH_FILENAME, notExistsUserId, "ava.png")
+		)
+				.andExpect(status().isNotFound())
+				.andExpect(jsonPath("$.error").value("data not found"))
+				.andExpect(jsonPath("$.message").value("avatar image with id '100000000' not found"))
+				.andReturn()
+				;
+    }
 	
-	private void putImage(long postId, byte[] bytes) throws Exception {
+	private void putImage(long userId, byte[] bytes) throws Exception {
 		MockMultipartFile imgPart = new MockMultipartFile(ImagePostTitleUploadController.IMAGE_PART, "lol.png", "image/png", bytes);
 		MvcResult mvcResult = mockMvc.perform(
-		MockMvcRequestBuilders.fileUpload(PUT_IMAGE_URL_TEMPLATE, postId)
+		MockMvcRequestBuilders.fileUpload(PUT_IMAGE_URL_TEMPLATE, userId)
 				.file(imgPart).with(csrf())
 		)
 				.andExpect(status().isOk())

@@ -1,6 +1,7 @@
 package com.github.nikit.cpp.controllers;
 
 import com.github.nikit.cpp.dto.UserAccountDetailsDTO;
+import com.github.nikit.cpp.exception.DataNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -89,7 +90,7 @@ public class ImagePostContentUploadController extends AbstractImageUploadControl
                                 }
                                 return buildHeaders(rs);
                             } else {
-                                throw new RuntimeException("post content image with id '"+id+"' not found");
+                                throw new DataNotFoundException("post content image with id '"+id+"' not found");
                             }
                         }
                     } catch (SQLException e) {

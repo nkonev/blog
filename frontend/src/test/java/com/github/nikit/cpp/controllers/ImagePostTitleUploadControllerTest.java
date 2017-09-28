@@ -9,6 +9,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import org.springframework.test.web.servlet.MvcResult;
@@ -19,8 +20,10 @@ public class ImagePostTitleUploadControllerTest extends AbstractUtTestRunner {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ImagePostTitleUploadControllerTest.class);
 
 	private static final String PUT_IMAGE_URL_TEMPLATE = com.github.nikit.cpp.controllers.ImagePostTitleUploadController.POST_TITLE_IMAGE_URL_TEMPLATE;
+	private static final String POST_TITLE_IMAGE_URL_TEMPLATE_WITH_FILENAME = com.github.nikit.cpp.controllers.ImagePostTitleUploadController.POST_TITLE_IMAGE_URL_TEMPLATE_WITH_FILENAME;
 
-    @WithUserDetails(TestConstants.USER_NIKITA)
+
+	@WithUserDetails(TestConstants.USER_NIKITA)
     @Test
     public void putImage() throws Exception {
 		final long postId = 1;
@@ -31,7 +34,21 @@ public class ImagePostTitleUploadControllerTest extends AbstractUtTestRunner {
 		byte[] img1 = {(byte)0xAA, (byte)0xBB, (byte)0xCC, (byte)0xDD, (byte)0xCC};
 		putImage(postId, img1);
     }
-	
+
+	@Test
+	public void getUnexistingImage() throws Exception {
+		final long notExistsPostId = 100_000_000;
+
+		MvcResult result = mockMvc.perform(
+				MockMvcRequestBuilders.get(POST_TITLE_IMAGE_URL_TEMPLATE_WITH_FILENAME, notExistsPostId, "titl.png")
+		)
+				.andExpect(status().isNotFound())
+				.andExpect(jsonPath("$.error").value("data not found"))
+				.andExpect(jsonPath("$.message").value("post title image with id '100000000' not found"))
+				.andReturn()
+				;
+	}
+
 	private void putImage(long postId, byte[] bytes) throws Exception {
 		MockMultipartFile imgPart = new MockMultipartFile(ImagePostTitleUploadController.IMAGE_PART, "lol.png", "image/png", bytes);
 		MvcResult mvcResult = mockMvc.perform(

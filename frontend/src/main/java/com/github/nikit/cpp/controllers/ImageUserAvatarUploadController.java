@@ -1,6 +1,7 @@
 package com.github.nikit.cpp.controllers;
 
 import com.github.nikit.cpp.dto.UserAccountDetailsDTO;
+import com.github.nikit.cpp.exception.DataNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -81,7 +82,7 @@ public class ImageUserAvatarUploadController extends AbstractImageUploadControll
                             }
                             return buildHeaders(rs);
                         } else {
-                            throw new RuntimeException("avatar image with id '"+avatarId+"' not found");
+                            throw new DataNotFoundException("avatar image with id '"+avatarId+"' not found");
                         }
                     }
                 } catch (SQLException e) {
