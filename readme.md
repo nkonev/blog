@@ -106,10 +106,6 @@ run
 redis-server.exe --maxheap 8Mb
 ```
 
-Next you can run with redefine IP addresses to localhost and disable asciidoctor:
-```
-mvnw -Dasciidoctor.skip=true -Dcustom.stomp.broker.host=127.0.0.1 -Dspring.datasource.url=jdbc:postgresql://127.0.0.1:5432/blog?connectTimeout=10 -Dspring.redis.url=redis://127.0.0.1:6379/0 clean package -e
-```
 
 Nex you should use localhost IP addresses and disable asciidoctor:
 ```
