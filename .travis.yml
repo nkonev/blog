@@ -15,6 +15,12 @@ before_script:
 after_acript:
   - "sh -e /etc/init.d/xvfb stop"
   - (cd docker; docker-compose down)
+# Fix firefox error spamming
+addons:
+  apt:
+    packages:
+      - dbus
+      - dbus-x11
 script:
   # if there isn't pointed explicitly PhantomJS will be used by default for both webdriver integration test and js unit test
   - "./mvnw -Dkarma.browsers=PhantomJS -Dcustom.selenium.browser=PHANTOM -P frontend clean package"

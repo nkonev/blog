@@ -1,3 +1,5 @@
+# This file used for both developer and demo purposes.
+# It contains environment
 version: '2.1'
 
 services:
