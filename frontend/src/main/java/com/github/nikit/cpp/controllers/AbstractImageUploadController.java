@@ -76,8 +76,14 @@ public abstract class AbstractImageUploadController {
             Function<UUID, ImageResponse> produceUrl
 	) throws SQLException, IOException {
 		long contentLength = getCorrectContentLength(imagePart.getSize());
-        String contentType = imagePart.getContentType();
+        String contentType = getCorrectContentType(imagePart.getContentType());
 
+        try(Connection conn = dataSource.getConnection();) {
+            return produceUrl.apply(updateImage.updateImage(conn, contentLength, contentType));
+        }
+    }
+
+    private String getCorrectContentType(String contentType) {
         MediaType inputMt = MediaType.valueOf(contentType);
 
         boolean contentTypeOk = false;
@@ -90,10 +96,7 @@ public abstract class AbstractImageUploadController {
         if (!contentTypeOk) {
             throw new UnsupportedMessageTypeException("Incompatible content type. Allowed: " + imageConfig.getAllowedMimeTypes());
         }
-
-        try(Connection conn = dataSource.getConnection();) {
-            return produceUrl.apply(updateImage.updateImage(conn, contentLength, contentType));
-        }
+        return contentType;
     }
 
     private long getCorrectContentLength(long contentLength) {
