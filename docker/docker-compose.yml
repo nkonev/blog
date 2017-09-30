@@ -5,7 +5,7 @@ version: '2.1'
 services:
   #enviroment
   postgresql:
-    image : postgres:${POSTGRESL_VERSION}
+    image : postgres:${POSTGRES_VERSION}
     hostname: postgresql
     # имена контейнеров не должны пересекаться с уже существующими
     container_name: postgresql-blog-dev
