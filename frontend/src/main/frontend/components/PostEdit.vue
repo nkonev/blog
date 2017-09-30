@@ -21,6 +21,7 @@
                     :prevent-white-space="true"
                     :show-remove-button="true"
                     @file-choose="handleCroppaFileChoose"
+                    @image-remove="handleCroppaImageRemove"
                     @file-size-exceed="handleCroppaFileSizeExceed"
                     @file-type-mismatch="handleCroppaFileTypeMismatch"
                     >
@@ -98,7 +99,7 @@
                 },
                 editPostDTO: {}, // will be overriden below in created()
                 myCroppa: {},
-                chosenFile: {},
+                chosenFile: null,
             }
         },
         mounted() {
@@ -139,40 +140,46 @@
             onBtnSave() {
                 this.startSending();
 
-                this.myCroppa.promisedBlob(this.$data.chosenFile.type).then(blob => {
-                    const formData = new FormData();
-                    formData.append('image', blob);
-                    this.$http.post('/api/image/post/title', formData).then(successResp => {
-                        return successResp.body.relativeUrl
-                    }, failResp => {
-                        throw "failed to upload title img"
-                    }).then(url => {
-                        this.editPostDTO.titleImg = url;
-                        if (this.editPostDTO.id) {
-                            // edit / update
-                            this.$http.put(API_POST, this.editPostDTO, {}).then(response => {
-                                this.finishSending();
-                                if (this.$props.onAfterSubmit){
-                                    this.$props.onAfterSubmit(response.body);
-                                }
-                            }, response => {
-                                console.error("Error on edit post", response);
-                                this.finishSending();
-                            });
-                        } else {
-                            // create
-                            this.$http.post(API_POST, this.editPostDTO, {}).then(response => {
-                                this.finishSending();
-                                if (this.$props.onAfterSubmit){
-                                    this.$props.onAfterSubmit(response.body);
-                                }
-                            }, response => {
-                                console.error("Error on add post", response);
-                                this.finishSending();
-                            });
-                        }
-                    })
-                });
+                const sendPost = url => {
+                    this.editPostDTO.titleImg = url;
+                    if (this.editPostDTO.id) {
+                        // edit / update
+                        this.$http.put(API_POST, this.editPostDTO, {}).then(response => {
+                            this.finishSending();
+                            if (this.$props.onAfterSubmit){
+                                this.$props.onAfterSubmit(response.body);
+                            }
+                        }, response => {
+                            console.error("Error on edit post", response);
+                            this.finishSending();
+                        });
+                    } else {
+                        // create
+                        this.$http.post(API_POST, this.editPostDTO, {}).then(response => {
+                            this.finishSending();
+                            if (this.$props.onAfterSubmit){
+                                this.$props.onAfterSubmit(response.body);
+                            }
+                        }, response => {
+                            console.error("Error on add post", response);
+                            this.finishSending();
+                        });
+                    }
+                };
+
+                if (this.$data.chosenFile) {
+                    this.myCroppa.promisedBlob(this.$data.chosenFile.type).then(blob => {
+                        const formData = new FormData();
+                        formData.append('image', blob);
+                        this.$http.post('/api/image/post/title', formData).then(successResp => {
+                            return successResp.body.relativeUrl
+                        }, failResp => {
+                            throw "failed to upload title img"
+                        }).then(sendPost)
+                    });
+                } else {
+                    sendPost('');
+                }
             },
             onBtnCancel() {
                 if (this.$props.onCancel){
@@ -195,6 +202,10 @@
             handleCroppaFileChoose(e) {
                 console.debug('image chosen', e);
                 this.$data.chosenFile = e;
+            },
+            handleCroppaImageRemove() {
+                console.debug('image removed');
+                this.$data.chosenFile = null;
             }
         },
         components: {
