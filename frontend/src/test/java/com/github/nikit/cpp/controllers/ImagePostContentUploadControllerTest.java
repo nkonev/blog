@@ -76,7 +76,7 @@ public class ImagePostContentUploadControllerTest extends AbstractImageUploadCon
 		)
 				.andExpect(status().isPayloadTooLarge())
 				.andExpect(jsonPath("$.error").value("payload too large"))
-				.andExpect(jsonPath("$.message").value("Image must be <= 2097152 bytes"))
+				.andExpect(jsonPath("$.message").value("Image must be <= 1048576 bytes"))
 				.andReturn()
 				;
 	}
