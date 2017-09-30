@@ -49,7 +49,7 @@ public class ImageUserAvatarUploadController extends AbstractImageUploadControll
             },
             (uuid) -> {
                 String relativeUrl = UriComponentsBuilder.fromUriString(GET_TEMPLATE)
-                        .buildAndExpand(uuid, getExtension(imagePart.getOriginalFilename()))
+                        .buildAndExpand(uuid, getExtension(imagePart.getContentType()))
                         .toUriString();
                 return new ImageResponse(relativeUrl, customConfig.getBaseUrl() + relativeUrl);
             }

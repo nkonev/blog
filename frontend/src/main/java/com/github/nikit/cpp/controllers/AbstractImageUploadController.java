@@ -89,10 +89,10 @@ public abstract class AbstractImageUploadController {
         return contentLength;
     }
 
-    protected String getExtension(String filename) {
-        Assert.notNull(filename, "cannot be null");
-        String[] parts = filename.split("\\.");
-        return parts[parts.length-1];
+    protected String getExtension(String contentType) {
+        Assert.notNull(contentType, "cannot be null");
+        MediaType mt = MediaType.valueOf(contentType);
+        return mt.getSubtype();
     }
 
     public HttpHeaders getImage(

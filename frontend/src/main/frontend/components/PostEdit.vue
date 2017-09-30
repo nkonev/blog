@@ -97,7 +97,8 @@
                     }
                 },
                 editPostDTO: {}, // will be overriden below in created()
-                myCroppa: {}
+                myCroppa: {},
+                chosenFile: {},
             }
         },
         mounted() {
@@ -137,33 +138,41 @@
             },
             onBtnSave() {
                 this.startSending();
-                const dataUrl = this.myCroppa.generateDataUrl();
-                this.editPostDTO.titleImg = dataUrl;
-                // console.debug('titleImg=', this.editPostDTO.titleImg);
 
-                if (this.editPostDTO.id) {
-                    // edit / update
-                    this.$http.put(API_POST, this.editPostDTO, {}).then(response => {
-                        this.finishSending();
-                        if (this.$props.onAfterSubmit){
-                            this.$props.onAfterSubmit(response.body);
+                this.myCroppa.promisedBlob(this.$data.chosenFile.type).then(blob => {
+                    const formData = new FormData();
+                    formData.append('image', blob);
+                    this.$http.post('/api/image/post/title', formData).then(successResp => {
+                        return successResp.body.relativeUrl
+                    }, failResp => {
+                        throw "failed to upload title img"
+                    }).then(url => {
+                        this.editPostDTO.titleImg = url;
+                        if (this.editPostDTO.id) {
+                            // edit / update
+                            this.$http.put(API_POST, this.editPostDTO, {}).then(response => {
+                                this.finishSending();
+                                if (this.$props.onAfterSubmit){
+                                    this.$props.onAfterSubmit(response.body);
+                                }
+                            }, response => {
+                                console.error("Error on edit post", response);
+                                this.finishSending();
+                            });
+                        } else {
+                            // create
+                            this.$http.post(API_POST, this.editPostDTO, {}).then(response => {
+                                this.finishSending();
+                                if (this.$props.onAfterSubmit){
+                                    this.$props.onAfterSubmit(response.body);
+                                }
+                            }, response => {
+                                console.error("Error on add post", response);
+                                this.finishSending();
+                            });
                         }
-                    }, response => {
-                        console.error("Error on edit post", response);
-                        this.finishSending();
-                    });
-                } else {
-                    // create
-                    this.$http.post(API_POST, this.editPostDTO, {}).then(response => {
-                        this.finishSending();
-                        if (this.$props.onAfterSubmit){
-                            this.$props.onAfterSubmit(response.body);
-                        }
-                    }, response => {
-                        console.error("Error on add post", response);
-                        this.finishSending();
-                    });
-                }
+                    })
+                });
             },
             onBtnCancel() {
                 if (this.$props.onCancel){
@@ -184,7 +193,8 @@
                 alert('Image size must be < than 1 Mb');
             },
             handleCroppaFileChoose(e) {
-                console.debug('image chosen');
+                console.debug('image chosen', e);
+                this.$data.chosenFile = e;
             }
         },
         components: {
