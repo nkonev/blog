@@ -3,10 +3,10 @@
 # Requirements
 
 * JDK 8
-* Docker 1.12.3 +
+* Docker 17.05.0-ce +
 * docker-compose 1.16.0 +
 
-# @Before
+# Run test environment
 
 ```bash
 (cd docker; docker-compose up -d)
@@ -122,3 +122,8 @@ Q: I suddenly get http 403 error in JUnit mockMvc tests.
 
 A: Add `.with(csrf())` to MockMvcRequestBuilder chain
 
+# Production Run
+
+```bash
+docker-compose -f docker-compose.yml -f docker-compose.demo.yml up -d
+```

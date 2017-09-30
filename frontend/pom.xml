@@ -42,6 +42,7 @@
 
         <git-template-json>git.template.json</git-template-json>
         <git-json>git.json</git-json>
+        <docker.blog.output.dir>${project.basedir}/../docker/blog-context</docker.blog.output.dir>
     </properties>
 
     <pluginRepositories>
@@ -174,6 +175,12 @@
                             </includes>
                             <followSymlinks>false</followSymlinks>
                         </fileset>
+                        <fileset>
+                            <directory>${docker.blog.output.dir}</directory>
+                            <includes>
+                                <include>**/*</include>
+                            </includes>
+                        </fileset>
                     </filesets>
                 </configuration>
             </plugin>
@@ -191,24 +198,6 @@
                         <configuration>
                             <failOnNoGitDirectory>false</failOnNoGitDirectory>
                             <failOnUnableToExtractRepoInfo>false</failOnUnableToExtractRepoInfo>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>com.coderplus.maven.plugins</groupId>
-                <artifactId>copy-rename-maven-plugin</artifactId>
-                <version>1.0</version>
-                <executions>
-                    <execution>
-                        <id>rename-file</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>rename</goal>
-                        </goals>
-                        <configuration>
-                            <sourceFile>${project.build.outputDirectory}/static/${git-template-json}</sourceFile>
-                            <destinationFile>${project.build.outputDirectory}/static/${git-json}</destinationFile>
                         </configuration>
                     </execution>
                 </executions>
@@ -336,6 +325,39 @@
                             </resources>
                         </configuration>
                     </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>rename static version file</id>
+                        <phase>prepare-package</phase>
+                        <configuration>
+                            <tasks>
+                                <move file="${project.build.outputDirectory}/static/${git-template-json}" tofile="${project.build.outputDirectory}/static/${git-json}"/>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>copy built jar to docker context directory</id>
+                        <phase>package</phase>
+                        <configuration>
+                            <tasks>
+                                <copy todir="${docker.blog.output.dir}">
+                                    <fileset dir="${project.build.directory}" includes="*-exec.jar"/>
+                                </copy>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+
                 </executions>
             </plugin>
 

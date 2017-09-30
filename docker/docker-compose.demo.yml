@@ -34,7 +34,3 @@ services:
       blog-dev:
         ipv4_address: 172.22.0.50
 
-volumes:
-  #enviroment
-  postgresql_blog_dev_data_dir:
-
