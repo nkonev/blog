@@ -107,7 +107,7 @@ redis-server.exe --maxheap 8Mb
 ```
 
 
-Nex you should use localhost IP addresses and disable asciidoctor:
+Next you should use localhost IP addresses and disable asciidoctor:
 ```
 mvnw -P local -Dasciidoctor.skip=true clean test
 ```
