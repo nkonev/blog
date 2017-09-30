@@ -554,16 +554,8 @@
 					<configuration>
 					  <systemProperties>
 						<property>
-						  <name>custom.stomp.broker.host</name>
-						  <value>127.0.0.1</value>
-						</property>
-						<property>
-						  <name>spring.datasource.url</name>
-						  <value>jdbc:postgresql://127.0.0.1:5432/blog?connectTimeout=10</value>
-						</property>
-						<property>
-						  <name>spring.redis.url</name>
-						  <value>redis://127.0.0.1:6379/0</value>
+						  <name>spring.profiles.active</name>
+						  <value>local</value>
 						</property>
 					  </systemProperties>
 					</configuration>
