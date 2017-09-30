@@ -12,6 +12,9 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
+    <properties>
+        <custom.selenium.browser>PHANTOM</custom.selenium.browser>
+    </properties>
 
     <dependencies>
 
@@ -148,6 +151,9 @@ https://github.com/bonigarcia/webdrivermanager
                                 <include>**/*IT.java</include>
                             </includes>
                             <skip>false</skip>
+                            <systemProperties>
+                                <custom.selenium.browser>${custom.selenium.browser}</custom.selenium.browser>
+                            </systemProperties>
                         </configuration>
                     </plugin>
                 </plugins>
