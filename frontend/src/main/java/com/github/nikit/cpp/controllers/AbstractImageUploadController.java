@@ -35,22 +35,43 @@ public abstract class AbstractImageUploadController {
 
     public static final String IMAGE_PART = "image";
 
-
-	// /post/123/title.png -> /post/123/title.png
-	// /post/123/content/wqwqw.png -> /post/123/content/_timestamp_.png
-	// /post/123/content/sasasas.png -> /post/123/content/_timestamp_.png
-	// /user/123/kitty.png -> /user/123/avatar.png
-
     @FunctionalInterface
     public interface UpdateImage {
         UUID updateImage(Connection conn, long contentLength, String contentType);
     }
 
+    public static class ImageResponse {
+        private String relativeUrl;
+        private String url;
 
-    public String putImage(
+        public ImageResponse() { }
+
+        public ImageResponse(String relativeUrl, String url) {
+            this.relativeUrl = relativeUrl;
+            this.url = url;
+        }
+
+        public String getRelativeUrl() {
+            return relativeUrl;
+        }
+
+        public void setRelativeUrl(String relativeUrl) {
+            this.relativeUrl = relativeUrl;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+    }
+
+    public ImageResponse putImage(
             MultipartFile imagePart,
             UpdateImage updateImage,
-            Function<UUID, String> produceUrl
+            Function<UUID, ImageResponse> produceUrl
 	) throws SQLException, IOException {
 		long contentLength = getCorrectContentLength(imagePart.getSize());
         String contentType = imagePart.getContentType();

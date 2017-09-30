@@ -58,7 +58,9 @@ public class ImageUserAvatarUploadControllerTest extends AbstractUtTestRunner {
 				.andExpect(status().isOk())
 				.andReturn()
 		;
-		String urlResponse = mvcResult.getResponse().getContentAsString();
+		AbstractImageUploadController.ImageResponse imageResponse = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), AbstractImageUploadController.ImageResponse.class);
+		String urlResponse = imageResponse.getUrl();
+
 		LOGGER.info("responsed image url: {}", urlResponse);
 
 		MvcResult result = mockMvc.perform(

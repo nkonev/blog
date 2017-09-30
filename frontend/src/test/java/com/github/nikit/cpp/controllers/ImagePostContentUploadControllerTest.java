@@ -1,5 +1,6 @@
 package com.github.nikit.cpp.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.nikit.cpp.AbstractUtTestRunner;
 import com.github.nikit.cpp.TestConstants;
 import com.google.common.net.HttpHeaders;
@@ -7,6 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MvcResult;
@@ -24,6 +26,8 @@ public class ImagePostContentUploadControllerTest extends AbstractUtTestRunner {
 	private static final String PUT_TEMPLATE = ImagePostContentUploadController.PUT_TEMPLATE;
 	private static final String GET_TEMPLATE = ImagePostContentUploadController.GET_TEMPLATE;
 
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@WithUserDetails(TestConstants.USER_NIKITA)
     @Test
@@ -61,7 +65,11 @@ public class ImagePostContentUploadControllerTest extends AbstractUtTestRunner {
 				.andExpect(status().isOk())
 				.andReturn()
 		;
-		String urlResponse = mvcResult.getResponse().getContentAsString();
+
+		AbstractImageUploadController.ImageResponse imageResponse = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), AbstractImageUploadController.ImageResponse.class);
+		String urlResponse = imageResponse.getUrl();
+
+
 		LOGGER.info("responsed image url: {}", urlResponse);
 
 		byte[] content = getImage(urlResponse, "image/png");

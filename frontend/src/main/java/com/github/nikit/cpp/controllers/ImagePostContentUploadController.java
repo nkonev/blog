@@ -28,7 +28,7 @@ public class ImagePostContentUploadController extends AbstractImageUploadControl
 
     @PostMapping(PUT_TEMPLATE)
     @PreAuthorize("isAuthenticated()")
-    public String putImage(
+    public ImageResponse putImage(
             @RequestPart(value = IMAGE_PART) MultipartFile imagePart,
             @NotNull @AuthenticationPrincipal UserAccountDetailsDTO userAccount
     ) throws SQLException, IOException {
@@ -48,9 +48,12 @@ public class ImagePostContentUploadController extends AbstractImageUploadControl
                     throw new RuntimeException(e);
                 }
             },
-            (uuid) -> UriComponentsBuilder.fromUriString(customConfig.getBaseUrl() + GET_TEMPLATE)
+            (uuid) -> {
+                String relativeUrl = UriComponentsBuilder.fromUriString(GET_TEMPLATE)
                     .buildAndExpand(uuid, getExtension(imagePart.getOriginalFilename()))
-                    .toUriString()
+                    .toUriString();
+                return new ImageResponse(relativeUrl, customConfig.getBaseUrl() + relativeUrl);
+            }
         );
     }
 
