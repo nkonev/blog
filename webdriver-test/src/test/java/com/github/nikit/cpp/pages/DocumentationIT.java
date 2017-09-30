@@ -32,6 +32,6 @@ public class DocumentationIT extends AbstractItTestRunner {
 
         Map<String, String> response = (Map<String, String>)testRestTemplate.getForObject(url, Object.class);
 
-        Assert.assertThat(response.get("git.build.version"), regexp("\\d+.*"));
+        Assert.assertThat(response.get("build.version"), regexp("\\d+.*"));
     }
 }
