@@ -86,17 +86,12 @@ public abstract class AbstractImageUploadController {
     private String getCorrectContentType(String contentType) {
         MediaType inputMt = MediaType.valueOf(contentType);
 
-        boolean contentTypeOk = false;
         for(MediaType mediaType: imageConfig.getAllowedMimeTypes()){
             if (mediaType.isCompatibleWith(inputMt)) {
-                contentTypeOk = true;
-                break;
+                return contentType;
             }
-        };
-        if (!contentTypeOk) {
-            throw new UnsupportedMessageTypeException("Incompatible content type. Allowed: " + imageConfig.getAllowedMimeTypes());
         }
-        return contentType;
+        throw new UnsupportedMessageTypeException("Incompatible content type. Allowed: " + imageConfig.getAllowedMimeTypes());
     }
 
     private long getCorrectContentLength(long contentLength) {

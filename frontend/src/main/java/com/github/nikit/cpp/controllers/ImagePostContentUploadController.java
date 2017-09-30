@@ -69,11 +69,12 @@ public class ImagePostContentUploadController extends AbstractImageUploadControl
     ) throws SQLException, IOException {
         super.getImage(
                 (Connection conn) -> {
-                    try (PreparedStatement ps = conn.prepareStatement("SELECT img, content_type FROM images.post_content_image WHERE id = ?");) {
+                    try (PreparedStatement ps = conn.prepareStatement("SELECT img, length(img) as content_length, content_type FROM images.post_content_image WHERE id = ?");) {
                         ps.setObject(1, id);
                         try (ResultSet rs = ps.executeQuery();) {
                             if (rs.next()) {
                                 response.setContentType(rs.getString("content_type"));
+                                response.setContentLength(rs.getInt("content_length"));
                                 try(InputStream imgStream = rs.getBinaryStream("img");){
                                     copyStream(imgStream, response.getOutputStream());
                                 } catch (SQLException | IOException e) {
