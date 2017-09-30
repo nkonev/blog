@@ -17,51 +17,39 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
 public class ImagePostContentUploadController extends AbstractImageUploadController {
 
-    public static final String POST_CONTENT_IMAGE_URL_TEMPLATE = "/api/post/{post_id}/content";
-    public static final String POST_CONTENT_IMAGE_URL_TEMPLATE_WITH_FILENAME = POST_CONTENT_IMAGE_URL_TEMPLATE + "/{id}.{ext}";
+    public static final String PUT_TEMPLATE = "/api/image/post/content";
+    public static final String GET_TEMPLATE = PUT_TEMPLATE + "/{id}.{ext}";
 
-    @PostMapping(POST_CONTENT_IMAGE_URL_TEMPLATE)
-    @PreAuthorize("@blogSecurityService.hasPostContentImagePermission(#postId, #userAccount, T(com.github.nikit.cpp.entity.jpa.Permissions).EDIT)")
+    @PostMapping(PUT_TEMPLATE)
+    @PreAuthorize("isAuthenticated()")
     public String putImage(
             @RequestPart(value = IMAGE_PART) MultipartFile imagePart,
-            @PathVariable("post_id")long postId,
             @NotNull @AuthenticationPrincipal UserAccountDetailsDTO userAccount
     ) throws SQLException, IOException {
-        AtomicLong idWrapper = new AtomicLong();
         return super.putImage(
             imagePart,
-            (Connection conn) -> {
-                try(PreparedStatement psI = conn.prepareStatement("INSERT INTO images.post_content_image(post_id, id, img, content_type) VALUES (?, DEFAULT, NULL, NULL) RETURNING id;");) {
-                    psI.setLong(1, postId);
-                    try(ResultSet ids = psI.executeQuery()) {
-                        if(ids.next()) {
-                            idWrapper.set(ids.getLong("id"));
-                        } else {
-                            throw new RuntimeException("id did not returned");
-                        }
-                    }
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            },
             (conn, contentLength, contentType) -> {
-                try(PreparedStatement psU = conn.prepareStatement("UPDATE images.post_content_image SET img = ?, content_type = ? WHERE id = ? and post_id = ?");) {
-                    psU.setLong(4, postId);
-                    psU.setLong(3, idWrapper.get());
-                    psU.setString(2, contentType);
-                    psU.setBinaryStream(1, imagePart.getInputStream(), (int) contentLength);
-                    psU.executeUpdate();
-                } catch (IOException | SQLException e) {
+                try(PreparedStatement ps = conn.prepareStatement("INSERT INTO images.post_content_image(img, content_type) VALUES (?, ?) RETURNING id;");) {
+                    ps.setString(2, contentType);
+                    ps.setBinaryStream(1, imagePart.getInputStream(), (int) contentLength);
+                    try(ResultSet resp = ps.executeQuery()) {
+                        if(!resp.next()) {
+                            throw new RuntimeException("Expected result");
+                        }
+                        return resp.getObject("id", UUID.class);
+                    }
+                } catch (SQLException | IOException e) {
                     throw new RuntimeException(e);
                 }
             },
-            () -> UriComponentsBuilder.fromUriString(customConfig.getBaseUrl() + POST_CONTENT_IMAGE_URL_TEMPLATE_WITH_FILENAME)
-                    .buildAndExpand(postId, idWrapper.get(), getExtension(imagePart.getOriginalFilename()))
+            (uuid) -> UriComponentsBuilder.fromUriString(customConfig.getBaseUrl() + GET_TEMPLATE)
+                    .buildAndExpand(uuid, getExtension(imagePart.getOriginalFilename()))
                     .toUriString()
         );
     }
@@ -70,17 +58,15 @@ public class ImagePostContentUploadController extends AbstractImageUploadControl
     ///////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////
 
-    @GetMapping(POST_CONTENT_IMAGE_URL_TEMPLATE_WITH_FILENAME)
+    @GetMapping(GET_TEMPLATE)
     public HttpHeaders getImage(
-            @PathVariable("post_id")long postId,
-            @PathVariable("id")long id,
+            @PathVariable("id")UUID id,
             OutputStream response
     ) throws SQLException, IOException {
         return super.getImage(
                 (Connection conn) -> {
-                    try (PreparedStatement ps = conn.prepareStatement("SELECT img, content_type FROM images.post_content_image WHERE id = ? AND post_id = ?");) {
-                        ps.setLong(1, id);
-                        ps.setLong(2, postId);
+                    try (PreparedStatement ps = conn.prepareStatement("SELECT img, content_type FROM images.post_content_image WHERE id = ?");) {
+                        ps.setObject(1, id);
                         try (ResultSet rs = ps.executeQuery();) {
                             if (rs.next()) {
                                 try(InputStream imgStream = rs.getBinaryStream("img");){
@@ -88,7 +74,7 @@ public class ImagePostContentUploadController extends AbstractImageUploadControl
                                 } catch (SQLException | IOException e) {
                                     throw new RuntimeException(e);
                                 }
-                                return buildHeaders(rs);
+                                return buildHeaders(rs.getString("content_type"));
                             } else {
                                 throw new DataNotFoundException("post content image with id '"+id+"' not found");
                             }
@@ -99,10 +85,4 @@ public class ImagePostContentUploadController extends AbstractImageUploadControl
                 }
         );
     }
-
-    @Override
-    protected String getContentType(ResultSet rs) throws SQLException {
-        return rs.getString("content_type");
-    }
 }
- 

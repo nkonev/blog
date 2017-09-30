@@ -17,6 +17,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 import java.util.function.*;
 
 public abstract class AbstractImageUploadController {
@@ -42,25 +43,22 @@ public abstract class AbstractImageUploadController {
 
     @FunctionalInterface
     public interface UpdateImage {
-        void updateImage(Connection conn, long contentLength, String contentType);
+        UUID updateImage(Connection conn, long contentLength, String contentType);
     }
 
 
     public String putImage(
             MultipartFile imagePart,
-            Consumer<Connection> insertOrNothing,
             UpdateImage updateImage,
-            Supplier<String> produceUrl
+            Function<UUID, String> produceUrl
 	) throws SQLException, IOException {
 		long contentLength = getCorrectContentLength(imagePart.getSize());
         String contentType = imagePart.getContentType();
         MediaType.valueOf(contentType);
 
         try(Connection conn = dataSource.getConnection();) {
-            insertOrNothing.accept(conn);
-            updateImage.updateImage(conn, contentLength, contentType);
+            return produceUrl.apply(updateImage.updateImage(conn, contentLength, contentType));
         }
-        return produceUrl.get();
     }
 
     private long getCorrectContentLength(long contentLength) {
@@ -84,14 +82,11 @@ public abstract class AbstractImageUploadController {
         }
     }
 
-    protected HttpHeaders buildHeaders(ResultSet rs) throws SQLException {
-        String contentType = getContentType(rs);
+    protected HttpHeaders buildHeaders(String contentType) throws SQLException {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.valueOf(contentType));
         return httpHeaders;
     }
-
-    protected abstract String getContentType(ResultSet rs) throws SQLException;
 
     protected void copyStream(InputStream from, OutputStream to) throws IOException {
 		byte[] buffer = new byte[4 * 1024];

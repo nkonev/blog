@@ -16,63 +16,55 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 @RestController
 public class ImageUserAvatarUploadController extends AbstractImageUploadController {
 
-    public static final String AVATAR_IMAGE_URL_TEMPLATE = "/api/user/avatar/{avatar_id}";
-    public static final String AVATAR_IMAGE_URL_TEMPLATE_WITH_FILENAME = AVATAR_IMAGE_URL_TEMPLATE + "/{filename}";
+    public static final String PUT_TEMPLATE = "/api/image/user/avatar";
+    public static final String GET_TEMPLATE = PUT_TEMPLATE + "/{id}.{ext}";
 
-    @PostMapping(AVATAR_IMAGE_URL_TEMPLATE)
-    @PreAuthorize("@blogSecurityService.hasUserAvatarImagePermission(#avatarId, #userAccount, T(com.github.nikit.cpp.entity.jpa.Permissions).EDIT)")
+    @PostMapping(PUT_TEMPLATE)
+    @PreAuthorize("isAuthenticated()")
     public String putImage(
             @RequestPart(value = IMAGE_PART) MultipartFile imagePart,
-            @PathVariable("avatar_id")long avatarId,
             @NotNull @AuthenticationPrincipal UserAccountDetailsDTO userAccount
     ) throws SQLException, IOException {
         return super.putImage(
             imagePart,
-            (Connection conn) -> {
-                try (PreparedStatement ps = conn.prepareStatement("INSERT INTO images.user_avatar_image(user_id, img, content_type) VALUES (?, NULL, NULL) ON CONFLICT(user_id) DO NOTHING")){
-                    ps.setLong(1, avatarId);
-                    ps.executeUpdate();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            },
             (conn, contentLength, contentType) -> {
-                try (PreparedStatement ps = conn.prepareStatement("UPDATE images.user_avatar_image SET img = ?, content_type = ? WHERE user_id = ?")){
-                    ps.setLong(3, avatarId);
+                try (PreparedStatement ps = conn.prepareStatement("INSERT INTO images.user_avatar_image(img, content_type) VALUES (?, ?) RETURNING id")){
                     ps.setString(2, contentType);
                     ps.setBinaryStream(1, imagePart.getInputStream(), (int) contentLength);
-                    ps.executeUpdate();
+                    try(ResultSet resp = ps.executeQuery()) {
+                        if(!resp.next()) {
+                            throw new RuntimeException("Expected result");
+                        }
+                        return resp.getObject("id", UUID.class);
+                    }
+
                 } catch (SQLException | IOException e) {
                     throw new RuntimeException(e);
                 }
             },
-            () -> UriComponentsBuilder.fromUriString(customConfig.getBaseUrl() + AVATAR_IMAGE_URL_TEMPLATE_WITH_FILENAME)
-                    .buildAndExpand(avatarId, generateFileName(imagePart.getOriginalFilename()))
+            (uuid) -> UriComponentsBuilder.fromUriString(customConfig.getBaseUrl() + GET_TEMPLATE)
+                    .buildAndExpand(uuid, getExtension(imagePart.getOriginalFilename()))
                     .toUriString()
         );
     }
 
-    private String generateFileName(String originFileName) {
-        return "avatar."+getExtension(originFileName);
-    }
-
     ///////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////
 
-    @GetMapping(AVATAR_IMAGE_URL_TEMPLATE_WITH_FILENAME)
+    @GetMapping(GET_TEMPLATE)
     public HttpHeaders getImage(
-            @PathVariable("avatar_id")long avatarId,
-            @PathVariable("filename")String filename,
+            @PathVariable("id")UUID id,
             OutputStream response
     ) throws SQLException, IOException {
         return super.getImage(
             (Connection conn) -> {
-                try (PreparedStatement ps = conn.prepareStatement("SELECT img, content_type FROM images.user_avatar_image WHERE user_id = ?");) {
-                    ps.setLong(1, avatarId);
+                try (PreparedStatement ps = conn.prepareStatement("SELECT img, content_type FROM images.user_avatar_image WHERE id = ?");) {
+                    ps.setObject(1, id);
                     try (ResultSet rs = ps.executeQuery();) {
                         if (rs.next()) {
                             try(InputStream imgStream = rs.getBinaryStream("img");){
@@ -80,9 +72,9 @@ public class ImageUserAvatarUploadController extends AbstractImageUploadControll
                             } catch (SQLException | IOException e) {
                                 throw new RuntimeException(e);
                             }
-                            return buildHeaders(rs);
+                            return buildHeaders(rs.getString("content_type"));
                         } else {
-                            throw new DataNotFoundException("avatar image with id '"+avatarId+"' not found");
+                            throw new DataNotFoundException("avatar image with id '"+id+"' not found");
                         }
                     }
                 } catch (SQLException e) {
@@ -92,9 +84,4 @@ public class ImageUserAvatarUploadController extends AbstractImageUploadControll
         );
     }
 
-    @Override
-    protected String getContentType(ResultSet rs) throws SQLException {
-        return rs.getString("content_type");
-    }
 }
- 

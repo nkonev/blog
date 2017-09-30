@@ -2,7 +2,6 @@ package com.github.nikit.cpp.security;
 
 import com.github.nikit.cpp.dto.CommentDTO;
 import com.github.nikit.cpp.dto.PostDTO;
-import com.github.nikit.cpp.dto.UserAccountDTO;
 import com.github.nikit.cpp.dto.UserAccountDetailsDTO;
 import com.github.nikit.cpp.entity.jpa.Comment;
 import com.github.nikit.cpp.entity.jpa.Permissions;
@@ -11,13 +10,10 @@ import com.github.nikit.cpp.entity.jpa.UserRole;
 import com.github.nikit.cpp.repo.jpa.CommentRepository;
 import com.github.nikit.cpp.repo.jpa.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-
-import java.util.Collections;
 
 /**
  * Central entrypoint for access decisions
@@ -32,9 +28,6 @@ public class BlogSecurityService {
 
     @Autowired
     private CommentRepository commentRepository;
-
-    @Autowired
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     public boolean hasPostPermission(PostDTO dto, UserAccountDetailsDTO userAccount, Permissions permission) {
         Assert.notNull(dto, "PostDTO can't be null");
@@ -93,31 +86,4 @@ public class BlogSecurityService {
         return false;
     }
 
-    private boolean hasPostContentPermission(long postId, UserAccountDetailsDTO userAccount, Permissions permissio) {
-        if (userAccount == null) {return false;}
-        if (roleHierarchy.getReachableGrantedAuthorities(userAccount.getAuthorities()).contains(new SimpleGrantedAuthority(UserRole.ROLE_MODERATOR.name()))){
-            return true;
-        }
-        Post post = getPostOrException(postId);
-        if (post.getOwner().getId().equals(userAccount.getId())){
-            return true;
-        }
-
-        return false;
-    }
-	
-	public boolean hasPostTitleImagePermission(long postId, UserAccountDetailsDTO userAccount, Permissions permission) {
-        return hasPostContentPermission(postId, userAccount, permission);
-	}
-
-    public boolean hasPostContentImagePermission(long postId, UserAccountDetailsDTO userAccount, Permissions permission) {
-        return hasPostContentPermission(postId, userAccount, permission);
-    }
-
-    public boolean hasUserAvatarImagePermission(long avatarId, UserAccountDetailsDTO userAccount, Permissions permission) {
-        if (userAccount == null) {return false;}
-
-        // check is userAccount owner for avatarId
-        return userAccount.getId().equals(avatarId);
-    }
 }
