@@ -18,60 +18,38 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class ImageUserAvatarUploadControllerTest extends AbstractUtTestRunner {
+public class ImageUserAvatarUploadControllerTest extends AbstractImageUploadControllerTest {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ImageUserAvatarUploadControllerTest.class);
 
-	private static final String PUT_IMAGE_URL_TEMPLATE = ImageUserAvatarUploadController.PUT_TEMPLATE;
-	private static final String AVATAR_IMAGE_URL_TEMPLATE_WITH_FILENAME  = ImageUserAvatarUploadController.GET_TEMPLATE;
+	private static final String PUT_TEMPLATE = ImageUserAvatarUploadController.PUT_TEMPLATE;
+	private static final String GET_TEMPLATE  = ImageUserAvatarUploadController.GET_TEMPLATE;
 
     @WithUserDetails(TestConstants.USER_ALICE)
     @Test
     public void putImage() throws Exception {
 
 		byte[] img0 = {(byte)0xFF, (byte)0x01, (byte)0x1A};
-        putImage(img0);
-		
+		MockMultipartFile mf0 = new MockMultipartFile(ImagePostTitleUploadController.IMAGE_PART, "lol-content.png", "image/png", img0);
+		String url0 = super.putImage(PUT_TEMPLATE, mf0);
+
 		byte[] img1 = {(byte)0xAA, (byte)0xBB, (byte)0xCC, (byte)0xDD, (byte)0xCC};
-		putImage(img1);
+		MockMultipartFile mf1 = new MockMultipartFile(ImagePostTitleUploadController.IMAGE_PART, "lol-content.png", "image/png", img1);
+		String url1 = super.putImage(PUT_TEMPLATE, mf1);
+
+		Assert.assertNotEquals(url0, url1);
     }
 
 	@Test
 	public void getUnexistingImage() throws Exception {
 
 		MvcResult result = mockMvc.perform(
-				MockMvcRequestBuilders.get(AVATAR_IMAGE_URL_TEMPLATE_WITH_FILENAME, "a979054b-8c9d-4df8-983e-6abc57c2aed6", "png")
+				MockMvcRequestBuilders.get(GET_TEMPLATE, "a979054b-8c9d-4df8-983e-6abc57c2aed6", "png")
 		)
 				.andExpect(status().isNotFound())
 				.andExpect(jsonPath("$.error").value("data not found"))
 				.andExpect(jsonPath("$.message").value("avatar image with id 'a979054b-8c9d-4df8-983e-6abc57c2aed6' not found"))
 				.andReturn()
 				;
-    }
-	
-	private void putImage(byte[] bytes) throws Exception {
-		MockMultipartFile imgPart = new MockMultipartFile(ImagePostTitleUploadController.IMAGE_PART, "lol.png", "image/png", bytes);
-		MvcResult mvcResult = mockMvc.perform(
-		MockMvcRequestBuilders.fileUpload(PUT_IMAGE_URL_TEMPLATE)
-				.file(imgPart).with(csrf())
-		)
-				.andExpect(status().isOk())
-				.andReturn()
-		;
-		AbstractImageUploadController.ImageResponse imageResponse = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), AbstractImageUploadController.ImageResponse.class);
-		String urlResponse = imageResponse.getUrl();
-
-		LOGGER.info("responsed image url: {}", urlResponse);
-
-		MvcResult result = mockMvc.perform(
-                MockMvcRequestBuilders.get(urlResponse)
-        )
-                .andExpect(status().isOk())
-				.andExpect(header().string(HttpHeaders.CONTENT_TYPE, "image/png"))
-				.andReturn()
-				;
-		byte[] content = result.getResponse().getContentAsByteArray();
-		
-		Assert.assertArrayEquals(bytes, content);
     }
 }

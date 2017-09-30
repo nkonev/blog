@@ -2,10 +2,7 @@ package com.github.nikit.cpp.controllers;
 
 import com.github.nikit.cpp.dto.BlogError;
 import com.github.nikit.cpp.dto.ValidationError;
-import com.github.nikit.cpp.exception.BadRequestException;
-import com.github.nikit.cpp.exception.DataNotFoundException;
-import com.github.nikit.cpp.exception.PasswordResetTokenNotFoundException;
-import com.github.nikit.cpp.exception.UserAlreadyPresentException;
+import com.github.nikit.cpp.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -32,15 +29,28 @@ public class BlogExceptionHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @org.springframework.web.bind.annotation.ExceptionHandler(BadRequestException.class)
-    public BlogError badRequest(BadRequestException e, HttpServletResponse response) throws IOException {
-        //response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+    public BlogError badRequest(BadRequestException e)  {
         return new BlogError(HttpStatus.BAD_REQUEST.value(), "validation error", e.getMessage(), new Date().toString());
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.PAYLOAD_TOO_LARGE)
+    @org.springframework.web.bind.annotation.ExceptionHandler(PayloadTooLargeException.class)
+    public BlogError unsupportedMediaType(PayloadTooLargeException e)  {
+        return new BlogError(HttpStatus.PAYLOAD_TOO_LARGE.value(), "payload too large", e.getMessage(), new Date().toString());
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+    @org.springframework.web.bind.annotation.ExceptionHandler(UnsupportedMessageTypeException.class)
+    public BlogError unsupportedMediaType(UnsupportedMessageTypeException e)  {
+        return new BlogError(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(), "unsupported media type", e.getMessage(), new Date().toString());
     }
 
     @ResponseBody
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @org.springframework.web.bind.annotation.ExceptionHandler(UserAlreadyPresentException.class)
-    public BlogError userAlreadyPresent(UserAlreadyPresentException e) throws IOException {
+    public BlogError userAlreadyPresent(UserAlreadyPresentException e) {
         return new BlogError(HttpStatus.FORBIDDEN.value(), "user already present", e.getMessage(), new Date().toString());
     }
 
@@ -54,7 +64,7 @@ public class BlogExceptionHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @org.springframework.web.bind.annotation.ExceptionHandler(MethodArgumentNotValidException.class)
-    public BlogError invalid(MethodArgumentNotValidException e) throws IOException {
+    public BlogError invalid(MethodArgumentNotValidException e) {
         Collection<ValidationError> errors = new ArrayList<>();
         e.getBindingResult().getAllErrors().forEach(objectError -> {
             if (objectError instanceof FieldError){
@@ -69,7 +79,7 @@ public class BlogExceptionHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @org.springframework.web.bind.annotation.ExceptionHandler(PasswordResetTokenNotFoundException.class)
-    public BlogError passwordResetTokenNotFound(PasswordResetTokenNotFoundException e) throws IOException {
+    public BlogError passwordResetTokenNotFound(PasswordResetTokenNotFoundException e) {
 
         return new BlogError(HttpStatus.FORBIDDEN.value(), "password reset", e.getMessage(), new Date().toString());
     }

@@ -65,7 +65,6 @@ spring.redis.url: redis://172.22.0.3:6379/0
 spring.data.redis.repositories.enabled: false
 # Also see index in bootstrap.sql
 custom.postgres.fulltext.reg-config: "'russian'::regconfig"
-custom.image.max.bytes: 2097152 # 2 Mb
 """};
 
 def WEBSERVER_SNIPPET =
@@ -107,6 +106,12 @@ custom.stomp.broker:
   client-password: blogPazZw0rd
   system-login: blog
   system-password: blogPazZw0rd
+
+custom.image.max-bytes: 2097152 # 2 Mb
+custom.image.allowed-mime-types:
+ - image/png
+ - image/jpg
+ - image/jpeg
 """
 }
 

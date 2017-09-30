@@ -17,7 +17,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import org.springframework.test.web.servlet.MvcResult;
 import org.junit.Assert;
 
-public class ImagePostTitleUploadControllerTest extends AbstractUtTestRunner {
+public class ImagePostTitleUploadControllerTest extends AbstractImageUploadControllerTest {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ImagePostTitleUploadControllerTest.class);
 
@@ -29,10 +29,12 @@ public class ImagePostTitleUploadControllerTest extends AbstractUtTestRunner {
     @Test
     public void putImage() throws Exception {
 		byte[] img0 = {(byte)0xFF, (byte)0x01, (byte)0x1A};
-        String url0 = putImage(img0);
-		
+		MockMultipartFile mf0 = new MockMultipartFile(ImagePostTitleUploadController.IMAGE_PART, "lol-content.png", "image/png", img0);
+		String url0 = super.putImage(PUT_TEMPLATE, mf0);
+
 		byte[] img1 = {(byte)0xAA, (byte)0xBB, (byte)0xCC, (byte)0xDD, (byte)0xCC};
-		String url1 = putImage(img1);
+		MockMultipartFile mf1 = new MockMultipartFile(ImagePostTitleUploadController.IMAGE_PART, "lol-content.png", "image/png", img1);
+		String url1 = super.putImage(PUT_TEMPLATE, mf1);
 
 		Assert.assertNotEquals(url0, url1);
     }
@@ -48,32 +50,4 @@ public class ImagePostTitleUploadControllerTest extends AbstractUtTestRunner {
 				.andReturn()
 				;
 	}
-
-	private String putImage(byte[] bytes) throws Exception {
-		MockMultipartFile imgPart = new MockMultipartFile(ImagePostTitleUploadController.IMAGE_PART, "lol.png", "image/png", bytes);
-		MvcResult mvcResult = mockMvc.perform(
-		MockMvcRequestBuilders.fileUpload(PUT_TEMPLATE)
-				.file(imgPart).with(csrf())
-		)
-				.andExpect(status().isOk())
-				.andReturn()
-		;
-		AbstractImageUploadController.ImageResponse imageResponse = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), AbstractImageUploadController.ImageResponse.class);
-		String urlResponse = imageResponse.getUrl();
-
-		LOGGER.info("responsed image url: {}", urlResponse);
-
-		MvcResult result = mockMvc.perform(
-                MockMvcRequestBuilders.get(urlResponse)
-        )
-                .andExpect(status().isOk())
-				.andExpect(header().string(HttpHeaders.CONTENT_TYPE, "image/png"))
-				.andReturn()
-				;
-		byte[] content = result.getResponse().getContentAsByteArray();
-		
-		Assert.assertArrayEquals(bytes, content);
-
-		return urlResponse;
-    }
 }

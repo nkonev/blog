@@ -1,37 +1,39 @@
 package com.github.nikit.cpp.controllers;
 
 import com.github.nikit.cpp.config.CustomConfig;
+import com.github.nikit.cpp.config.ImageConfig;
+import com.github.nikit.cpp.exception.PayloadTooLargeException;
+import com.github.nikit.cpp.exception.UnsupportedMessageTypeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
+import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
-import java.util.function.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public abstract class AbstractImageUploadController {
 
     @Autowired
     private DataSource dataSource;
 
-    @Value("${custom.image.max.bytes}")
-    private long maxBytes;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractImageUploadController.class);
 
     @Autowired
     protected CustomConfig customConfig;
+
+    @Autowired
+    protected ImageConfig imageConfig;
 
     public static final String IMAGE_PART = "image";
 
@@ -75,7 +77,19 @@ public abstract class AbstractImageUploadController {
 	) throws SQLException, IOException {
 		long contentLength = getCorrectContentLength(imagePart.getSize());
         String contentType = imagePart.getContentType();
-        MediaType.valueOf(contentType);
+
+        MediaType inputMt = MediaType.valueOf(contentType);
+
+        boolean contentTypeOk = false;
+        for(MediaType mediaType: imageConfig.getAllowedMimeTypes()){
+            if (mediaType.isCompatibleWith(inputMt)) {
+                contentTypeOk = true;
+                break;
+            }
+        };
+        if (!contentTypeOk) {
+            throw new UnsupportedMessageTypeException("Incompatible content type. Allowed: " + imageConfig.getAllowedMimeTypes());
+        }
 
         try(Connection conn = dataSource.getConnection();) {
             return produceUrl.apply(updateImage.updateImage(conn, contentLength, contentType));
@@ -83,8 +97,8 @@ public abstract class AbstractImageUploadController {
     }
 
     private long getCorrectContentLength(long contentLength) {
-        if (contentLength > maxBytes) {
-            throw new RuntimeException("Image must be <= "+ maxBytes + " bytes");
+        if (contentLength > imageConfig.getMaxBytes()) {
+            throw new PayloadTooLargeException("Image must be <= "+ imageConfig.getMaxBytes() + " bytes");
         }
         return contentLength;
     }
@@ -101,12 +115,6 @@ public abstract class AbstractImageUploadController {
         try(Connection conn = dataSource.getConnection();) {
             buildResponse.accept(conn);
         }
-    }
-
-    protected HttpHeaders buildHeaders(String contentType) throws SQLException {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.valueOf(contentType));
-        return httpHeaders;
     }
 
     protected void copyStream(InputStream from, OutputStream to) throws IOException {
