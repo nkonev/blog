@@ -38,7 +38,7 @@ custom.stomp.broker:
   system-login: blog
   system-password: blogPazZw0rd
 
-custom.image.max-bytes: 2097152 # 2 Mb
+custom.image.max-bytes: 1048576 # 1 Mb. Must be < than tomcat file upload limit
 custom.image.allowed-mime-types:
  - image/png
  - image/jpg

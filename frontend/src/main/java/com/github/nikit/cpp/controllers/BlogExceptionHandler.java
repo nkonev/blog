@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MultipartException;
+
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,10 +37,27 @@ public class BlogExceptionHandler {
 
     @ResponseBody
     @ResponseStatus(HttpStatus.PAYLOAD_TOO_LARGE)
-    @org.springframework.web.bind.annotation.ExceptionHandler(PayloadTooLargeException.class)
-    public BlogError unsupportedMediaType(PayloadTooLargeException e)  {
+    @org.springframework.web.bind.annotation.ExceptionHandler({PayloadTooLargeException.class})
+    public BlogError payloadTooLargeImage(PayloadTooLargeException e)  {
         return new BlogError(HttpStatus.PAYLOAD_TOO_LARGE.value(), "payload too large", e.getMessage(), new Date().toString());
     }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @org.springframework.web.bind.annotation.ExceptionHandler({org.springframework.web.multipart.MultipartException.class})
+    public BlogError springMultipartError(org.springframework.web.multipart.MultipartException e)  {
+        String message = e.getMessage();
+        Throwable cause0 = e.getCause();
+        if (cause0!=null) {
+            message = cause0.getMessage();
+            Throwable cause1 = cause0.getCause();
+            if (cause1!=null) {
+                message = cause1.getMessage();
+            }
+        }
+        return new BlogError(HttpStatus.INTERNAL_SERVER_ERROR.value(), "multipart error", message, new Date().toString());
+    }
+
 
     @ResponseBody
     @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
