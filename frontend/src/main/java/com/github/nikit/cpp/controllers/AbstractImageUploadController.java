@@ -95,11 +95,11 @@ public abstract class AbstractImageUploadController {
         return mt.getSubtype();
     }
 
-    public HttpHeaders getImage(
-            Function<Connection, HttpHeaders> buildResponse
+    public void getImage(
+            Consumer<Connection> buildResponse
     ) throws SQLException, IOException {
         try(Connection conn = dataSource.getConnection();) {
-            return buildResponse.apply(conn);
+            buildResponse.accept(conn);
         }
     }
 

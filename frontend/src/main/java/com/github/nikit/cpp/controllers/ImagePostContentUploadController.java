@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
@@ -62,22 +63,22 @@ public class ImagePostContentUploadController extends AbstractImageUploadControl
     ///////////////////////////////////////////////////////////////////
 
     @GetMapping(GET_TEMPLATE)
-    public HttpHeaders getImage(
+    public void getImage(
             @PathVariable("id")UUID id,
-            OutputStream response
+            HttpServletResponse response
     ) throws SQLException, IOException {
-        return super.getImage(
+        super.getImage(
                 (Connection conn) -> {
                     try (PreparedStatement ps = conn.prepareStatement("SELECT img, content_type FROM images.post_content_image WHERE id = ?");) {
                         ps.setObject(1, id);
                         try (ResultSet rs = ps.executeQuery();) {
                             if (rs.next()) {
+                                response.setContentType(rs.getString("content_type"));
                                 try(InputStream imgStream = rs.getBinaryStream("img");){
-                                    copyStream(imgStream, response);
+                                    copyStream(imgStream, response.getOutputStream());
                                 } catch (SQLException | IOException e) {
                                     throw new RuntimeException(e);
                                 }
-                                return buildHeaders(rs.getString("content_type"));
                             } else {
                                 throw new DataNotFoundException("post content image with id '"+id+"' not found");
                             }

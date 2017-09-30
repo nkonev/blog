@@ -67,7 +67,7 @@ public class ImagePostTitleUploadControllerTest extends AbstractUtTestRunner {
                 MockMvcRequestBuilders.get(urlResponse)
         )
                 .andExpect(status().isOk())
-				// .andExpect(header().string(HttpHeaders.CONTENT_TYPE, "image/png")) // TODO header don't appears in browser
+				.andExpect(header().string(HttpHeaders.CONTENT_TYPE, "image/png"))
 				.andReturn()
 				;
 		byte[] content = result.getResponse().getContentAsByteArray();
