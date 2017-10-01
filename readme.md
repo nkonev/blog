@@ -28,6 +28,11 @@ See `.travis.yml` for Firefox and Chrome test examples
 ./mvnw clean package
 ```
 
+## Build and start docker image for development
+```bash
+cd docker
+docker-compose -f docker-compose.yml -f docker-compose.nginx.yml -f docker-compose.dev.yml up -d --build
+```
 
 # Run
 ```bash
@@ -122,5 +127,5 @@ A: Add `.with(csrf())` to MockMvcRequestBuilder chain
 
 ```bash
 cd docker
-docker-compose -f docker-compose.yml -f docker-compose.demo.yml up -d --build
+docker-compose -f docker-compose.yml -f docker-compose.nginx.yml -f docker-compose.demo.yml up -d
 ```

@@ -2,13 +2,9 @@ version: '2.1'
 
 services:
   blog-1:
-    restart: unless-stopped
-    image: nikit007/blog:latest
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "50m"
-        max-file: "1"
+    extends:
+      file: common.yml
+      service: blog-service
     environment:
       liquibase.drop-first: 'true'
       liquibase.contexts: 'main,test'
@@ -18,13 +14,9 @@ services:
       blog-dev:
         ipv4_address: 172.22.0.101
   blog-2:
-    restart: unless-stopped
-    image: nikit007/blog:latest
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "50m"
-        max-file: "1"
+    extends:
+      file: common.yml
+      service: blog-service
     environment:
       liquibase.enabled: 'false'
     ports:

@@ -18,6 +18,7 @@ after_acript:
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
     docker login -u="$DOCKER_LOGIN" -p="$DOCKER_PASSWORD";
+    docker-compose -f docker-compose.yml -f docker-compose.dev.yml build
     docker push nikit007/blog:latest;
     fi
 script:

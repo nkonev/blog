@@ -1,0 +1,17 @@
+version: '2.1'
+
+services:
+  nginx:
+    image: nginx:1.13.3
+    hostname: nginx
+    container_name: nginx-blog
+    ports:
+     - 8000:80
+    volumes:
+     - ./nginx/etc/nginx/crypt:/etc/nginx/crypt
+     - ./nginx/etc/nginx/conf.d:/etc/nginx/conf.d
+     - ./nginx/etc/nginx/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      blog-dev:
+        ipv4_address: 172.22.0.50
+
