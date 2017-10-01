@@ -3,7 +3,7 @@ version: '2.1'
 services:
   blog-service:
     restart: unless-stopped
-    image: nikit007/blog:latest
+    image: nkonev/blog:latest
     build:
       context: .
     logging:
