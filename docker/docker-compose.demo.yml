@@ -9,9 +9,6 @@ services:
       options:
         max-size: "50m"
         max-file: "1"
-    environment:
-      liquibase.drop-first: 'true'
-      liquibase.contexts: 'main,test'
     ports:
       - 8081:8080
     networks:
@@ -25,8 +22,6 @@ services:
       options:
         max-size: "50m"
         max-file: "1"
-    environment:
-      liquibase.enabled: 'false'
     ports:
       - 8082:8080
     networks:
