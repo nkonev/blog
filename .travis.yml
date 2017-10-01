@@ -14,6 +14,9 @@ before_script:
   - (cd docker; docker-compose up -d)
 after_acript:
   - "sh -e /etc/init.d/xvfb stop"
+  - "docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD"
+  - "(cd docker; docker-compose -f docker-compose.yml -f docker-compose.demo.yml build)"
+  - "docker push nikit007/blog:latest"
   - (cd docker; docker-compose down)
 script:
   # if there isn't pointed explicitly PhantomJS will be used by default for both webdriver integration test and js unit test
