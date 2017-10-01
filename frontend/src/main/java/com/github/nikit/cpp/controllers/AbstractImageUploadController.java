@@ -70,7 +70,7 @@ public abstract class AbstractImageUploadController {
         }
     }
 
-    public ImageResponse putImage(
+    protected ImageResponse postImage(
             MultipartFile imagePart,
             UpdateImage updateImage,
             Function<UUID, ImageResponse> produceUrl
@@ -107,7 +107,7 @@ public abstract class AbstractImageUploadController {
         return mt.getSubtype();
     }
 
-    public void getImage(
+    protected void getImage(
             Consumer<Connection> buildResponse
     ) throws SQLException, IOException {
         try(Connection conn = dataSource.getConnection();) {

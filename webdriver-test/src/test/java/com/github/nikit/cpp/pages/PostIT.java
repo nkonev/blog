@@ -155,12 +155,12 @@ public class PostIT extends AbstractItTestRunner {
             postEditPage.setText(newText);
             postEditPage.setTitle(newTitle);
 
-            if (seleniumConfiguration.getBrowser()== Browser.CHROME) {
+            if (seleniumConfiguration.getBrowser()==Browser.CHROME || seleniumConfiguration.getBrowser()==Browser.FIREFOX) {
                 postEditPage.setTitleImage(getExistsFile("../"+CommonTestConstants.TEST_IMAGE, CommonTestConstants.TEST_IMAGE).getCanonicalPath());
             }
             postEditPage.save();
 
-            if (seleniumConfiguration.getBrowser()== Browser.CHROME) {
+            if (seleniumConfiguration.getBrowser()==Browser.CHROME || seleniumConfiguration.getBrowser()==Browser.FIREFOX) {
                 assertPoll(() -> !StringUtils.isEmpty(postRepository.findOne(postId).getTitleImg()), 15);
             }
 

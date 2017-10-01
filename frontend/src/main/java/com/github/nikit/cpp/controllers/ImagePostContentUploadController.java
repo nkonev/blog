@@ -2,7 +2,6 @@ package com.github.nikit.cpp.controllers;
 
 import com.github.nikit.cpp.dto.UserAccountDetailsDTO;
 import com.github.nikit.cpp.exception.DataNotFoundException;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -13,27 +12,25 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
 public class ImagePostContentUploadController extends AbstractImageUploadController {
 
-    public static final String PUT_TEMPLATE = "/api/image/post/content";
-    public static final String GET_TEMPLATE = PUT_TEMPLATE + "/{id}.{ext}";
+    public static final String POST_TEMPLATE = "/api/image/post/content";
+    public static final String GET_TEMPLATE = POST_TEMPLATE + "/{id}.{ext}";
 
-    @PostMapping(PUT_TEMPLATE)
+    @PostMapping(POST_TEMPLATE)
     @PreAuthorize("isAuthenticated()")
-    public ImageResponse putImage(
+    public ImageResponse postImage(
             @RequestPart(value = IMAGE_PART) MultipartFile imagePart,
             @NotNull @AuthenticationPrincipal UserAccountDetailsDTO userAccount
     ) throws SQLException, IOException {
-        return super.putImage(
+        return super.postImage(
             imagePart,
             (conn, contentLength, contentType) -> {
                 try(PreparedStatement ps = conn.prepareStatement("INSERT INTO images.post_content_image(img, content_type) VALUES (?, ?) RETURNING id;");) {
