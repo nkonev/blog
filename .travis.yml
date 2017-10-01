@@ -20,7 +20,7 @@ after_success:
       cd docker;
       docker login -u="$DOCKER_LOGIN" -p="$DOCKER_PASSWORD";
       docker-compose -f docker-compose.yml -f docker-compose.dev.yml build;
-      docker push nikit007/blog:latest;
+      docker push nkonev/blog:latest;
     ) fi
 script:
   # if there isn't pointed explicitly PhantomJS will be used by default for both webdriver integration test and js unit test
