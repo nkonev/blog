@@ -1,6 +1,5 @@
 package com.github.nikit.cpp;
 
-import javafx.scene.shape.Path;
 
 /**
  * Created by nik on 23.05.17.
