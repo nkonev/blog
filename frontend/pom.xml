@@ -342,6 +342,7 @@
                         <configuration>
                             <tasks>
                                 <move file="${project.build.outputDirectory}/static/${git-template-json}" tofile="${project.build.outputDirectory}/static/${git-json}"/>
+                                <echo file="${project.build.directory}/VERSION}">${project.version}</echo>
                             </tasks>
                         </configuration>
                         <goals>
@@ -584,26 +585,6 @@
                                 <id>tag-latest</id>
                                 <goals>
                                     <goal>tag</goal>
-                                </goals>
-                                <configuration>
-                                    <repository>${docker.repository}</repository>
-                                    <tag>latest</tag>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>push-version</id>
-                                <goals>
-                                    <goal>push</goal>
-                                </goals>
-                                <configuration>
-                                    <repository>${docker.repository}</repository>
-                                    <tag>${project.version}</tag>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>push-latest</id>
-                                <goals>
-                                    <goal>push</goal>
                                 </goals>
                                 <configuration>
                                     <repository>${docker.repository}</repository>

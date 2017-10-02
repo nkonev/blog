@@ -23,7 +23,8 @@ script:
   - if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_TEST_RESULT" == "0" ]]; then (
       echo "Will push docker image";
       docker login -u="$DOCKER_LOGIN" -p="$DOCKER_PASSWORD";
-      ./mvnw -DskipTests -Dasciidoctor.skip -P docker deploy;
+      docker push nkonev/blog:latest;
+      docker push nkonev/blog:$(cat frontend/target/VERSION);
     ) else (
       echo "Won't push docker image because subsequent build failed";
     ) fi
