@@ -24,6 +24,8 @@ script:
   - if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_TEST_RESULT" == "0" ]]; then (
       docker login -u="$DOCKER_LOGIN" -p="$DOCKER_PASSWORD";
       docker push nkonev/blog:latest;
+    ) else (
+      echo "Won't push docker image because subsequent build failed";
     ) fi
 addons:
   firefox: "56.0"
