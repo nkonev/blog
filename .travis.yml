@@ -21,7 +21,7 @@ script:
 #  - "./mvnw -P frontend clean package"
 #  - "./mvnw -Dkarma.browsers=Firefox -Dcustom.selenium.browser=FIREFOX -P frontend clean package"
 #  - "./mvnw -Dkarma.browsers=Chrome -Dcustom.selenium.browser=CHROME -P frontend clean package"
-  - if [ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_TEST_RESULT" == "0" ]; then (
+  - if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_TEST_RESULT" == "0" ]]; then (
       docker login -u="$DOCKER_LOGIN" -p="$DOCKER_PASSWORD";
       docker push nkonev/blog:latest;
     ) fi
