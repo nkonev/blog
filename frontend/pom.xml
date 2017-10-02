@@ -342,7 +342,7 @@
                         <configuration>
                             <tasks>
                                 <move file="${project.build.outputDirectory}/static/${git-template-json}" tofile="${project.build.outputDirectory}/static/${git-json}"/>
-                                <echo file="${project.build.directory}/VERSION}">${project.version}</echo>
+                                <echo file="${project.build.directory}/VERSION">${project.version}</echo>
                             </tasks>
                         </configuration>
                         <goals>
