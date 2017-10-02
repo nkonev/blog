@@ -3,7 +3,7 @@ version: '2.1'
 services:
   blog-1:
     restart: unless-stopped
-    image: nikit007/blog:latest
+    image: nkonev/blog:latest
     logging:
       driver: "json-file"
       options:
@@ -16,7 +16,7 @@ services:
         ipv4_address: 172.22.0.101
   blog-2:
     restart: unless-stopped
-    image: nikit007/blog:latest
+    image: nkonev/blog:latest
     logging:
       driver: "json-file"
       options:
