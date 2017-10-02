@@ -568,11 +568,20 @@
                                 <id>build</id>
                                 <goals>
                                     <goal>build</goal>
-                                    <goal>push</goal>
                                 </goals>
                             </execution>
                             <execution>
-                                <id>tag</id>
+                                <id>tag-version</id>
+                                <goals>
+                                    <goal>tag</goal>
+                                </goals>
+                                <configuration>
+                                    <repository>${docker.repository}</repository>
+                                    <tag>${project.version}</tag>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>tag-latest</id>
                                 <goals>
                                     <goal>tag</goal>
                                 </goals>
@@ -581,11 +590,27 @@
                                     <tag>latest</tag>
                                 </configuration>
                             </execution>
+                            <execution>
+                                <id>push-version</id>
+                                <goals>
+                                    <goal>push</goal>
+                                </goals>
+                                <configuration>
+                                    <repository>${docker.repository}</repository>
+                                    <tag>${project.version}</tag>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>push-latest</id>
+                                <goals>
+                                    <goal>push</goal>
+                                </goals>
+                                <configuration>
+                                    <repository>${docker.repository}</repository>
+                                    <tag>latest</tag>
+                                </configuration>
+                            </execution>
                         </executions>
-                        <configuration>
-                            <repository>${docker.repository}</repository>
-                            <tag>${project.version}</tag>
-                        </configuration>
                     </plugin>
                 </plugins>
             </build>
