@@ -1,10 +1,7 @@
 <template>
     <div>
         <h1>Пользователи</h1>
-        <div class="search">
-            <label for="search">Search</label>
-            <input id="search" v-model="searchString" @input="onChangeSearchString()"/> <button @click="onClearButton()">clear</button>
-        </div>
+        <Search @SEARCH_EVENT="onChangeSearchString"></Search>
 
         <paginate
                 :page-count="pageCount"
@@ -40,21 +37,20 @@
     import {users} from '../routes';
     import bus from '../bus'
     import {LOGIN, LOGOUT, UNAUTHORIZED} from '../bus'
-    import debounce from "lodash/debounce"
+    import Search from './Search.vue';
 
     Vue.component('paginate', Paginate);
 
     export default {
-        components: {UserItem}, // говорим, из каких компонентов могут быть извлечены тэги
         data() {
             return {
                 users: [],
                 pageCount: 0,
-                searchString: '',
             }
         },
         methods: {
-            reloadPage: function(pageNum) {
+            reloadPage: function(pageNum, searchString) {
+                if (!searchString) {searchString=''}
                 this.$router.push({path: users, query: {page: pageNum}});
                 console.log("opening page ", pageNum);
 
@@ -62,7 +58,7 @@
                 this.$http.get('/api/user',
                     {
                         params: {
-                            searchString: this.searchString,
+                            searchString: searchString,
                             page: (pageNum-1),
                             size: PAGE_SIZE
                         },
@@ -83,19 +79,18 @@
                 this.pageCount=0;
                 this.users=[];
             },
-            onChangeSearchString() {
-                console.debug('onChangeSearchString');
+            onChangeSearchString(str) {
+                console.debug('onChangeSearchString', str);
+                this.searchString = str;
                 this.users = [];
                 const initPage = 0;
-                this.reloadPage(initPage+1);
+                this.reloadPage(initPage+1, str);
                 this.$refs.paginate.selected = initPage;
             },
-            onClearButton() {
-                if (this.searchString !== '') {
-                    this.searchString = '';
-                    this.onChangeSearchString();
-                }
-            },
+        },
+        components: {
+            Search,
+            UserItem
         },
         computed: {
             // The index of initial page which selected. default: 0
@@ -110,7 +105,6 @@
             bus.$on(LOGIN, this.onLogin);
             bus.$on(LOGOUT, this.onLogout);
             bus.$on(UNAUTHORIZED, this.onLogout);
-            this.onChangeSearchString = debounce(this.onChangeSearchString, 500);
         },
         destroyed() {
             //console.log("destroyed");

@@ -1,9 +1,7 @@
 <template>
     <div>
-        <div class="search">
-            <label for="search">Search</label>
-            <input id="search" v-model="searchString" @input="onChangeSearchString()"/> <button @click="onClearButton()" id="clear-button">clear</button>
-        </div>
+        <Search @SEARCH_EVENT="onChangeSearchString"></Search>
+
         <div class="post-list">
             <div v-if="posts.length>0">
                 <post-item v-for="post in posts" v-bind:postDTO="post" :key="post.id"></post-item>
@@ -28,10 +26,10 @@
 <script>
     import PostItem from './PostItem.vue'
     import InfiniteLoading from 'vue-infinite-loading';
-    import debounce from "lodash/debounce"
     import {API_POST} from '../constants'
     import BlogSpinner from './BlogSpinner.vue'
     import PostAddFab from './PostAddFab.vue'
+    import Search from './Search.vue';
 
     const Stomp = require("@stomp/stompjs/lib/stomp.js").Stomp; // https://github.com/jmesnil/stomp-websocket/issues/119 https://stomp-js.github.io/stomp-websocket/codo/extra/docs-src/Usage.md.html
 
@@ -54,7 +52,8 @@
             PostItem,
             InfiniteLoading,
             BlogSpinner,
-            PostAddFab
+            PostAddFab,
+            Search
         },
         methods: {
             onInfinite() {
@@ -83,23 +82,14 @@
                     }
                 });
             },
-            onChangeSearchString() {
-                console.debug('onChangeSearchString');
+            onChangeSearchString(str) {
+                console.debug('onChangeSearchString', str);
+                this.searchString = str;
                 this.posts = [];
                 this.$nextTick(() => {
                     this.$refs.infiniteLoading.$emit('$InfiniteLoading:reset');
                 });
             },
-            onClearButton() {
-                if (this.searchString !== '') {
-                    this.searchString = '';
-                    this.onChangeSearchString();
-                }
-            }
-        },
-        created() {
-            // https://forum-archive.vuejs.org/topic/5174/debounce-replacement-in-vue-2-0
-            this.onChangeSearchString = debounce(this.onChangeSearchString, 500);
         },
         mounted(){
             const url = ((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host + "/stomp";
@@ -149,9 +139,3 @@
         }
     }
 </script>
-
-<style lang="stylus" scoped>
-    .search {
-        margin-top 4px;
-    }
-</style>
