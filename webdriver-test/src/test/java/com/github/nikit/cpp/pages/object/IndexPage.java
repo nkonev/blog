@@ -55,6 +55,6 @@ public class IndexPage {
     }
 
     public void clearSearchButton() {
-        $("#clear-button").shouldBe(CLICKABLE).click();
+        $("#clear-search").shouldBe(CLICKABLE).click();
     }
 }
