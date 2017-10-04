@@ -23,4 +23,18 @@ describe('Search.vue', ()=>{
         el.element.value = 'good day for die';
         el.trigger('input');
     });
+
+    it('emit event clear', (done)=>{
+        wrapper.setData({
+            searchString: 'dirty due previous search'
+        });
+
+        wrapper.vm.$on('SEARCH_EVENT', (str)=>{
+            expect(str).toBe('');
+            done();
+        });
+
+        const el = wrapper.find("button#clear-search")[0];
+        el.trigger('click');
+    });
 });

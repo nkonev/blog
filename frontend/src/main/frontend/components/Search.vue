@@ -1,7 +1,7 @@
 <template>
     <div class="search">
         <label for="search">Search</label>
-        <input id="search" v-model="searchString" @input="onChangeSearchString()"/> <button @click="onClearButton()">clear</button>
+        <input id="search" v-model="searchString" @input="onChangeSearchString()"/> <button id="clear-search" @click="onClearButton()">clear</button>
     </div>
 
 </template>
