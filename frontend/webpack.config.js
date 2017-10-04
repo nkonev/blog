@@ -18,7 +18,7 @@ const webpackModule = require('./webpack/module');
 const webpackResolve = require('./webpack/resolve');
 
 module.exports = {
-    cache: false, // workaround for webpack 3 and extract-text-webpack-plugin issue https://github.com/webpack-contrib/extract-text-webpack-plugin/pull/546#issuecomment-317856794
+    cache: true,
 
     context: srcDir,
 
