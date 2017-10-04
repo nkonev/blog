@@ -43,7 +43,6 @@
         <git-template-json>git.template.json</git-template-json>
         <git-json>git.json</git-json>
 
-        <dockerfile-maven-plugin-version>1.3.6</dockerfile-maven-plugin-version>
         <docker.repository>nkonev/blog</docker.repository>
     </properties>
 
@@ -85,15 +84,6 @@
                 </includes>
             </resource>
         </resources>
-
-        <extensions>
-            <extension>
-                <groupId>com.spotify</groupId>
-                <artifactId>dockerfile-maven-extension</artifactId>
-                <version>${dockerfile-maven-plugin-version}</version>
-            </extension>
-        </extensions>
-
 
         <pluginManagement>
             <plugins>
@@ -560,36 +550,21 @@
             <build>
                 <plugins>
                     <plugin>
-                        <!-- https://github.com/spotify/dockerfile-maven -->
-                        <groupId>com.spotify</groupId>
-                        <artifactId>dockerfile-maven-plugin</artifactId>
-                        <version>${dockerfile-maven-plugin-version}</version>
+                        <artifactId>maven-antrun-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>build</id>
-                                <goals>
-                                    <goal>build</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>tag-version</id>
-                                <goals>
-                                    <goal>tag</goal>
-                                </goals>
+                                <id>docker-build</id>
+                                <phase>package</phase>
                                 <configuration>
-                                    <repository>${docker.repository}</repository>
-                                    <tag>${project.version}</tag>
+                                    <tasks>
+                                        <exec dir="${project.basedir}" executable="docker" failonerror="true" searchpath="true">
+                                            <arg line="build -t ${docker.repository}:latest -t ${docker.repository}:${project.version} ."/>
+                                        </exec>
+                                    </tasks>
                                 </configuration>
-                            </execution>
-                            <execution>
-                                <id>tag-latest</id>
                                 <goals>
-                                    <goal>tag</goal>
+                                    <goal>run</goal>
                                 </goals>
-                                <configuration>
-                                    <repository>${docker.repository}</repository>
-                                    <tag>latest</tag>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
