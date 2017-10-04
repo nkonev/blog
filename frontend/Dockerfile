@@ -1,4 +1,3 @@
-# will be copied to target directory
 # docker build -t blog:latest .
 # docker run blog:latest
 FROM java:openjdk-8-jre
