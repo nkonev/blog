@@ -129,3 +129,8 @@ A: Add `.with(csrf())` to MockMvcRequestBuilder chain
 cd docker
 docker-compose -f docker-compose.yml -f docker-compose.nginx.yml -f docker-compose.demo.yml up -d
 ```
+
+See logs of jars
+```bash
+journalctl -f CONTAINER_NAME=blog-1 CONTAINER_NAME=blog-2
+```
