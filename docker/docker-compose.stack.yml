@@ -32,10 +32,7 @@ services:
       - ./postgresql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - postgresql_blog_dev_data_dir:/var/lib/postgresql/data
     logging:
-      driver: "json-file"
-      options:
-        max-size: "50m"
-        max-file: "1"
+      driver: "journald"
 
   redis:
     image: redis:4.0.2
@@ -45,10 +42,7 @@ services:
     volumes :
       - redis_blog_dev_data_dir:/data
     logging:
-      driver: "json-file"
-      options:
-        max-size: "50m"
-        max-file: "1"
+      driver: "journald"
 
   rabbitmq:
     image : nkonev/rabbitmq-web-stomp:3.6.12
@@ -61,9 +55,7 @@ services:
     volumes :
       - rabbitmq_data_dir:/var/lib/rabbitmq/mnesia
     logging:
-      driver: "json-file"
-      options:
-        max-size: "50m"
+      driver: "journald"
 
 volumes:
   #enviroment
