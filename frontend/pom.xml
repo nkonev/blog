@@ -328,11 +328,12 @@
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>rename static version file</id>
-                        <phase>prepare-package</phase>
+                        <id>version-stuff</id>
+                        <phase>compile</phase>
                         <configuration>
                             <tasks>
                                 <move file="${project.build.outputDirectory}/static/${git-template-json}" tofile="${project.build.outputDirectory}/static/${git-json}"/>
+                                <!-- this file used by travis for pick-up version and use it in docker push -->
                                 <echo file="${project.build.directory}/VERSION">${project.version}</echo>
                             </tasks>
                         </configuration>
@@ -496,6 +497,7 @@
         <dependency>
             <groupId>com.icegreen</groupId>
             <artifactId>greenmail</artifactId>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
