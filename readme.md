@@ -100,7 +100,9 @@ curl -i http://127.0.0.1:8080/git.json
 
 # Running on Windows without docker.
 
-First you should install redis, postgres, Rabbit MQ and setup them (create database, schema user for Postgres, install web stomp plugin and create user for RabbitMQ).
+First you should
+install redis, postgres, Rabbit MQ 
+and manually setup them (create database, schema user for Postgres, install web stomp plugin and create user for RabbitMQ).
 
 Redis Windows x86 which works on my PC
 http://bitsandpieces.it/redis-x86-32bit-builds-for-windows
