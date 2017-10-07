@@ -6,19 +6,21 @@
 * Docker 17.05.0-ce +
 * docker-compose 1.16.0 +
 
-# Run test environment
+# Start test environment
 
 ```bash
 (cd docker; docker-compose up -d)
 ```
 
-# Building with frontend (just turn on `frontend` profile)
+# Building with frontend and build docker image
 
 There is highly recommends to shut down your application on 8080, although tests uses 8090, some of
 them can fails, with websocket for example.
 ```bash
-./mvnw -P frontend clean package
+./mvnw -P frontend -P docker clean package
 ```
+
+As you can see, there is switches via maven profiles.
 
 This will run tests on PhantomJS.
 See `.travis.yml` for Firefox and Chrome test examples
