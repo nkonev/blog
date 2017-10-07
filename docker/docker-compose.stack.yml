@@ -1,0 +1,73 @@
+version: '3.2'
+
+services:
+  blog:
+    image: nkonev/blog:latest
+    logging:
+      driver: "journald"
+    environment:
+      - liquibase.drop-first=true
+      - liquibase.contexts=main,test
+      - custom.stomp.broker.host=rabbitmq
+      - custom.stomp.broker.port=61613
+      - spring.datasource.url=jdbc:postgresql://postgresql:5432/blog?connectTimeout=10
+      - spring.redis.url=redis://redis:6379/0
+    ports:
+      - 8000:8080
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8080:8080"
+    stop_grace_period: 1m30s
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+  postgresql:
+    image : postgres:10.0
+    hostname: postgresql
+    # имена контейнеров не должны пересекаться с уже существующими
+    ports:
+      - 25432:5432
+    environment:
+      - POSTGRES_PASSWORD=postgresqlPassword
+    volumes :
+      - ./postgresql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - postgresql_blog_dev_data_dir:/var/lib/postgresql/data
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "1"
+
+  redis:
+    image: redis:4.0.2
+    hostname: redis
+    ports:
+      - 26379:6379
+    volumes :
+      - redis_blog_dev_data_dir:/data
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "1"
+
+  rabbitmq:
+    image : nkonev/rabbitmq-web-stomp:3.6.12
+    hostname: rabbitmq
+    ports:
+      - 45672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=blog
+      - RABBITMQ_DEFAULT_PASS=blogPazZw0rd
+    volumes :
+      - rabbitmq_data_dir:/var/lib/rabbitmq/mnesia
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+
+volumes:
+  #enviroment
+  postgresql_blog_dev_data_dir:
+  redis_blog_dev_data_dir:
+  rabbitmq_data_dir:

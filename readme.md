@@ -131,10 +131,17 @@ A: Add `.with(csrf())` to MockMvcRequestBuilder chain
 
 ```bash
 cd docker
-docker-compose -f docker-compose.yml -f docker-compose.nginx.yml -f docker-compose.demo.yml up -d
+docker stack deploy --compose-file docker-compose.stack.yml BLOGSTACK
+docker service scale BLOGSTACK_blog=4
+docker service ls
 ```
 
 See logs of jars
 ```bash
-journalctl -f CONTAINER_NAME=blog-1 CONTAINER_NAME=blog-2
+docker service logs -f BLOGSTACK_blog
+```
+
+Remove failed
+```bash
+docker rm $(docker ps -aq -f name=BLOGSTACK_blog -f status=exited)
 ```
