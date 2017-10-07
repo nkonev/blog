@@ -1,4 +1,4 @@
-version: '2.1'
+version: '3.2'
 
 services:
   blog-1:
@@ -23,3 +23,13 @@ services:
     networks:
       blog-dev:
         ipv4_address: 172.22.0.102
+#  visualizer:
+#    image: dockersamples/visualizer:stable
+#    ports:
+#      - "8080:8080"
+#    stop_grace_period: 1m30s
+#    volumes:
+#      - "/var/run/docker.sock:/var/run/docker.sock"
+#    networks:
+#      blog-dev:
+#        ipv4_address: 172.22.0.52

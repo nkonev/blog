@@ -1,6 +1,6 @@
 # This file used for both developer and demo purposes.
 # It contains environment
-version: '2.1'
+version: '3.2'
 
 services:
   #enviroment
@@ -78,11 +78,7 @@ volumes:
 networks:
   blog-dev:
     driver: bridge
-#    driver_opts:
-#      com.docker.network.enable_ipv6: "true"
-#      com.docker.network.bridge.enable_ip_masquerade: "false"
     ipam:
       driver: default
       config:
       - subnet: 172.22.0.0/24
-        gateway: 172.22.0.1
