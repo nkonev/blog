@@ -178,7 +178,9 @@
                             return successResp.body.relativeUrl
                         }, failResp => {
                             throw "failed to upload title img"
-                        }).then(sendPost)
+                        })
+                            .then(sendPost)
+                            .catch(e => console.log("Catched error in sending post with image"))
                     });
                 } else {
                     sendPost('');
