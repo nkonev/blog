@@ -6,7 +6,6 @@ services:
     logging:
       driver: "journald"
     environment:
-      - liquibase.drop-first=true
       - liquibase.contexts=main,test
       - custom.stomp.broker.host=rabbitmq
       - custom.stomp.broker.port=61613
