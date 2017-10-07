@@ -57,7 +57,7 @@ custom:
 
 server.port: 9080
 
-server.tomcat.basedir: ${java.io.tmpdir}/com.github.nikit.cpp.tomcat
+server.tomcat.basedir: ${java.io.tmpdir}/com.github.nkonev.tomcat
 server.session.store-dir: ${server.tomcat.basedir}/sessions
 
 custom.it.user: admin

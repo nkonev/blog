@@ -8,7 +8,7 @@
 
     <parent>
         <artifactId>blog.parent</artifactId>
-        <groupId>com.github.nikit.cpp</groupId>
+        <groupId>com.github.nkonev</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
@@ -250,7 +250,7 @@
                             <goal>repackage</goal>
                         </goals>
                         <configuration>
-                            <mainClass>com.github.nikit.cpp.Launcher</mainClass>
+                            <mainClass>com.github.nkonev.Launcher</mainClass>
                             <!-- Need because repackaged jar with original name not applicable for including -->
                             <!-- Also *-exec.jar used in Dockerfile -->
                             <classifier>exec</classifier>
@@ -440,7 +440,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.nikit.cpp</groupId>
+            <groupId>com.github.nkonev</groupId>
             <artifactId>common-test</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>test</scope>
@@ -448,7 +448,7 @@
 
 
         <dependency>
-            <groupId>com.github.nikit.cpp</groupId>
+            <groupId>com.github.nkonev</groupId>
             <artifactId>api</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>

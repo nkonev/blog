@@ -173,14 +173,18 @@
                 if (this.$data.chosenFile) {
                     this.myCroppa.promisedBlob(this.$data.chosenFile.type).then(blob => {
                         const formData = new FormData();
-                        formData.append('image', blob);
-                        this.$http.post('/api/image/post/title', formData).then(successResp => {
-                            return successResp.body.relativeUrl
-                        }, failResp => {
-                            throw "failed to upload title img"
-                        })
+                        formData.append('image', blob); // multipart part with name 'image'
+                        this.$http.post('/api/image/post/title', formData)
+                            .then(successResp => {
+                                return successResp.body.relativeUrl
+                            }, failResp => {
+                                throw "failed to upload title img"
+                            })
                             .then(sendPost)
-                            .catch(e => console.log("Catched error in sending post with image"))
+                            .catch(e => {
+                                console.log("Catch error in sending post with image");
+                                this.finishSending();
+                            })
                     });
                 } else {
                     sendPost('');

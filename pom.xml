@@ -6,7 +6,7 @@
 
     <name>blog</name>
     <artifactId>blog.parent</artifactId>
-    <groupId>com.github.nikit.cpp</groupId>
+    <groupId>com.github.nkonev</groupId>
     <version>1.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>

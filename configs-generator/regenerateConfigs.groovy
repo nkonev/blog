@@ -69,7 +69,7 @@ custom.postgres.fulltext.reg-config: "'russian'::regconfig"
 
 def WEBSERVER_SNIPPET =
 """
-server.tomcat.basedir: \${java.io.tmpdir}/com.github.nikit.cpp.tomcat
+server.tomcat.basedir: \${java.io.tmpdir}/com.github.nkonev.tomcat
 server.session.store-dir: \${server.tomcat.basedir}/sessions
 """;
 
