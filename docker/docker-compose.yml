@@ -45,9 +45,7 @@ services:
         max-file: "1"
 
   rabbitmq:
-    # image : rabbitmq:3.6.11-management
-    build:
-      context: ./rabbitmq
+    image : nkonev/rabbitmq-web-stomp:3.6.12
     hostname: rabbitmq
     container_name: rabbitmq-blog-dev
     restart: unless-stopped
