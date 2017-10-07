@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/nkonev/blog.svg?branch=master)](https://travis-ci.org/nikit-cpp/blog)
+[![Build Status](https://travis-ci.org/nkonev/blog.svg?branch=master)](https://travis-ci.org/nkonev/blog)
 
 # Requirements
 
