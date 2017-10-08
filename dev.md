@@ -43,3 +43,8 @@ and pass it with `-D`:
 ```bash
 docker-compose -f docker-compose.yml -f docker-compose.demo.yml up -d
 ```
+
+```bash
+- "./mvnw -Dkarma.browsers=Firefox -Dcustom.selenium.browser=FIREFOX -P frontend clean package"
+- "./mvnw -Dkarma.browsers=Chrome -Dcustom.selenium.browser=CHROME -P frontend clean package"
+```

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <Target>System.out</Target>
+        <encoder>
+            <pattern>%d{dd.MM.yyyy HH:mm:ss.SSS} %-5level @deploy-test [%thread] %logger{36}:%line %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.github.nkonev.test.deploy" level="INFO"/>
+    <logger name="stack-logs" level="INFO"/>
+    <logger name="services-ls-logs" level="INFO"/>
+
+    <root level="INFO">
+        <appender-ref ref="stdout"/>
+    </root>
+
+</configuration>
