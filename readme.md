@@ -129,6 +129,16 @@ A: Add `.with(csrf())` to MockMvcRequestBuilder chain
 
 # Demo Run
 
+First add constraint on database node (It can be manager) for prevent instantiate db containers on another nodes for prevent data loss:
+```bash
+# Run it on node which will be database
+docker node update --label-add 'blog.server.role=db' $(docker node ls -q)
+
+# check
+docker node inspect -f '{{index .Spec.Labels "blog.server.role"}}' $(docker node ls -q)
+```
+
+Next you can 
 ```bash
 cd docker
 docker stack deploy --compose-file docker-compose.stack.yml BLOGSTACK
@@ -137,12 +147,17 @@ docker service ls
 docker stack rm BLOGSTACK
 ```
 
+See postgres volume
+```bash
+docker volume inspect BLOGSTACK_postgresql_blog_dev_data_dir
+```
+
 See logs of jars
 ```bash
 docker service logs -f BLOGSTACK_blog
 ```
 
-Remove failed
+Remove exited containers
 ```bash
 docker rm $(docker ps -aq -f name=BLOGSTACK_blog -f status=exited)
 ```

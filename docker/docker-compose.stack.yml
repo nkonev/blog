@@ -41,6 +41,9 @@ services:
       - postgresql_blog_dev_data_dir:/var/lib/postgresql/data
     logging:
       driver: "journald"
+    deploy:
+      placement:
+        constraints: [node.labels.blog.server.role == db]
 
   redis:
     image: redis:4.0.2
@@ -51,6 +54,9 @@ services:
       - redis_blog_dev_data_dir:/data
     logging:
       driver: "journald"
+    deploy:
+      placement:
+        constraints: [node.labels.blog.server.role == db]
 
   rabbitmq:
     image : nkonev/rabbitmq-web-stomp:3.6.12
@@ -64,6 +70,9 @@ services:
       - rabbitmq_data_dir:/var/lib/rabbitmq/mnesia
     logging:
       driver: "journald"
+    deploy:
+      placement:
+        constraints: [node.labels.blog.server.role == db]
 
 volumes:
   #enviroment
