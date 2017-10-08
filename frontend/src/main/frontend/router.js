@@ -14,6 +14,7 @@ import ResendRegistrationConfirmationToken from './components/ResendRegistration
 import RestorePassword from './components/RestorePassword.vue'
 import PasswordReset from './components/PasswordReset.vue'
 import Help from './components/Help.vue'
+import VEC from './components/VEC.vue'
 import {root, root_name, users, useProfileName, post} from './routes'
 const PostEdit = () => import('./components/PostEdit.vue');
 
@@ -48,6 +49,7 @@ const router = new Router({
         { path: '/help', component: Help},
         { path: '/restore-password', component: RestorePassword },
         { path: '/password-reset', component: PasswordReset },
+        { path: '/vec', component: VEC },
         { path: '*', component: NotFoundComponent },
     ]
 });
