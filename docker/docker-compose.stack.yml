@@ -5,6 +5,8 @@ services:
     image: nkonev/blog:latest
     logging:
       driver: "journald"
+    deploy:
+      replicas: 2
     environment:
       - liquibase.contexts=main,test
       - custom.stomp.broker.host=rabbitmq

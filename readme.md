@@ -134,6 +134,7 @@ cd docker
 docker stack deploy --compose-file docker-compose.stack.yml BLOGSTACK
 docker service scale BLOGSTACK_blog=4
 docker service ls
+docker stack rm BLOGSTACK
 ```
 
 See logs of jars
