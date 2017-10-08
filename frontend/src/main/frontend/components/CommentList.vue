@@ -4,6 +4,16 @@
             <h1 class="comments-header">Comments:</h1>
             <div id="comments-list">
                 <comment-item v-for="comment in comments" v-bind:commentDTO="comment" :key="comment.id"></comment-item>
+
+                <ViewEditCancel
+                        :loadingMessage="'loading post from server'"
+                        :canEdit="comment.canEdit" :canDelete="comment.canDelete"
+                        :onDelete="onDeleteComment"
+                        :onSave="onSaveComment"
+                        :isValid="validateComment">
+
+                </ViewEditCancel>
+
             </div>
             <paginate
                     :page-count="pageCount"
@@ -34,11 +44,12 @@
     import {PAGE_SIZE} from "../constants";
     import Paginate from 'vuejs-paginate';
     import bus, {POST_SWITCHED} from '../bus'
+    import ViewEditCancel from './ViewEditCancel.vue';
 
     Vue.component('paginate', Paginate);
 
     export default {
-        components: {CommentItem},
+        components: {CommentItem, ViewEditCancel },
         data() {
             return {
                 comments: [],
@@ -64,6 +75,22 @@
                         // alert(response);
                     }
                 );
+            },
+            onDeleteComment(){
+                console.log('deleting!');
+            },
+            validateComment(){
+                console.log('validating...');
+                return true;
+            },
+            onSaveComment() {
+                console.log('saving...');
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        resolve(true);
+                        //reject(false);
+                    }, 1000);
+                });
             },
         },
         computed: {
