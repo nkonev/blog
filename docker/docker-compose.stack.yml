@@ -8,6 +8,9 @@ services:
     deploy:
       replicas: 2
     environment:
+      # https://stackoverflow.com/questions/28327620/difference-between-java-options-java-tool-options-and-java-opts
+      # https://blogs.oracle.com/poonam/about-g1-garbage-collector%2c-permanent-generation-and-metaspace
+      - _JAVA_OPTIONS=-Djava.security.egd=file:/dev/./urandom -Xms256m -Xmx512m -XX:MetaspaceSize=128M -XX:MaxMetaspaceSize=256M
       - liquibase.contexts=main,test
       - custom.stomp.broker.host=rabbitmq
       - custom.stomp.broker.port=61613
