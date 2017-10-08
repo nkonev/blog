@@ -31,7 +31,6 @@ services:
   postgresql:
     image : postgres:10.0
     hostname: postgresql
-    # имена контейнеров не должны пересекаться с уже существующими
     ports:
       - 25432:5432
     environment:
