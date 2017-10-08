@@ -29,8 +29,6 @@ services:
       placement:
         constraints: [node.role == manager]
   postgresql:
-    env_file:
-      - .env
     image: postgres:${POSTGRES_VERSION}
     hostname: postgresql
     ports:
@@ -47,8 +45,6 @@ services:
         constraints: [node.labels.blog.server.role == db]
 
   redis:
-    env_file:
-      - .env
     image: redis:${REDIS_VERSION}
     hostname: redis
     ports:
