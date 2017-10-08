@@ -29,7 +29,9 @@ services:
       placement:
         constraints: [node.role == manager]
   postgresql:
-    image : postgres:10.0
+    env_file:
+      - .env
+    image: postgres:${POSTGRES_VERSION}
     hostname: postgresql
     ports:
       - 25432:5432
@@ -45,7 +47,9 @@ services:
         constraints: [node.labels.blog.server.role == db]
 
   redis:
-    image: redis:4.0.2
+    env_file:
+      - .env
+    image: redis:${REDIS_VERSION}
     hostname: redis
     ports:
       - 26379:6379
@@ -58,7 +62,7 @@ services:
         constraints: [node.labels.blog.server.role == db]
 
   rabbitmq:
-    image : nkonev/rabbitmq-web-stomp:3.6.12
+    image: nkonev/rabbitmq-web-stomp:${RABBITMQ_VERSION}
     hostname: rabbitmq
     ports:
       - 45672:15672

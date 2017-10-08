@@ -45,7 +45,7 @@ services:
         max-file: "1"
 
   rabbitmq:
-    image : nkonev/rabbitmq-web-stomp:3.6.12
+    image : nkonev/rabbitmq-web-stomp:${RABBITMQ_VERSION}
     hostname: rabbitmq
     container_name: rabbitmq-blog-dev
     restart: unless-stopped
