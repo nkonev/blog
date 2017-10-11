@@ -30,6 +30,7 @@
     import BlogSpinner from './BlogSpinner.vue'
     import PostAddFab from './PostAddFab.vue'
     import Search from './Search.vue';
+    import {updateById} from '../utils'
 
     const Stomp = require("@stomp/stompjs/lib/stomp.js").Stomp; // https://github.com/jmesnil/stomp-websocket/issues/119 https://stomp-js.github.io/stomp-websocket/codo/extra/docs-src/Usage.md.html
 
@@ -109,9 +110,7 @@
                     const message = data.body;
                     const obj = JSON.parse(message);
                     // console.log(message);
-                    const foundPost = this.posts.find((element, index, array)=>{
-                        return element.id === obj.id ? (this.posts.splice(index, 1, obj), true) : false;
-                    });
+                    const foundPost = updateById(this.posts, obj);
                     if (foundPost) {
                         console.debug("found and updated");
                     }

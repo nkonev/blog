@@ -24,6 +24,7 @@
         <div v-else id="comments-list">
             No comments
         </div>
+        <button @click="insertComment">Add comment</button>
     </div>
 
 </template>
@@ -33,7 +34,8 @@
     import CommentItem from "./CommentItem.vue";
     import {PAGE_SIZE} from "../constants";
     import Paginate from 'vuejs-paginate';
-    import bus, {POST_SWITCHED} from '../bus'
+    import bus, {POST_SWITCHED, COMMENT_SAVED} from '../bus'
+    import {updateById} from '../utils'
 
     Vue.component('paginate', Paginate);
 
@@ -53,6 +55,11 @@
 
                 this.fetchComments(this.postIdCache, pageNum);
             },
+            /**
+             *
+             * @param postId goes from event
+             * @param pageNum
+             */
             fetchComments(postId, pageNum=(this.initialPageIndex+1)){
                 this.postIdCache = postId;
                 this.$http.get('/api/post/'+postId+'/comment?page='+(pageNum-1)+'&size='+PAGE_SIZE).then(
@@ -65,6 +72,15 @@
                     }
                 );
             },
+            updateComment(newComment){
+                updateById(this.comments, newComment);
+            },
+            insertComment() {
+                this.reloadPage(this.pageCount);
+                if (this.$refs.paginate) {
+                    this.$refs.paginate.selected = this.pageCount - 1;
+                }
+            }
         },
         computed: {
             //  The index of initial page which selected. default: 0
@@ -75,10 +91,12 @@
         created() {
             // this.reloadPage(this.initialPageIndex+1);
             bus.$on(POST_SWITCHED, this.fetchComments);
+            bus.$on(COMMENT_SAVED, this.updateComment);
         },
         destroyed(){
             bus.$off(POST_SWITCHED, this.fetchComments);
-        }
+            bus.$off(COMMENT_SAVED, this.updateComment);
+        },
     };
 </script>
 

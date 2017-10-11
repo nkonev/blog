@@ -8,3 +8,4 @@ export const LOGIN  = 'login';
 export const LOGOUT  = 'logout';
 export const UNAUTHORIZED  = 'unauthorized';
 export const POST_SWITCHED = 'post_switched';
+export const COMMENT_SAVED = 'COMMENT_SAVED';
