@@ -36,7 +36,7 @@
                       @ready="onEditorReady($event)">
         </quill-editor>
 
-        <div class="command-buttons">
+        <div class="post-command-buttons">
             <div class="send">
                 <blog-spinner v-if="submitting" message="Sending..."></blog-spinner>
                 <button v-if="!submitting" class="save-btn" @click="onBtnSave" v-bind:disabled="!isPostValid()">Сохранить</button>
@@ -239,7 +239,7 @@
     $signin_color= #00cf6b;
     @import "../buttons.styl"
 
-    .command-buttons {
+    .post-command-buttons {
         .send {
             display inline
 

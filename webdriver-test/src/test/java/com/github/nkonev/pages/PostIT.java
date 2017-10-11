@@ -66,11 +66,11 @@ public class PostIT extends AbstractItTestRunner {
         }
 
         public void edit() {
-            $(".edit-container-pen").shouldBe(CLICKABLE).click();
+            $(".post-head .edit-container-pen").shouldBe(CLICKABLE).click();
         }
 
         public void delete() {
-            $(".remove-container-x")
+            $(".post-head .remove-container-x")
                     .waitUntil(Condition.visible, 20 * 1000)
                     .waitUntil(Condition.enabled, 20 * 1000)
                     .shouldBe(CLICKABLE).click();

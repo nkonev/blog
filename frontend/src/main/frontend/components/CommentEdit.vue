@@ -4,7 +4,7 @@
                 v-bind:value="commentDTO.text"
                 v-on:input="editContent = $event.target.value"
         />
-        <div class="command-buttons">
+        <div class="comment-command-buttons">
             <div class="send">
                 <blog-spinner v-if="submitting" message="Sending..."></blog-spinner>
                 <button v-if="!submitting" class="save-btn" @click="onBtnSave">Save</button>

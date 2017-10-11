@@ -6,7 +6,7 @@
         </div>
 
         <div v-if="!isEditing">
-            <span class="manage-buttons">
+            <span class="comment-manage-buttons">
                 <img class="edit-container-pen" src="../assets/pen.png" v-if="commentDTO.canEdit" @click="setEdit()"/>
                 <img class="remove-container-x" src="../assets/remove.png" v-if="commentDTO.canDelete" @click="doDelete()"/>
             </span>
@@ -71,14 +71,15 @@
             }
         }
 
-        img.edit-container-pen {
-            height 16px;
-            cursor pointer
+        .comment-manage-buttons {
+            img.edit-container-pen {
+                height 16px;
+                cursor pointer
+            }
+            img.remove-container-x {
+                height 16px;
+                cursor pointer
+            }
         }
-        img.remove-container-x {
-            height 16px;
-            cursor pointer
-        }
-
     }
 </style>
