@@ -15,7 +15,7 @@
                 {{commentDTO.text}}
             </div>
         </div>
-        <CommentEdit v-else :commentDTO="commentDTO"></CommentEdit>
+        <comment-edit v-else :commentDTO="commentDTO"></comment-edit>
         <hr/>
     </div>
 </template>
@@ -39,6 +39,9 @@
             resetEdit(){
                 this.isEditing = false;
             },
+            doDelete(){
+                console.log('delete');
+            }
         },
         components:{
             CommentEdit

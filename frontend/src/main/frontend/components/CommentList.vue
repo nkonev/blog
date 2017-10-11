@@ -73,7 +73,7 @@
                 );
             },
             updateComment(newComment){
-                console.log('updateComment', newComment);
+                // console.log('updateComment', newComment);
                 updateById(this.comments, newComment);
             },
             insertComment() {

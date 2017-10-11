@@ -1,6 +1,6 @@
 <template>
     <div class="comment-edit">
-        <input
+        <textarea
                 v-bind:value="commentDTO.text"
                 v-on:input="editContent = $event.target.value"
         />
