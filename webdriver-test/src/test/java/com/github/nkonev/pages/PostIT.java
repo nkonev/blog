@@ -102,7 +102,7 @@ public class PostIT extends AbstractItTestRunner {
         }
 
         public void save() {
-            $("button.save-btn")
+            $(".post-command-buttons button.save-btn")
                     .waitUntil(Condition.exist, 20 * 1000)
                     .waitUntil(Condition.visible, 20 * 1000)
                     .waitUntil(Condition.enabled, 20 * 1000)
