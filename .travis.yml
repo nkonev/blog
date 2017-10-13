@@ -5,6 +5,7 @@ cache:
   - frontend/node
   - frontend/node_modules
 jdk: oraclejdk8
+# firefox spamming workaround https://github.com/travis-ci/travis-cookbooks/issues/911
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y dbus-x11
