@@ -58,6 +58,7 @@
                 }
             },
             onBtnCancel() {
+                this.editContent = '';
                 bus.$emit(COMMENT_CANCELED);
             },
         },
