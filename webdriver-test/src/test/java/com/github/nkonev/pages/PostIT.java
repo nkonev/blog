@@ -1,6 +1,8 @@
 package com.github.nkonev.pages;
 
 import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.SelenideElement;
 import com.github.nkonev.CommonTestConstants;
 import com.github.nkonev.IntegrationTestConstants;
 import com.github.nkonev.configuration.SeleniumConfiguration;
@@ -23,12 +25,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
 import static com.codeborne.selenide.Selenide.open;
+import static com.github.nkonev.IntegrationTestConstants.Pages.INDEX_HTML;
 
 
 public class PostIT extends AbstractItTestRunner {
@@ -40,6 +45,9 @@ public class PostIT extends AbstractItTestRunner {
 
     @Autowired
     private SeleniumConfiguration seleniumConfiguration;
+
+    private static final long POST_WITHOUT_COMMENTS = 1990;
+    private static final long POST_FOR_EDIT_COMMENTS = 1980;
 
     public static class PostViewPage {
         private static final String POST_PART = "/post/";
@@ -108,6 +116,63 @@ public class PostIT extends AbstractItTestRunner {
                     .waitUntil(Condition.enabled, 20 * 1000)
                     .shouldBe(CLICKABLE).click(); // this can open login modal if you unauthenticated
         }
+    }
+
+    public static class CommentEdit {
+        private static final String COMMENT_LIST_SELECTOR = ".comments #comments-list";
+        public void addComment(String text) {
+            final int waitSec = 10;
+            $(".comment-edit textarea")
+                    .waitUntil(Condition.exist, waitSec * 1000)
+                    .waitUntil(Condition.visible, waitSec * 1000)
+                    .waitUntil(Condition.enabled, waitSec * 1000)
+                    .scrollTo()
+                    .setValue(text);
+            $(".comment-command-buttons .save-btn")
+                    .waitUntil(Condition.exist, waitSec * 1000)
+                    .waitUntil(Condition.visible, waitSec * 1000)
+                    .waitUntil(Condition.enabled, waitSec * 1000)
+                    .scrollTo()
+                    .click();
+
+            $(COMMENT_LIST_SELECTOR).shouldHave(Condition.text(text));
+        }
+
+        public void checkPaginator(int expected){
+            $("div.comments li.active").shouldHave(Condition.text(""+expected));
+        }
+
+        private SelenideElement findComment(int index) {
+            return $$(COMMENT_LIST_SELECTOR).get(index);
+        }
+
+        /**
+         *
+         * @param index order index
+         */
+        public void editComment(int index, String newText){
+            SelenideElement comment = findComment(index);
+            comment.find(".comment-manage-buttons .edit-container-pen").click();
+            comment.find(".comment-edit textarea").setValue(newText);
+            comment.find(".comment-command-buttons .save-btn").click();
+
+            $(COMMENT_LIST_SELECTOR).shouldHave(Condition.text(newText));
+        }
+
+        /**
+         *
+         * @param index order index
+         */
+        public void deleteComment(int index, String deletedText){
+            SelenideElement comment = findComment(index);
+            comment.find(".comment-manage-buttons .remove-container-x").click();
+
+            $(COMMENT_LIST_SELECTOR).waitUntil(Condition.not(Condition.text(deletedText)), 7 * 1000, 1000);
+        }
+    }
+
+    private int getCommentPage() throws MalformedURLException {
+        return Integer.valueOf(new URL(driver.getCurrentUrl()).getQuery().split("=")[1]);
     }
 
     @Test
@@ -201,5 +266,57 @@ public class PostIT extends AbstractItTestRunner {
         assertPoll(()-> !postRepository.findById(id).isPresent(), 15);
         assertPoll(()-> !deletablePageUrl.equals(driver.getCurrentUrl()), 10);
     }
+
+    @Test
+    public void testAddComments() throws MalformedURLException {
+        PostViewPage postViewPage = new PostViewPage(urlPrefix);
+        postViewPage.openPost(POST_WITHOUT_COMMENTS);
+
+        LoginModal loginModal = new LoginModal(user, password);
+        loginModal.openLoginModal();
+        loginModal.login();
+
+        CommentEdit commentEdit = new CommentEdit();
+
+        for(int i=1; i<=10; ++i) {
+            final int page = 1;
+            commentEdit.addComment("comment " + i);
+            final int commentPage = getCommentPage();
+            Assert.assertEquals(page, commentPage);
+            commentEdit.checkPaginator(page);
+        }
+
+        for(int i=11; i<=20; ++i) {
+            final int page = 2;
+            commentEdit.addComment("comment " + i);
+            final int commentPage = getCommentPage();
+            Assert.assertEquals(page, commentPage);
+            commentEdit.checkPaginator(page);
+        }
+    }
+
+    @Test
+    public void testAddEditAndDeleteComments() throws MalformedURLException {
+        PostViewPage postViewPage = new PostViewPage(urlPrefix);
+        postViewPage.openPost(POST_FOR_EDIT_COMMENTS);
+
+        LoginModal loginModal = new LoginModal(user, password);
+        loginModal.openLoginModal();
+        loginModal.login();
+
+        CommentEdit commentEdit = new CommentEdit();
+
+        final int page = 1;
+        commentEdit.addComment("comment for edit and delete");
+        int commentPage = getCommentPage();
+        Assert.assertEquals(page, commentPage);
+        commentEdit.checkPaginator(page);
+
+        final String newCommentText = "new comment text";
+        commentEdit.editComment(0, newCommentText);
+
+        commentEdit.deleteComment(0, newCommentText);
+    }
+
 
 }

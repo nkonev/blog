@@ -9,7 +9,7 @@
                 <blog-spinner v-if="submitting" message="Sending..."></blog-spinner>
                 <button v-if="!submitting" class="save-btn" @click="onBtnSave">Save</button>
             </div>
-            <button v-if="!submitting && !isAdd" class="save-btn" @click="onBtnCancel">Отмена</button>
+            <button v-if="!submitting && !isAdd" class="cancel-btn" @click="onBtnCancel">Отмена</button>
         </div>
     </div>
 </template>
