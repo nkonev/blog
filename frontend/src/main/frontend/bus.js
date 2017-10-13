@@ -11,3 +11,4 @@ export const POST_SWITCHED = 'post_switched';
 export const COMMENT_ADD = 'COMMENT_ADD';
 export const COMMENT_UPDATED = 'COMMENT_UPDATED';
 export const COMMENT_CANCELED = 'COMMENT_CANCELED';
+export const COMMENT_DELETED = 'COMMENT_DELETED';

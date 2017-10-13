@@ -107,13 +107,15 @@ public class CommentController {
 
     @PreAuthorize("@blogSecurityService.hasCommentPermission(#commentId, #userAccount, T(com.github.nkonev.entity.jpa.Permissions).DELETE)")
     @DeleteMapping(Constants.Uls.API+Constants.Uls.POST+Constants.Uls.POST_ID +Constants.Uls.COMMENT+Constants.Uls.COMMENT_ID)
-    public void deleteComment(
+    public long deleteComment(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // null if not authenticated
             @PathVariable(Constants.PathVariables.POST_ID) long postId,
             @PathVariable(Constants.PathVariables.COMMENT_ID) long commentId
     ) {
         Assert.notNull(userAccount, "UserAccountDetailsDTO can't be null");
         commentRepository.delete(commentId);
+
+        return commentRepository.countByPostId(postId);
     }
 
 

@@ -22,7 +22,8 @@
 
 <script>
     import CommentEdit from './CommentEdit.vue'
-    import bus, {COMMENT_CANCELED, COMMENT_UPDATED} from '../bus'
+    import bus, {COMMENT_CANCELED, COMMENT_UPDATED, COMMENT_DELETED} from '../bus'
+    import {getPostId} from '../utils'
 
     export default {
         name: 'comment-item',
@@ -40,7 +41,13 @@
                 this.isEditing = false;
             },
             doDelete(){
-                console.log('delete');
+                const commentId = this.commentDTO.id;
+                this.$http.delete(`/api/post/${getPostId(this)}/comment/${commentId}`)
+                    .then(successResponse => {
+                        bus.$emit(COMMENT_DELETED, successResponse.body);
+                    }, failResponce => {
+                        console.error(failResponce);
+                    })
             }
         },
         components:{

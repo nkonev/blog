@@ -34,7 +34,7 @@
     import CommentItem from "./CommentItem.vue";
     import {PAGE_SIZE} from "../constants";
     import Paginate from 'vuejs-paginate';
-    import bus, {POST_SWITCHED, COMMENT_UPDATED, COMMENT_ADD} from '../bus'
+    import bus, {POST_SWITCHED, COMMENT_UPDATED, COMMENT_ADD, COMMENT_DELETED} from '../bus'
     import {updateById, getPostId} from '../utils'
     import CommentEdit from './CommentEdit.vue'
 
@@ -94,6 +94,14 @@
                     this.$refs.paginate.selected = nextPage-1;
                 }
             },
+            deleteComment(newCommentCount){
+                this.pageCount = this.getPageCount(newCommentCount);
+                const nextPage = this.shouldSwitch(newCommentCount) ? this.initialPageIndex : this.initialPageIndex +1;
+                this.reloadPage(nextPage);
+                if (this.$refs.paginate) {
+                    this.$refs.paginate.selected = nextPage-1;
+                }
+            }
         },
         computed: {
             //  The index of initial page which selected. default: 0
@@ -106,11 +114,13 @@
             bus.$on(POST_SWITCHED, this.onPostSwitched);
             bus.$on(COMMENT_UPDATED, this.updateComment);
             bus.$on(COMMENT_ADD, this.insertComment);
+            bus.$on(COMMENT_DELETED, this.deleteComment);
         },
         destroyed(){
             bus.$off(POST_SWITCHED, this.onPostSwitched);
             bus.$off(COMMENT_UPDATED, this.updateComment);
             bus.$off(COMMENT_ADD, this.insertComment);
+            bus.$off(COMMENT_DELETED, this.deleteComment);
         },
     };
 </script>
