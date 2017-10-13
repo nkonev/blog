@@ -129,12 +129,24 @@ A: Add `.with(csrf())` to MockMvcRequestBuilder chain
 
 # Demo Run
 
-First add constraint on database node (It can be manager) for prevent instantiate db containers on another nodes for prevent data loss:
+First unlock `--compose-file`
+add accords https://github.com/moby/moby/issues/30585#issuecomment-280822231
+
+in `/etc/docker/daemon.json` (create it)
+```json
+{"experimental":true}
+```
+
+```bash
+sudo systemctl restart docker
+```
+
+Second add constraint on database node (It can be manager) for prevent instantiate db containers on another nodes for prevent data loss:
 ```bash
 # Run it on node which will be database
 docker node update --label-add 'blog.server.role=db' $(docker node ls -q)
 
-# check
+# check it
 docker node inspect -f '{{index .Spec.Labels "blog.server.role"}}' $(docker node ls -q)
 ```
 
@@ -144,7 +156,6 @@ cd docker
 docker stack deploy --compose-file docker-compose.stack.yml BLOGSTACK
 docker service scale BLOGSTACK_blog=4
 docker service ls
-docker stack rm BLOGSTACK
 ```
 
 See postgres volume
@@ -155,6 +166,11 @@ docker volume inspect BLOGSTACK_postgresql_blog_dev_data_dir
 See logs of jars
 ```bash
 docker service logs -f BLOGSTACK_blog
+```
+
+Remove
+```bash
+docker stack rm BLOGSTACK
 ```
 
 Remove exited containers
