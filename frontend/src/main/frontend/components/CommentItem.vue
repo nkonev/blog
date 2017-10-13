@@ -22,7 +22,7 @@
 
 <script>
     import CommentEdit from './CommentEdit.vue'
-    import bus, {COMMENT_CANCELED, COMMENT_SAVED} from '../bus'
+    import bus, {COMMENT_CANCELED, COMMENT_UPDATED} from '../bus'
 
     export default {
         name: 'comment-item',
@@ -48,11 +48,11 @@
         },
         created(){
             bus.$on(COMMENT_CANCELED, this.resetEdit);
-            bus.$on(COMMENT_SAVED, this.resetEdit);
+            bus.$on(COMMENT_UPDATED, this.resetEdit);
         },
         destroyed(){
             bus.$off(COMMENT_CANCELED, this.resetEdit);
-            bus.$off(COMMENT_SAVED, this.resetEdit);
+            bus.$off(COMMENT_UPDATED, this.resetEdit);
         },
     };
 </script>

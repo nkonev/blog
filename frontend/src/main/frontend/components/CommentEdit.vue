@@ -18,7 +18,8 @@
 <script>
     import Vue from 'vue'
     import BlogSpinner from './BlogSpinner.vue'
-    import bus, {COMMENT_SAVED, COMMENT_CANCELED} from '../bus'
+    import bus, {COMMENT_UPDATED, COMMENT_ADD, COMMENT_CANCELED, POST_SWITCHED} from '../bus'
+    import {getPostId} from '../utils'
 
     export default {
         data() {
@@ -27,7 +28,7 @@
                 submitting: false,
             }
         },
-        props: ['commentDTO'],
+        props: ['commentDTO', 'isAdd'],
         components:{
             BlogSpinner
         },
@@ -35,21 +36,31 @@
             onBtnSave() {
                 this.submitting = true;
 
+                const postId = getPostId(this);
                 const newComment = Vue.util.extend({}, this.$props.commentDTO);
                 newComment.text = this.editContent;
-
-                this.$http.put('/api/post/0/comment', newComment)
-                    .then(successResp => {
-                        bus.$emit(COMMENT_SAVED, successResp.body);
-                        this.submitting = false;
-                    }, failResp => {
-                        this.submitting = false;
-                    })
+                if (this.$props.isAdd) {
+                    this.$http.post(`/api/post/${postId}/comment`, newComment)
+                        .then(successResp => {
+                            bus.$emit(COMMENT_ADD, successResp.body);
+                            this.submitting = false;
+                        }, failResp => {
+                            this.submitting = false;
+                        });
+                } else {
+                    this.$http.put(`/api/post/${postId}/comment`, newComment)
+                        .then(successResp => {
+                            bus.$emit(COMMENT_UPDATED, successResp.body);
+                            this.submitting = false;
+                        }, failResp => {
+                            this.submitting = false;
+                        });
+                }
             },
             onBtnCancel() {
                 bus.$emit(COMMENT_CANCELED);
             },
-        }
+        },
     }
 </script>
 

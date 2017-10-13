@@ -45,6 +45,7 @@
     import BlogSpinner from "./BlogSpinner.vue"
     import PostAddFab from './PostAddFab.vue'
     import CommentList from './CommentList.vue'
+    import {getPostId} from '../utils'
 
     // Lazy load heavy component https://router.vuejs.org/en/advanced/lazy-loading.html. see also in .babelrc
     const PostEdit = () => import('./PostEdit.vue');
@@ -82,7 +83,7 @@
         },
         methods: {
             getId(){
-                return this.$route.params.id;
+                return getPostId(this);
             },
             fetchData() {
                 // console.log("fetching post...");

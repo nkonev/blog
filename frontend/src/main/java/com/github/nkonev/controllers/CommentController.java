@@ -1,12 +1,9 @@
 package com.github.nkonev.controllers;
 
 import com.github.nkonev.Constants;
-import com.github.nkonev.dto.Wrapper;
+import com.github.nkonev.dto.*;
 import com.github.nkonev.utils.PageUtils;
 import com.github.nkonev.converter.CommentConverter;
-import com.github.nkonev.dto.CommentDTO;
-import com.github.nkonev.dto.CommentDTOWithAuthorization;
-import com.github.nkonev.dto.UserAccountDetailsDTO;
 import com.github.nkonev.entity.jpa.Comment;
 import com.github.nkonev.entity.jpa.UserAccount;
 import com.github.nkonev.exception.BadRequestException;
@@ -67,7 +64,7 @@ public class CommentController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping(Constants.Uls.API+Constants.Uls.POST+Constants.Uls.POST_ID +Constants.Uls.COMMENT)
-    public CommentDTOWithAuthorization addComment(
+    public CommentDTOExtended addComment(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // nullable
             @PathVariable(Constants.PathVariables.POST_ID) long postId,
             @RequestBody @NotNull CommentDTO commentDTO
@@ -77,6 +74,7 @@ public class CommentController {
             throw new BadRequestException("id cannot be set");
         }
 
+        long count = commentRepository.countByPostId(postId);
         Comment comment = commentConverter.convertFromDto(commentDTO, postId, null);
 
         UserAccount ua = userAccountRepository.findOne(userAccount.getId()); // Hibernate caches it
@@ -84,17 +82,19 @@ public class CommentController {
         comment.setOwner(ua);
         Comment saved = commentRepository.save(comment);
 
-        return commentConverter.convertToDto(saved, userAccount);
+        return commentConverter.convertToDtoExtended(saved, userAccount, count);
     }
 
     @PreAuthorize("@blogSecurityService.hasCommentPermission(#commentDTO, #userAccount, T(com.github.nkonev.entity.jpa.Permissions).EDIT)")
     @PutMapping(Constants.Uls.API+Constants.Uls.POST+Constants.Uls.POST_ID +Constants.Uls.COMMENT)
-    public CommentDTOWithAuthorization updateComment (
+    public CommentDTOExtended updateComment (
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // nullable
             @PathVariable(Constants.PathVariables.POST_ID) long postId,
             @RequestBody @NotNull CommentDTO commentDTO
     ){
         Assert.notNull(userAccount, "UserAccountDetailsDTO can't be null");
+
+        long count = commentRepository.countByPostId(postId);
 
         Comment found = commentRepository.findOne(commentDTO.getId());
         Assert.notNull(found, "Comment with id " + commentDTO.getId() + " not found");
@@ -102,7 +102,7 @@ public class CommentController {
         Comment updatedEntity = commentConverter.convertFromDto(commentDTO, 0, found);
         Comment saved = commentRepository.save(updatedEntity);
 
-        return commentConverter.convertToDto(saved, userAccount);
+        return commentConverter.convertToDtoExtended(saved, userAccount, count);
     }
 
     @PreAuthorize("@blogSecurityService.hasCommentPermission(#commentId, #userAccount, T(com.github.nkonev.entity.jpa.Permissions).DELETE)")

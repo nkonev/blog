@@ -1,6 +1,7 @@
 package com.github.nkonev.converter;
 
 import com.github.nkonev.dto.CommentDTO;
+import com.github.nkonev.dto.CommentDTOExtended;
 import com.github.nkonev.dto.CommentDTOWithAuthorization;
 import com.github.nkonev.dto.UserAccountDetailsDTO;
 import com.github.nkonev.entity.jpa.Comment;
@@ -46,5 +47,16 @@ public class CommentConverter {
                 comment.getText()
         );
 
+    }
+
+    public CommentDTOExtended convertToDtoExtended(Comment comment, UserAccountDetailsDTO userAccount, long countInPost) {
+        return new CommentDTOExtended(
+                comment.getId(),
+                comment.getText(),
+                UserAccountConverter.convertToUserAccountDTO(comment.getOwner()),
+                blogSecurityService.hasCommentPermission(comment, userAccount, Permissions.EDIT),
+                blogSecurityService.hasCommentPermission(comment, userAccount, Permissions.DELETE),
+                countInPost
+        );
     }
 }

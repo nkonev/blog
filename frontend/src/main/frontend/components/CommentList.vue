@@ -24,7 +24,7 @@
         <div v-else id="comments-list">
             No comments
         </div>
-        <button @click="insertComment">Add comment</button>
+        <CommentEdit :commentDTO="{}" :isAdd="true"></CommentEdit>
     </div>
 
 </template>
@@ -34,18 +34,18 @@
     import CommentItem from "./CommentItem.vue";
     import {PAGE_SIZE} from "../constants";
     import Paginate from 'vuejs-paginate';
-    import bus, {POST_SWITCHED, COMMENT_SAVED} from '../bus'
-    import {updateById} from '../utils'
+    import bus, {POST_SWITCHED, COMMENT_UPDATED, COMMENT_ADD} from '../bus'
+    import {updateById, getPostId} from '../utils'
+    import CommentEdit from './CommentEdit.vue'
 
     Vue.component('paginate', Paginate);
 
     export default {
-        components: {CommentItem},
+        components: {CommentItem, CommentEdit},
         data() {
             return {
                 comments: [],
                 pageCount: 0,
-                postIdCache: null,
             }
         },
         methods: {
@@ -53,18 +53,21 @@
                 this.$router.push({query: {page: pageNum}});
                 console.log("opening comment page ", pageNum);
 
-                this.fetchComments(this.postIdCache, pageNum);
+                this.fetchComments(pageNum);
+            },
+            onPostSwitched(){
+                this.fetchComments();
             },
             /**
              *
-             * @param postId goes from event
-             * @param pageNum
+             * @param pageNum. decreases to 1 for compability with Spring Data
              */
-            fetchComments(postId, pageNum=(this.initialPageIndex+1)){
-                this.postIdCache = postId;
+            fetchComments(pageNum=(this.initialPageIndex+1)){
+                const postId = getPostId(this);
+
                 this.$http.get('/api/post/'+postId+'/comment?page='+(pageNum-1)+'&size='+PAGE_SIZE).then(
                     response => {
-                        this.pageCount = Math.ceil(response.body.totalCount / PAGE_SIZE);
+                        this.pageCount = this.getPageCount(response.body.totalCount);
                         this.comments = response.body.data;
                     }, response => {
                         console.error(response);
@@ -72,16 +75,31 @@
                     }
                 );
             },
+            getPageCount(totalCommentCount){
+                return Math.ceil(totalCommentCount / PAGE_SIZE);
+            },
+            shouldSwitch(totalCommentCount){
+                return !(totalCommentCount % PAGE_SIZE);
+            },
             updateComment(newComment){
                 // console.log('updateComment', newComment);
                 updateById(this.comments, newComment);
             },
-            insertComment() {
-                this.reloadPage(this.pageCount);
-                if (this.$refs.paginate) {
-                    this.$refs.paginate.selected = this.pageCount - 1;
+            insertComment(newComment) {
+                this.pageCount = this.getPageCount(newComment.commentsInPost);
+
+                if (this.shouldSwitch(newComment.commentsInPost)) {
+                    this.reloadPage(this.pageCount+1);
+                    if (this.$refs.paginate) {
+                        this.$refs.paginate.selected = this.pageCount;
+                    }
+                } else {
+                    this.reloadPage(this.pageCount);
+                    if (this.$refs.paginate) {
+                        this.$refs.paginate.selected = this.pageCount-1;
+                    }
                 }
-            }
+            },
         },
         computed: {
             //  The index of initial page which selected. default: 0
@@ -91,12 +109,14 @@
         },
         created() {
             // this.reloadPage(this.initialPageIndex+1);
-            bus.$on(POST_SWITCHED, this.fetchComments);
-            bus.$on(COMMENT_SAVED, this.updateComment);
+            bus.$on(POST_SWITCHED, this.onPostSwitched);
+            bus.$on(COMMENT_UPDATED, this.updateComment);
+            bus.$on(COMMENT_ADD, this.insertComment);
         },
         destroyed(){
-            bus.$off(POST_SWITCHED, this.fetchComments);
-            bus.$off(COMMENT_SAVED, this.updateComment);
+            bus.$off(POST_SWITCHED, this.onPostSwitched);
+            bus.$off(COMMENT_UPDATED, this.updateComment);
+            bus.$off(COMMENT_ADD, this.insertComment);
         },
     };
 </script>
