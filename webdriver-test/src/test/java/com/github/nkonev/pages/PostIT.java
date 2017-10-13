@@ -120,9 +120,11 @@ public class PostIT extends AbstractItTestRunner {
 
     public static class CommentEdit {
         private static final String COMMENT_LIST_SELECTOR = ".comments #comments-list";
+        private static final String COMMENT_EDIT_TEXTAREA_SELECTOR = ".comment-edit textarea";
+
         public void addComment(String text) {
             final int waitSec = 10;
-            $(".comment-edit textarea")
+            $(COMMENT_EDIT_TEXTAREA_SELECTOR)
                     .waitUntil(Condition.exist, waitSec * 1000)
                     .waitUntil(Condition.visible, waitSec * 1000)
                     .waitUntil(Condition.enabled, waitSec * 1000)
@@ -153,7 +155,7 @@ public class PostIT extends AbstractItTestRunner {
         public void editComment(int index, String newText){
             SelenideElement comment = findComment(index);
             comment.find(".comment-manage-buttons .edit-container-pen").click();
-            comment.find(".comment-edit textarea").setValue(newText);
+            comment.find(COMMENT_EDIT_TEXTAREA_SELECTOR).setValue(newText);
             comment.find(".comment-command-buttons .save-btn").click();
 
             $(COMMENT_LIST_SELECTOR).shouldHave(Condition.text(newText));
