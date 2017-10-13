@@ -88,16 +88,10 @@
             insertComment(newComment) {
                 this.pageCount = this.getPageCount(newComment.commentsInPost);
 
-                if (this.shouldSwitch(newComment.commentsInPost)) {
-                    this.reloadPage(this.pageCount+1);
-                    if (this.$refs.paginate) {
-                        this.$refs.paginate.selected = this.pageCount;
-                    }
-                } else {
-                    this.reloadPage(this.pageCount);
-                    if (this.$refs.paginate) {
-                        this.$refs.paginate.selected = this.pageCount-1;
-                    }
+                const nextPage = this.shouldSwitch(newComment.commentsInPost) ? this.pageCount+1 : this.pageCount;
+                this.reloadPage(nextPage);
+                if (this.$refs.paginate) {
+                    this.$refs.paginate.selected = nextPage-1;
                 }
             },
         },
