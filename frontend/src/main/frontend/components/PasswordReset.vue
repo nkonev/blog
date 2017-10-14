@@ -3,8 +3,7 @@
         Please enter new password
         <input id="new-password" v-model="newPassword"/>
         <button id="set-password" @click="resetPassword()">Set new password</button>
-        <!-- TODO display validation errors -->
-        <span class="help-block" v-show="errors.server">{{ errors.server }}</span>
+        <error v-show="errors.server" :message="errors.server"></error>
     </div>
     <div v-else>
         Now you can login with new password
@@ -14,6 +13,7 @@
 <script>
     import bus, {LOGIN} from '../bus'
     import {root_name} from '../routes'
+    import Error from './Error.vue'
 
     const setNewPassword = '/api/password-reset-set-new';
 
@@ -27,6 +27,7 @@
                 }
             }
         },
+        components: {Error},
         methods: {
             resetPassword() {
                 this.$http.post(setNewPassword, {passwordResetToken: this.$route.query.uuid, newPassword: this.$data.newPassword}).then(

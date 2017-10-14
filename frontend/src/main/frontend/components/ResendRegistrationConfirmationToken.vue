@@ -2,16 +2,17 @@
     <div class="resend-registration-confirmation-token">
         Enter email for resend confirmation
         <input v-model="email"/>
-        <span class="help-block" v-show="errors.email">{{ errors.email }}</span>
+        <error v-show="errors.email" :message="errors.email"></error>
         <button @click="resend()" v-bind:disabled="!submitEnabled">Resend</button>
         <span class="email-successfully-sent" v-if="emailSuccessfullySent">Sent</span>
-        <span class="help-block" v-show="errors.server">{{ errors.server }}</span>
+        <error v-show="errors.server" :message="errors.server"></error>
     </div>
 </template>
 
 <script>
     import required from 'vuelidate/lib/validators/required'
     import email from 'vuelidate/lib/validators/email'
+    import Error from './Error.vue'
 
     export default {
         data() {
@@ -27,6 +28,7 @@
         created() {
             this.email = this.$route.query.email
         },
+        components: {Error},
         methods: {
             resend() {
                 this.errors.message = null;

@@ -6,6 +6,7 @@ import com.github.nkonev.dto.PostDTOWithAuthorization;
 import com.github.nkonev.dto.UserAccountDetailsDTO;
 import com.github.nkonev.entity.jpa.Permissions;
 import com.github.nkonev.entity.jpa.Post;
+import com.github.nkonev.exception.BadRequestException;
 import com.github.nkonev.repo.jpa.PostRepository;
 import com.github.nkonev.security.BlogSecurityService;
 import com.github.nkonev.utils.XssSanitizeUtil;
@@ -13,6 +14,7 @@ import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 @Service
 public class PostConverter {
@@ -55,11 +57,20 @@ public class PostConverter {
         );
     }
 
+    private void checkLength(String comment) {
+        final int MIN_POST_LENGTH = 10;
+        String trimmed = StringUtils.trimWhitespace(comment);
+        if (trimmed == null || trimmed.length() < MIN_POST_LENGTH) {
+            throw new BadRequestException("post is too short, must be longer than " + MIN_POST_LENGTH);
+        }
+    }
+
     public Post convertToPost(PostDTO postDTO, Post forUpdate) {
         Assert.notNull(postDTO, "postDTO can't be null");
 
         if (forUpdate == null){ forUpdate = new Post(); }
         String sanitizedHtml = XssSanitizeUtil.sanitize(postDTO.getText());
+        checkLength(sanitizedHtml);
         forUpdate.setText(sanitizedHtml);
         forUpdate.setTextNoTags(cleanHtmlTags(sanitizedHtml));
         forUpdate.setTitle(postDTO.getTitle());

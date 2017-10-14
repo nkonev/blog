@@ -4,23 +4,23 @@
             <div class="field">
                 <label for="login">Login <span class="required-mark">*</span></label>
                 <input id="login" v-model="profile.login" name="login" autofocus/>
-                <span class="help-block" v-show="errors.login">{{ errors.login }}</span>
+                <error v-show="errors.login" :message="errors.login"></error>
             </div>
             <div class="field">
                 <label for="email">Email <span class="required-mark">*</span></label>
                 <input id="email" v-model="profile.email" name="email" />
-                <span class="help-block" v-show="errors.email">{{ errors.email }}</span>
+                <error v-show="errors.email" :message="errors.email"></error>
             </div>
             <div class="field">
                 <label for="password">password <span class="required-mark">*</span></label>
                 <input id="password" type="password" v-model="profile.password" name="password" />
-                <span class="help-block" v-show="errors.password">{{ errors.password }}</span>
+                <error v-show="errors.password" :message="errors.password"></error>
             </div>
             <button id="submit" type="submit" @click.prevent="onSubmit" v-bind:disabled="!submitEnabled">Submit</button>
             <blog-spinner v-if="submitting" message="Sending data"/>
 
             <div class="field">
-                <span class="help-block" v-show="errors.server">{{ errors.server }}</span>
+                <error v-show="errors.server" :message="errors.server"></error>
             </div>
         </form>
         <div v-else>
@@ -33,6 +33,7 @@
 <script>
     import Vue from 'vue'
     import VueResource from 'vue-resource'
+    import Error from './Error.vue'
     Vue.use(VueResource);
 
     // https://monterail.github.io/vuelidate/
@@ -73,7 +74,7 @@
             }
         },
         components: {
-            BlogSpinner
+            BlogSpinner, Error
         },
         methods: {
             onSubmit() {
@@ -143,14 +144,6 @@
 
         .field {
             margin-bottom 4px;
-        }
-
-        div {
-            .help-block {
-                margin-left 4px;
-                // position absolute
-                color $errorColor
-            }
         }
     }
 </style>

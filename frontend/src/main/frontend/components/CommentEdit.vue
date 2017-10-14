@@ -1,9 +1,7 @@
 <template>
     <div class="comment-edit">
-        <textarea
-                v-bind:value="commentDTO.text"
-                v-on:input="editContent = $event.target.value"
-        />
+        <textarea v-model="editContent" @input="clearErrorMessage()"/>
+        <error v-show="errorMessage" :message="errorMessage"></error>
         <div class="comment-command-buttons">
             <div class="send">
                 <blog-spinner v-if="submitting" message="Sending..."></blog-spinner>
@@ -18,21 +16,36 @@
 <script>
     import Vue from 'vue'
     import BlogSpinner from './BlogSpinner.vue'
-    import bus, {COMMENT_UPDATED, COMMENT_ADD, COMMENT_CANCELED, POST_SWITCHED} from '../bus'
+    import bus, {COMMENT_UPDATED, COMMENT_ADD, COMMENT_CANCELED, POST_SWITCHED, LOGIN} from '../bus'
     import {getPostId} from '../utils'
+    import Error from './Error.vue'
 
     export default {
         data() {
             return {
                 editContent: '',
                 submitting: false,
+                errorMessage: ''
             }
         },
         props: ['commentDTO', 'isAdd'],
         components:{
-            BlogSpinner
+            BlogSpinner, Error
+        },
+        created(){
+            this.editContent = this.commentDTO.text;
+            bus.$on(LOGIN, this.clearErrorMessage);
+        },
+        destroyed(){
+            bus.$off(LOGIN, this.clearErrorMessage);
         },
         methods:{
+            clearData(){
+                this.editContent = '';
+            },
+            clearErrorMessage(){
+                this.errorMessage = '';
+            },
             onBtnSave() {
                 this.submitting = true;
 
@@ -43,22 +56,26 @@
                     this.$http.post(`/api/post/${postId}/comment`, newComment)
                         .then(successResp => {
                             bus.$emit(COMMENT_ADD, successResp.body);
+                            this.clearData();
                             this.submitting = false;
                         }, failResp => {
                             this.submitting = false;
+                            this.errorMessage = failResp.body.message;
                         });
                 } else {
                     this.$http.put(`/api/post/${postId}/comment`, newComment)
                         .then(successResp => {
                             bus.$emit(COMMENT_UPDATED, successResp.body);
+                            this.clearData();
                             this.submitting = false;
                         }, failResp => {
                             this.submitting = false;
+                            this.errorMessage = failResp.body.message;
                         });
                 }
             },
             onBtnCancel() {
-                this.editContent = '';
+                this.clearData();
                 bus.$emit(COMMENT_CANCELED);
             },
         },
