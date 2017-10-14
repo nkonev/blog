@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <h1>Пользователи</h1>
+    <div class="users-page">
+        <h1>Users</h1>
         <Search @SEARCH_EVENT="onChangeSearchString"></Search>
 
         <paginate

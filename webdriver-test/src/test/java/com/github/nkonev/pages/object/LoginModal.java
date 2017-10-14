@@ -28,6 +28,7 @@ public class LoginModal {
         $("input#password").setValue(password);
         $(ID_SUBMIT).shouldBe(CLICKABLE).click();
         $(".user-profile-nav-login").shouldHave(text("" + user));
+        $(".v--modal-box").waitUntil(Condition.not(Condition.visible), 3000);
     }
 
     public void logout() {

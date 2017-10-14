@@ -16,11 +16,8 @@ public class UserNav {
     }
 
     public static void exit() {
-        final int waitFor = 10;
         $(byText("exit"))
-                .waitUntil(Condition.exist, 1000 * waitFor)
-                .waitUntil(Condition.enabled, 1000 * waitFor)
-                .waitUntil(Condition.visible, 1000 * waitFor)
+                .shouldBe(CLICKABLE)
                 .click();
     }
 
