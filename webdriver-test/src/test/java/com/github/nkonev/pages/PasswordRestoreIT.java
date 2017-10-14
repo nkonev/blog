@@ -21,8 +21,7 @@ import java.net.URI;
 import static com.codeborne.selenide.Selenide.$;
 import static com.github.nkonev.CommonTestConstants.NON_DELETABLE_POST_TITLE;
 
-public class RestorePasswordIT extends AbstractItTestRunner {
-    // http://127.0.0.1:8080/restore-password
+public class PasswordRestoreIT extends AbstractItTestRunner {
 
     @Rule
     public GreenMailRule greenMail = new GreenMailRule(ServerSetupTest.SMTP_IMAP);
@@ -32,7 +31,7 @@ public class RestorePasswordIT extends AbstractItTestRunner {
         final String user = "forgive-password-user";
         final String email = "forgive-password-user@example.com";
         final String newPassword = "olololo1234";
-        Selenide.open(urlPrefix + "/restore-password");
+        Selenide.open(urlPrefix + "/password-restore");
 
         $("input#email").shouldBe(CLICKABLE).setValue(email);
         $("button#send").shouldBe(CLICKABLE).click();

@@ -11,7 +11,7 @@ import Confirm from './components/Confirm.vue'
 import ConfirmTokenNotFound from './components/ConfirmTokenNotFound.vue'
 import ConfirmUserNotFound from './components/ConfirmUserNotFound.vue'
 import ResendRegistrationConfirmationToken from './components/ResendRegistrationConfirmationToken.vue'
-import RestorePassword from './components/RestorePassword.vue'
+import PasswordRestore from './components/PasswordRestore.vue'
 import PasswordReset from './components/PasswordReset.vue'
 import Help from './components/Help.vue'
 import {root, root_name, users, useProfileName, post} from './routes'
@@ -46,7 +46,7 @@ const router = new Router({
         { path: '/confirm/registration/user-not-found', component: ConfirmUserNotFound},
         { path: '/registration-confirmation-resend', component: ResendRegistrationConfirmationToken},
         { path: '/help', component: Help},
-        { path: '/restore-password', component: RestorePassword },
+        { path: '/password-restore', component: PasswordRestore },
         { path: '/password-reset', component: PasswordReset },
         { path: '*', component: NotFoundComponent },
     ]
