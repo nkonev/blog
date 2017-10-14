@@ -86,6 +86,9 @@
 <style lang="stylus">
     .comment-edit {
 
-
+        textarea {
+            width 99%
+            min-height 60px
+        }
     }
 </style>
