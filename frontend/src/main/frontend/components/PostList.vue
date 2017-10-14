@@ -10,7 +10,7 @@
                 No data
             </div>
 
-            <infinite-loading :on-infinite="onInfinite" ref="infiniteLoading">
+            <infinite-loading @infinite="infiniteHandler" ref="infiniteLoading">
                 <span slot="no-more">
                   {{ noMoreMessage }}
                 </span>
@@ -57,7 +57,7 @@
             Search
         },
         methods: {
-            onInfinite() {
+            infiniteHandler($state) {
                 this.$http.get(API_POST, {
                     params: {
                         searchString: this.searchString,
@@ -66,20 +66,20 @@
                 }).then((res) => {
                     if (res.data.length) {
                         this.posts = this.posts.concat(res.data); // add data from server's response
-                        this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded');
+                        $state.loaded();
 
                         if (Math.floor(this.posts.length / POSTS_PAGE_SIZE) === MAX_PAGES) {
                             this.noMoreMessage = `You reached max pages limit (${MAX_PAGES}). We want to stop to overwhelming your RAM.`;
                             console.log("Overwhelming prevention");
-                            this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
+                            $state.complete();
                         }
                         // Prevent infinity loading bug when there server responds is less than POSTS_PAGE_SIZE elements
                         if (res.data.length < POSTS_PAGE_SIZE) {
                             console.log("Loaded less than page size");
-                            this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
+                            $state.complete();
                         }
                     } else {
-                        this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
+                        $state.complete();
                     }
                 });
             },
