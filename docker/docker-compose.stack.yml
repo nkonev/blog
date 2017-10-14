@@ -5,6 +5,8 @@ services:
     image: nkonev/blog:latest
     logging:
       driver: "journald"
+      options:
+        tag: blog
     deploy:
       replicas: 2
     environment:
@@ -25,6 +27,10 @@ services:
     stop_grace_period: 1m30s
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
+    logging:
+      driver: "journald"
+      options:
+        tag: visualizer
     deploy:
       placement:
         constraints: [node.role == manager]
@@ -40,6 +46,8 @@ services:
       - postgresql_blog_dev_data_dir:/var/lib/postgresql/data
     logging:
       driver: "journald"
+      options:
+        tag: postgresql
     deploy:
       placement:
         constraints: [node.labels.blog.server.role == db]
@@ -53,6 +61,8 @@ services:
       - redis_blog_dev_data_dir:/data
     logging:
       driver: "journald"
+      options:
+        tag: redis
     deploy:
       placement:
         constraints: [node.labels.blog.server.role == db]
@@ -69,6 +79,8 @@ services:
       - rabbitmq_data_dir:/var/lib/rabbitmq/mnesia
     logging:
       driver: "journald"
+      options:
+        tag: rabbitmq
     deploy:
       placement:
         constraints: [node.labels.blog.server.role == db]

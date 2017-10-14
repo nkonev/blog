@@ -164,6 +164,14 @@ docker volume inspect BLOGSTACK_postgresql_blog_dev_data_dir
 ```
 
 See logs of jars
+via journalctl (see applied tags in `docker-compose.stack.yml`):
+```bash
+journalctl -f CONTAINER_TAG=blog
+journalctl -f CONTAINER_TAG=blog -o verbose
+journalctl -f CONTAINER_TAG=blog CONTAINER_TAG=postgresql CONTAINER_TAG=redis CONTAINER_TAG=rabbitmq
+```
+
+or via docker
 ```bash
 docker service logs -f BLOGSTACK_blog
 ```
