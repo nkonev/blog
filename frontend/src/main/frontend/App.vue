@@ -23,8 +23,7 @@
     import vmodal from 'vue-js-modal'
     import autoProgress from 'vue-auto-progress'
     import userProfileNav from './components/UserProfileNav.vue'
-    import store from './store'
-    import {GET_USER, FETCH_USER_PROFILE} from './store'
+    import store, {GET_USER, FETCH_USER_PROFILE} from './store'
     import {mapGetters} from 'vuex'
 
     Vue.use(vmodal);

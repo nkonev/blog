@@ -1,8 +1,10 @@
 <template>
     <div class="comment">
         <div class="user-info">
-            <img :src="commentDTO.owner.avatar">
-            <span>{{commentDTO.owner.login}}</span>
+            <router-link :to="`/user/${commentDTO.owner.id}`">
+                <img :src="commentDTO.owner.avatar">
+                <span>{{commentDTO.owner.login}}</span>
+            </router-link>
         </div>
 
         <div v-if="!isEditing">

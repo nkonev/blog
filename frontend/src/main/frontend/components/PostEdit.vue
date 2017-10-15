@@ -54,7 +54,7 @@
     import {API_POST} from '../constants'
     import Croppa from 'vue-croppa'
 
-    Vue.use(Croppa);
+    // Vue.use(Croppa);
 
     const MIN_LENGTH = 10;
 
@@ -219,7 +219,8 @@
         },
         components: {
             quillEditor,
-            BlogSpinner
+            BlogSpinner,
+            'croppa': Croppa.component
         },
         watch: {
             'editPostDTO': {

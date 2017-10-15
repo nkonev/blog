@@ -19,7 +19,7 @@ const PostEdit = () => import('./components/PostEdit.vue');
 
 // This installs <router-view> and <router-link>,
 // and injects $router and $route to all router-enabled child components
-// WARNING You shouldn't include it in tests, else avoriaz's glogals won't works (https://github.com/eddyerburgh/avoriaz/issues/124)
+// WARNING You shouldn't include it in tests, else avoriaz's globals won't works (https://github.com/eddyerburgh/avoriaz/issues/124)
 Vue.use(Router);
 
 const router = new Router({

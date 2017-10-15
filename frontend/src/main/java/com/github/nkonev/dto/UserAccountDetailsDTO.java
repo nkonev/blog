@@ -20,18 +20,20 @@ public class UserAccountDetailsDTO extends UserAccountDTO implements UserDetails
     private boolean enabled; // synonym to "confirmed"
 
     private Collection<SimpleGrantedAuthority> roles = new HashSet<>();
+    private String email;
 
     public UserAccountDetailsDTO() { }
 
     public UserAccountDetailsDTO(
             Long id,
             String login,
-            URL avatar,
+            String avatar,
             String password,
             boolean expired,
             boolean locked,
             boolean enabled,
-            Collection<SimpleGrantedAuthority> roles
+            Collection<SimpleGrantedAuthority> roles,
+            String email
     ) {
         super(id, login, avatar);
         this.password = password;
@@ -39,6 +41,7 @@ public class UserAccountDetailsDTO extends UserAccountDTO implements UserDetails
         this.locked = locked;
         this.enabled = enabled;
         this.roles = roles;
+        this.email = email;
     }
 
     @Override
@@ -106,5 +109,13 @@ public class UserAccountDetailsDTO extends UserAccountDTO implements UserDetails
 
     public void setRoles(Collection<SimpleGrantedAuthority> roles) {
         this.roles = roles;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

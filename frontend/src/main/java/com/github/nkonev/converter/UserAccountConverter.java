@@ -4,6 +4,7 @@ import com.github.nkonev.ApiConstants;
 import com.github.nkonev.dto.EditUserDTO;
 import com.github.nkonev.dto.UserAccountDTO;
 import com.github.nkonev.dto.UserAccountDetailsDTO;
+import com.github.nkonev.dto.UserSelfProfileDTO;
 import com.github.nkonev.entity.jpa.UserAccount;
 import com.github.nkonev.entity.jpa.UserRole;
 import com.github.nkonev.exception.BadRequestException;
@@ -27,9 +28,21 @@ public class UserAccountConverter {
                 userAccount.isExpired(),
                 userAccount.isLocked(),
                 userAccount.isEnabled(),
-                convertRoles(userAccount.getRoles())
+                convertRoles(userAccount.getRoles()),
+                userAccount.getEmail()
         );
     }
+
+    public static UserSelfProfileDTO getUserSelfProfile(UserAccountDetailsDTO userAccount) {
+        if (userAccount == null) { return null; }
+        return new UserSelfProfileDTO (
+                userAccount.getId(),
+                userAccount.getUsername(),
+                userAccount.getAvatar(),
+                userAccount.getEmail()
+        );
+    }
+
 
     private static Collection<SimpleGrantedAuthority> convertRoles(Collection<UserRole> roles) {
         if (roles==null) {return null;}

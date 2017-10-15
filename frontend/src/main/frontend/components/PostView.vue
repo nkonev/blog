@@ -15,8 +15,13 @@
                     </div>
                     <div class="post-head">
                         <h2>{{postDTO.title}}</h2>
-
-                        <span class="manage-buttons">
+                        <div class="user-info">
+                            <router-link :to="`/user/${postDTO.owner.id}`">
+                                <span>{{postDTO.owner.login}}</span>
+                                <img :src="postDTO.owner.avatar"/>
+                            </router-link>
+                        </div>
+                        <span class="manage-buttons" v-if="postDTO.canEdit || postDTO.canDelete">
                             <img class="edit-container-pen" src="../assets/pen.png" v-if="postDTO.canEdit" @click="setEdit()"/>
                             <img class="remove-container-x" src="../assets/remove.png" v-if="postDTO.canDelete" @click="doDelete()"/>
                         </span>
@@ -215,6 +220,10 @@
             img.remove-container-x {
                 height 32px;
                 cursor pointer
+            }
+
+            .user-info img {
+                height 32px;
             }
         }
         &-content {

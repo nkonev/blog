@@ -23,7 +23,7 @@ const store = new Vuex.Store({
         },
 
         [SET_USER](state, payload) {
-            state.currentUser = {id: payload.id, login: payload.login, avatar: payload.avatar}
+            state.currentUser = payload;
         },
         [UNSET_USER](state) {
             state.currentUser = null;

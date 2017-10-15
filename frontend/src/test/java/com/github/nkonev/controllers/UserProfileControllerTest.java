@@ -80,6 +80,15 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
         LOGGER.info(mvcResult.getResponse().getContentAsString());
 
         Assert.assertEquals("password shouldn't be affected if there isn't set explicitly", initialPassword, getUserFromBd(newLogin).getPassword());
+
+        MvcResult getPostsRequest = mockMvc.perform(
+                get(Constants.Uls.API+Constants.Uls.PROFILE)
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.login").value(newLogin))
+                .andExpect(jsonPath("$.password").doesNotExist())
+                .andReturn();
+
     }
 
     @WithUserDetails(TestConstants.USER_ALICE)
@@ -87,7 +96,7 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
     public void fullyAuthenticatedUserCanChangeHerProfileAndPassword() throws Exception {
         UserAccount userAccount = getUserFromBd(TestConstants.USER_ALICE);
         final String initialPassword = userAccount.getPassword();
-        final String newLogin = "new_alice";
+        final String newLogin = "new_alice12";
         final String newPassword = "new_alice_password";
 
         EditUserDTO edit = UserAccountConverter.convertToEditUserDto(userAccount);

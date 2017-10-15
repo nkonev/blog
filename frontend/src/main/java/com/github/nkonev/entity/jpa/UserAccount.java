@@ -17,7 +17,7 @@ public class UserAccount {
     private Long id;
     private String username;
     private String password; // hash
-    private URL avatar;
+    private String avatar;
     private boolean expired;
     private boolean locked;
     private boolean enabled; // synonym to "confirmed"
@@ -33,7 +33,7 @@ public class UserAccount {
 
     public UserAccount() { }
 
-    public UserAccount(String username, String password, URL avatar, boolean expired, boolean locked, boolean enabled, Collection<UserRole> roles, String email) {
+    public UserAccount(String username, String password, String avatar, boolean expired, boolean locked, boolean enabled, Collection<UserRole> roles, String email) {
         this.username = username;
         this.password = password;
         this.avatar = avatar;
@@ -52,11 +52,11 @@ public class UserAccount {
         this.id = id;
     }
 
-    public URL getAvatar() {
+    public String getAvatar() {
         return avatar;
     }
 
-    public void setAvatar(URL avatar) {
+    public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
 

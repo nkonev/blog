@@ -15,14 +15,14 @@ public class UserAccountDTO implements Serializable {
     @NotEmpty
     private String login;
 
-    private URL avatar;
+    private String avatar;
 
     public UserAccountDTO(Long id, String login) {
         this.id = id;
         this.login = login;
     }
 
-    public UserAccountDTO(Long id, String login, URL avatar) {
+    public UserAccountDTO(Long id, String login, String avatar) {
         this(id, login);
         this.avatar = avatar;
     }
@@ -46,11 +46,11 @@ public class UserAccountDTO implements Serializable {
         this.id = id;
     }
 
-    public URL getAvatar() {
+    public String getAvatar() {
         return avatar;
     }
 
-    public void setAvatar(URL avatar) {
+    public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
 }

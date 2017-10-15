@@ -9,7 +9,7 @@ describe("UserProfile.vue", function(){
         UserProfileWrapper.setProps({
             id: 2,
         });
-        expect(UserProfileWrapper.text()).toContain('Пользователь 2');
+        expect(UserProfileWrapper.text()).toContain('# 2');
     });
 
 });

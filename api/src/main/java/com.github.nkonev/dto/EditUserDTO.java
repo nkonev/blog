@@ -7,7 +7,7 @@ public class EditUserDTO {
     @NotEmpty
     private String login;
 
-    private URL avatar;
+    private String avatar;
 
     private String password; // password which user desires
 
@@ -16,7 +16,7 @@ public class EditUserDTO {
 
     public EditUserDTO() { }
 
-    public EditUserDTO(String login, URL avatar, String password, String email) {
+    public EditUserDTO(String login, String avatar, String password, String email) {
         this.login = login;
         this.avatar = avatar;
         this.password = password;
@@ -31,11 +31,11 @@ public class EditUserDTO {
         this.login = login;
     }
 
-    public URL getAvatar() {
+    public String getAvatar() {
         return avatar;
     }
 
-    public void setAvatar(URL avatar) {
+    public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
 
