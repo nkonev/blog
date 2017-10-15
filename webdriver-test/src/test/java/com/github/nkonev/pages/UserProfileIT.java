@@ -31,12 +31,12 @@ public class UserProfileIT extends AbstractItTestRunner {
     }
 
     @Test
-    public void useSeeThisIsYouAfterLogin() throws Exception {
+    public void userSeeThisIsYouAfterLogin() throws Exception {
         UserProfilePage userPage = new UserProfilePage(urlPrefix);
         userPage.openPage(userId);
 
         LoginModal loginModal = new LoginModal(user, password);
-        loginModal.openLoginModal();
+        // loginModal.openLoginModal();
         loginModal.login();
 
         $(".profile").shouldHave(text("Это вы"));
