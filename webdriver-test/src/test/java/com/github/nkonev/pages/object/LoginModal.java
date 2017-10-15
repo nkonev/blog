@@ -2,7 +2,17 @@ package com.github.nkonev.pages.object;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.WebDriverRunner;
 import com.github.nkonev.pages.UserProfileIT;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
+
+import java.util.concurrent.TimeUnit;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selectors.byText;
@@ -23,12 +33,21 @@ public class LoginModal {
     }
 
     public void login() {
-        $("body").shouldHave(text("Пожалуйста, представьтесь"));
-        $("input#username").setValue(user);
-        $("input#password").setValue(password);
-        $(ID_SUBMIT).shouldBe(CLICKABLE).click();
+        SelenideElement modal = $(".v--modal-box");
+        WebElement modal2 = modal.getWrappedElement();
+
+        modal.shouldHave(text("Пожалуйста, представьтесь"));
+        modal.find("input#username").setValue(user);
+        modal.find("input#password").setValue(password);
+        modal.find(ID_SUBMIT).shouldBe(CLICKABLE).click();
         $(".user-profile-nav-login").shouldHave(text("" + user));
-        $(".v--modal-box").waitUntil(Condition.not(Condition.visible), 3000);
+
+        WebDriver driver = WebDriverRunner.getWebDriver();
+        final Wait<WebDriver> wait = new FluentWait<>(driver)
+                .withMessage("still present")
+                .withTimeout(10, TimeUnit.SECONDS)
+                .pollingEvery(1, TimeUnit.SECONDS);
+        wait.until(webDriver -> ExpectedConditions.invisibilityOf(modal2));
     }
 
     public void logout() {
