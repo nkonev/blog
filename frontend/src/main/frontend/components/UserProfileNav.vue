@@ -3,7 +3,7 @@
         <div class="user-profile-nav-login">
             <multiselect :placeholder="currentUser.login" :show-labels="false" :options="actions" :searchable="false" :reset-after="true" @select="dispatchAction"></multiselect>
         </div>
-        <img :src="currentUser.avatar"/>
+        <img class="avatar" :src="currentUser.avatar"/>
     </div>
     <span class="user-profile-nav-anonymous" v-else>
         <a class="router-link" href="#" @click.prevent="login">login</a>

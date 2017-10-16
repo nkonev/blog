@@ -7,6 +7,7 @@ import com.github.nkonev.CommonTestConstants;
 import com.github.nkonev.IntegrationTestConstants;
 import com.github.nkonev.configuration.SeleniumConfiguration;
 import com.github.nkonev.integration.AbstractItTestRunner;
+import com.github.nkonev.pages.object.Croppa;
 import com.github.nkonev.pages.object.IndexPage;
 import com.github.nkonev.pages.object.LoginModal;
 import com.github.nkonev.repo.jpa.PostRepository;
@@ -34,6 +35,7 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 import static com.codeborne.selenide.Selenide.open;
 import static com.github.nkonev.IntegrationTestConstants.Pages.INDEX_HTML;
+import static com.github.nkonev.util.FileUtils.getExistsFile;
 
 
 public class PostIT extends AbstractItTestRunner {
@@ -103,10 +105,7 @@ public class PostIT extends AbstractItTestRunner {
         }
 
         public void setTitleImage(String absoluteFilePath) {
-            final By croppaId = By.cssSelector(".croppa-container input");
-            final Wait<WebDriver> wait = new FluentWait<WebDriver>(driver).withMessage("croppa upload element was not found").withTimeout(10, TimeUnit.SECONDS).pollingEvery(1, TimeUnit.SECONDS);
-            wait.until(webDriver -> ExpectedConditions.visibilityOf(driver.findElement(croppaId)));
-            driver.findElement(croppaId).sendKeys(absoluteFilePath);
+            Croppa.setImage(absoluteFilePath);
         }
 
         public void save() {
@@ -236,15 +235,6 @@ public class PostIT extends AbstractItTestRunner {
         }
     }
 
-    private File getExistsFile(String... fileCandidates) {
-        for(String fileCandidate: fileCandidates) {
-            File file = new File(fileCandidate);
-            if (file.exists()) {
-                return file;
-            }
-        }
-        throw new RuntimeException("exists file not found among " + Arrays.toString(fileCandidates));
-    }
 
     private long getPostId(URL url) {
         String path = url.getPath();

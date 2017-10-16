@@ -9,7 +9,7 @@
                 <span v-if="me" class="manage-buttons">
                     <img class="edit-container-pen" src="../assets/pen.png" @click="edit()"/>
                 </span>
-                <div>{{ dto.login }}</div>
+                <div class="login">{{ dto.login }}</div>
                 <div><img class="avatar" :src="dto.avatar"></div>
                 <div v-if="dto.email" class="email">{{dto.email}}</div>
             </div>

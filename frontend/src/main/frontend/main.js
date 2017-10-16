@@ -7,7 +7,7 @@ import router from './router.js'
 import Notifications from './notifications'
 import store from './store'
 import {UNSET_USER} from './store'
-import {LOGIN_MODAL, GET_PROFILE_URL} from './constants'
+import {LOGIN_MODAL, PROFILE_URL} from './constants'
 import bus from './bus'
 import {UNAUTHORIZED} from './bus'
 
@@ -34,7 +34,7 @@ Vue.http.interceptors.push((request, next) => {
             bus.$emit(UNAUTHORIZED, null);
 
             // we show modal always except on immediate get profile
-            if (request.url!==GET_PROFILE_URL) {
+            if (request.url!==PROFILE_URL) {
                 vm.$modal.show(LOGIN_MODAL);
             }
         } else if (response.status === 500) {

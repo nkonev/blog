@@ -4,7 +4,7 @@
             Editing profile
         </div>
         <div class="user-info">
-            <input v-model="editProfileDTO.login"/>
+            <input class="login" v-model="editProfileDTO.login"/>
             <croppa v-model="myCroppa"
                     :width="200"
                     :height="200"
@@ -21,7 +21,7 @@
             </croppa >
 
             <div class="email"><input v-model="editProfileDTO.email"/></div>
-            <button @click="save">Save</button>
+            <button class="save" @click="save">Save</button>
             <button @click="cancel">Cancel</button>
         </div>
         <error v-if="errorMessage"></error>
@@ -33,6 +33,7 @@
     import Error from './Error.vue'
     import Croppa from 'vue-croppa'
     import store, {FETCH_USER_PROFILE} from '../store'
+    import {PROFILE_URL} from '../constants'
 
     export default {
         name: 'user-profile', // это имя компонента, которое м. б. тегом в другом компоненте
@@ -59,7 +60,7 @@
                     if (url) {
                         this.editProfileDTO.avatar = url;
                     }
-                    this.$http.post(`/api/profile`, this.editProfileDTO).then(
+                    this.$http.post(PROFILE_URL, this.editProfileDTO).then(
                         successResp => {
                             this.finishSending();
                             store.dispatch(FETCH_USER_PROFILE);

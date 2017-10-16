@@ -1,15 +1,33 @@
 package com.github.nkonev.pages;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
+import com.github.nkonev.CommonTestConstants;
 import com.github.nkonev.IntegrationTestConstants;
 import com.github.nkonev.integration.AbstractItTestRunner;
+import com.github.nkonev.pages.object.Croppa;
 import com.github.nkonev.pages.object.LoginModal;
+import com.github.nkonev.pages.object.UserNav;
+import org.junit.Assert;
 import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.util.StringUtils;
+
+import java.util.concurrent.TimeUnit;
+
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
 import static com.github.nkonev.IntegrationTestConstants.Pages.USER;
+import static com.github.nkonev.util.FileUtils.getExistsFile;
 
 /**
  * Тест на страницу профиля
@@ -22,29 +40,104 @@ public class UserProfileIT extends AbstractItTestRunner {
 
     public static class UserProfilePage {
         private String urlPrefix;
-        public UserProfilePage(String urlPrefix) {
+        private WebDriver driver;
+        public UserProfilePage(String urlPrefix, WebDriver driver) {
             this.urlPrefix = urlPrefix;
+            this.driver = driver;
         }
         public void openPage(int userId) {
             open(urlPrefix+USER+"/"+userId);
+        }
+
+        public void setAvatarImage(String absoluteFilePath) {
+            Croppa.setImage(absoluteFilePath);
+        }
+
+        /**
+         * Press Pencil
+         */
+        public void edit() {
+            $(".profile .manage-buttons img.edit-container-pen").click();
+            $(".profile").shouldHave(Condition.text("Editing profile"));
+        }
+
+        public void assertThisIsYou() {
+            $(".profile").shouldHave(text("Это вы"));
+        }
+
+        public String getAvatarUrl() {
+            return $(".user-info .avatar").getAttribute("src");
+        }
+
+        public void setLogin(String login) {
+            $(".user-info input.login").setValue(login);
+        }
+        public void save(){
+            $(".user-info button.save").click();
+        }
+        public void assertLogin(String expected){
+            $(".user-info .login").shouldHave(text((expected)));
         }
     }
 
     @Test
     public void userSeeThisIsYouAfterLogin() throws Exception {
-        UserProfilePage userPage = new UserProfilePage(urlPrefix);
+        UserProfilePage userPage = new UserProfilePage(urlPrefix, driver);
         userPage.openPage(userId);
 
         LoginModal loginModal = new LoginModal(user, password);
-        // loginModal.openLoginModal();
         loginModal.login();
 
-        $(".profile").shouldHave(text("Это вы"));
+        userPage.assertThisIsYou();
 
         Selenide.refresh();
 
-        $(".profile").shouldHave(text("Это вы"));
+        userPage.assertThisIsYou();
+    }
 
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    private long getUserAvatarCount() {
+        return namedParameterJdbcTemplate.queryForObject("select count(*) from images.user_avatar_image;" , EmptySqlParameterSource.INSTANCE, Long.class);
+    }
+
+
+    @Test
+    public void userEdit() throws Exception {
+        UserProfilePage userPage = new UserProfilePage(urlPrefix, driver);
+        userPage.openPage(505);
+
+        LoginModal loginModal = new LoginModal("generated_user_500", "generated_user_password");
+        loginModal.login();
+
+        userPage.assertThisIsYou();
+
+        String urlOnPageBefore = userPage.getAvatarUrl();
+        String urlInNavbarBefore = UserNav.getAvatarUrl();
+        Assert.assertEquals(urlOnPageBefore, urlInNavbarBefore);
+
+        userPage.edit();
+
+        long countBefore = getUserAvatarCount();
+
+        userPage.setAvatarImage(getExistsFile("../"+ CommonTestConstants.TEST_IMAGE, CommonTestConstants.TEST_IMAGE).getCanonicalPath());
+
+        final String renamed = "generated_user_500_edit";
+        userPage.setLogin(renamed);
+        userPage.save();
+
+        userPage.assertThisIsYou();
+        userPage.assertLogin(renamed);
+
+        long countAfter = getUserAvatarCount();
+        Assert.assertEquals(countBefore+1, countAfter);
+
+        String urlOnPageAfter = userPage.getAvatarUrl();
+        String urlInNavbarAfter = UserNav.getAvatarUrl();
+        Assert.assertFalse(StringUtils.isEmpty(urlOnPageAfter));
+        Assert.assertNotEquals(urlOnPageBefore, urlOnPageAfter);
+        Assert.assertEquals(urlOnPageAfter, urlInNavbarAfter);
     }
 
 }

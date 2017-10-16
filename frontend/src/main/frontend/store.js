@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {GET_PROFILE_URL} from './constants'
+import {PROFILE_URL} from './constants'
 
 Vue.use(Vuex);
 
@@ -36,7 +36,7 @@ const store = new Vuex.Store({
     },
     actions: {
         [FETCH_USER_PROFILE](context) {
-            Vue.http.get(GET_PROFILE_URL).then(response => {
+            Vue.http.get(PROFILE_URL).then(response => {
                 const userProfile = response.body;
                 // console.info('User Profile:', userProfile);
                 context.commit(SET_USER, userProfile);

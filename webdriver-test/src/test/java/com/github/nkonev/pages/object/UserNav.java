@@ -1,8 +1,5 @@
 package com.github.nkonev.pages.object;
 
-import com.codeborne.selenide.Condition;
-
-import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.github.nkonev.integration.AbstractItTestRunner.CLICKABLE;
@@ -25,4 +22,7 @@ public class UserNav {
         $(byText("profile")).shouldBe(CLICKABLE).click();
     }
 
+    public static String getAvatarUrl(){
+        return $(".user-profile-nav .avatar").getAttribute("src");
+    }
 }
