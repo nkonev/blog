@@ -4,11 +4,14 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import com.github.nkonev.CommonTestConstants;
 import com.github.nkonev.IntegrationTestConstants;
+import com.github.nkonev.configuration.SeleniumConfiguration;
 import com.github.nkonev.integration.AbstractItTestRunner;
 import com.github.nkonev.pages.object.Croppa;
 import com.github.nkonev.pages.object.LoginModal;
 import com.github.nkonev.pages.object.UserNav;
+import com.github.nkonev.selenium.Browser;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -37,6 +40,12 @@ public class UserProfileIT extends AbstractItTestRunner {
 
     @Value(IntegrationTestConstants.USER_ID)
     private int userId;
+
+    @Autowired
+    private SeleniumConfiguration seleniumConfiguration;
+
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     public static class UserProfilePage {
         private String urlPrefix;
@@ -95,9 +104,6 @@ public class UserProfileIT extends AbstractItTestRunner {
         userPage.assertThisIsYou();
     }
 
-    @Autowired
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
     private long getUserAvatarCount() {
         return namedParameterJdbcTemplate.queryForObject("select count(*) from images.user_avatar_image;" , EmptySqlParameterSource.INSTANCE, Long.class);
     }
@@ -105,6 +111,7 @@ public class UserProfileIT extends AbstractItTestRunner {
 
     @Test
     public void userEdit() throws Exception {
+        Assume.assumeTrue(seleniumConfiguration.getBrowser() == Browser.CHROME || seleniumConfiguration.getBrowser() == Browser.FIREFOX);
         UserProfilePage userPage = new UserProfilePage(urlPrefix, driver);
         userPage.openPage(505);
 
