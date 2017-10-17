@@ -1,5 +1,7 @@
 package com.github.nkonev.pages.object;
 
+import com.codeborne.selenide.Condition;
+
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.github.nkonev.integration.AbstractItTestRunner.CLICKABLE;
@@ -8,13 +10,18 @@ import static com.github.nkonev.integration.AbstractItTestRunner.CLICKABLE;
  * Created by nik on 15.07.17.
  */
 public class UserNav {
+    private static final int USER_NAV_TIMEOUT = 6000;
     public static void open() {
-        $(".user-profile-nav .multiselect").shouldBe(CLICKABLE).click();
+        $(".user-profile-nav .multiselect")
+                .waitUntil(Condition.enabled, USER_NAV_TIMEOUT)
+                .waitUntil(Condition.visible, USER_NAV_TIMEOUT)
+                .click();
     }
 
     public static void exit() {
         $(byText("exit"))
-                .shouldBe(CLICKABLE)
+                .waitUntil(Condition.enabled, USER_NAV_TIMEOUT)
+                .waitUntil(Condition.visible, USER_NAV_TIMEOUT)
                 .click();
     }
 
