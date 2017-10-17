@@ -50,6 +50,7 @@ public class UserProfileIT extends AbstractItTestRunner {
     public static class UserProfilePage {
         private String urlPrefix;
         private WebDriver driver;
+        private static final int USER_PROFILE_WAIT = 20000;
         public UserProfilePage(String urlPrefix, WebDriver driver) {
             this.urlPrefix = urlPrefix;
             this.driver = driver;
@@ -67,11 +68,11 @@ public class UserProfileIT extends AbstractItTestRunner {
          */
         public void edit() {
             $(".profile .manage-buttons img.edit-container-pen").click();
-            $(".profile").waitUntil(Condition.text("Editing profile"), 6000);
+            $(".profile").waitUntil(Condition.text("Editing profile"), USER_PROFILE_WAIT);
         }
 
         public void assertThisIsYou() {
-            $(".profile").waitUntil(Condition.text("Это вы"), 6000);
+            $(".profile").waitUntil(Condition.text("Это вы"), USER_PROFILE_WAIT);
         }
 
         public String getAvatarUrl() {
