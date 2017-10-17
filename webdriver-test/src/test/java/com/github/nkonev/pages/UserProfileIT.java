@@ -67,11 +67,11 @@ public class UserProfileIT extends AbstractItTestRunner {
          */
         public void edit() {
             $(".profile .manage-buttons img.edit-container-pen").click();
-            $(".profile").shouldHave(Condition.text("Editing profile"));
+            $(".profile").waitUntil(Condition.text("Editing profile"), 6000);
         }
 
         public void assertThisIsYou() {
-            $(".profile").shouldHave(text("Это вы"));
+            $(".profile").waitUntil(Condition.text("Это вы"), 6000);
         }
 
         public String getAvatarUrl() {
