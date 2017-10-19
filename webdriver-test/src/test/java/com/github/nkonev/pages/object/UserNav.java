@@ -1,6 +1,14 @@
 package com.github.nkonev.pages.object;
 
 import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.WebDriverRunner;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
+
+import java.util.concurrent.TimeUnit;
 
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
@@ -20,8 +28,8 @@ public class UserNav {
 
     public static void exit() {
         $(byText("exit"))
-                .waitUntil(Condition.enabled, USER_NAV_TIMEOUT)
-                .waitUntil(Condition.visible, USER_NAV_TIMEOUT)
+//                .waitUntil(Condition.enabled, USER_NAV_TIMEOUT)
+//                .waitUntil(Condition.visible, USER_NAV_TIMEOUT)
                 .click();
     }
 
