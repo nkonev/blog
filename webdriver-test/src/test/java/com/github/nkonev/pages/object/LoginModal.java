@@ -1,19 +1,14 @@
 package com.github.nkonev.pages.object;
 
-import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
-import com.github.nkonev.pages.UserProfileIT;
-import org.openqa.selenium.By;
+import com.github.nkonev.FailoverUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
-
 import java.util.concurrent.TimeUnit;
-
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
@@ -51,8 +46,11 @@ public class LoginModal {
     }
 
     public void logout() {
-        UserNav.open();
-        UserNav.exit();
+        FailoverUtils.retry(2, () -> {
+            UserNav.open();
+            UserNav.exit();
+            return null;
+        });
     }
 
     public void openLoginModal() {

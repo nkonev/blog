@@ -1,18 +1,8 @@
 package com.github.nkonev.pages.object;
 
 import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.WebDriverRunner;
-import com.github.nkonev.FailoverUtils;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.FluentWait;
-import org.openqa.selenium.support.ui.Wait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.concurrent.TimeUnit;
-
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.github.nkonev.integration.AbstractItTestRunner.CLICKABLE;
@@ -31,10 +21,7 @@ public class UserNav {
     }
 
     public static void exit() {
-        FailoverUtils.retry(2, () -> {
-            $(byText("exit")).click();
-            return null;
-        });
+        $(byText("exit")).click();
     }
 
     public static void profile() {
