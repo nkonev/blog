@@ -10,4 +10,6 @@ public interface SeleniumConfiguration {
     Browser getBrowser();
     int getWindowWidth();
     int getWindowHeight();
+    int getSelenideConditionTimeout();
+    int getSelenideCollectionsTimeout();
 }

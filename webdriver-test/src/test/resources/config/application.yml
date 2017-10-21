@@ -70,6 +70,8 @@ custom.selenium.implicitly-wait-timeout: 10
 custom.selenium.browser: PHANTOM
 custom.selenium.window-height: 900
 custom.selenium.window-width: 1600
+custom.selenium.selenide-condition-timeout: 10
+custom.selenium.selenide-collections-timeout: 10
 
 custom.it.url.prefix: http://127.0.0.1:${server.port}
 custom.it.user.id: 1

@@ -16,6 +16,9 @@ import org.springframework.context.annotation.Scope;
 @ConfigurationProperties(prefix = "custom.selenium")
 public class SeleniumConfigurationImpl implements SeleniumConfiguration {
 
+    /**
+     * in seconds
+     */
     private int implicitlyWaitTimeout;
 
     private Browser browser;
@@ -24,6 +27,15 @@ public class SeleniumConfigurationImpl implements SeleniumConfiguration {
 
     private int windowHeight;
 
+    /**
+     * in seconds
+     */
+    private int selenideConditionTimeout;
+
+    /**
+     * in seconds
+     */
+    private int selenideCollectionsTimeout;
 
     /**
      * @Scope("singleton") is need as part of https://github.com/spring-projects/spring-boot/issues/7454
@@ -66,5 +78,21 @@ public class SeleniumConfigurationImpl implements SeleniumConfiguration {
 
     public void setWindowHeight(int windowHeight) {
         this.windowHeight = windowHeight;
+    }
+
+    public int getSelenideConditionTimeout() {
+        return selenideConditionTimeout;
+    }
+
+    public void setSelenideConditionTimeout(int selenideConditionTimeout) {
+        this.selenideConditionTimeout = selenideConditionTimeout;
+    }
+
+    public int getSelenideCollectionsTimeout() {
+        return selenideCollectionsTimeout;
+    }
+
+    public void setSelenideCollectionsTimeout(int selenideCollectionsTimeout) {
+        this.selenideCollectionsTimeout = selenideCollectionsTimeout;
     }
 }
