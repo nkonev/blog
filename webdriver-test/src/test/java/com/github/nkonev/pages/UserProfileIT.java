@@ -80,7 +80,7 @@ public class UserProfileIT extends AbstractItTestRunner {
         }
 
         public void setLogin(String login) {
-            $(".user-info input.login").setValue(login);
+            $(".user-info input#login").setValue(login);
         }
         public void save(){
             $(".user-info button.save").click();

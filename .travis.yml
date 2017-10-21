@@ -8,7 +8,7 @@ jdk: oraclejdk8
 # firefox spamming workaround https://github.com/travis-ci/travis-cookbooks/issues/911
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install -y dbus-x11
+  - sudo apt-get install -y dbus-x11 # https://github.com/travis-ci/travis-cookbooks/issues/911
   - sudo apt-get install -y chromium-browser=61.0.3163.100-0ubuntu0.14.04.1202 #https://www.ubuntuupdates.org/pm/google-chrome-stable
 install: "/bin/true" # workaround https://github.com/Swagger2Markup/swagger2markup-maven-plugin/pull/24
 # https://docs.travis-ci.com/user/gui-and-headless-browsers/

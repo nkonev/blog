@@ -4,13 +4,12 @@
             Editing profile
         </div>
         <div class="user-info">
-            <input class="login" v-model="editProfileDTO.login"/>
             <croppa v-model="myCroppa"
                     :width="200"
                     :height="200"
                     :file-size-limit="1 * 1024 * 1024"
                     placeholder="Choose avatar image"
-                    :initial-image="editProfileDTO.avatar"
+                    :initial-image="model.avatar"
                     :placeholder-font-size="0"
                     :disabled="false"
                     :prevent-white-space="true"
@@ -20,11 +19,14 @@
             >
             </croppa >
 
-            <div class="email"><input v-model="editProfileDTO.email"/></div>
+            <div class="panel-body">
+                <vue-form-generator :schema="schema" :model="model" :options="formOptions"></vue-form-generator>
+            </div>
+
             <button class="save" @click="save">Save</button>
             <button @click="cancel">Cancel</button>
         </div>
-        <error v-if="errorMessage"></error>
+        <error v-if="errorMessage" :message="errorMessage"></error>
     </div>
 </template>
 
@@ -34,16 +36,56 @@
     import Croppa from 'vue-croppa'
     import store, {FETCH_USER_PROFILE} from '../store'
     import {PROFILE_URL} from '../constants'
+    import VueFormGenerator from "vue-form-generator";
+    import "vue-form-generator/dist/vfg.css";  // optional full css additions
 
     export default {
         name: 'user-profile', // это имя компонента, которое м. б. тегом в другом компоненте
         props: ['dto'],
         data(){
             return {
-                editProfileDTO: null,
                 errorMessage: '',
                 submitting: false,
-                myCroppa: {}
+                myCroppa: {},
+                chosenFile: null,
+
+                model: {
+                    login: "",
+                    password: "",
+                    email: "",
+                },
+
+                schema: {
+                    fields: [{
+                        type: "input",
+                        inputType: "text",
+                        label: "Login",
+                        model: "login",
+                        placeholder: "Your login for enter",
+                        featured: true,
+                        required: true
+                    },{
+                        type: "input",
+                        inputType: "password",
+                        label: "Password",
+                        model: "password",
+                        min: 6,
+                        required: false,
+                        hint: "Minimum 6 characters",
+                        validator: VueFormGenerator.validators.string
+                    },{
+                        type: "input",
+                        inputType: "email",
+                        label: "E-mail",
+                        model: "email",
+                        placeholder: "User's e-mail address"
+                    }]
+                },
+
+                formOptions: {
+                    validateAfterLoad: true,
+                    validateAfterChanged: true
+                }
             }
         },
         methods:{
@@ -58,15 +100,17 @@
                 this.startSending();
                 const sendProfile = (url) => {
                     if (url) {
-                        this.editProfileDTO.avatar = url;
+                        this.model.avatar = url;
                     }
-                    this.$http.post(PROFILE_URL, this.editProfileDTO).then(
+                    this.errorMessage = null;
+                    this.$http.post(PROFILE_URL, this.model).then(
                         successResp => {
                             this.finishSending();
                             store.dispatch(FETCH_USER_PROFILE);
                             this.$emit('SAVED');
                         },
                         failResp => {
+                            this.errorMessage = failResp.body;
                             this.finishSending();
                         }
                     )
@@ -104,11 +148,12 @@
         },
         created(){
             // deep copy
-            this.editProfileDTO = Vue.util.extend({}, this.dto);
+            this.model = Vue.util.extend({}, this.dto);
         },
         components:{
             Error,
-            'croppa': Croppa.component
+            'croppa': Croppa.component,
+            "vue-form-generator": VueFormGenerator.component,
         },
     };
 </script>
