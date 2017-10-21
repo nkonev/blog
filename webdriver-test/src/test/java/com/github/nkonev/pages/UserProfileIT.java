@@ -18,6 +18,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
@@ -48,6 +50,7 @@ public class UserProfileIT extends AbstractItTestRunner {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     public static class UserProfilePage {
+        private static final Logger LOGGER = LoggerFactory.getLogger(UserProfilePage.class);
         private String urlPrefix;
         private WebDriver driver;
         private static final int USER_PROFILE_WAIT = 20000;
@@ -67,8 +70,17 @@ public class UserProfileIT extends AbstractItTestRunner {
          * Press Pencil
          */
         public void edit() {
-            $(".profile .manage-buttons img.edit-container-pen").click();
-            $(".profile").waitUntil(Condition.text("Editing profile"), USER_PROFILE_WAIT);
+            for (int i=1; i<=2; ++i) {
+                try {
+                    LOGGER.info("Trying to press edit");
+                    $(".profile .manage-buttons img.edit-container-pen").click();
+                    $(".profile").waitUntil(Condition.text("Editing profile"), USER_PROFILE_WAIT);
+                } catch (Throwable e) {
+                    LOGGER.warn("Next attempt to press edit button");
+                    continue;
+                }
+                break;
+            }
         }
 
         public void assertThisIsYou() {

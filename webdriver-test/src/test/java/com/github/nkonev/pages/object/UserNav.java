@@ -7,6 +7,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
@@ -18,6 +20,7 @@ import static com.github.nkonev.integration.AbstractItTestRunner.CLICKABLE;
  * Created by nik on 15.07.17.
  */
 public class UserNav {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserNav.class);
     private static final int USER_NAV_TIMEOUT = 20000;
     public static void open() {
         $(".user-profile-nav .multiselect")
@@ -27,11 +30,16 @@ public class UserNav {
     }
 
     public static void exit() {
-//        $(byText("exit"))
-//                .waitUntil(Condition.enabled, USER_NAV_TIMEOUT)
-//                .waitUntil(Condition.visible, USER_NAV_TIMEOUT);
-        $(byText("exit"))
-                .click();
+        for (int i = 1; i <= 2; ++i) {
+            try {
+                LOGGER.info("Trying to press exit");
+                $(byText("exit")).click();
+            } catch (Throwable e) {
+                LOGGER.warn("Next attempt to press exit");
+                continue;
+            }
+            break;
+        }
     }
 
     public static void profile() {
