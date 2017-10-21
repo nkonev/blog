@@ -107,7 +107,9 @@ public class SeleniumFactory implements FactoryBean<WebDriver> {
         driver.manage().timeouts().implicitlyWait(seleniumConfiguration.getImplicitlyWaitTimeout(), TimeUnit.SECONDS); // wait for #findElement()
 
         WebDriverRunner.setWebDriver(driver);
-        // Configuration.collectionsTimeout = 9999 * 1000;
+
+        Configuration.timeout = 10 * 1000;
+        Configuration.collectionsTimeout = 10 * 1000;
     }
 
     public void stop() {

@@ -27,12 +27,10 @@ public class UserNav {
     }
 
     public static void exit() {
-        $(byText("exit"))
-                .waitUntil(Condition.enabled, USER_NAV_TIMEOUT)
-                .waitUntil(Condition.visible, USER_NAV_TIMEOUT);
-        $(byText("exit"))
+//        $(byText("exit"))
 //                .waitUntil(Condition.enabled, USER_NAV_TIMEOUT)
-//                .waitUntil(Condition.visible, USER_NAV_TIMEOUT)
+//                .waitUntil(Condition.visible, USER_NAV_TIMEOUT);
+        $(byText("exit"))
                 .click();
     }
 
