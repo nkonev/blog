@@ -3,6 +3,7 @@ package com.github.nkonev.pages;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import com.github.nkonev.CommonTestConstants;
+import com.github.nkonev.FailoverUtils;
 import com.github.nkonev.IntegrationTestConstants;
 import com.github.nkonev.configuration.SeleniumConfiguration;
 import com.github.nkonev.integration.AbstractItTestRunner;
@@ -70,17 +71,11 @@ public class UserProfileIT extends AbstractItTestRunner {
          * Press Pencil
          */
         public void edit() {
-            for (int i=1; i<=2; ++i) {
-                try {
-                    LOGGER.info("Trying to press edit");
-                    $(".profile .manage-buttons img.edit-container-pen").click();
-                    $(".profile").waitUntil(Condition.text("Editing profile"), USER_PROFILE_WAIT);
-                } catch (Throwable e) {
-                    LOGGER.warn("Next attempt to press edit button");
-                    continue;
-                }
-                break;
-            }
+            FailoverUtils.retry(2, () -> {
+                $(".profile .manage-buttons img.edit-container-pen").click();
+                $(".profile").waitUntil(Condition.text("Editing profile"), USER_PROFILE_WAIT);
+                return null;
+            });
         }
 
         public void assertThisIsYou() {

@@ -2,6 +2,7 @@ package com.github.nkonev.pages.object;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.WebDriverRunner;
+import com.github.nkonev.FailoverUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -30,16 +31,10 @@ public class UserNav {
     }
 
     public static void exit() {
-        for (int i = 1; i <= 2; ++i) {
-            try {
-                LOGGER.info("Trying to press exit");
-                $(byText("exit")).click();
-            } catch (Throwable e) {
-                LOGGER.warn("Next attempt to press exit");
-                continue;
-            }
-            break;
-        }
+        FailoverUtils.retry(2, () -> {
+            $(byText("exit")).click();
+            return null;
+        });
     }
 
     public static void profile() {

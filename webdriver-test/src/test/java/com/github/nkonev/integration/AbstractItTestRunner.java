@@ -61,22 +61,4 @@ public abstract class AbstractItTestRunner {
         clearBrowserCookies();
     }
 
-    /**
-     *
-     * @param f условие выхода из цикла
-     * @param seconds
-     * @throws Exception
-     */
-    protected void assertPoll(Supplier<Boolean> f, int seconds) throws Exception {
-        boolean success = false;
-        for (int i=0; i<seconds && !success; ++i) {
-            if (i > 0) {
-                TimeUnit.SECONDS.sleep(1);
-            }
-            success = f.get();
-        }
-        if (!success) {
-            throw new RuntimeException("Not get success after " + seconds + " seconds");
-        }
-    }
 }
