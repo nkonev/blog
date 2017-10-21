@@ -9,16 +9,18 @@ public class FailoverUtils {
     public static final Logger LOGGER = LoggerFactory.getLogger(FailoverUtils.class);
 
     public static <T> T retry(int times, Supplier<T> function){
+        Throwable saved=null;
         for (int i=1; i<=times; ++i) {
             try {
                 LOGGER.info("Trying {}/{} to perform action {}", i, times, function);
                 return function.get();
             } catch (Throwable e) {
                 LOGGER.warn("Next attempt to perform action {}", function);
+                saved = e;
                 continue;
             }
         }
-        throw new RuntimeException("Couldn't successful perform action "+function+" after "+times+" times");
+        throw new RuntimeException("Couldn't successful perform action "+function+" after "+times+" times", saved);
     }
 
     /**
