@@ -79,7 +79,7 @@ public class PostController {
 
         if (StringUtils.isEmpty(searchString)) {
             posts = jdbcTemplate.query(
-                    "  select id, title, text_no_tags as text_column, title_img \n" +
+                    "  select id, title, substring(text_no_tags from 0 for 600) || '...' as text_column, title_img \n" +
                      "  from posts.post \n" +
                      "  order by id desc " +
                      "limit :limit offset :offset\n",

@@ -11,6 +11,7 @@ import com.github.nkonev.exception.BadRequestException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -105,7 +106,7 @@ public class UserAccountConverter {
     public static void updateUserAccountEntity(EditUserDTO userAccountDTO, UserAccount userAccount, PasswordEncoder passwordEncoder) {
 
         String password = userAccountDTO.getPassword();
-        if (password!=null) {
+        if (!StringUtils.isEmpty(password)) {
             validateUserPassword(password);
             userAccount.setPassword(passwordEncoder.encode(password));
         }
