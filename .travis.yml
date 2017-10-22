@@ -24,9 +24,9 @@ after_acript:
   - (cd docker; docker-compose down)
 script:
   # if there isn't pointed explicitly PhantomJS will be used by default for both webdriver integration test and js unit test
-  - "./mvnw -DskipTests -P frontend -P docker clean package"
-#  - "./mvnw -Dkarma.browsers=Firefox -Dcustom.selenium.browser=FIREFOX -P frontend clean package"
-#  - "./mvnw -Dkarma.browsers=Chrome -Dcustom.selenium.browser=CHROME -P frontend clean package"
+  - "./mvnw -P frontend -P docker clean package"
+  - "./mvnw -Dkarma.browsers=Firefox -Dcustom.selenium.browser=FIREFOX -P frontend clean package"
+  - "./mvnw -Dkarma.browsers=Chrome -Dcustom.selenium.browser=CHROME -P frontend clean package"
   - if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_TEST_RESULT" == "0" ]]; then (
       echo "Will push docker image";
       docker login -u="$DOCKER_LOGIN" -p="$DOCKER_PASSWORD";
