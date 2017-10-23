@@ -2,8 +2,8 @@
     <div class="post">
         <template v-if="postDTO">
             <!-- draw only if id == true (!=0) -->
-            <aside class="left" @click="goLeft()" v-if="postDTO.id && !isEditing && postDTO.left"> << </aside>
-            <aside class="right" @click="goRight()" v-if="postDTO.id && !isEditing && postDTO.right"> >> </aside>
+            <aside class="left" @click="goLeft()" v-if="postDTO.id && !isEditing && postDTO.left"><span><< left</span></aside>
+            <aside class="right" @click="goRight()" v-if="postDTO.id && !isEditing && postDTO.right"><span>right >></span></aside>
 
             <template v-if="isEditing">
                 <PostEdit :postDTO="postDTO" :onAfterSubmit="afterSubmit" :onCancel="cancel" />
@@ -170,38 +170,63 @@
 </script>
 
 <style lang="stylus">
+    @import "../constants.styl"
+    $leftAfterTransform=16px
+    $rightAfterTransform=18px
+
+
     aside {
         position fixed
-        border-color #8135ff
-        border-width 1px
-        // border-style solid
         cursor pointer
-        height 100%
-        width: 15%
-        top 0
-        z-index -1
+        background green
+        top 50%
+        opacity 0.6
+        padding 4px 6px
+        border-radius 2px
+        color white
+        margin 2px
 
-        font-family monospace
-        text-shadow: 4px 4px 4px black
-        opacity 0.1
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        text-align center
-        font-size 30ch
-        transform: scale(1, 2.5); // scale text vertically
-        &:hover {
-            opacity 0.2
-        }
         &.left {
-            left 0
+            left 0px
             float left
         }
         &.right {
-            right 0
+            right 0px
             float right
         }
+        &:hover {
+            opacity 1.0
+            color white
+            transition: 0.1s all;
+            transform: scale(1.5, 1.5);
+            &.left {
+                left $leftAfterTransform
+            }
+            &.right {
+                right $rightAfterTransform
+            }
+
+        }
     }
+
+    @media screen and (max-width: $contentWidth) {
+        aside {
+            transform: scale(1.5, 1.5);
+
+            &.left {
+                top inherit
+                bottom 10 px;
+                left $leftAfterTransform
+            }
+            &.right {
+                top inherit
+                bottom 80 px;
+                right $rightAfterTransform
+            }
+        }
+
+    }
+
 
     .post {
         &-head {

@@ -49,7 +49,6 @@
 <style lang="stylus">
     @import "./constants.styl"
 
-    $contentWidth = 969px
     body {
         background-color: $bgColor;
     }
