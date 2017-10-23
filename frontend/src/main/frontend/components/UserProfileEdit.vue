@@ -20,10 +20,10 @@
             </croppa >
 
             <div class="panel-body">
-                <vue-form-generator :schema="schema" :model="model" :options="formOptions"></vue-form-generator>
+                <vue-form-generator :schema="schema" :model="model" :options="formOptions" @validated="onValidated"></vue-form-generator>
             </div>
 
-            <button class="save" @click="save">Save</button>
+            <button class="save" @click="save" v-bind:disabled="!submitEnabled">Save</button>
             <button @click="cancel">Cancel</button>
         </div>
         <error v-if="errorMessage" :message="errorMessage"></error>
@@ -48,6 +48,7 @@
                 submitting: false,
                 myCroppa: {},
                 chosenFile: null,
+                submitEnabled: true,
 
                 model: {
                     login: "",
@@ -144,6 +145,10 @@
             },
             finishSending() {
                 this.submitting = false;
+            },
+            onValidated(isValid, errors) {
+                console.log("Validation result: ", isValid, ", Errors:", errors);
+                this.submitEnabled = isValid;
             },
         },
         created(){
