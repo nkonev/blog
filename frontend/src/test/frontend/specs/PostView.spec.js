@@ -40,6 +40,7 @@ describe("PostView.vue", () => {
 
     it("tap left", (done) => {
         const postDto = postFactory();
+        postDto.owner = {id: 42};
         postDto.id = 1234;
         postDto.left = 1233;
         postDto.right = 1235;
@@ -71,7 +72,10 @@ describe("PostView.vue", () => {
                 "canEdit": false,
                 "canDelete": false,
                 "left": 1232,
-                "right": 1234
+                "right": 1234,
+                "owner": {
+                    "id": 42
+                }
             }`
         });
 
@@ -79,6 +83,7 @@ describe("PostView.vue", () => {
 
     it("tap right", (done) => {
         const postDto = postFactory();
+        postDto.owner = {id: 42};
         postDto.id = 1234;
         postDto.left = 1233;
         postDto.right = 1235;
@@ -110,7 +115,10 @@ describe("PostView.vue", () => {
                 "canEdit": false,
                 "canDelete": false,
                 "left": 1234,
-                "right": 1236
+                "right": 1236,
+                "owner": {
+                    "id": 42
+                }
             }`
         });
 
