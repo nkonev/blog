@@ -1,10 +1,6 @@
 <template>
     <div class="post">
         <template v-if="postDTO">
-            <!-- draw only if id == true (!=0) -->
-            <aside class="left" @click="goLeft()" v-if="postDTO.id && !isEditing && postDTO.left"><span><< left</span></aside>
-            <aside class="right" @click="goRight()" v-if="postDTO.id && !isEditing && postDTO.right"><span>right >></span></aside>
-
             <template v-if="isEditing">
                 <PostEdit :postDTO="postDTO" :onAfterSubmit="afterSubmit" :onCancel="cancel" />
             </template>
@@ -33,6 +29,10 @@
                 </template>
                 <post-add-fab/>
             </template>
+            <!-- draw only if id == true (!=0) -->
+            <aside class="left" @click="goLeft()" v-if="postDTO.id && !isEditing && postDTO.left"><span><< left</span></aside>
+            <aside class="right" @click="goRight()" v-if="postDTO.id && !isEditing && postDTO.right"><span>right >></span></aside>
+
             <CommentList/>
         </template>
         <template v-else>
@@ -171,8 +171,8 @@
 
 <style lang="stylus">
     @import "../constants.styl"
-    $leftAfterTransform=16px
-    $rightAfterTransform=18px
+    $leftAfterTransform=30px
+    $rightAfterTransform=30px
 
 
     aside {
@@ -186,13 +186,15 @@
         color white
         margin 2px
 
+        font-size 1.8em
+
         &.left {
-            left 0px
             float left
+            left $leftAfterTransform
         }
         &.right {
-            right 0px
             float right
+            right $rightAfterTransform
         }
         &:hover {
             opacity 1.0
@@ -209,19 +211,19 @@
         }
     }
 
-    @media screen and (max-width: $contentWidth) {
+    @media screen and (max-width: $contentWidth+300px) {
         aside {
-            transform: scale(1.5, 1.5);
-
+            position static
+            transform none
+            font-size 1.8em
             &.left {
                 top inherit
-                bottom 10 px;
-                left $leftAfterTransform
             }
             &.right {
                 top inherit
-                bottom 80 px;
-                right $rightAfterTransform
+            }
+            &:hover {
+                transform none
             }
         }
 
