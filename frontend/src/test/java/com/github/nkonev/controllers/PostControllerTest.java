@@ -109,6 +109,18 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andReturn();
     }
 
+    @Test
+    public void test404() throws Exception {
+        MvcResult getPostsRequest = mockMvc.perform(
+                get(Constants.Uls.API+Constants.Uls.POST+"/1005001")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+        )
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.error").value("data not found"))
+                .andExpect(jsonPath("$.message").value("Post 1005001 not found"))
+                .andReturn();
+    }
+
 
     @WithUserDetails(TestConstants.USER_ALICE)
     @Test

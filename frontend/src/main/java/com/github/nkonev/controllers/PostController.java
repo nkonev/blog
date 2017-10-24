@@ -2,6 +2,7 @@ package com.github.nkonev.controllers;
 
 import com.github.nkonev.Constants;
 import com.github.nkonev.dto.PostDTOExtended;
+import com.github.nkonev.exception.DataNotFoundException;
 import com.github.nkonev.repo.jpa.CommentRepository;
 import com.github.nkonev.utils.PageUtils;
 import com.github.nkonev.converter.PostConverter;
@@ -116,7 +117,7 @@ public class PostController {
         return postRepository
                 .findById(id)
                 .map(post -> postConverter.convertToDtoExtended(post, userAccount))
-                .orElseThrow(()-> new RuntimeException("Post " + id + " not found"));
+                .orElseThrow(()-> new DataNotFoundException("Post " + id + " not found"));
     }
 
 

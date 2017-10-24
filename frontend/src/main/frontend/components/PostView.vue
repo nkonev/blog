@@ -5,14 +5,14 @@
                 <PostEdit :postDTO="postDTO" :onAfterSubmit="afterSubmit" :onCancel="cancel" />
             </template>
             <template v-else>
-                <template v-if="!isLoading">
+                <template v-if="!isLoading && !errorMessage">
                     <div class="img-container">
                         <img class="title-img" :src="postDTO.titleImg"/>
                     </div>
                     <div class="post-head">
                         <h2>{{postDTO.title}}</h2>
                         <div class="user-info">
-                            <router-link :to="`/user/${postDTO.owner.id}`">
+                            <router-link :to="`/user/${postDTO.owner.id}`" v-if="postDTO.owner">
                                 <span>{{postDTO.owner.login}}</span>
                                 <img :src="postDTO.owner.avatar"/>
                             </router-link>
@@ -24,7 +24,12 @@
                     </div>
                     <div class="post-content" v-html="postDTO.text"></div>
                 </template>
-                <template v-else>
+                <template v-if="errorMessage">
+                    <div class="post-error">
+                        {{errorMessage}}
+                    </div>
+                </template>
+                <template v-if="isLoading">
                     <blog-spinner message="Loading post"></blog-spinner>
                 </template>
                 <post-add-fab/>
@@ -33,7 +38,7 @@
             <aside class="left" @click="goLeft()" v-if="postDTO.id && !isEditing && postDTO.left"><span><< left</span></aside>
             <aside class="right" @click="goRight()" v-if="postDTO.id && !isEditing && postDTO.right"><span>right >></span></aside>
 
-            <CommentList/>
+            <CommentList v-if="!isLoading && !errorMessage"/>
         </template>
         <template v-else>
             Error
@@ -65,7 +70,8 @@
             return{
                 postDTO: postFactory(),
                 isEditing: false,
-                isLoading: true
+                isLoading: true,
+                errorMessage: null,
             }
         },
         created(){
@@ -93,6 +99,7 @@
             fetchData() {
                 // console.log("fetching post...");
                 this.isLoading = true;
+                this.errorMessage = null;
                 this.$http.get(API_POST+'/'+this.getId(), { }).then((response) => {
                     this.postDTO = JSON.parse(response.bodyText); // add data from server's response
                     this.isLoading = false;
@@ -106,6 +113,7 @@
                     if (this.$props.onGetPostFail) {
                         this.$props.onGetPostFail(this.postDTO);
                     }
+                    this.errorMessage = response.body.message;
                 });
             },
             onLogin() {
@@ -272,6 +280,9 @@
             blockquote p {
                 display: inline
             }
+        }
+        &-error {
+            font-size 4em
         }
 
         .img-container {
