@@ -8,7 +8,7 @@ jdk: oraclejdk8
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y dbus-x11 # firefox spamming workaround https://github.com/travis-ci/travis-cookbooks/issues/911
-  - sudo apt-get install -y chromium-browser=61.0.3163.100-0ubuntu0.14.04.1202 #https://www.ubuntuupdates.org/pm/google-chrome-stable
+  - sudo apt-get install -y  chromium-codecs-ffmpeg=61.0.3163.100-0ubuntu0.14.04.1202 chromium-browser=61.0.3163.100-0ubuntu0.14.04.1202 #https://www.ubuntuupdates.org/pm/google-chrome-stable
   - openssl aes-256-cbc -K $encrypted_8518ee46cc9c_key -iv $encrypted_8518ee46cc9c_iv -in /home/travis/build/nkonev/blog/id_rsa.enc -out ~/.ssh/id_rsa -d
   - chmod 600 ~/.ssh/id_rsa
 install: "/bin/true" # workaround https://github.com/Swagger2Markup/swagger2markup-maven-plugin/pull/24
