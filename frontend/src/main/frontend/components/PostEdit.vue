@@ -16,7 +16,7 @@
                     :file-size-limit="1 * 1024 * 1024"
                     placeholder="Choose title image"
                     :initial-image="editPostDTO.titleImg"
-                    :placeholder-font-size="0"
+                    :placeholder-font-size="32"
                     :disabled="false"
                     :prevent-white-space="true"
                     :show-remove-button="true"

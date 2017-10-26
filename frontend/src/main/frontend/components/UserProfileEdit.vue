@@ -10,7 +10,7 @@
                     :file-size-limit="1 * 1024 * 1024"
                     placeholder="Choose avatar image"
                     :initial-image="model.avatar"
-                    :placeholder-font-size="0"
+                    :placeholder-font-size="20"
                     :disabled="false"
                     :prevent-white-space="true"
                     :show-remove-button="true"
