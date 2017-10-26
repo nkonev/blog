@@ -18,7 +18,7 @@ public class IndexPage {
     private static final String BODY = "body";
     public static final String POST = ".post";
     public static final String POST_LIST = ".post-list";
-    public static final String ADD_POST = ".fab a";
+    public static final String ADD_POST = ".fab div";
     public IndexPage(String urlPrefix) {
         this.urlPrefix = urlPrefix;
         this.driver = $(BODY).getWrappedDriver();
