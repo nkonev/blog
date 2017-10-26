@@ -38,7 +38,7 @@
             <aside class="left" @click="goLeft()" v-if="postDTO.id && !isEditing && postDTO.left"><span><< left</span></aside>
             <aside class="right" @click="goRight()" v-if="postDTO.id && !isEditing && postDTO.right"><span>right >></span></aside>
 
-            <CommentList v-if="!isLoading && !errorMessage"/>
+            <CommentList v-show="!isLoading"/>
         </template>
         <template v-else>
             Error
