@@ -1,7 +1,7 @@
 <template>
     <div class="search">
         <label for="search">Search</label>
-        <input id="search" v-model="searchString" @input="onChangeSearchString()"/> <button id="clear-search" @click="onClearButton()">clear</button>
+        <input id="search" v-model="searchString" @input="onChangeSearchString()" :placeholder="placeholder"/> <button id="clear-search" @click="onClearButton()">clear</button>
     </div>
 
 </template>
@@ -12,6 +12,7 @@
     // https://alligator.io/vuejs/component-communication/
     const SEARCH_EVENT = 'SEARCH_EVENT'; // don't works as export (sic!)
     export default {
+        props: ['placeholder'],
         data() {
             return {
                 searchString: ''

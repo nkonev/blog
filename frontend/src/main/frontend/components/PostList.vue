@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Search @SEARCH_EVENT="onChangeSearchString"></Search>
+        <Search @SEARCH_EVENT="onChangeSearchString" placeholder="Fulltext search by posts"></Search>
 
         <div class="post-list">
             <div v-if="posts.length>0">
