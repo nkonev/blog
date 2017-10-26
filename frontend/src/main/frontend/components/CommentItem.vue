@@ -89,6 +89,10 @@
                 height 16px;
                 cursor pointer
             }
+            img.remove-container-x:hover {
+                transition: 0.2s all;
+                box-shadow: 0 0 2em red;
+            }
         }
     }
 </style>

@@ -195,6 +195,7 @@
         margin 2px
 
         font-size 1.8em
+        filter none
 
         &.left {
             float left
@@ -210,6 +211,7 @@
             transition: 0.1s all;
             transform: scale(1.5, 1.5);
             box-shadow: 0 0 40px green;
+            filter brightness(1.5)
             &.left {
                 left $leftAfterTransform
             }
@@ -256,6 +258,10 @@
             img.remove-container-x {
                 height 32px;
                 cursor pointer
+            }
+            img.remove-container-x:hover {
+                transition: 0.2s all;
+                box-shadow: 0 0 2em red;
             }
 
             .user-info img {

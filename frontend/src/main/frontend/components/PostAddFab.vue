@@ -44,6 +44,7 @@
                 opacity 1
                 transform: scale(1.3, 1.3);
                 box-shadow: 0 0 40px #0086B3;
+                filter brightness(1.3)
             }
         }
     }
