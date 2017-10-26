@@ -209,6 +209,7 @@
             color white
             transition: 0.1s all;
             transform: scale(1.5, 1.5);
+            box-shadow: 0 0 40px green;
             &.left {
                 left $leftAfterTransform
             }

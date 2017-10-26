@@ -50,7 +50,22 @@
     @import "./constants.styl"
 
     body {
-        background-color: $bgColor;
+        //background-color: $bgColor;
+        /*background: repeating-linear-gradient(
+                45deg,
+                rgba(0, 0, 0, 0.2) 5px,
+                rgba(0, 0, 0, 0.2) 15px,
+                rgba(0, 0, 0, 0.3) 15px,
+                rgba(0, 0, 0, 0.3) 20px
+        ),*/
+        background: repeating-linear-gradient(
+                45deg,
+                #ffffff 0px,
+                #ffffff 2px,
+                rgba(255, 209, 128, 0.3) 2px,
+                rgba(255, 209, 128, 0.2) 6px
+        ),
+        url(./assets/bg.png);
     }
 
     #app {
@@ -82,10 +97,25 @@
         nav {
             a.router-link,
             span.router-link {
+                text-decoration none
+                color blue
                 padding 12px
                 display flex
                 flex-direction column
                 justify-content center
+            }
+            span.router-link {
+                color black
+            }
+
+            // :not(.router-link-active)
+            a.router-link:hover {
+                color white
+                background-color #003eff
+                border-radius 2px
+                background-opacity: 0.6
+                transform: scale(1.5, 1.5);
+                transition: 0.1s all;
             }
 
             a.router-link-active,

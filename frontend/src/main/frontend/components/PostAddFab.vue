@@ -12,28 +12,39 @@
     $fabSize=40px
 
     .fab {
+        display: inline-block;
         position fixed
         right 20px
         bottom 20px
-        line-height: $fabSize - 5px
+        height $fabSize
+        width $fabSize
+        margin 0 0
+        padding 0 0
         a {
             display block
-            text-align center
-            vertical-align: middle;
+            //height 100%
+            //width 100%
+            //border: 2px solid
+            vertical-align:top;
+            line-height $fabSize
+            text-align: center;
+            font-size xx-large
+
+            font-weight bold
+            font-family monospace
+            margin 0 0
+            padding 0 0
             text-decoration none
             cursor pointer
             background-color #0086B3
             color white
-            height $fabSize
-            width $fabSize
-            border-radius $fabSize
-            border-width 0px
+            border-radius ($fabSize / 2)
             transition: 0.1s all;
             opacity 0.8
             &:hover {
                 opacity 1
-                color: mix(#8b8c8d, black, 80%);
-                box-shadow: 0 0 40px black;
+                transform: scale(1.5, 1.5);
+                box-shadow: 0 0 40px #0086B3;
             }
         }
     }
