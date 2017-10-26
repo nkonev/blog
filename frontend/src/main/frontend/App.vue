@@ -113,7 +113,7 @@
                 color white
                 background-color #003eff
                 border-radius 2px
-                background-opacity: 0.6
+                opacity: 0.8
                 transform: scale(1.5, 1.5);
                 transition: 0.1s all;
             }
