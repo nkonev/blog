@@ -51,13 +51,6 @@
 
     body {
         //background-color: $bgColor;
-        /*background: repeating-linear-gradient(
-                45deg,
-                rgba(0, 0, 0, 0.2) 5px,
-                rgba(0, 0, 0, 0.2) 15px,
-                rgba(0, 0, 0, 0.3) 15px,
-                rgba(0, 0, 0, 0.3) 20px
-        ),*/
         background: repeating-linear-gradient(
                 45deg,
                 #ffffff 0px,
@@ -116,6 +109,7 @@
                 opacity: 0.8
                 transform: scale(1.5, 1.5);
                 transition: 0.1s all;
+                z-index 1000
             }
 
             a.router-link-active,
