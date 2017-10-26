@@ -1,5 +1,5 @@
 <template>
-    <div class="fab"><!--<button>+</button>--><router-link to="/post/add">+</router-link></div>
+    <div class="fab"><!--<button>+</button>--><router-link tag="div" to="/post/add">+</router-link></div>
 </template>
 
 <script>
@@ -20,12 +20,11 @@
         width $fabSize
         margin 0 0
         padding 0 0
-        a {
+        div {
             display block
-            //height 100%
-            //width 100%
+            height 100%
+            width 100%
             //border: 2px solid
-            vertical-align:top;
             line-height $fabSize
             text-align: center;
             font-size xx-large
@@ -43,7 +42,7 @@
             opacity 0.8
             &:hover {
                 opacity 1
-                transform: scale(1.5, 1.5);
+                transform: scale(1.3, 1.3);
                 box-shadow: 0 0 40px #0086B3;
             }
         }
