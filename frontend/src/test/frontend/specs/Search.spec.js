@@ -19,7 +19,7 @@ describe('Search.vue', ()=>{
             done();
         });
 
-        const el = wrapper.find("input#search")[0];
+        const el = wrapper.find("input.search-input")[0];
         el.element.value = 'good day for die';
         el.trigger('input');
     });
@@ -34,7 +34,7 @@ describe('Search.vue', ()=>{
             done();
         });
 
-        const el = wrapper.find("button#clear-search")[0];
+        const el = wrapper.find(".search-clear")[0];
         el.trigger('click');
     });
 });

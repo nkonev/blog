@@ -1,7 +1,7 @@
 <template>
     <div class="comments">
         <template v-if="comments.length>0">
-            <h1 class="comments-header">Comments:</h1>
+            <h3 class="comments-header">Comments:</h3>
             <div id="comments-list">
                 <comment-item v-for="comment in comments" v-bind:commentDTO="comment" :key="comment.id"></comment-item>
             </div>
@@ -21,8 +21,8 @@
                     :next-link-class="'next-link-item arrow-link-item'"
             ></paginate>
         </template>
-        <div v-else id="comments-list">
-            No comments
+        <div v-else id="comments-list" class="comments-no-comments">
+            No comments. Write first comment:
         </div>
         <CommentEdit :commentDTO="{}" :isAdd="true"></CommentEdit>
     </div>
@@ -131,6 +131,13 @@
     .comments {
         &-header{
             text-align center
+            //font-size x-large
+            margin 20px 0 0
+        }
+
+        &-no-comments {
+            text-align center
+            font-size large
         }
     }
 </style>

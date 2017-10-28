@@ -11,16 +11,19 @@
                     </div>
                     <div class="post-head">
                         <h2>{{postDTO.title}}</h2>
-                        <div class="user-info">
-                            <router-link :to="`/user/${postDTO.owner.id}`" v-if="postDTO.owner">
-                                <span>{{postDTO.owner.login}}</span>
+                        <div class="user-info" v-if="postDTO.owner">
+                            <span>written by</span>
+                            <router-link :to="`/user/${postDTO.owner.id}`">
                                 <img :src="postDTO.owner.avatar"/>
                             </router-link>
+                            <router-link :to="`/user/${postDTO.owner.id}`">
+                                <span>{{postDTO.owner.login}}</span>
+                            </router-link>
                         </div>
-                        <span class="manage-buttons" v-if="postDTO.canEdit || postDTO.canDelete">
+                        <div class="manage-buttons" v-if="postDTO.canEdit || postDTO.canDelete">
                             <img class="edit-container-pen" src="../assets/pen.png" v-if="postDTO.canEdit" @click="setEdit()"/>
                             <img class="remove-container-x" src="../assets/remove.png" v-if="postDTO.canDelete" @click="doDelete()"/>
-                        </span>
+                        </div>
                     </div>
                     <div class="post-content" v-html="postDTO.text"></div>
                 </template>
@@ -246,8 +249,8 @@
             display flex
             flex-direction row
             justify-content space-between
-            // flex-wrap wrap
-            align-items: baseline
+            flex-wrap wrap
+            //align-items: baseline
 
             h1 {
             }
@@ -264,8 +267,26 @@
                 box-shadow: 0 0 2em red;
             }
 
-            .user-info img {
-                height 32px;
+            .user-info {
+                display flex
+                flex-direction row
+                align-items center
+                margin-left 2em
+
+                img {
+                    height 40px;
+                }
+            }
+
+            .manage-buttons {
+                margin-left: auto
+                display flex
+                flex-direction row
+                align-items center
+
+                img {
+                    margin 0 0.5em
+                }
             }
         }
         &-content {
