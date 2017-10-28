@@ -35,7 +35,7 @@ public class LoginModal {
         modal.find("input#username").setValue(user);
         modal.find("input#password").setValue(password);
         modal.find(ID_SUBMIT).shouldBe(CLICKABLE).click();
-        $(".user-profile-nav-login").shouldHave(text("" + user));
+        $(".user-profile-nav .login").shouldHave(text("" + user));
 
         WebDriver driver = WebDriverRunner.getWebDriver();
         final Wait<WebDriver> wait = new FluentWait<>(driver)

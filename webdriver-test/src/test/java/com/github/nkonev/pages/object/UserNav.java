@@ -14,18 +14,18 @@ public class UserNav {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserNav.class);
     private static final int USER_NAV_TIMEOUT = 20000;
     public static void open() {
-        $(".user-profile-nav .multiselect")
-                .waitUntil(Condition.enabled, USER_NAV_TIMEOUT)
-                .waitUntil(Condition.visible, USER_NAV_TIMEOUT)
-                .click();
+        $(".user-profile-nav .dropobj")
+//                .waitUntil(Condition.enabled, USER_NAV_TIMEOUT)
+//                .waitUntil(Condition.visible, USER_NAV_TIMEOUT)
+                .hover();
     }
 
     public static void exit() {
-        $(byText("exit")).click();
+        $(byText("Logout")).click();
     }
 
     public static void profile() {
-        $(byText("profile")).shouldBe(CLICKABLE).click();
+        $(byText("Profile")).shouldBe(CLICKABLE).click();
     }
 
     public static String getAvatarUrl(){
