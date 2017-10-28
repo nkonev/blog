@@ -140,7 +140,8 @@
 </script>
 
 <style lang="stylus">
-    .post-list {
-        margin-top 20px
+    .search {
+        margin-top 12px
+        margin-bottom 10px
     }
 </style>

@@ -73,7 +73,7 @@ public class PostConverter {
         checkLength(sanitizedHtml);
         forUpdate.setText(sanitizedHtml);
         forUpdate.setTextNoTags(cleanHtmlTags(sanitizedHtml));
-        forUpdate.setTitle(postDTO.getTitle());
+        forUpdate.setTitle(cleanHtmlTags(postDTO.getTitle()));
         forUpdate.setTitleImg(postDTO.getTitleImg());
         return forUpdate;
     }
