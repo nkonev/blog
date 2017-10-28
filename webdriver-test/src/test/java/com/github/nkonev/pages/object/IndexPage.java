@@ -36,7 +36,7 @@ public class IndexPage {
     }
 
     public void setSearchString(String s) {
-        $("input#search").setValue(s);
+        $("input.search-input").setValue(s);
     }
 
     public void sendEnd() {
@@ -55,6 +55,6 @@ public class IndexPage {
     }
 
     public void clearSearchButton() {
-        $("#clear-search").shouldBe(CLICKABLE).click();
+        $(".search-clear").shouldBe(CLICKABLE).click();
     }
 }

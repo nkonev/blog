@@ -138,3 +138,9 @@
         }
     }
 </script>
+
+<style lang="stylus">
+    .post-list {
+        margin-top 20px
+    }
+</style>

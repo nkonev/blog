@@ -68,7 +68,7 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
 
-    // center content
+        // center content
         width $contentWidth
         background-color: white;
         position: absolute;
