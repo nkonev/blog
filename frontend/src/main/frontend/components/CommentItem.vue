@@ -1,21 +1,15 @@
 <template>
     <div class="comment">
-        <div class="user-info">
-            <router-link :to="`/user/${commentDTO.owner.id}`">
-                <img :src="commentDTO.owner.avatar">
-                <span>{{commentDTO.owner.login}}</span>
-            </router-link>
-        </div>
-
-        <div v-if="!isEditing">
-            <span class="comment-manage-buttons">
+        <div class="comment-head">
+            <owner :owner="commentDTO.owner"></owner>
+            <span v-if="!isEditing" class="comment-manage-buttons">
                 <img class="edit-container-pen" src="../assets/pen.png" v-if="commentDTO.canEdit" @click="setEdit()"/>
                 <img class="remove-container-x" src="../assets/remove.png" v-if="commentDTO.canDelete" @click="doDelete()"/>
             </span>
+        </div>
 
-            <div class="comment-content">
-                {{commentDTO.text}}
-            </div>
+        <div v-if="!isEditing" class="comment-content">
+            {{commentDTO.text}}
         </div>
         <comment-edit v-else :commentDTO="commentDTO"></comment-edit>
         <hr/>
@@ -26,6 +20,7 @@
     import CommentEdit from './CommentEdit.vue'
     import bus, {COMMENT_CANCELED, COMMENT_UPDATED, COMMENT_DELETED} from '../bus'
     import {getPostId} from '../utils'
+    import Owner from './Owner.vue'
 
     export default {
         name: 'comment-item',
@@ -53,7 +48,8 @@
             }
         },
         components:{
-            CommentEdit
+            CommentEdit,
+            Owner
         },
         created(){
             bus.$on(COMMENT_CANCELED, this.resetEdit);
@@ -68,19 +64,29 @@
 
 <style lang="stylus">
     .comment {
-    // border-width 1px
-    // border-color black
-    // border-style solid
+        // border-width 1px
+        // border-color black
+        // border-style solid
         margin 2px;
 
-        .user-info {
-            img {
-                max-width 48px;
-                max-height 48px;
-            }
+        &-head{
+            display flex
+            flex-direction row
+            justify-content space-between
+            flex-wrap wrap
+
         }
 
         .comment-manage-buttons {
+            margin-left: auto
+            display flex
+            flex-direction row
+            align-items center
+
+            img {
+                margin 0 0.25em
+            }
+
             img.edit-container-pen {
                 height 16px;
                 cursor pointer

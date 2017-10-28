@@ -11,15 +11,9 @@
                     </div>
                     <div class="post-head">
                         <h2>{{postDTO.title}}</h2>
-                        <div class="user-info" v-if="postDTO.owner">
-                            <span>written by</span>
-                            <router-link :to="`/user/${postDTO.owner.id}`">
-                                <img :src="postDTO.owner.avatar"/>
-                            </router-link>
-                            <router-link :to="`/user/${postDTO.owner.id}`">
-                                <span>{{postDTO.owner.login}}</span>
-                            </router-link>
-                        </div>
+
+                        <span class="written-by">written by</span>
+                        <owner v-if="postDTO.owner" :owner="postDTO.owner"></owner>
                         <div class="manage-buttons" v-if="postDTO.canEdit || postDTO.canDelete">
                             <img class="edit-container-pen" src="../assets/pen.png" v-if="postDTO.canEdit" @click="setEdit()"/>
                             <img class="remove-container-x" src="../assets/remove.png" v-if="postDTO.canDelete" @click="doDelete()"/>
@@ -58,6 +52,7 @@
     import BlogSpinner from "./BlogSpinner.vue"
     import PostAddFab from './PostAddFab.vue'
     import CommentList from './CommentList.vue'
+    import Owner from './Owner.vue'
     import {getPostId} from '../utils'
 
     // Lazy load heavy component https://router.vuejs.org/en/advanced/lazy-loading.html. see also in .babelrc
@@ -93,7 +88,8 @@
             'PostEdit': PostEdit,
             'blog-spinner': BlogSpinner,
             PostAddFab,
-            CommentList
+            CommentList,
+            Owner
         },
         methods: {
             getId(){
@@ -267,15 +263,11 @@
                 box-shadow: 0 0 2em red;
             }
 
-            .user-info {
-                display flex
-                flex-direction row
-                align-items center
+            .written-by {
                 margin-left 2em
-
-                img {
-                    height 40px;
-                }
+                margin-right 0.8em
+                display flex
+                align-items center
             }
 
             .manage-buttons {
