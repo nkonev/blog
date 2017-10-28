@@ -6,8 +6,8 @@
                 <img class="avatar" :src="currentUser.avatar"/>
             </span>
             <div class="dropdown-content">
-                <span @click.prevent="dispatchAction('profile')">Profile</span>
-                <span @click.prevent="dispatchAction('exit')">Logout</span>
+                <span class="blue" @click.prevent="dispatchAction('profile')">Profile</span>
+                <span class="red" @click.prevent="dispatchAction('exit')">Logout</span>
             </div>
         </div>
     </div>
@@ -158,10 +158,17 @@
         /* Change color of dropdown links on hover */
         span:hover {
             background-color: #f1f1f1
-            //box-shadow: 0 0 20px red;
+            cursor pointer
+        }
+
+        span.blue:hover {
+            color blue
+            text-shadow 0 0 1em blue;
+        }
+
+        span.red:hover {
             color red
             text-shadow 0 0 1em red;
-            cursor pointer
         }
     }
 
