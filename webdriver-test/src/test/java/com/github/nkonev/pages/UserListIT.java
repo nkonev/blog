@@ -109,8 +109,7 @@ public class UserListIT extends AbstractItTestRunner {
         LoginModal loginModal = new LoginModal(user, password);
         loginModal.login();
 
-        // тут мы ожидаем что пользователь(админ) увидит список пользователей без перезагрузки
-//        Selenide.refresh();
+        // Selenide.refresh();
 
         usersPage.assertActivePaginatorPage(page);
     }

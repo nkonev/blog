@@ -1,31 +1,36 @@
 <template>
-    <div class="profile">
-        <div>
-            Editing profile
-        </div>
-        <div class="user-info">
-            <croppa v-model="myCroppa"
-                    :width="200"
-                    :height="200"
-                    :file-size-limit="1 * 1024 * 1024"
-                    placeholder="Choose avatar image"
-                    :initial-image="model.avatar"
-                    :placeholder-font-size="20"
-                    :disabled="false"
-                    :prevent-white-space="true"
-                    :show-remove-button="true"
-                    @file-size-exceed="handleCroppaFileSizeExceed"
-                    @file-type-mismatch="handleCroppaFileTypeMismatch"
-            >
-            </croppa >
 
-            <div class="panel-body">
+    <div class="profile-edit">
+        <div class="profile-edit-msg">
+            Editing profile #{{dto.id}}
+        </div>
+
+        <div class="profile-edit-info">
+            <div class="profile-edit-info-avatar-container">
+                <croppa v-model="profileAvatarCroppa"
+                        :width="300"
+                        :height="300"
+                        :file-size-limit="5 * 1024 * 1024"
+                        placeholder="Choose avatar image"
+                        :initial-image="model.avatar"
+                        :placeholder-font-size="20"
+                        :disabled="false"
+                        :prevent-white-space="true"
+                        :show-remove-button="true"
+                        @file-size-exceed="handleCroppaFileSizeExceed"
+                        @file-type-mismatch="handleCroppaFileTypeMismatch"
+                >
+            </croppa>
+            </div>
+
+            <div class="profile-edit-info-form">
                 <vue-form-generator :schema="schema" :model="model" :options="formOptions" @validated="onValidated"></vue-form-generator>
             </div>
 
-            <button class="save" @click="save" v-bind:disabled="!submitEnabled">Save</button>
-            <button @click="cancel">Cancel</button>
         </div>
+        <button class="save" @click="save" v-bind:disabled="!submitEnabled">Save</button>
+        <button @click="cancel">Cancel</button>
+
         <error v-if="errorMessage" :message="errorMessage"></error>
     </div>
 </template>
@@ -38,6 +43,7 @@
     import {PROFILE_URL} from '../constants'
     import VueFormGenerator from "vue-form-generator";
     import "vue-form-generator/dist/vfg.css";  // optional full css additions
+    import 'vue-croppa/dist/vue-croppa.css'
 
     export default {
         name: 'user-profile', // это имя компонента, которое м. б. тегом в другом компоненте
@@ -46,7 +52,7 @@
             return {
                 errorMessage: '',
                 submitting: false,
-                myCroppa: {},
+                profileAvatarCroppa: {},
                 chosenFile: null,
                 submitEnabled: true,
 
@@ -116,8 +122,8 @@
                         }
                     )
                 };
-                if (this.myCroppa.getChosenFile()){
-                    this.myCroppa.promisedBlob(this.myCroppa.getChosenFile().type).then(blob => {
+                if (this.profileAvatarCroppa.getChosenFile()){
+                    this.profileAvatarCroppa.promisedBlob(this.profileAvatarCroppa.getChosenFile().type).then(blob => {
                         const formData = new FormData();
                         formData.append('image', blob); // multipart part with name 'image'
                         this.$http.post('/api/image/user/avatar', formData)
@@ -164,6 +170,28 @@
 </script>
 
 <style lang="stylus" scoped>
+    .profile-edit {
+        &-msg{
+            text-align center
+            font-size xx-large
+            font-family monospace
+            margin-bottom: 1em;
+            margin-top: 0.5em;
+        }
+
+        &-info {
+            display flex
+            flex-direction row
+            flex-wrap wrap
+            justify-content space-around
+
+            &-avatar-container {
+                text-align center
+                //width 100%
+            }
+        }
+    }
+
     img.avatar {
         max-height 200px
         max-width 400px

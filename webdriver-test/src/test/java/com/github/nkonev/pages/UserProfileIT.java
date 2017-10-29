@@ -72,28 +72,28 @@ public class UserProfileIT extends AbstractItTestRunner {
          */
         public void edit() {
             FailoverUtils.retry(2, () -> {
-                $(".profile .manage-buttons img.edit-container-pen").click();
-                $(".profile").waitUntil(Condition.text("Editing profile"), USER_PROFILE_WAIT);
+                $(".user-profile .manage-buttons img.edit-container-pen").click();
+                $(".user-profile").waitUntil(Condition.text("Editing profile"), USER_PROFILE_WAIT);
                 return null;
             });
         }
 
         public void assertThisIsYou() {
-            $(".profile").waitUntil(Condition.text("This is you"), USER_PROFILE_WAIT);
+            $(".user-profile .user-profile-view-me .me").waitUntil(Condition.text("This is you"), USER_PROFILE_WAIT);
         }
 
         public String getAvatarUrl() {
-            return $(".user-info .avatar").getAttribute("src");
+            return $(".user-profile .avatar").getAttribute("src");
         }
 
         public void setLogin(String login) {
-            $(".user-info input#login").setValue(login);
+            $(".profile-edit-info input#login").setValue(login);
         }
         public void save(){
-            $(".user-info button.save").click();
+            $(".profile-edit button.save").click();
         }
         public void assertLogin(String expected){
-            $(".user-info .login").shouldHave(text((expected)));
+            $(".user-profile .login").shouldHave(text((expected)));
         }
     }
 
@@ -153,6 +153,39 @@ public class UserProfileIT extends AbstractItTestRunner {
         Assert.assertFalse(StringUtils.isEmpty(urlOnPageAfter));
         Assert.assertNotEquals(urlOnPageBefore, urlOnPageAfter);
         Assert.assertEquals(urlOnPageAfter, urlInNavbarAfter);
+    }
+
+
+    @Test
+    public void testUserProfileCorrectlyUpdatedWhenUrlSwitched() {
+        UserListIT.UsersPage userPage = new UserListIT.UsersPage(urlPrefix);
+        userPage.openPage();
+
+        LoginModal loginModal = new LoginModal(user, password);
+        loginModal.login();
+
+        final long anotherUserId = 5;
+        final String anotherUserLogin = "generated_user_0";
+
+        $(UserListIT.UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text(anotherUserLogin))
+                .findElementByLinkText(anotherUserLogin)
+                .click();
+
+        $(".user-profile-view-msg").shouldHave(Condition.text("Viewing profile #" + anotherUserId));
+        $(".user-profile-view-info .login").shouldHave(Condition.text(anotherUserLogin));
+        String anotherUserAvatarUrl = $(".user-profile-view .user-profile-view-avatar .avatar").attr("src");
+
+        UserNav.open();
+        UserNav.profile();
+
+        final long myUserId = 1;
+        final String myLogin = user;
+
+        $(".user-profile-view-msg").shouldHave(Condition.text("Viewing profile #" + myUserId));
+        $(".user-profile-view-info .login").shouldHave(Condition.text(myLogin));
+        String myAvatarUrl = $(".user-profile-view .user-profile-view-avatar .avatar").attr("src");
+
+        Assert.assertNotEquals(anotherUserAvatarUrl, myAvatarUrl);
     }
 
 }
