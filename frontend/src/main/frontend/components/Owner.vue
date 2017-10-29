@@ -18,7 +18,7 @@
     }
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
     .user-info {
         display flex
         flex-direction row

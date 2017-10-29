@@ -5,7 +5,7 @@
         </div>
         <div># {{ id }}</div>
         <div v-if="dto">
-            <div v-if="!isEditing" class="user-info">
+            <div v-if="!isEditing" class="user-profile">
                 <span v-if="me" class="manage-buttons">
                     <img class="edit-container-pen" src="../assets/pen.png" @click="edit()"/>
                 </span>
@@ -89,7 +89,7 @@
     };
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
     img.avatar {
         max-height 200px
         max-width 200px

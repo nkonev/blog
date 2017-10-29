@@ -163,7 +163,7 @@
     };
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
     img.avatar {
         max-height 200px
         max-width 400px
