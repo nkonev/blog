@@ -104,4 +104,19 @@
             clear both
         }
     }
+
+    @media screen and (max-width: $contentWidth) {
+        .post {
+            .img-wrapper {
+                img {
+                    float: none
+                    // margin 4px;
+                    width auto
+                    max-width 100%
+                    max-height 500px
+                }
+            }
+
+        }
+    }
 </style>
