@@ -3,10 +3,8 @@
         <textarea v-model="editContent" @input="clearErrorMessage()"/>
         <error v-show="errorMessage" :message="errorMessage"></error>
         <div class="comment-command-buttons">
-            <div class="send">
-                <blog-spinner v-if="submitting" message="Sending..."></blog-spinner>
-                <button v-if="!submitting" class="save-btn" @click="onBtnSave">Save</button>
-            </div>
+            <blog-spinner v-if="submitting" message="Sending..."></blog-spinner>
+            <button v-if="!submitting" class="save-btn" @click="onBtnSave">Save</button>
             <button v-if="!submitting && !isAdd" class="cancel-btn" @click="onBtnCancel">Отмена</button>
         </div>
     </div>
