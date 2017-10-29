@@ -167,11 +167,14 @@ public class UserProfileIT extends AbstractItTestRunner {
         final long anotherUserId = 5;
         final String anotherUserLogin = "generated_user_0";
 
-        $(UserListIT.UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text(anotherUserLogin))
-                .findElementByLinkText(anotherUserLogin)
-                .click();
+        FailoverUtils.retry(2, () -> {
+            $(UserListIT.UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text(anotherUserLogin))
+                    .findElementByLinkText(anotherUserLogin)
+                    .click();
 
-        $(".user-profile-view-msg").shouldHave(Condition.text("Viewing profile #" + anotherUserId));
+            $(".user-profile-view-msg").shouldHave(Condition.text("Viewing profile #" + anotherUserId));
+            return null;
+        });
         $(".user-profile-view-info .login").shouldHave(Condition.text(anotherUserLogin));
         String anotherUserAvatarUrl = $(".user-profile-view .user-profile-view-avatar .avatar").attr("src");
 
