@@ -1,7 +1,7 @@
 <template>
     <div class="profile">
         <div v-if="me">
-            <p>Это вы</p>
+            <p>This is you</p>
         </div>
         <div># {{ id }}</div>
         <div v-if="dto">

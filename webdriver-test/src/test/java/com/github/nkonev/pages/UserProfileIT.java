@@ -79,7 +79,7 @@ public class UserProfileIT extends AbstractItTestRunner {
         }
 
         public void assertThisIsYou() {
-            $(".profile").waitUntil(Condition.text("Это вы"), USER_PROFILE_WAIT);
+            $(".profile").waitUntil(Condition.text("This is you"), USER_PROFILE_WAIT);
         }
 
         public String getAvatarUrl() {
