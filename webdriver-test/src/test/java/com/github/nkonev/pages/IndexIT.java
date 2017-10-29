@@ -4,6 +4,7 @@ import com.codeborne.selenide.Condition;
 import com.github.nkonev.CommonTestConstants;
 import com.github.nkonev.controllers.PostController;
 import com.github.nkonev.dto.PostDTO;
+import com.github.nkonev.dto.UserAccountDTO;
 import com.github.nkonev.dto.UserAccountDetailsDTO;
 import com.github.nkonev.integration.AbstractItTestRunner;
 import com.github.nkonev.pages.object.IndexPage;
@@ -56,7 +57,7 @@ public class IndexIT extends AbstractItTestRunner {
         indexPage.openPage();
         indexPage.contains("Lorem Ipsum является стандартной \"рыбой\" для текстов на латинице с начала XVI века.");
 
-        PostDTO postDTO = new PostDTO(0, "Added via websocket", "Пост, пришедший через вебсокет " + new Date(), "image.png", LocalDateTime.now(ZoneOffset.UTC));
+        PostDTO postDTO = new PostDTO(0, "Added via websocket", "Пост, пришедший через вебсокет " + new Date(), "image.png", LocalDateTime.now(ZoneOffset.UTC), new UserAccountDTO());
         UserAccountDetailsDTO accountDetailsDTO = authenticateAs(CommonTestConstants.USER_ADMIN);
         PostDTO added = postController.addPost(accountDetailsDTO, postDTO);
 
