@@ -1,7 +1,7 @@
 <template>
     <div class="comment">
         <div class="comment-head">
-            <owner :owner="commentDTO.owner"></owner>
+            <owner :owner="commentDTO.owner" :time="createDateTime"></owner>
             <span v-if="!isEditing" class="comment-manage-buttons">
                 <img class="edit-container-pen" src="../assets/pen.png" v-if="commentDTO.canEdit" @click="setEdit()"/>
                 <img class="remove-container-x" src="../assets/remove.png" v-if="commentDTO.canDelete" @click="doDelete()"/>
@@ -19,7 +19,7 @@
 <script>
     import CommentEdit from './CommentEdit.vue'
     import bus, {COMMENT_CANCELED, COMMENT_UPDATED, COMMENT_DELETED} from '../bus'
-    import {getPostId} from '../utils'
+    import {getPostId, getTimestampFromUtc} from '../utils'
     import Owner from './Owner.vue'
 
     export default {
@@ -28,6 +28,11 @@
         data() {
             return {
                 isEditing: false,
+            }
+        },
+        computed:{
+            createDateTime(){
+                return getTimestampFromUtc(this.commentDTO.createDateTime);
             }
         },
         methods: {

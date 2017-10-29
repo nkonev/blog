@@ -1,9 +1,11 @@
 package com.github.nkonev.entity.jpa;
 
 import com.github.nkonev.Constants;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
 
 import javax.persistence.*;
-import java.net.URL;
+import java.time.LocalDateTime;
 
 /**
  * This entity "Post" don't have comments because there isn't always need to get Post with Collection<Comment>
@@ -26,6 +28,9 @@ public class Post {
     @ManyToOne
     @JoinColumn(name="owner_id")
     private UserAccount owner;
+
+    @Generated(GenerationTime.INSERT)
+    private LocalDateTime createDateTime;
 
     public Post() { }
 
@@ -88,5 +93,13 @@ public class Post {
 
     public void setTextNoTags(String textNoTags) {
         this.textNoTags = textNoTags;
+    }
+
+    public LocalDateTime getCreateDateTime() {
+        return createDateTime;
+    }
+
+    public void setCreateDateTime(LocalDateTime createDateTime) {
+        this.createDateTime = createDateTime;
     }
 }

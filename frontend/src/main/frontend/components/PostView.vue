@@ -12,8 +12,10 @@
                     <div class="post-head">
                         <h2>{{postDTO.title}}</h2>
 
-                        <span class="written-by">written by</span>
-                        <owner v-if="postDTO.owner" :owner="postDTO.owner"></owner>
+                        <span class="written-by">
+                            <span class="written-by">written by</span>
+                            <owner v-if="postDTO.owner" :owner="postDTO.owner" :time="createTime"></owner>
+                        </span>
                         <div class="manage-buttons" v-if="postDTO.canEdit || postDTO.canDelete">
                             <img class="edit-container-pen" src="../assets/pen.png" v-if="postDTO.canEdit" @click="setEdit()"/>
                             <img class="remove-container-x" src="../assets/remove.png" v-if="postDTO.canDelete" @click="doDelete()"/>
@@ -35,7 +37,7 @@
             <aside class="left" @click="goLeft()" v-if="postDTO.id && !isEditing && postDTO.left"><span><< left</span></aside>
             <aside class="right" @click="goRight()" v-if="postDTO.id && !isEditing && postDTO.right"><span>right >></span></aside>
 
-            <CommentList v-show="!isLoading"/>
+            <CommentList v-show="!(isLoading || errorMessage)"/>
         </template>
         <template v-else>
             Error
@@ -53,7 +55,7 @@
     import PostAddFab from './PostAddFab.vue'
     import CommentList from './CommentList.vue'
     import Owner from './Owner.vue'
-    import {getPostId} from '../utils'
+    import {getPostId, getTimestampFromUtc} from '../utils'
 
     // Lazy load heavy component https://router.vuejs.org/en/advanced/lazy-loading.html. see also in .babelrc
     const PostEdit = () => import('./PostEdit.vue');
@@ -90,6 +92,11 @@
             PostAddFab,
             CommentList,
             Owner
+        },
+        computed:{
+            createTime(){
+                return getTimestampFromUtc(this.postDTO.createDateTime);
+            }
         },
         methods: {
             getId(){

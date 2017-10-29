@@ -1,8 +1,11 @@
 package com.github.nkonev.entity.jpa;
 
 import com.github.nkonev.Constants;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "comment", schema = Constants.Schemas.POSTS)
@@ -18,6 +21,9 @@ public class Comment {
     private UserAccount owner;
 
     private long postId;
+
+    @Generated(GenerationTime.INSERT)
+    private LocalDateTime createDateTime;
 
     public Comment() { }
 
@@ -61,5 +67,13 @@ public class Comment {
 
     public void setPostId(long postId) {
         this.postId = postId;
+    }
+
+    public LocalDateTime getCreateDateTime() {
+        return createDateTime;
+    }
+
+    public void setCreateDateTime(LocalDateTime createDateTime) {
+        this.createDateTime = createDateTime;
     }
 }

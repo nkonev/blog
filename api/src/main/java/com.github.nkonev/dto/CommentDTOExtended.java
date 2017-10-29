@@ -1,12 +1,22 @@
 package com.github.nkonev.dto;
 
+import java.time.LocalDateTime;
+
 public class CommentDTOExtended extends CommentDTOWithAuthorization {
     private long commentsInPost;
 
     public CommentDTOExtended() { }
 
-    public CommentDTOExtended(long id, String text, UserAccountDTO owner, boolean canEdit, boolean canDelete, long commentsInPost) {
-        super(id, text, owner, canEdit, canDelete);
+    public CommentDTOExtended(
+            long id,
+            String text,
+            UserAccountDTO owner,
+            boolean canEdit,
+            boolean canDelete,
+            long commentsInPost,
+            LocalDateTime createDateTime
+    ) {
+        super(id, text, owner, canEdit, canDelete, createDateTime);
         this.commentsInPost = commentsInPost;
     }
 

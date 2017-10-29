@@ -26,6 +26,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -75,12 +76,13 @@ public class PostController {
                 resultSet.getLong("id"),
                 resultSet.getString("title"),
                 resultSet.getString("text_column"),
-                resultSet.getString("title_img")
+                resultSet.getString("title_img"),
+                resultSet.getObject("create_date_time", LocalDateTime.class)
         );
 
         if (StringUtils.isEmpty(searchString)) {
             posts = jdbcTemplate.query(
-                    "  select id, title, substring(text_no_tags from 0 for 600) || '...' as text_column, title_img \n" +
+                    "  select id, title, substring(text_no_tags from 0 for 600) || '...' as text_column, title_img, create_date_time \n" +
                      "  from posts.post \n" +
                      "  order by id desc " +
                      "limit :limit offset :offset\n",
@@ -94,9 +96,10 @@ public class PostController {
                             " id, \n" +
                             " ts_headline("+regConfig+", title, (select * from tsq), 'StartSel=\"<u>\", StopSel=\"</u>\"') as title, \n" +
                             " ts_headline("+regConfig+", text_no_tags, (select * from tsq), 'StartSel=\"<b>\", StopSel=\"</b>\"') as text_column, \n" +
-                            " title_img\n" +
+                            " title_img,\n" +
+                            " create_date_time\n" +
                             "from (\n" +
-                            "  select id, title, text_no_tags, title_img \n" +
+                            "  select id, title, text_no_tags, title_img, create_date_time \n" +
                             "  from posts.post \n" +
                             "  where to_tsvector("+regConfig+", title || ' ' || text_no_tags) @@ (select * from tsq) order by id desc " +
                             "limit :limit offset :offset\n" +

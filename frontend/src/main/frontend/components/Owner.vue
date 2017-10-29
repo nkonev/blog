@@ -6,12 +6,13 @@
         <router-link :to="`/user/${owner.id}`">
             <span>{{owner.login}}</span>
         </router-link>
+        <span class="time"> at {{time}}</span>
     </div>
 </template>
 
 <script>
     export default {
-        props: ['owner']
+        props: ['owner', 'time']
     }
 </script>
 
@@ -24,6 +25,10 @@
         img {
             margin-right 5px
             height 40px;
+        }
+
+        span.time {
+            margin 0 0.4em
         }
     }
 

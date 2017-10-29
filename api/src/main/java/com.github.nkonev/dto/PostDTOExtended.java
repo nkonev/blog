@@ -1,13 +1,26 @@
 package com.github.nkonev.dto;
 
+import java.time.LocalDateTime;
+
 public class PostDTOExtended extends PostDTOWithAuthorization {
     private Long left;
     private Long right;
 
     public PostDTOExtended() { }
 
-    public PostDTOExtended(long id, String title, String text, String titleImg, UserAccountDTO userAccountDTO, boolean canEdit, boolean canDelete, Long left, Long right) {
-        super(id, title, text, titleImg, userAccountDTO, canEdit, canDelete);
+    public PostDTOExtended(
+            long id,
+            String title,
+            String text,
+            String titleImg,
+            UserAccountDTO userAccountDTO,
+            boolean canEdit,
+            boolean canDelete,
+            Long left,
+            Long right,
+            LocalDateTime createDateTime
+    ) {
+        super(id, title, text, titleImg, userAccountDTO, canEdit, canDelete, createDateTime);
         this.left = left;
         this.right = right;
     }

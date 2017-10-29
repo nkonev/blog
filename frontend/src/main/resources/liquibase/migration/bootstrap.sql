@@ -157,3 +157,7 @@ INSERT INTO posts.comment (text, post_id, owner_id) VALUES
 
 -- changeset nkonev:3_fulltext context:main failOnError: true
 create index title_text_idx on posts.post using gin (to_tsvector('russian', title || ' ' || text_no_tags));
+
+-- changeset nkonev:4_post_and_comment_create_datetime context:main failOnError: true
+ALTER TABLE posts.post ADD COLUMN create_date_time timestamp NOT NULL DEFAULT (now() at time zone 'utc');
+ALTER TABLE posts.comment ADD COLUMN create_date_time timestamp NOT NULL DEFAULT (now() at time zone 'utc');

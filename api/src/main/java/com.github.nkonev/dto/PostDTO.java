@@ -1,18 +1,27 @@
 package com.github.nkonev.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.github.nkonev.ApiConstants;
+
+import java.time.LocalDateTime;
+
 public class PostDTO {
     private long id;
     private String title;
     private String text;
     private String titleImg;
 
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern=ApiConstants.DATE_FORMAT)
+    private LocalDateTime createDateTime;
+
     public PostDTO() { }
 
-    public PostDTO(long id, String title, String text, String titleImg) {
+    public PostDTO(long id, String title, String text, String titleImg, LocalDateTime createDateTime) {
         this.id = id;
         this.title = title;
         this.text = text;
         this.titleImg = titleImg;
+        this.createDateTime = createDateTime;
     }
 
 
@@ -48,4 +57,11 @@ public class PostDTO {
         this.titleImg = titleImg;
     }
 
+    public LocalDateTime getCreateDateTime() {
+        return createDateTime;
+    }
+
+    public void setCreateDateTime(LocalDateTime createDateTime) {
+        this.createDateTime = createDateTime;
+    }
 }

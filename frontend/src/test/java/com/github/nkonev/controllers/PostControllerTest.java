@@ -22,6 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.core.Is.is;
@@ -48,7 +51,8 @@ public class PostControllerTest extends AbstractUtTestRunner {
                         0,
                         "default new post title",
                         "default new post text",
-                        new String("https://postgrespro.ru/img/logo_mono.png")
+                        "https://postgrespro.ru/img/logo_mono.png",
+                        LocalDateTime.now(ZoneOffset.UTC)
                 );
             }
             public PostDTO build() {

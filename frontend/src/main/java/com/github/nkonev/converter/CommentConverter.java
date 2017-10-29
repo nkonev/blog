@@ -46,7 +46,8 @@ public class CommentConverter {
                 comment.getText(),
                 UserAccountConverter.convertToUserAccountDTO(comment.getOwner()),
                 blogSecurityService.hasCommentPermission(comment, userAccount, Permissions.EDIT),
-                blogSecurityService.hasCommentPermission(comment, userAccount, Permissions.DELETE)
+                blogSecurityService.hasCommentPermission(comment, userAccount, Permissions.DELETE),
+                comment.getCreateDateTime()
         );
     }
 
@@ -55,7 +56,8 @@ public class CommentConverter {
 
         return new CommentDTO(
                 comment.getId(),
-                comment.getText()
+                comment.getText(),
+                comment.getCreateDateTime()
         );
 
     }
@@ -67,7 +69,8 @@ public class CommentConverter {
                 UserAccountConverter.convertToUserAccountDTO(comment.getOwner()),
                 blogSecurityService.hasCommentPermission(comment, userAccount, Permissions.EDIT),
                 blogSecurityService.hasCommentPermission(comment, userAccount, Permissions.DELETE),
-                countInPost
+                countInPost,
+                comment.getCreateDateTime()
         );
     }
 }

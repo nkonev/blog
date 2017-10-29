@@ -1,5 +1,7 @@
 package com.github.nkonev.dto;
 
+import java.time.LocalDateTime;
+
 public class CommentDTOWithAuthorization extends CommentDTO {
     private UserAccountDTO owner;
     private boolean canEdit;
@@ -12,9 +14,10 @@ public class CommentDTOWithAuthorization extends CommentDTO {
             String text,
             UserAccountDTO owner,
             boolean canEdit,
-            boolean canDelete
+            boolean canDelete,
+            LocalDateTime createDateTime
     ) {
-        super(id, text);
+        super(id, text, createDateTime);
         this.owner = owner;
         this.canEdit = canEdit;
         this.canDelete = canDelete;

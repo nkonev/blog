@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 /**
  *
  * @return true if updated, false if not found
@@ -10,4 +12,10 @@ export const updateById = (array, newElement) => {
 
 export const getPostId = (vue) => {
     return vue.$route.params.id;
+};
+
+export const getTimestampFromUtc = (utcString) => {
+    const gmtDateTime = moment.utc(utcString, "YYYY-MM-DD HH:mm:ss.SSS");
+    const local = gmtDateTime.local().format('YYYY-MM-DD HH:mm:ss');
+    return local;
 };

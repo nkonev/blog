@@ -55,6 +55,7 @@
   "dependencies": {
     "@stomp/stompjs": "^3.1.1",
     "mini-toastr": "^0.6.6",
+    "moment": "^2.19.1",
     "vue": "^2.5.2",
     "vue-croppa": "^1.0.5",
     "vue-form-generator": "^2.1.1",

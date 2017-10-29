@@ -1,14 +1,23 @@
 package com.github.nkonev.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.github.nkonev.ApiConstants;
+
+import java.time.LocalDateTime;
+
 public class CommentDTO {
     private long id;
     private String text;
 
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern=ApiConstants.DATE_FORMAT)
+    private LocalDateTime createDateTime;
+
     public CommentDTO() { }
 
-    public CommentDTO(long id, String text) {
+    public CommentDTO(long id, String text, LocalDateTime createDateTime) {
         this.id = id;
         this.text = text;
+        this.createDateTime = createDateTime;
     }
 
     public long getId() {
@@ -25,5 +34,13 @@ public class CommentDTO {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public LocalDateTime getCreateDateTime() {
+        return createDateTime;
+    }
+
+    public void setCreateDateTime(LocalDateTime createDateTime) {
+        this.createDateTime = createDateTime;
     }
 }

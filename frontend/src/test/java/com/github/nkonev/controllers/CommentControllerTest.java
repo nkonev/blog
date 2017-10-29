@@ -19,6 +19,10 @@ import org.springframework.test.annotation.Repeat;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.Assert;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Date;
+
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.everyItem;
 import static org.hamcrest.core.Is.is;
@@ -46,7 +50,8 @@ public class CommentControllerTest extends AbstractUtTestRunner {
             {
                 commentDTO = new CommentDTO(
                         0,
-                        "default comment"
+                        "default comment",
+                        LocalDateTime.now(ZoneOffset.UTC)
                 );
             }
             public CommentDTO build() {
