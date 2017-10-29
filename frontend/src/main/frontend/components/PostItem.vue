@@ -57,7 +57,7 @@
             // clear both
             img {
                 float: left
-                margin 4px;
+                margin 10px;
                 width: 250px;
                 // display inline
                 // height: auto;
@@ -110,6 +110,7 @@
             .img-wrapper {
                 img {
                     float: none
+                    margin 0px;
                     // margin 4px;
                     width auto
                     max-width 100%
