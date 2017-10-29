@@ -49,6 +49,7 @@ module.exports = {
                 NODE_ENV:  JSON.stringify(NODE_ENV) // must be 'production' (with single quotes) for disable Vue warnings, which you can see it if drop_console: false
             }
         }),
+        new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en|ru/),
         new webpack.optimize.CommonsChunkPlugin({
             name: ['vendor']
         }),
