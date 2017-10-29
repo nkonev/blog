@@ -118,6 +118,7 @@ public class PostController {
                             "  limit :limit offset :offset\n" +
                             ") as fulltext_result " +
                             "join auth.users u on fulltext_result.owner_id = u.id " +
+                            "order by id desc" +
                             ";",
                     params,
                     rowMapper

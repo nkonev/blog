@@ -12,10 +12,8 @@
                     <div class="post-head">
                         <h2>{{postDTO.title}}</h2>
 
-                        <span class="written-by">
-                            <span class="written-by">written by</span>
-                            <owner v-if="postDTO.owner" :owner="postDTO.owner" :time="createTime"></owner>
-                        </span>
+                        <owner v-if="postDTO.owner" prepend="written by" :owner="postDTO.owner" :time="createTime"></owner>
+
                         <div class="manage-buttons" v-if="postDTO.canEdit || postDTO.canDelete">
                             <img class="edit-container-pen" src="../assets/pen.png" v-if="postDTO.canEdit" @click="setEdit()"/>
                             <img class="remove-container-x" src="../assets/remove.png" v-if="postDTO.canDelete" @click="doDelete()"/>
@@ -268,13 +266,6 @@
             img.remove-container-x:hover {
                 transition: 0.2s all;
                 box-shadow: 0 0 2em red;
-            }
-
-            .written-by {
-                margin-left 2em
-                margin-right 0.8em
-                display flex
-                align-items center
             }
 
             .manage-buttons {

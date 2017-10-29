@@ -1,5 +1,7 @@
 <template>
     <div class="user-info" >
+        <span v-if="prepend" class="prepend">{{prepend}}</span>
+
         <router-link :to="`/user/${owner.id}`">
             <img :src="owner.avatar"/>
         </router-link>
@@ -12,7 +14,7 @@
 
 <script>
     export default {
-        props: ['owner', 'time']
+        props: ['prepend', 'owner', 'time']
     }
 </script>
 
@@ -21,6 +23,13 @@
         display flex
         flex-direction row
         align-items center
+
+        .prepend {
+            margin-left 2em
+            margin-right 0.8em
+            //display flex
+            //align-items center
+        }
 
         img {
             margin-right 5px
