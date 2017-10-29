@@ -94,7 +94,14 @@ public class PostConverter {
      */
     public PostDTO convertToPostDTOWithCleanTags(Post post) {
         if (post==null) {return null;}
-        return new PostDTO(post.getId(), post.getTitle(), post.getTextNoTags(), post.getTitleImg(), post.getCreateDateTime());
+        return new PostDTO(
+                post.getId(),
+                post.getTitle(),
+                post.getTextNoTags(),
+                post.getTitleImg(),
+                post.getCreateDateTime(),
+                UserAccountConverter.convertToUserAccountDTO(post.getOwner())
+        );
     }
 
 }

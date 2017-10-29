@@ -1,13 +1,11 @@
 package com.github.nkonev.dto;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 public class PostDTOWithAuthorization extends PostDTO {
-    private UserAccountDTO owner;
+
     private boolean canEdit;
     private boolean canDelete;
-    private Date createDateTime;
 
     public PostDTOWithAuthorization(
             long id,
@@ -19,22 +17,12 @@ public class PostDTOWithAuthorization extends PostDTO {
             boolean canDelete,
             LocalDateTime createDateTime
     ) {
-        super(id, title, text, titleImg, createDateTime);
-        this.owner = userAccountDTO;
+        super(id, title, text, titleImg, createDateTime, userAccountDTO);
         this.canEdit = canEdit;
         this.canDelete = canDelete;
     }
 
     public PostDTOWithAuthorization() { }
-
-
-    public UserAccountDTO getOwner() {
-        return owner;
-    }
-
-    public void setOwner(UserAccountDTO owner) {
-        this.owner = owner;
-    }
 
     public boolean isCanEdit() {
         return canEdit;

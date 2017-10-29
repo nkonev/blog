@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.nkonev.AbstractUtTestRunner;
 import com.github.nkonev.Constants;
+import com.github.nkonev.dto.UserAccountDTO;
 import com.github.nkonev.repo.jpa.PostRepository;
 import com.github.nkonev.utils.PageUtils;
 import com.github.nkonev.TestConstants;
@@ -52,7 +53,8 @@ public class PostControllerTest extends AbstractUtTestRunner {
                         "default new post title",
                         "default new post text",
                         "https://postgrespro.ru/img/logo_mono.png",
-                        LocalDateTime.now(ZoneOffset.UTC)
+                        LocalDateTime.now(ZoneOffset.UTC),
+                        new UserAccountDTO()
                 );
             }
             public PostDTO build() {

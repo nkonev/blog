@@ -1,14 +1,11 @@
 package com.github.nkonev.controllers;
 
 import com.github.nkonev.Constants;
-import com.github.nkonev.dto.PostDTOExtended;
+import com.github.nkonev.dto.*;
 import com.github.nkonev.exception.DataNotFoundException;
 import com.github.nkonev.repo.jpa.CommentRepository;
 import com.github.nkonev.utils.PageUtils;
 import com.github.nkonev.converter.PostConverter;
-import com.github.nkonev.dto.PostDTO;
-import com.github.nkonev.dto.PostDTOWithAuthorization;
-import com.github.nkonev.dto.UserAccountDetailsDTO;
 import com.github.nkonev.entity.jpa.Post;
 import com.github.nkonev.entity.jpa.UserAccount;
 import com.github.nkonev.exception.BadRequestException;
@@ -77,13 +74,26 @@ public class PostController {
                 resultSet.getString("title"),
                 resultSet.getString("text_column"),
                 resultSet.getString("title_img"),
-                resultSet.getObject("create_date_time", LocalDateTime.class)
+                resultSet.getObject("create_date_time", LocalDateTime.class),
+                new UserAccountDTO(
+                        resultSet.getLong("owner_id"),
+                        resultSet.getString("owner_login"),
+                        resultSet.getString("owner_avatar")
+                )
         );
 
         if (StringUtils.isEmpty(searchString)) {
             posts = jdbcTemplate.query(
-                    "  select id, title, substring(text_no_tags from 0 for 600) || '...' as text_column, title_img, create_date_time \n" +
-                     "  from posts.post \n" +
+                    "select " +
+                            "p.id, " +
+                            "p.title, " +
+                            "substring(p.text_no_tags from 0 for 600) || '...' as text_column, " +
+                            "p.title_img, " +
+                            "p.create_date_time," +
+                            "u.id as owner_id," +
+                            "u.username as owner_login," +
+                            "u.avatar as owner_avatar \n" +
+                     "  from posts.post p join auth.users u on p.owner_id = u.id \n" +
                      "  order by id desc " +
                      "limit :limit offset :offset\n",
                     params,
@@ -93,17 +103,22 @@ public class PostController {
             posts = jdbcTemplate.query(
                        "with tsq as (select plainto_tsquery("+regConfig+", :search)) \n" +
                             "select\n" +
-                            " id, \n" +
-                            " ts_headline("+regConfig+", title, (select * from tsq), 'StartSel=\"<u>\", StopSel=\"</u>\"') as title, \n" +
-                            " ts_headline("+regConfig+", text_no_tags, (select * from tsq), 'StartSel=\"<b>\", StopSel=\"</b>\"') as text_column, \n" +
-                            " title_img,\n" +
-                            " create_date_time\n" +
+                            " fulltext_result.id, \n" +
+                            " ts_headline("+regConfig+", fulltext_result.title, (select * from tsq), 'StartSel=\"<u>\", StopSel=\"</u>\"') as title, \n" +
+                            " ts_headline("+regConfig+", fulltext_result.text_no_tags, (select * from tsq), 'StartSel=\"<b>\", StopSel=\"</b>\"') as text_column, \n" +
+                            " fulltext_result.title_img,\n" +
+                            " fulltext_result.create_date_time,\n" +
+                            " u.id as owner_id," +
+                            " u.username as owner_login," +
+                            " u.avatar as owner_avatar \n" +
                             "from (\n" +
-                            "  select id, title, text_no_tags, title_img, create_date_time \n" +
+                            "  select id, title, text_no_tags, title_img, create_date_time, owner_id \n" +
                             "  from posts.post \n" +
                             "  where to_tsvector("+regConfig+", title || ' ' || text_no_tags) @@ (select * from tsq) order by id desc " +
-                            "limit :limit offset :offset\n" +
-                            ") as foo;",
+                            "  limit :limit offset :offset\n" +
+                            ") as fulltext_result " +
+                            "join auth.users u on fulltext_result.owner_id = u.id " +
+                            ";",
                     params,
                     rowMapper
             );
