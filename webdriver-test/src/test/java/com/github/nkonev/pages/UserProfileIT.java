@@ -95,6 +95,9 @@ public class UserProfileIT extends AbstractItTestRunner {
         public void assertLogin(String expected){
             $(".user-profile .login").shouldHave(text((expected)));
         }
+        public void assertMsg(long expectedId){
+            $(".user-profile-view-msg").shouldHave(Condition.text("Viewing profile #" + expectedId));
+        }
     }
 
     @Test
@@ -167,16 +170,20 @@ public class UserProfileIT extends AbstractItTestRunner {
         final long anotherUserId = 5;
         final String anotherUserLogin = "generated_user_0";
 
+        UserProfilePage userProfilePage = new UserProfilePage(null, driver);
+
         FailoverUtils.retry(2, () -> {
-            $(UserListIT.UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text(anotherUserLogin))
+            $(UserListIT.UsersPage.USERS_CONTAINER_SELECTOR)
+                    .shouldHave(Condition.text(anotherUserLogin))
                     .findElementByLinkText(anotherUserLogin)
                     .click();
 
-            $(".user-profile-view-msg").shouldHave(Condition.text("Viewing profile #" + anotherUserId));
+            userProfilePage.assertMsg(anotherUserId);
             return null;
         });
-        $(".user-profile-view-info .login").shouldHave(Condition.text(anotherUserLogin));
-        String anotherUserAvatarUrl = $(".user-profile-view .user-profile-view-avatar .avatar").attr("src");
+
+        userProfilePage.assertLogin(anotherUserLogin);
+        String anotherUserAvatarUrl = userProfilePage.getAvatarUrl();
 
         UserNav.open();
         UserNav.profile();
@@ -184,9 +191,9 @@ public class UserProfileIT extends AbstractItTestRunner {
         final long myUserId = 1;
         final String myLogin = user;
 
-        $(".user-profile-view-msg").shouldHave(Condition.text("Viewing profile #" + myUserId));
-        $(".user-profile-view-info .login").shouldHave(Condition.text(myLogin));
-        String myAvatarUrl = $(".user-profile-view .user-profile-view-avatar .avatar").attr("src");
+        userProfilePage.assertMsg(myUserId);
+        userProfilePage.assertLogin(myLogin);
+        String myAvatarUrl = userProfilePage.getAvatarUrl();
 
         Assert.assertNotEquals(anotherUserAvatarUrl, myAvatarUrl);
     }
