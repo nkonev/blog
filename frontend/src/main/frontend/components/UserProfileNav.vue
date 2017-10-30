@@ -157,18 +157,22 @@
 
         /* Change color of dropdown links on hover */
         span:hover {
-            background-color: #f1f1f1
             cursor pointer
+            font-weight bold
+            transition: 0.1s all;
+            filter brightness(3)
+            transform: scale(1.25, 1.25);
+            background-color transparent
         }
 
         span.blue:hover {
             color blue
-            text-shadow 0 0 1em blue;
+            filter drop-shadow(0 0 0.5em blue)
         }
 
         span.red:hover {
             color red
-            text-shadow 0 0 1em red;
+            filter drop-shadow(0 0 0.5em red)
         }
     }
 
