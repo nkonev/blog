@@ -34,7 +34,7 @@ script:
 
       ssh -o "BatchMode yes" -o StrictHostKeyChecking=no -q $CONNECT_LINE $UPDATE_COMMAND;
     ) else (
-      echo "Won't push docker image because subsequent build failed";
+      echo "Won't push docker image and deploy because subsequent build failed";
     ) fi
 addons:
   firefox: "56.0"
