@@ -32,7 +32,7 @@
         methods: {
             resend() {
                 this.errors.message = null;
-
+                this.emailSuccessfullySent = false;
                 this.$http.post('/api/resend-confirmation-email?email=' + this.email).then(response => {
                     this.submitting = false;
                     this.emailSuccessfullySent = true;
