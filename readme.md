@@ -150,9 +150,32 @@ docker node update --label-add 'blog.server.role=db' $(docker node ls -q)
 docker node inspect -f '{{index .Spec.Labels "blog.server.role"}}' $(docker node ls -q)
 ```
 
+I strongly recommend copy and rename `docker-compose.template.yml` to `docker-compose.stack.yml`.
+And correctly setup next properties:
+
+```
+      - liquibase.contexts=main
+      - spring.mail.host=smtp.yandex.ru
+      - custom.email.from=username@yandex.ru
+      - spring.mail.username=username
+      - spring.mail.password=password
+      - custom.base-url=http://your-host.com
+```
+If you very want, you can skip setting these properties, but you'll have non-working email, wrong links in emails and so on.
+
+Next I'll use renamed file.
+
+Copy files on our server:
+```
+.
+|-- docker-compose.stack.yml
+`-- postgresql
+    `-- docker-entrypoint-initdb.d
+        `-- init-blog-db.sql
+```
+
 Next you can 
 ```bash
-cd docker
 docker stack deploy --compose-file docker-compose.stack.yml BLOGSTACK
 docker service scale BLOGSTACK_blog=4
 docker service ls
