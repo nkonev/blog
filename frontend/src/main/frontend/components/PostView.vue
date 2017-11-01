@@ -57,8 +57,6 @@
     import Owner from './Owner.vue'
     import {getPostId, getTimestampFromUtc} from '../utils'
 
-    window.hljs.initHighlightingOnLoad();
-
     // Lazy load heavy component https://router.vuejs.org/en/advanced/lazy-loading.html. see also in .babelrc
     const PostEdit = () => import('./PostEdit.vue');
 
@@ -176,11 +174,13 @@
         },
         updated(){
             Vue.nextTick(()=>{
-                console.log('Performing highlighting in nextTick');
-                const arr = document.body.querySelectorAll('pre.ql-syntax');
-                [].forEach.call(arr, function(block) {
-                    window.hljs.highlightBlock(block);
-                });
+                if (!this.isEditing) {
+                    console.log('Performing highlighting in nextTick');
+                    const arr = document.body.querySelectorAll('pre.ql-syntax');
+                    [].forEach.call(arr, function (block) {
+                        window.hljs.highlightBlock(block);
+                    });
+                }
             })
         },
         watch: {
