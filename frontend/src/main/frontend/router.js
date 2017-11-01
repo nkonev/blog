@@ -5,7 +5,6 @@ import NotFoundComponent from './components/NotFoundComponent.vue'
 import UserList from './components/UserList.vue'
 import Registration from './components/Registration.vue'
 import PostList from './components/PostList.vue'
-import PostView from './components/PostView.vue'
 import createPostDto from './factories/PostDtoFactory'
 import Confirm from './components/Confirm.vue'
 import ConfirmTokenNotFound from './components/ConfirmTokenNotFound.vue'
@@ -15,6 +14,7 @@ import PasswordRestore from './components/PasswordRestore.vue'
 import PasswordReset from './components/PasswordReset.vue'
 import Help from './components/Help.vue'
 import {root, root_name, users, useProfileName, post} from './routes'
+const PostView = () => import('./components/PostView.vue');
 const PostEdit = () => import('./components/PostEdit.vue');
 
 // This installs <router-view> and <router-link>,
