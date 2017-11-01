@@ -45,6 +45,8 @@
 </template>
 
 <script>
+    import Vue from 'vue'
+    import 'highlight.js/styles/monokai.css'
     import {API_POST} from '../constants'
     import bus, {LOGIN, LOGOUT, POST_SWITCHED} from '../bus'
     import {root, post} from '../routes'
@@ -54,6 +56,8 @@
     import CommentList from './CommentList.vue'
     import Owner from './Owner.vue'
     import {getPostId, getTimestampFromUtc} from '../utils'
+
+    window.hljs.initHighlightingOnLoad();
 
     // Lazy load heavy component https://router.vuejs.org/en/advanced/lazy-loading.html. see also in .babelrc
     const PostEdit = () => import('./PostEdit.vue');
@@ -111,6 +115,14 @@
                     if (this.$props.onGetPostSuccess) {
                         this.$props.onGetPostSuccess(this.postDTO);
                     }
+                    Vue.nextTick(()=>{
+                        console.log('Performing highlighting in nextTick');
+                        const arr = document.body.querySelectorAll('pre.ql-syntax');
+                        [].forEach.call(arr, function(block) {
+                            window.hljs.highlightBlock(block);
+                        });
+                    })
+
                 }, response => {
                     console.error("Error on fetch post", response);
                     this.isLoading = false;

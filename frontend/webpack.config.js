@@ -71,6 +71,7 @@ module.exports = {
             // "$":"jquery",
             // "jQuery":"jquery",
             // "window.jQuery":"jquery"
+            "window.hljs": "highlight.js"
         }),
         new webpack.LoaderOptionsPlugin({
             debug: NODE_ENV == DEVELOPMENT_ENV
