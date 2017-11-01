@@ -24,6 +24,7 @@ module.exports = {
 
     entry: {
         vendor: ["vue"],
+        highlight: ['highlight.js'],
         main: "./main.js", // vue.js
     },
 
@@ -51,7 +52,8 @@ module.exports = {
         }),
         new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en|ru/),
         new webpack.optimize.CommonsChunkPlugin({
-            name: ['vendor']
+            // names: ['highlight', 'vendor'] // (choose the chunks, or omit for all chunks)
+            children: true,
         }),
         new CleanWebpackPlugin([buildDir], {
             verbose: false,
