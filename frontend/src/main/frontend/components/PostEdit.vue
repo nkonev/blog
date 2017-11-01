@@ -47,14 +47,13 @@
 </template>
 
 <script>
+    import 'highlight.js/styles/monokai.css'
     import 'vue-croppa/dist/vue-croppa.css'
     import Vue from 'vue'
     import { quillEditor } from 'vue-quill-editor'
     import BlogSpinner from './BlogSpinner.vue'
     import {API_POST} from '../constants'
     import Croppa from 'vue-croppa'
-
-    // Vue.use(Croppa);
 
     const MIN_LENGTH = 10;
 
@@ -93,7 +92,9 @@
             return {
                 submitting: false,
                 editorOption: {
+                    //highlight: hljs,
                     modules: {
+                        syntax: true,              // Include syntax module
                         toolbar: toolbarOptions,
                     }
                 },

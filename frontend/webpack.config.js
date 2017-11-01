@@ -23,7 +23,7 @@ module.exports = {
     context: srcDir,
 
     entry: {
-        vendor: ["vue"],
+        vendor: ["vue", 'highlight.js'],
         main: "./main.js", // vue.js
     },
 
@@ -49,9 +49,10 @@ module.exports = {
                 NODE_ENV:  JSON.stringify(NODE_ENV) // must be 'production' (with single quotes) for disable Vue warnings, which you can see it if drop_console: false
             }
         }),
-        new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en|ru/),
+        new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/),
         new webpack.optimize.CommonsChunkPlugin({
-            name: ['vendor']
+            names: ['vendor'], // (choose the chunks, or omit for all chunks) https://webpack.js.org/plugins/commons-chunk-plugin/#move-common-modules-into-the-parent-chunk
+            // children: true,
         }),
         new CleanWebpackPlugin([buildDir], {
             verbose: false,
@@ -71,6 +72,7 @@ module.exports = {
             // "$":"jquery",
             // "jQuery":"jquery",
             // "window.jQuery":"jquery"
+            "window.hljs": "highlight.js"
         }),
         new webpack.LoaderOptionsPlugin({
             debug: NODE_ENV == DEVELOPMENT_ENV
@@ -91,20 +93,6 @@ if (NODE_ENV === DEVELOPMENT_ENV) {
     module.exports.plugins.push(
         new LiveReloadPlugin({
             appendScriptTag: true
-        })
-    );
-}
-
-
-if (NODE_ENV !== DEVELOPMENT_ENV) {
-    module.exports.plugins.push(
-        new webpack.optimize.UglifyJsPlugin({
-            compress: {
-                // don't show unreachable variables etc
-                warnings: false,
-                drop_console: true,
-                unsafe: true
-            }
         })
     );
 }

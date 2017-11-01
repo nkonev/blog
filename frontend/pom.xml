@@ -151,6 +151,7 @@
                             <phase>generate-resources</phase>
 
                             <configuration>
+                                <!-- when using new UglifyJsPlugin and -p you are adding the UglifyJsPlugin twice. https://github.com/webpack/webpack/issues/4713#issuecomment-297856632 -->
                                 <arguments>-p</arguments>
                                 <environmentVariables>
                                     <NODE_ENV>${npm.production.env}</NODE_ENV>
