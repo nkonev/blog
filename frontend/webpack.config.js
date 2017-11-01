@@ -52,7 +52,7 @@ module.exports = {
         }),
         new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en|ru/),
         new webpack.optimize.CommonsChunkPlugin({
-            // names: ['highlight', 'vendor'] // (choose the chunks, or omit for all chunks)
+            // names: ['highlight', 'vendor'] // (choose the chunks, or omit for all chunks) https://webpack.js.org/plugins/commons-chunk-plugin/#move-common-modules-into-the-parent-chunk
             children: true,
         }),
         new CleanWebpackPlugin([buildDir], {
