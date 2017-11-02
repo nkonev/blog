@@ -103,8 +103,8 @@ if (NODE_ENV !== DEVELOPMENT_ENV) {
         new webpack.optimize.UglifyJsPlugin({
             compress: {
                 // don't show unreachable variables etc
-                warnings: false,
-                drop_console: true,
+                warnings: true,
+                drop_console: false,
                 unsafe: false
             }
         })
