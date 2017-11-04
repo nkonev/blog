@@ -15,7 +15,6 @@ before_script:
   - (cd docker; docker-compose up -d)
 after_acript:
   - (cd docker; docker-compose down)
-  - rm -rf /home/travis/.m2/repository/com/github/nkonev
 script:
   # if there isn't pointed explicitly PhantomJS will be used by default for both webdriver integration test and js unit test
   # We use 'install' phase because of use jars in subsequent tests
@@ -26,6 +25,8 @@ script:
 
   - ./mvnw -pl frontend -P frontend frontend:karma@'karma test' -Dkarma.browsers=ChromeHeadless
   - ./mvnw -pl webdriver-test -Dliquibase.drop-first=true -Dliquibase.contexts='main, test' -Dcustom.selenium.browser=CHROME -Dcustom.selenium.headless=true -P frontend surefire:test --no-snapshot-updates
+
+  - rm -rf /home/travis/.m2/repository/com/github/nkonev
 
 #  - "./mvnw -Dkarma.browsers=Firefox -Dcustom.selenium.browser=FIREFOX -P frontend clean package"
 #  - "./mvnw -Dkarma.browsers=Chrome -Dcustom.selenium.browser=CHROME -P frontend clean package"
