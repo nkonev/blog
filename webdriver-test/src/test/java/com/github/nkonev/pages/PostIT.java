@@ -244,7 +244,14 @@ public class PostIT extends AbstractItTestRunner {
         loginModal.openLoginModal();
         loginModal.login();
 
-        postViewPage.delete();
+        String urlBefore = driver.getCurrentUrl();
+
+        FailoverUtils.retry(2, () -> {
+            postViewPage.delete();
+            String urlAfter = driver.getCurrentUrl();
+            Assert.assertNotEquals(urlBefore, urlAfter);
+            return null;
+        });
 
         FailoverUtils.assertPoll(()-> !postRepository.findById(id).isPresent(), 15);
         FailoverUtils.assertPoll(()-> !deletablePageUrl.equals(driver.getCurrentUrl()), 10);
