@@ -19,6 +19,9 @@ if (process.env.KARMA_BROWSERS) {
 }
 console.log("browsers (might be overwritten by --browsers option):", browsers);
 
+const headless = process.env.HEADLESS ? process.env.HEADLESS : false;
+console.log("headless: ", headless);
+
 module.exports = function(config) {
   config.set({
 
@@ -102,7 +105,12 @@ module.exports = function(config) {
         },
         flags: ['--remote-debugger-port=9000'],
         debug: true
-      }
+      },
+      // 'ChromeHeadless' already defined in driver
+      'FirefoxHeadless': {
+          base: 'Firefox',
+          flags: ['-headless'],
+      },
     },
 
     webpack: {
