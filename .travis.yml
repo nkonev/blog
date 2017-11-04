@@ -14,6 +14,7 @@ before_install:
 install: "/bin/true" # workaround https://github.com/Swagger2Markup/swagger2markup-maven-plugin/pull/24
 # https://docs.travis-ci.com/user/gui-and-headless-browsers/
 before_script:
+  - "export DISPLAY=:99.0"
   - (cd docker; docker-compose up -d)
 after_acript:
   - (cd docker; docker-compose down)
