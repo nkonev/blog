@@ -1,6 +1,7 @@
 package com.github.nkonev.pages;
 
 import com.codeborne.selenide.Condition;
+import com.github.nkonev.FailoverUtils;
 import com.github.nkonev.integration.AbstractItTestRunner;
 import com.github.nkonev.pages.object.LoginModal;
 import org.junit.Test;
@@ -125,9 +126,11 @@ public class UserListIT extends AbstractItTestRunner {
 
         loginModal.logout();
 
-        loginModal.openLoginModal();
-
-        loginModal.login();
+        FailoverUtils.retry(2, () -> {
+            loginModal.openLoginModal();
+            loginModal.login();
+            return null;
+        });
     }
 
 }
