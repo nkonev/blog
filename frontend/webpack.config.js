@@ -99,7 +99,7 @@ if (NODE_ENV === DEVELOPMENT_ENV) {
 
 
 if (NODE_ENV !== DEVELOPMENT_ENV) {
-    module.exports.plugins.push(
+    module.exports.plugins.unshift(
         new webpack.optimize.UglifyJsPlugin({
             compress: {
                 // don't show unreachable variables etc
