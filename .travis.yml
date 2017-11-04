@@ -6,17 +6,19 @@ cache:
   - frontend/node_modules
 jdk: oraclejdk8
 before_install:
-  - sudo apt-get -qq update
-  - sudo apt-get install -y dbus-x11 # firefox spamming workaround https://github.com/travis-ci/travis-cookbooks/issues/911
+#  - sudo apt-get -qq update
+#  - sudo apt-get install -y dbus-x11 # firefox spamming workaround https://github.com/travis-ci/travis-cookbooks/issues/911
 #  - sudo apt-get install -y chromium-browser #https://www.ubuntuupdates.org/pm/google-chrome-stable
   - openssl aes-256-cbc -K $encrypted_8518ee46cc9c_key -iv $encrypted_8518ee46cc9c_iv -in ./.ssh/id_rsa.enc -out ~/.ssh/id_rsa -d
   - chmod 600 ~/.ssh/id_rsa
 install: "/bin/true" # workaround https://github.com/Swagger2Markup/swagger2markup-maven-plugin/pull/24
 # https://docs.travis-ci.com/user/gui-and-headless-browsers/
 before_script:
-  - "export DISPLAY=:99.0"
+#  - "export DISPLAY=:99.0"
+#  - "sh -e /etc/init.d/xvfb start"
   - (cd docker; docker-compose up -d)
 after_acript:
+#  - "sh -e /etc/init.d/xvfb stop"
   - (cd docker; docker-compose down)
 script:
   # if there isn't pointed explicitly PhantomJS will be used by default for both webdriver integration test and js unit test
@@ -24,10 +26,10 @@ script:
   - "./mvnw -P frontend -P docker clean install"
 
   - ./mvnw -pl frontend -P frontend frontend:karma@'karma test' -Dkarma.browsers=FirefoxHeadless
-  - ./mvnw -pl webdriver-test -Dliquibase.drop-first=true -Dliquibase.contexts='main, test' -Dcustom.selenium.browser=FIREFOX -Dcustom.selenium.headless=true -P frontend surefire:test
+  - ./mvnw -pl webdriver-test -Dliquibase.drop-first=true -Dliquibase.contexts='main, test' -Dcustom.selenium.browser=FIREFOX -Dcustom.selenium.headless=true -P frontend surefire:test --no-snapshot-updates
 
   - ./mvnw -pl frontend -P frontend frontend:karma@'karma test' -Dkarma.browsers=ChromeHeadless
-  - ./mvnw -pl webdriver-test -Dliquibase.drop-first=true -Dliquibase.contexts='main, test' -Dcustom.selenium.browser=CHROME -Dcustom.selenium.headless=true -P frontend surefire:test
+  - ./mvnw -pl webdriver-test -Dliquibase.drop-first=true -Dliquibase.contexts='main, test' -Dcustom.selenium.browser=CHROME -Dcustom.selenium.headless=true -P frontend surefire:test --no-snapshot-updates
 
 #  - "./mvnw -Dkarma.browsers=FirefoxHeadless -Dcustom.selenium.browser=FIREFOX -Dcustom.selenium.headless=true -P frontend clean package"
 #  - "./mvnw -Dkarma.browsers=ChromeHeadless -Dcustom.selenium.browser=CHROME -Dcustom.selenium.headless=true -P frontend clean package"
