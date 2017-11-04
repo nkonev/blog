@@ -14,9 +14,6 @@ before_install:
 install: "/bin/true" # workaround https://github.com/Swagger2Markup/swagger2markup-maven-plugin/pull/24
 # https://docs.travis-ci.com/user/gui-and-headless-browsers/
 before_script:
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
-  - sleep 3 # give xvfb some time to start
   - (cd docker; docker-compose up -d)
 after_acript:
   - "sh -e /etc/init.d/xvfb stop"
@@ -24,8 +21,8 @@ after_acript:
 script:
   # if there isn't pointed explicitly PhantomJS will be used by default for both webdriver integration test and js unit test
   - "./mvnw -P frontend -P docker clean package"
-  - "./mvnw -Dkarma.browsers=Firefox -Dcustom.selenium.browser=FIREFOX -P frontend clean package"
-  - "./mvnw -Dkarma.browsers=Chrome -Dcustom.selenium.browser=CHROME -P frontend clean package"
+  - "./mvnw -Dkarma.browsers=Firefox -Dcustom.selenium.browser=FIREFOX -Dcustom.selenium.headless=true -P frontend clean package"
+  - "./mvnw -Dkarma.browsers=Chrome -Dcustom.selenium.browser=CHROME -Dcustom.selenium.headless=true -P frontend clean package"
   - if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_TEST_RESULT" == "0" ]]; then (
       echo "Will push docker image";
       docker login -u="$DOCKER_LOGIN" -p="$DOCKER_PASSWORD";

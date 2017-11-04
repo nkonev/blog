@@ -12,4 +12,5 @@ public interface SeleniumConfiguration {
     int getWindowHeight();
     int getSelenideConditionTimeout();
     int getSelenideCollectionsTimeout();
+    boolean isHeadless();
 }

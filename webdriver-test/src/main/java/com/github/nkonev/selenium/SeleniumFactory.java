@@ -9,7 +9,10 @@ import io.github.bonigarcia.wdm.PhantomJsDriverManager;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeDriverService;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -89,14 +92,24 @@ public class SeleniumFactory implements FactoryBean<WebDriver> {
             {
                 // firefox
                 FirefoxDriverManager.getInstance().version(FIREFOX_DRIVER_VERSION).setup(); // download executables if need and set System.properties
-                driver = new FirefoxDriver();
+                // https://developer.mozilla.org/en-US/Firefox/Headless_mode
+                FirefoxOptions firefoxOptions = new FirefoxOptions();
+                if (seleniumConfiguration.isHeadless()) {
+                    firefoxOptions.addArguments("-headless");
+                }
+                driver = new FirefoxDriver(firefoxOptions);
                 Configuration.browser = WebDriverRunner.MARIONETTE;
             }
             break;
             case CHROME:
             {
                 ChromeDriverManager.getInstance().version(CHROME_DRIVER_VERSION).setup(); // download executables if need and set System.properties
-                driver = new ChromeDriver();
+                // https://developers.google.com/web/updates/2017/04/headless-chrome
+                ChromeOptions chromeOptions = new ChromeOptions();
+                if (seleniumConfiguration.isHeadless()) {
+                    chromeOptions.addArguments("--headless");
+                }
+                driver = new ChromeDriver(chromeOptions);
             }
             break;
         }

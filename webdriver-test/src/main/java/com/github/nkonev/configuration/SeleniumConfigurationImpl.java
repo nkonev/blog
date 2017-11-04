@@ -1,9 +1,7 @@
 package com.github.nkonev.configuration;
 
-import com.github.nkonev.IntegrationTestConstants;
 import com.github.nkonev.selenium.Browser;
 import com.github.nkonev.selenium.SeleniumFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,6 +34,11 @@ public class SeleniumConfigurationImpl implements SeleniumConfiguration {
      * in seconds
      */
     private int selenideCollectionsTimeout;
+
+    /**
+     * Headless mode in modern firefox and chrome
+     */
+    private boolean headless;
 
     /**
      * @Scope("singleton") is need as part of https://github.com/spring-projects/spring-boot/issues/7454
@@ -92,7 +95,16 @@ public class SeleniumConfigurationImpl implements SeleniumConfiguration {
         return selenideCollectionsTimeout;
     }
 
+    @Override
+    public boolean isHeadless() {
+        return headless;
+    }
+
     public void setSelenideCollectionsTimeout(int selenideCollectionsTimeout) {
         this.selenideCollectionsTimeout = selenideCollectionsTimeout;
+    }
+
+    public void setHeadless(boolean headless) {
+        this.headless = headless;
     }
 }
