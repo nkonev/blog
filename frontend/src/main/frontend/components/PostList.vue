@@ -135,6 +135,9 @@
             if (stompClient) {
                 stompClient.disconnect();
             }
+        },
+        metaInfo: {
+            title: 'Posts',
         }
     }
 </script>

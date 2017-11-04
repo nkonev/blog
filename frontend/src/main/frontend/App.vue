@@ -42,6 +42,12 @@
         mounted() {
             // attempt to initialize LoginModal
             store.dispatch(FETCH_USER_PROFILE);
+        },
+        metaInfo: {
+            // if no subcomponents specify a metaInfo.title, this title will be used
+            title: 'Welcome to',
+            // all titles will be injected into this template
+            titleTemplate: '%s | nkonev Blog'
         }
     }
 </script>

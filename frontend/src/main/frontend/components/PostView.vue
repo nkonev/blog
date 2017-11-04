@@ -191,6 +191,11 @@
                 deep: true
             }
         },
+        metaInfo () {
+            return {
+                title: this.postDTO.title,
+            }
+        }
     }
 </script>
 

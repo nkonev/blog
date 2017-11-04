@@ -99,7 +99,20 @@
         },
         destroyed(){
             bus.$off(LOGIN, this.onLogin);
+        },
+        metaInfo () {
+            let login;
+            if (this.dto) {
+                login = this.dto.login;
+            } else {
+                login = this.id;
+            }
+            return {
+
+                title: 'User ' + login,
+            }
         }
+
     };
 </script>
 

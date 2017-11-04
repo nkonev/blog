@@ -68,6 +68,9 @@
         },
         created(){
             this.updateSubmitEnabled();
+        },
+        metaInfo: {
+            title: 'Restoring password',
         }
     }
 </script>

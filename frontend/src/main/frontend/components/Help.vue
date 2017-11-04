@@ -4,3 +4,11 @@
         <li><router-link class="router-link" to="/password-restore">Forgot password?</router-link></li>
     </ul>
 </template>
+
+<script>
+    export default {
+        metaInfo: {
+            title: 'Help',
+        }
+    }
+</script>

@@ -1,5 +1,6 @@
 <template>
     <div class="resend-registration-confirmation-token">
+        <h1>Resend confirmation email</h1>
         Enter email for resend confirmation
         <input v-model="email"/>
         <error v-show="errors.email" :message="errors.email"></error>
@@ -67,5 +68,8 @@
                 this.updateSubmitEnabled();
             }
         },
+        metaInfo: {
+            title: 'Resend confirmation email',
+        }
     }
 </script>

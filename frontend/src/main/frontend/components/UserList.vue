@@ -111,6 +111,9 @@
             bus.$off(LOGIN, this.onLogin);
             bus.$off(LOGOUT, this.onLogout);
             bus.$off(UNAUTHORIZED, this.onLogout);
+        },
+        metaInfo: {
+            title: 'Users',
         }
     };
 </script>

@@ -10,8 +10,10 @@ import {UNSET_USER} from './store'
 import {LOGIN_MODAL, PROFILE_URL} from './constants'
 import bus from './bus'
 import {UNAUTHORIZED} from './bus'
+import Meta from 'vue-meta'
 
 Vue.use(VueResource);
+Vue.use(Meta)
 
 // Vue.config.devtools = false;
 
