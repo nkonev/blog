@@ -15,6 +15,7 @@ before_script:
   - (cd docker; docker-compose up -d)
 after_acript:
   - (cd docker; docker-compose down)
+  - rm -rf /home/travis/.m2/repository/com/github/nkonev
 script:
   # if there isn't pointed explicitly PhantomJS will be used by default for both webdriver integration test and js unit test
   # We use 'install' phase because of use jars in subsequent tests
