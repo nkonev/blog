@@ -22,6 +22,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.beans.factory.FactoryBean;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 /**
  * Created by nik on 07.08.16.
@@ -94,6 +95,7 @@ public class SeleniumFactory implements FactoryBean<WebDriver> {
                 FirefoxDriverManager.getInstance().version(FIREFOX_DRIVER_VERSION).setup(); // download executables if need and set System.properties
                 // https://developer.mozilla.org/en-US/Firefox/Headless_mode
                 FirefoxOptions firefoxOptions = new FirefoxOptions();
+                firefoxOptions.setLogLevel(Level.INFO);
                 if (seleniumConfiguration.isHeadless()) {
                     firefoxOptions.addArguments("-headless");
                 }
