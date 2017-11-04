@@ -27,8 +27,8 @@ script:
   - ./mvnw -pl frontend -P frontend frontend:karma@'karma test' -Dkarma.browsers=ChromeHeadless
   - ./mvnw -pl webdriver-test -Dliquibase.drop-first=true -Dliquibase.contexts='main, test' -Dcustom.selenium.browser=CHROME -Dcustom.selenium.headless=true -P frontend surefire:test --no-snapshot-updates
 
-#  - "./mvnw -Dkarma.browsers=FirefoxHeadless -Dcustom.selenium.browser=FIREFOX -Dcustom.selenium.headless=true -P frontend clean package"
-#  - "./mvnw -Dkarma.browsers=ChromeHeadless -Dcustom.selenium.browser=CHROME -Dcustom.selenium.headless=true -P frontend clean package"
+#  - "./mvnw -Dkarma.browsers=Firefox -Dcustom.selenium.browser=FIREFOX -P frontend clean package"
+#  - "./mvnw -Dkarma.browsers=Chrome -Dcustom.selenium.browser=CHROME -P frontend clean package"
   - if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_TEST_RESULT" == "0" ]]; then (
       echo "Will push docker image";
       docker login -u="$DOCKER_LOGIN" -p="$DOCKER_PASSWORD";
