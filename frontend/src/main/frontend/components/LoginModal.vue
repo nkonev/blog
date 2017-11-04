@@ -2,7 +2,7 @@
     <modal :name="modalName" transition="pop-out" @before-open="beforeOpen" :width="380" :height="250">
         <div class="box">
             <div class="box-part">
-                <div class="login-title">Пожалуйста, представьтесь</div>
+                <div class="login-title">Please login</div>
                 <form autocomplete="off">
                     <input id="username" type="text" placeholder="Username" v-model="formUsername">
                     <input id="password" type="password" placeholder="Password" v-model="formPassword">

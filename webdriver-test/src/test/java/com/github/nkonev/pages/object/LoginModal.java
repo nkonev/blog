@@ -31,7 +31,7 @@ public class LoginModal {
         SelenideElement modal = $(".v--modal-box");
         WebElement modal2 = modal.getWrappedElement();
 
-        modal.shouldHave(text("Пожалуйста, представьтесь"));
+        modal.shouldHave(text("Please login"));
         modal.find("input#username").setValue(user);
         modal.find("input#password").setValue(password);
         modal.find(ID_SUBMIT).shouldBe(CLICKABLE).click();
