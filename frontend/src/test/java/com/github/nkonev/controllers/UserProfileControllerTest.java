@@ -74,7 +74,6 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.login").value(newLogin))
                 .andExpect(jsonPath("$.password").doesNotExist())
-                .andExpect(header().string(Constants.Headers.NEED_REFRESH_PROFILE, "true"))
                 .andReturn();
 
         LOGGER.info(mvcResult.getResponse().getContentAsString());
@@ -112,7 +111,6 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.login").value(newLogin))
                 .andExpect(jsonPath("$.password").doesNotExist())
-                .andExpect(header().string(Constants.Headers.NEED_REFRESH_PROFILE, "true"))
                 .andReturn();
 
         LOGGER.info(mvcResult.getResponse().getContentAsString());

@@ -93,8 +93,7 @@ public class UserProfileController {
     @PostMapping(Constants.Uls.PROFILE)
     public EditUserDTO editProfile(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount,
-            @RequestBody @Valid EditUserDTO userAccountDTO,
-            HttpServletResponse httpServletResponse
+            @RequestBody @Valid EditUserDTO userAccountDTO
     ) {
         if (userAccount == null) {
             throw new RuntimeException("Not authenticated user can't edit any user account. It can occurs due inpatient refactoring.");
@@ -117,14 +116,7 @@ public class UserProfileController {
 
         blogUserDetailsService.refreshUserDetails(exists);
 
-        sendNeedRefreshProfile(httpServletResponse);
         return UserAccountConverter.convertToEditUserDto(exists);
-    }
-
-    // TODO will be in utility class in future
-    private void sendNeedRefreshProfile(HttpServletResponse httpServletResponse) {
-        httpServletResponse.setHeader(Constants.Headers.NEED_REFRESH_PROFILE, Boolean.TRUE.toString());
-        // offered via additional header which will be handled in js http client
     }
 
     // TODO delete user with delete avatar

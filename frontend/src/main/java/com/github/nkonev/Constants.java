@@ -39,14 +39,6 @@ public class Constants {
         public static final String USER_ID = "postId";
     }
 
-    public static class Headers {
-        public static final String NEED_REFRESH_PROFILE = "X-BLOG-NEED-REFRESH-USER-PROFILE";
-    }
-
-    public static class Swagger {
-        public static final String AUTOCOMPLETE = "autocompletePost";
-    }
-
     public static class Schemas {
         public static final String AUTH = "auth";
         public static final String POSTS = "posts";

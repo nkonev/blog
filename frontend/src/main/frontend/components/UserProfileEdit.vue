@@ -28,9 +28,11 @@
             </div>
 
         </div>
-        <button class="save" @click="save" v-bind:disabled="!submitEnabled">Save</button>
-        <button @click="cancel">Cancel</button>
 
+        <div class="profile-edit-buttons">
+            <button class="save" @click="save" v-bind:disabled="!submitEnabled">Save</button>
+            <button @click="cancel">Cancel</button>
+        </div>
         <error v-if="errorMessage" :message="errorMessage"></error>
     </div>
 </template>
@@ -180,15 +182,24 @@
         }
 
         &-info {
-            display flex
-            flex-direction row
-            flex-wrap wrap
-            justify-content space-around
+            //display flex
+            //flex-direction row
+            //flex-wrap wrap
+            //justify-content space-around
+            display block
 
             &-avatar-container {
                 text-align center
+                float left
                 //width 100%
             }
+
+            &-form {
+            }
+        }
+
+        &-buttons{
+            clear both
         }
     }
 
