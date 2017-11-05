@@ -84,6 +84,8 @@
         ['clean']                                         // remove formatting button
     ];
 
+
+
     export default {
         props : [
             'postDTO', 'onAfterSubmit', 'onCancel', 'onError'
@@ -96,7 +98,7 @@
                     modules: {
                         syntax: true,              // Include syntax module
                         toolbar: toolbarOptions,
-                    }
+                    },
                 },
                 editPostDTO: {}, // will be overriden below in created()
                 myCroppa: {},
@@ -105,6 +107,70 @@
         },
         mounted() {
             this.quillInstance = this.$refs.myQuillEditor.quill;
+
+
+            /////////////////////////////////////////////////////////////////////////////
+            //// https://github.com/quilljs/quill/issues/1400#issuecomment-318260547 ////
+            /////////////////////////////////////////////////////////////////////////////
+            /**
+             * Step1. select local image
+             *
+             */
+            const selectLocalImage = () => {
+                const input = document.createElement('input');
+                input.setAttribute('type', 'file');
+                input.click();
+
+                // Listen upload local image and save to server
+                input.onchange = () => {
+                    const file = input.files[0];
+
+                    // file type is only image.
+                    if (/^image\//.test(file.type)) {
+                        saveToServer(file);
+                    } else {
+                        console.warn('You could only upload images.');
+                    }
+                };
+            }
+
+            /**
+             * Step2. save to server
+             *
+             * @param {File} file
+             */
+            const saveToServer = (file) => {
+                const fd = new FormData();
+                fd.append('image', file);
+
+                Vue.http.post('/api/image/post/content', fd)
+                    .then(successResp => {
+                        const url =  successResp.body.relativeUrl;
+                        insertToEditor(url);
+                    }, failResp => {
+                        throw "failed to upload title img"
+                    })
+                    .catch(e => {
+                        console.log("Catch error in sending post content image", e);
+                    })
+
+            }
+
+            /**
+             * Step3. insert image url to rich editor.
+             *
+             * @param {string} url
+             */
+            const insertToEditor = (url) => {
+                // push image url to rich editor.
+                const range = this.quillInstance.getSelection();
+                this.quillInstance.insertEmbed(range.index, 'image', url);
+            }
+
+
+            this.quillInstance.getModule('toolbar').addHandler('image', () => {
+                selectLocalImage();
+            });
             /**
              * https://quilljs.com/playground/#class-vs-inline-style
              *   Quill uses classes for most inline styles.
