@@ -13,6 +13,7 @@ import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,6 +24,8 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -134,6 +137,20 @@ public abstract class AbstractImageUploadController {
         LocalDateTime ldt = resultSet.getObject(dateTimeColumnName, LocalDateTime.class);
         response.setDateHeader(HttpHeaders.LAST_MODIFIED, ldt.toEpochSecond(ZoneOffset.UTC)*1000);
         response.setDateHeader(HttpHeaders.EXPIRES, ldt.plus(imageConfig.getMaxAge(), ChronoUnit.SECONDS).toEpochSecond(ZoneOffset.UTC)*1000);
+    }
+
+    // TODO use normal nginx cache https://blog.codeship.com/nginx-reverse-proxy-docker-swarm-clusters/
+    protected void set304IfNeed(UUID id, HttpServletResponse response, HttpSession httpSession, String imageType) {
+        if (httpSession.getAttribute(imageType)!=null){
+            Set<UUID> visited = (Set<UUID>) httpSession.getAttribute(imageType);
+            if (visited.contains(id)) {
+                response.setStatus(304);
+            }
+        } else {
+            Set<UUID> visited = new HashSet<>();
+            visited.add(id);
+            httpSession.setAttribute(imageType, visited);
+        }
     }
 }
  

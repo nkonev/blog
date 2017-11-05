@@ -7,10 +7,19 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultHandler;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import javax.servlet.http.HttpSession;
+import java.net.URI;
+import java.util.UUID;
+
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -63,6 +72,63 @@ public abstract class AbstractImageUploadControllerTest extends AbstractUtTestRu
         Assert.assertNotEquals(url0, url1);
     }
 
+    private static class SessionWrapper extends MockHttpSession{
+        private final HttpSession httpSession;
+
+        public SessionWrapper(HttpSession httpSession){
+            this.httpSession = httpSession;
+        }
+
+        @Override
+        public Object getAttribute(String name) {
+            return this.httpSession.getAttribute(name);
+        }
+
+    }
+    private static final class SessionHolder{
+        private SessionWrapper session;
+
+
+        public SessionWrapper getSession() {
+            return session;
+        }
+
+        public void setSession(SessionWrapper session) {
+            this.session = session;
+        }
+    }
+    @WithUserDetails(TestConstants.USER_NIKITA)
+    @Test
+    public void postImageAndTwiceGet() throws Exception {
+
+        byte[] img1 = {(byte)0xAA, (byte)0xBB, (byte)0xCC, (byte)0xDD, (byte)0xCC};
+        MockMultipartFile mf1 = new MockMultipartFile(ImagePostTitleUploadController.IMAGE_PART, "lol-content.png", "image/png", img1);
+
+
+        MvcResult mvcResult = mockMvc.perform(
+                MockMvcRequestBuilders.fileUpload(postTemplate())
+                        .file(mf1)
+                        .with(csrf())
+        )
+                .andExpect(status().isOk())
+                .andReturn()
+                ;
+        AbstractImageUploadController.ImageResponse imageResponse = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), AbstractImageUploadController.ImageResponse.class);
+        String urlResponse = imageResponse.getUrl();
+
+        LOGGER.info("responsed image url: {}", urlResponse);
+
+        RequestEntity requestEntity1 = RequestEntity.get(URI.create(urlResponse)).build();
+        ResponseEntity<byte[]> re1 = restTemplate.exchange(requestEntity1, byte[].class);
+        Assert.assertEquals(200, re1.getStatusCodeValue());
+
+        String cookie = re1.getHeaders().getFirst("Set-Cookie");
+        Assert.assertNotNull(cookie);
+
+        RequestEntity requestEntity2 = RequestEntity.get(URI.create(urlResponse)).header("Cookie", cookie).build();
+        ResponseEntity<byte[]> re2 = restTemplate.exchange(requestEntity2, byte[].class);
+        Assert.assertEquals(304, re2.getStatusCodeValue());
+    }
 
     @Test
     public void putImageUnauthorized() throws Exception {

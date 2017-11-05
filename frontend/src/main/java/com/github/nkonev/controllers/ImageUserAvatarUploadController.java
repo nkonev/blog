@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
@@ -63,7 +64,8 @@ public class ImageUserAvatarUploadController extends AbstractImageUploadControll
     @GetMapping(GET_TEMPLATE)
     public void getImage(
             @PathVariable("id")UUID id,
-            HttpServletResponse response
+            HttpServletResponse response,
+            HttpSession httpSession
     ) throws SQLException, IOException {
         super.getImage(
             (Connection conn) -> {
@@ -73,6 +75,7 @@ public class ImageUserAvatarUploadController extends AbstractImageUploadControll
                         if (rs.next()) {
                             response.setContentType(rs.getString("content_type"));
                             response.setContentLength(rs.getInt("content_length"));
+                            set304IfNeed(id, response, httpSession, "avatarImages");
                             addCacheHeaders("create_date_time", rs, response);
                             try(InputStream imgStream = rs.getBinaryStream("img");){
                                 copyStream(imgStream, response.getOutputStream());
