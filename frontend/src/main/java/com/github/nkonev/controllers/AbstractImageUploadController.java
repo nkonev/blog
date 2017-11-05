@@ -129,6 +129,7 @@ public abstract class AbstractImageUploadController {
 	}
 
     protected void addCacheHeaders(String dateTimeColumnName, ResultSet resultSet, HttpServletResponse response) throws SQLException {
+        response.setHeader(HttpHeaders.CACHE_CONTROL, "public");
         response.addHeader(HttpHeaders.CACHE_CONTROL, "max-age="+imageConfig.getMaxAge());
         LocalDateTime ldt = resultSet.getObject(dateTimeColumnName, LocalDateTime.class);
         response.setDateHeader(HttpHeaders.LAST_MODIFIED, ldt.toEpochSecond(ZoneOffset.UTC)*1000);
