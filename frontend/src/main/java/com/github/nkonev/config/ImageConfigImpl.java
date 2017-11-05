@@ -14,6 +14,8 @@ public class ImageConfigImpl implements ImageConfig {
 
     private long maxBytes;
 
+    private long maxAge;
+
     public List<MediaType> getAllowedMimeTypes() {
         return allowedMimeTypes;
     }
@@ -26,7 +28,15 @@ public class ImageConfigImpl implements ImageConfig {
         return maxBytes;
     }
 
+    public long getMaxAge() {
+        return maxAge;
+    }
+
     public void setMaxBytes(long maxBytes) {
         this.maxBytes = maxBytes;
+    }
+
+    public void setMaxAge(long maxAge) {
+        this.maxAge = maxAge;
     }
 }

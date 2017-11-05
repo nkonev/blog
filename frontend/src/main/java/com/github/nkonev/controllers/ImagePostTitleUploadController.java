@@ -2,6 +2,7 @@ package com.github.nkonev.controllers;
 
 import com.github.nkonev.dto.UserAccountDetailsDTO;
 import com.github.nkonev.exception.DataNotFoundException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAmount;
+import java.time.temporal.TemporalField;
+import java.time.temporal.TemporalUnit;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.UUID;
 
 @RestController
@@ -65,12 +76,13 @@ public class ImagePostTitleUploadController extends AbstractImageUploadControlle
     ) throws SQLException, IOException {
         super.getImage(
             (Connection conn) -> {
-                try (PreparedStatement ps = conn.prepareStatement("SELECT img, length(img) as content_length, content_type FROM images.post_title_image WHERE id = ?");) {
+                try (PreparedStatement ps = conn.prepareStatement("SELECT img, length(img) as content_length, content_type, create_date_time FROM images.post_title_image WHERE id = ?");) {
                     ps.setObject(1, id);
                     try (ResultSet rs = ps.executeQuery();) {
                         if (rs.next()) {
                             response.setContentType(rs.getString("content_type"));
                             response.setContentLength(rs.getInt("content_length"));
+                            addCacheHeaders("create_date_time", rs, response);
                             try(InputStream imgStream = rs.getBinaryStream("img");){
                                 copyStream(imgStream, response.getOutputStream());
                             } catch (SQLException | IOException e) {

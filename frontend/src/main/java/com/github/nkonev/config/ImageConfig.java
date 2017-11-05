@@ -8,4 +8,10 @@ public interface ImageConfig {
     List<MediaType> getAllowedMimeTypes();
 
     public long getMaxBytes();
+
+    /**
+     * in seconds
+     * @return
+     */
+    public long getMaxAge();
 }

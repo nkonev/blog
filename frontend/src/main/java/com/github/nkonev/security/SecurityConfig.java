@@ -93,7 +93,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 //        http.rememberMe().rememberMeParameter(REMEMBER_ME_PARAMETER).tokenRepository(tokenRepository)
 //                .tokenValiditySeconds(86400);
-
+        http.headers().cacheControl().disable();
     }
 
     // https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#data-configuration

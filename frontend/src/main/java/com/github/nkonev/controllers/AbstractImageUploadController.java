@@ -12,12 +12,17 @@ import org.springframework.http.MediaType;
 import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -122,5 +127,12 @@ public abstract class AbstractImageUploadController {
 			to.write(buffer, 0, len);
 		}
 	}
+
+    protected void addCacheHeaders(String dateTimeColumnName, ResultSet resultSet, HttpServletResponse response) throws SQLException {
+        response.addHeader(HttpHeaders.CACHE_CONTROL, "max-age="+imageConfig.getMaxAge());
+        LocalDateTime ldt = resultSet.getObject(dateTimeColumnName, LocalDateTime.class);
+        response.setDateHeader(HttpHeaders.LAST_MODIFIED, ldt.toEpochSecond(ZoneOffset.UTC)*1000);
+        response.setDateHeader(HttpHeaders.EXPIRES, ldt.plus(imageConfig.getMaxAge(), ChronoUnit.SECONDS).toEpochSecond(ZoneOffset.UTC)*1000);
+    }
 }
  

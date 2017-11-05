@@ -2,6 +2,7 @@ package com.github.nkonev.controllers;
 
 import com.github.nkonev.dto.UserAccountDetailsDTO;
 import com.github.nkonev.exception.DataNotFoundException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -66,12 +67,13 @@ public class ImagePostContentUploadController extends AbstractImageUploadControl
     ) throws SQLException, IOException {
         super.getImage(
                 (Connection conn) -> {
-                    try (PreparedStatement ps = conn.prepareStatement("SELECT img, length(img) as content_length, content_type FROM images.post_content_image WHERE id = ?");) {
+                    try (PreparedStatement ps = conn.prepareStatement("SELECT img, length(img) as content_length, content_type, create_date_time FROM images.post_content_image WHERE id = ?");) {
                         ps.setObject(1, id);
                         try (ResultSet rs = ps.executeQuery();) {
                             if (rs.next()) {
                                 response.setContentType(rs.getString("content_type"));
                                 response.setContentLength(rs.getInt("content_length"));
+                                addCacheHeaders("create_date_time", rs, response);
                                 try(InputStream imgStream = rs.getBinaryStream("img");){
                                     copyStream(imgStream, response.getOutputStream());
                                 } catch (SQLException | IOException e) {

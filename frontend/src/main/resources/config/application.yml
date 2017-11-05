@@ -38,11 +38,15 @@ custom.stomp.broker:
   system-login: blog
   system-password: blogPazZw0rd
 
-custom.image.max-bytes: 1048576 # 1 Mb. Must be < than tomcat file upload limit
-custom.image.allowed-mime-types:
- - image/png
- - image/jpg
- - image/jpeg
+# Postgres image store configuration
+custom.image:
+  max-bytes: 1048576 # 1 Mb. Must be < than tomcat file upload limit
+  allowed-mime-types:
+   - image/png
+   - image/jpg
+   - image/jpeg
+  # value in seconds, passed in Cache-Control header
+  max-age: 31536000
 
 
 custom:

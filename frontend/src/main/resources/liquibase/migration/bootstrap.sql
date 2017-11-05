@@ -161,3 +161,8 @@ create index title_text_idx on posts.post using gin (to_tsvector('russian', titl
 -- changeset nkonev:4_post_and_comment_create_datetime context:main failOnError: true
 ALTER TABLE posts.post ADD COLUMN create_date_time timestamp NOT NULL DEFAULT (now() at time zone 'utc');
 ALTER TABLE posts.comment ADD COLUMN create_date_time timestamp NOT NULL DEFAULT (now() at time zone 'utc');
+
+-- changeset nkonev:5_cache_time context:main failOnError: true
+ALTER TABLE images.post_title_image ADD COLUMN create_date_time timestamp NOT NULL DEFAULT (now() at time zone 'utc');
+ALTER TABLE images.user_avatar_image ADD COLUMN create_date_time timestamp NOT NULL DEFAULT (now() at time zone 'utc');
+ALTER TABLE images.post_content_image ADD COLUMN create_date_time timestamp NOT NULL DEFAULT (now() at time zone 'utc');
