@@ -5,7 +5,7 @@ import com.github.nkonev.dto.CommentDTOExtended;
 import com.github.nkonev.dto.CommentDTOWithAuthorization;
 import com.github.nkonev.dto.UserAccountDetailsDTO;
 import com.github.nkonev.entity.jpa.Comment;
-import com.github.nkonev.entity.jpa.Permissions;
+import com.github.nkonev.security.permissions.CommentPermissions;
 import com.github.nkonev.exception.BadRequestException;
 import com.github.nkonev.security.BlogSecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,8 +45,8 @@ public class CommentConverter {
                 comment.getId(),
                 comment.getText(),
                 UserAccountConverter.convertToUserAccountDTO(comment.getOwner()),
-                blogSecurityService.hasCommentPermission(comment, userAccount, Permissions.EDIT),
-                blogSecurityService.hasCommentPermission(comment, userAccount, Permissions.DELETE),
+                blogSecurityService.hasCommentPermission(comment, userAccount, CommentPermissions.EDIT),
+                blogSecurityService.hasCommentPermission(comment, userAccount, CommentPermissions.DELETE),
                 comment.getCreateDateTime()
         );
     }
@@ -67,8 +67,8 @@ public class CommentConverter {
                 comment.getId(),
                 comment.getText(),
                 UserAccountConverter.convertToUserAccountDTO(comment.getOwner()),
-                blogSecurityService.hasCommentPermission(comment, userAccount, Permissions.EDIT),
-                blogSecurityService.hasCommentPermission(comment, userAccount, Permissions.DELETE),
+                blogSecurityService.hasCommentPermission(comment, userAccount, CommentPermissions.EDIT),
+                blogSecurityService.hasCommentPermission(comment, userAccount, CommentPermissions.DELETE),
                 countInPost,
                 comment.getCreateDateTime()
         );

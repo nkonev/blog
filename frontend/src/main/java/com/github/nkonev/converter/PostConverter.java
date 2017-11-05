@@ -4,11 +4,11 @@ import com.github.nkonev.dto.PostDTO;
 import com.github.nkonev.dto.PostDTOExtended;
 import com.github.nkonev.dto.PostDTOWithAuthorization;
 import com.github.nkonev.dto.UserAccountDetailsDTO;
-import com.github.nkonev.entity.jpa.Permissions;
 import com.github.nkonev.entity.jpa.Post;
 import com.github.nkonev.exception.BadRequestException;
 import com.github.nkonev.repo.jpa.PostRepository;
 import com.github.nkonev.security.BlogSecurityService;
+import com.github.nkonev.security.permissions.PostPermissions;
 import com.github.nkonev.utils.XssSanitizeUtil;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +33,8 @@ public class PostConverter {
                 (saved.getText()),
                 saved.getTitleImg(),
                 UserAccountConverter.convertToUserAccountDTO(saved.getOwner()),
-                blogSecurityService.hasPostPermission(saved, userAccount, Permissions.EDIT),
-                blogSecurityService.hasPostPermission(saved, userAccount, Permissions.DELETE),
+                blogSecurityService.hasPostPermission(saved, userAccount, PostPermissions.EDIT),
+                blogSecurityService.hasPostPermission(saved, userAccount, PostPermissions.DELETE),
                 saved.getCreateDateTime()
         );
     }
@@ -51,8 +51,8 @@ public class PostConverter {
                 (saved.getText()),
                 saved.getTitleImg(),
                 UserAccountConverter.convertToUserAccountDTO(saved.getOwner()),
-                blogSecurityService.hasPostPermission(saved, userAccount, Permissions.EDIT),
-                blogSecurityService.hasPostPermission(saved, userAccount, Permissions.DELETE),
+                blogSecurityService.hasPostPermission(saved, userAccount, PostPermissions.EDIT),
+                blogSecurityService.hasPostPermission(saved, userAccount, PostPermissions.DELETE),
                 left != null ? left.getId() : null,
                 right != null ? right.getId() : null,
                 saved.getCreateDateTime()

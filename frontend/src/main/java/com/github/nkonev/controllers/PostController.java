@@ -52,6 +52,19 @@ public class PostController {
     @Value("${custom.postgres.fulltext.reg-config}")
     private String regConfig;
 
+    private final RowMapper<PostDTO> rowMapper = (resultSet, i) -> new PostDTO(
+            resultSet.getLong("id"),
+            resultSet.getString("title"),
+            resultSet.getString("text_column"),
+            resultSet.getString("title_img"),
+            resultSet.getObject("create_date_time", LocalDateTime.class),
+            new UserAccountDTO(
+                    resultSet.getLong("owner_id"),
+                    resultSet.getString("owner_login"),
+                    resultSet.getString("owner_avatar")
+            )
+    );
+    
     @GetMapping(Constants.Uls.API+Constants.Uls.POST)
     public List<PostDTO> getPosts(
             @RequestParam(value = "page", required=false, defaultValue = "0") int page,
@@ -68,20 +81,7 @@ public class PostController {
         params.put("limit", size);
 
         List<PostDTO> posts;
-
-        final RowMapper<PostDTO> rowMapper = (resultSet, i) -> new PostDTO(
-                resultSet.getLong("id"),
-                resultSet.getString("title"),
-                resultSet.getString("text_column"),
-                resultSet.getString("title_img"),
-                resultSet.getObject("create_date_time", LocalDateTime.class),
-                new UserAccountDTO(
-                        resultSet.getLong("owner_id"),
-                        resultSet.getString("owner_login"),
-                        resultSet.getString("owner_avatar")
-                )
-        );
-
+        
         if (StringUtils.isEmpty(searchString)) {
             posts = jdbcTemplate.query(
                     "select " +
@@ -142,9 +142,10 @@ public class PostController {
 
     // ================================================= secured
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("@blogSecurityService.hasPostPermission(#userAccount, T(com.github.nkonev.security.permissions.PostPermissions).READ_MY)")
     @GetMapping(Constants.Uls.API+Constants.Uls.POST+Constants.Uls.MY)
     public List<PostDTO> getMyPosts(
+            @AuthenticationPrincipal UserAccountDetailsDTO userAccount,
             @RequestParam(value = "page", required=false, defaultValue = "0") int page,
             @RequestParam(value = "size", required=false, defaultValue = "0") int size,
             @RequestParam(value = "searchString", required=false, defaultValue = "") String searchString // TODO implement
@@ -160,7 +161,7 @@ public class PostController {
     }
 
     // https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#el-common-built-in
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("@blogSecurityService.hasPostPermission(#userAccount, T(com.github.nkonev.security.permissions.PostPermissions).CREATE)")
     @PostMapping(Constants.Uls.API+Constants.Uls.POST)
     public PostDTOWithAuthorization addPost(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // null if not authenticated
@@ -178,7 +179,7 @@ public class PostController {
         return postConverter.convertToDto(saved, userAccount);
     }
 
-    @PreAuthorize("@blogSecurityService.hasPostPermission(#postDTO, #userAccount, T(com.github.nkonev.entity.jpa.Permissions).EDIT)")
+    @PreAuthorize("@blogSecurityService.hasPostPermission(#postDTO, #userAccount, T(com.github.nkonev.security.permissions.PostPermissions).EDIT)")
     @PutMapping(Constants.Uls.API+Constants.Uls.POST)
     public PostDTOWithAuthorization updatePost(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // null if not authenticated
@@ -192,7 +193,7 @@ public class PostController {
         return postConverter.convertToDto(saved, userAccount);
     }
 
-    @PreAuthorize("@blogSecurityService.hasPostPermission(#postId, #userAccount, T(com.github.nkonev.entity.jpa.Permissions).DELETE)")
+    @PreAuthorize("@blogSecurityService.hasPostPermission(#postId, #userAccount, T(com.github.nkonev.security.permissions.PostPermissions).DELETE)")
     @DeleteMapping(Constants.Uls.API+Constants.Uls.POST+Constants.Uls.POST_ID)
     public void deletePost(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // null if not authenticated

@@ -63,7 +63,7 @@ public class CommentController {
         return new Wrapper<CommentDTOWithAuthorization>(commentsCollection, count);
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("@blogSecurityService.hasCommentPermission(#userAccount, T(com.github.nkonev.security.permissions.CommentPermissions).CREATE)")
     @PostMapping(Constants.Uls.API+Constants.Uls.POST+Constants.Uls.POST_ID +Constants.Uls.COMMENT)
     public CommentDTOExtended addComment(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // nullable
@@ -86,7 +86,7 @@ public class CommentController {
         return commentConverter.convertToDtoExtended(saved, userAccount, count);
     }
 
-    @PreAuthorize("@blogSecurityService.hasCommentPermission(#commentDTO, #userAccount, T(com.github.nkonev.entity.jpa.Permissions).EDIT)")
+    @PreAuthorize("@blogSecurityService.hasCommentPermission(#commentDTO, #userAccount, T(com.github.nkonev.security.permissions.CommentPermissions).EDIT)")
     @PutMapping(Constants.Uls.API+Constants.Uls.POST+Constants.Uls.POST_ID +Constants.Uls.COMMENT)
     public CommentDTOExtended updateComment (
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // nullable
@@ -106,7 +106,7 @@ public class CommentController {
         return commentConverter.convertToDtoExtended(saved, userAccount, count);
     }
 
-    @PreAuthorize("@blogSecurityService.hasCommentPermission(#commentId, #userAccount, T(com.github.nkonev.entity.jpa.Permissions).DELETE)")
+    @PreAuthorize("@blogSecurityService.hasCommentPermission(#commentId, #userAccount, T(com.github.nkonev.security.permissions.CommentPermissions).DELETE)")
     @DeleteMapping(Constants.Uls.API+Constants.Uls.POST+Constants.Uls.POST_ID +Constants.Uls.COMMENT+Constants.Uls.COMMENT_ID)
     public long deleteComment(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // null if not authenticated
