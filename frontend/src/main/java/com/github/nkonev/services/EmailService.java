@@ -40,8 +40,9 @@ public class EmailService {
 
     private static final String REG_LINK_PLACEHOLDER = "__REGISTRATION_LINK_PLACEHOLDER__";
     private static final String PASSWORD_RESET_LINK_PLACEHOLDER = "__PASSWORD_RESET_LINK_PLACEHOLDER__";
+    private static final String LOGIN_PLACEHOLDER = "__LOGIN__";
 
-    public void sendUserConfirmationToken(String email, UserConfirmationToken userConfirmationToken) {
+    public void sendUserConfirmationToken(String email, UserConfirmationToken userConfirmationToken, String login) {
         // https://yandex.ru/support/mail-new/mail-clients.html
         // https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-email.html
         // http://docs.spring.io/spring/docs/4.3.10.RELEASE/spring-framework-reference/htmlsingle/#mail-usage-simple
@@ -50,19 +51,24 @@ public class EmailService {
         msg.setSubject(registrationSubject);
         msg.setTo(email);
 
-        String text = registrationTextTemplate.replace(REG_LINK_PLACEHOLDER, customConfig.getBaseUrl() + Constants.Uls.CONFIRM+ "?"+Constants.Uls.UUID +"=" + userConfirmationToken.getUuid());
+        String text = registrationTextTemplate
+                .replace(REG_LINK_PLACEHOLDER, customConfig.getBaseUrl() + Constants.Uls.CONFIRM+ "?"+Constants.Uls.UUID +"=" + userConfirmationToken.getUuid() + "&login=" + login)
+                .replace(LOGIN_PLACEHOLDER, login)
+                ;
         msg.setText(text);
 
         mailSender.send(msg);
     }
 
-    public void sendPasswordResetToken(String email, PasswordResetToken passwordResetToken) {
+    public void sendPasswordResetToken(String email, PasswordResetToken passwordResetToken, String login) {
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setFrom(from);
         msg.setSubject(passwordResetSubject);
         msg.setTo(email);
 
-        String text = passwordResetTextTemplate.replace(PASSWORD_RESET_LINK_PLACEHOLDER, customConfig.getBaseUrl() + Constants.Uls.PASSWORD_RESET+ "?"+Constants.Uls.UUID +"=" + passwordResetToken.getUuid());
+        String text = passwordResetTextTemplate
+                .replace(PASSWORD_RESET_LINK_PLACEHOLDER, customConfig.getBaseUrl() + Constants.Uls.PASSWORD_RESET+ "?"+Constants.Uls.UUID +"=" + passwordResetToken.getUuid() + "&login=" + login)
+                .replace(LOGIN_PLACEHOLDER, login);
         msg.setText(text);
 
         mailSender.send(msg);

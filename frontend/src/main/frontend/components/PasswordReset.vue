@@ -1,6 +1,6 @@
 <template>
     <div class="password-reset-enter-new" v-if="!isPasswordSuccessfullyReset">
-        Please enter new password
+        Please enter new password for {{login}}
         <input id="new-password" v-model="newPassword"/>
         <button id="set-password" @click="resetPassword()">Set new password</button>
         <error v-show="errors.server" :message="errors.server"></error>
@@ -42,6 +42,11 @@
             },
             onSuccessLogin() {
                 this.$router.push({ name: root_name });
+            }
+        },
+        computed: {
+            login(){
+                return this.$route.query.login;
             }
         },
         created() {

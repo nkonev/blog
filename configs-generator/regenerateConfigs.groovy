@@ -35,7 +35,7 @@ def writeAndLog(filePath, content) {
     file.withWriter('UTF-8') { writer ->
         writer.write(content)
     }
-    println("""File ${file} was successfully saved!""");
+    println("""File ${file.canonicalPath} was successfully saved!""");
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,7 +123,7 @@ custom:
   registration:
     email:  
       subject: "Registration confirmation"
-      text-template: "Please open __REGISTRATION_LINK_PLACEHOLDER__ for complete registration."
+      text-template: "Please open __REGISTRATION_LINK_PLACEHOLDER__ for complete registration __LOGIN__."
   confirmation:
     registration:
       token:
@@ -131,7 +131,7 @@ custom:
   password-reset:
     email:
       subject: "Password reset"
-      text-template: "Link __PASSWORD_RESET_LINK_PLACEHOLDER__ for reset your password. If you didn't issue password reset please contact us."
+      text-template: "Link __PASSWORD_RESET_LINK_PLACEHOLDER__ for reset your password for account __LOGIN__. If you didn't issue password reset -- you can ignore this mail."
     token:
       ttl-minutes: 5
 """
