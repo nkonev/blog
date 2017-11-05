@@ -31,7 +31,7 @@ public class AppConfig {
     @Value("${custom.redirect.additional.http.port:8080}")
     private int fromHttpPost;
 
-    @Value("${custom.redirect.to.http.port:443}")
+    @Value("${custom.redirect.to.https.port:443}")
     private int toHttpsPort;
 
     @PostConstruct
