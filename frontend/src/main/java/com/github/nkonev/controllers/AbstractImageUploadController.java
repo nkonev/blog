@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
@@ -131,26 +132,28 @@ public abstract class AbstractImageUploadController {
 		}
 	}
 
-    protected void addCacheHeaders(String dateTimeColumnName, ResultSet resultSet, HttpServletResponse response) throws SQLException {
+    protected void addCacheHeaders(UUID id, String dateTimeColumnName, ResultSet resultSet, HttpServletResponse response, String imageType) throws SQLException {
         response.setHeader(HttpHeaders.CACHE_CONTROL, "public");
         response.addHeader(HttpHeaders.CACHE_CONTROL, "max-age="+imageConfig.getMaxAge());
         LocalDateTime ldt = resultSet.getObject(dateTimeColumnName, LocalDateTime.class);
         response.setDateHeader(HttpHeaders.LAST_MODIFIED, ldt.toEpochSecond(ZoneOffset.UTC)*1000);
         response.setDateHeader(HttpHeaders.EXPIRES, ldt.plus(imageConfig.getMaxAge(), ChronoUnit.SECONDS).toEpochSecond(ZoneOffset.UTC)*1000);
+        response.setHeader(HttpHeaders.ETAG, convertToEtag(id, imageType));
     }
 
-    // TODO use normal nginx cache https://blog.codeship.com/nginx-reverse-proxy-docker-swarm-clusters/
-    protected void set304IfNeed(UUID id, HttpServletResponse response, HttpSession httpSession, String imageType) {
-        if (httpSession.getAttribute(imageType)!=null){
-            Set<UUID> visited = (Set<UUID>) httpSession.getAttribute(imageType);
-            if (visited.contains(id)) {
-                response.setStatus(304);
-            }
+    protected boolean set304(UUID id, HttpServletRequest request, HttpServletResponse response, String imageType) {
+        final String headerValue = request.getHeader(HttpHeaders.IF_NONE_MATCH);
+        if (headerValue!=null && headerValue.equals(convertToEtag(id, imageType))) {
+            response.setStatus(304);
+            return true;
         } else {
-            Set<UUID> visited = new HashSet<>();
-            visited.add(id);
-            httpSession.setAttribute(imageType, visited);
+            return false;
         }
     }
+
+    private String convertToEtag(UUID id, String imageType){
+        return imageType + "_" + id.toString();
+    }
+
 }
  

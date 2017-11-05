@@ -122,10 +122,10 @@ public abstract class AbstractImageUploadControllerTest extends AbstractUtTestRu
         ResponseEntity<byte[]> re1 = restTemplate.exchange(requestEntity1, byte[].class);
         Assert.assertEquals(200, re1.getStatusCodeValue());
 
-        String cookie = re1.getHeaders().getFirst("Set-Cookie");
-        Assert.assertNotNull(cookie);
+        String etag = re1.getHeaders().getFirst(org.springframework.http.HttpHeaders.ETAG);
+        Assert.assertNotNull(etag);
 
-        RequestEntity requestEntity2 = RequestEntity.get(URI.create(urlResponse)).header("Cookie", cookie).build();
+        RequestEntity requestEntity2 = RequestEntity.get(URI.create(urlResponse)).header(org.springframework.http.HttpHeaders.IF_NONE_MATCH, etag).build();
         ResponseEntity<byte[]> re2 = restTemplate.exchange(requestEntity2, byte[].class);
         Assert.assertEquals(304, re2.getStatusCodeValue());
     }

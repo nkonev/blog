@@ -2,13 +2,13 @@ package com.github.nkonev.controllers;
 
 import com.github.nkonev.dto.UserAccountDetailsDTO;
 import com.github.nkonev.exception.DataNotFoundException;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
@@ -25,6 +25,8 @@ public class ImagePostContentUploadController extends AbstractImageUploadControl
 
     public static final String POST_TEMPLATE = "/api/image/post/content";
     public static final String GET_TEMPLATE = POST_TEMPLATE + "/{id}.{ext}";
+
+    public static final String imageType = "postContentImages";
 
     @PostMapping(POST_TEMPLATE)
     @PreAuthorize("isAuthenticated()")
@@ -65,9 +67,10 @@ public class ImagePostContentUploadController extends AbstractImageUploadControl
     public void getImage(
             @PathVariable("id")UUID id,
             HttpServletResponse response,
-            HttpSession httpSession
+            HttpServletRequest request
     ) throws SQLException, IOException {
-        super.getImage(
+        if(!set304(id, request, response, imageType)) {
+            super.getImage(
                 (Connection conn) -> {
                     try (PreparedStatement ps = conn.prepareStatement("SELECT img, length(img) as content_length, content_type, create_date_time FROM images.post_content_image WHERE id = ?");) {
                         ps.setObject(1, id);
@@ -75,21 +78,21 @@ public class ImagePostContentUploadController extends AbstractImageUploadControl
                             if (rs.next()) {
                                 response.setContentType(rs.getString("content_type"));
                                 response.setContentLength(rs.getInt("content_length"));
-                                set304IfNeed(id, response, httpSession, "postContentImages");
-                                addCacheHeaders("create_date_time", rs, response);
-                                try(InputStream imgStream = rs.getBinaryStream("img");){
+                                addCacheHeaders(id, "create_date_time", rs, response, imageType);
+                                try (InputStream imgStream = rs.getBinaryStream("img");) {
                                     copyStream(imgStream, response.getOutputStream());
                                 } catch (SQLException | IOException e) {
                                     throw new RuntimeException(e);
                                 }
                             } else {
-                                throw new DataNotFoundException("post content image with id '"+id+"' not found");
+                                throw new DataNotFoundException("post content image with id '" + id + "' not found");
                             }
                         }
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
                 }
-        );
+            );
+        }
     }
 }
