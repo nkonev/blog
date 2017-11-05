@@ -93,10 +93,6 @@
 
                 }
             }
-            &-content {
-                height auto
-                text-align justify
-            }
 
         }
 
@@ -116,6 +112,10 @@
                     max-width 100%
                     max-height 500px
                 }
+            }
+
+            .post-content {
+                overflow-x auto
             }
 
         }
