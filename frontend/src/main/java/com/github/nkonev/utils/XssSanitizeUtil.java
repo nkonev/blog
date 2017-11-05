@@ -14,7 +14,7 @@ public class XssSanitizeUtil {
                     "sub", "sup",
                     "span", "img", "code"
             )
-            .allowUrlProtocols("https", "http", "data") // "data" - for quill img
+            .allowUrlProtocols("https", "http")
             .allowAttributes("href", "target").onElements("a")
             .allowAttributes("src").onElements("img")
             .allowAttributes("class", "spellcheck").onElements("pre")
