@@ -28,7 +28,7 @@ public class AppConfig {
     @Autowired
     private ServerProperties serverProperties;
 
-    @Value("${custom.redirect.from.http.port:8080}")
+    @Value("${custom.redirect.additional.http.port:8080}")
     private int fromHttpPost;
 
     @Value("${custom.redirect.to.http.port:443}")
