@@ -20,7 +20,6 @@ public class XssSanitizeUtil {
             .allowAttributes("class", "spellcheck").onElements("pre")
             .allowAttributes("class").onElements("p")
             .allowAttributes("style", "class").onElements("span")
-            .allowAttributes("src").onElements("img") // for quill img
             .allowAttributes("class").onElements("li")
             .requireRelNofollowOnLinks()
             .toFactory();
