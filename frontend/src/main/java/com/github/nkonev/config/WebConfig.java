@@ -1,13 +1,20 @@
 package com.github.nkonev.config;
 
+import com.github.greengerong.PreRenderSEOFilter;
 import org.springframework.beans.BeansException;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+import java.util.Map;
 
 @Configuration
 public class WebConfig extends WebMvcConfigurerAdapter implements ApplicationContextAware {
@@ -38,5 +45,18 @@ public class WebConfig extends WebMvcConfigurerAdapter implements ApplicationCon
                 .favorPathExtension(false)
                 .defaultContentType(MediaType.APPLICATION_JSON)
         ;
+    }
+
+    @ConditionalOnProperty("custom.prerender.enable")
+    @Bean
+    public FilterRegistrationBean someFilterRegistration(PrerenderConfig prerenderConfig) {
+        FilterRegistrationBean registration = new FilterRegistrationBean();
+        registration.setFilter(new PreRenderSEOFilter());
+        registration.addUrlPatterns("/*");
+        for (Map.Entry<String, String> e : prerenderConfig.getPrerender().entrySet()) {
+            registration.addInitParameter(e.getKey(), e.getValue());
+        }
+        registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        return registration;
     }
 }
