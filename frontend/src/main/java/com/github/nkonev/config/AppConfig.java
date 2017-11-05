@@ -28,8 +28,11 @@ public class AppConfig {
     @Autowired
     private ServerProperties serverProperties;
 
-    @Value("${custom.secondary.http.from.port:8080}")
-    private int secondaryHttpPort;
+    @Value("${custom.redirect.from.http.port:8080}")
+    private int fromHttpPost;
+
+    @Value("${custom.redirect.to.http.port:443}")
+    private int toHttpsPort;
 
     @PostConstruct
     public void pc() throws Exception {
@@ -57,7 +60,7 @@ public class AppConfig {
                     context.addConstraint(securityConstraint);
                 }
             };
-            tomcat.addAdditionalTomcatConnectors(additionalRedirectHttpToHttpsConnector(secondaryHttpPort, serverProperties.getPort()));
+            tomcat.addAdditionalTomcatConnectors(additionalRedirectHttpToHttpsConnector(fromHttpPost, toHttpsPort));
             return tomcat;
         } else {
             return new TomcatEmbeddedServletContainerFactory();
