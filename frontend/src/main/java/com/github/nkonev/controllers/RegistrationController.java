@@ -61,6 +61,7 @@ public class RegistrationController {
             throw new UserAlreadyPresentException("User with login '" + userAccountDTO.getLogin() + "' is already present");
         }
         if(userAccountRepository.findByEmail(userAccountDTO.getEmail()).isPresent()){
+            LOGGER.info("Skipping sent registration email {} because this user already present", userAccountDTO.getEmail());
             return; // we care for user email leak
         }
 
@@ -109,11 +110,13 @@ public class RegistrationController {
     public void resendConfirmationToken(@RequestParam(value = "email") String email) {
         Optional<UserAccount> userAccountOptional = userAccountRepository.findByEmail(email);
         if(!userAccountOptional.isPresent()){
+            LOGGER.info("Skipping sent subsequent confirmation email {} because this email is not found", email);
             return; // we care for for email leak
         }
         UserAccount userAccount = userAccountOptional.get();
         if (userAccount.isEnabled()) {
             // this account already confirmed
+            LOGGER.info("Skipping sent subsequent confirmation email {} because this user account already enabled", email);
             return; // we care for for email leak
         }
 

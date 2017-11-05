@@ -10,6 +10,8 @@ import com.github.nkonev.repo.jpa.UserAccountRepository;
 import com.github.nkonev.services.EmailService;
 import com.github.nkonev.utils.TimeUtil;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -44,6 +46,8 @@ public class PasswordResetController {
     @Autowired
     private EmailService emailService;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(PasswordResetController.class);
+
     /**
      * https://www.owasp.org/index.php/Forgot_Password_Cheat_Sheet
      * https://stackoverflow.com/questions/1102781/best-way-for-a-forgot-password-implementation/1102817#1102817
@@ -56,6 +60,7 @@ public class PasswordResetController {
 
         Optional<UserAccount> userAccountOptional = userAccountRepository.findByEmail(email);
         if (!userAccountOptional.isPresent()) {
+            LOGGER.info("Skipping sent request password reset email {} because this email is not found", email);
             return; // we care for for email leak
         }
         UserAccount userAccount = userAccountOptional.get();
