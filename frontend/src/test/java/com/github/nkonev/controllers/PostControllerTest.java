@@ -111,7 +111,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(PageUtils.DEFAULT_SIZE))
                 .andExpect(jsonPath("$.[0].title").value("generated_<u>post</u>_2000"))
-                .andExpect(jsonPath("$.[0].text").value("Lorem Ipsum - это текст-\"<b>рыба</b>\", <b>часто</b> используемый в печати и вэб-дизайне. Lorem Ipsum является"))
+                .andExpect(jsonPath("$.[0].text").value("Lorem Ipsum - это текст-\"<b>рыба</b>\", <b>часто</b> используемый в печати и вэб-дизайне. Lorem Ipsum является стандартной \"<b>рыбой</b>\" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem Ipsum для распечатки образцов. Lorem Ipsum не только успешно пережил без заметных изменений пять веков, но и перешагнул в электронный дизайн. Его популяризации в новое время послужили публикация листов Letraset с образцами Lorem Ipsum в 60-х годах и, в более недавнее время, программы электронной"))
                 .andReturn();
     }
 

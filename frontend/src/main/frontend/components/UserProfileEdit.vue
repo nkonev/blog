@@ -103,7 +103,7 @@
             },
             handleCroppaFileSizeExceed() {
                 // see :file-size-limit
-                alert('Image size must be < than 1 Mb');
+                alert('Image size must be < than 5 Mb');
             },
             save(){
                 this.startSending();

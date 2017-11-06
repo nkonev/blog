@@ -13,7 +13,7 @@
             <croppa v-model="myCroppa"
                     :width="400"
                     :height="250"
-                    :file-size-limit="1 * 1024 * 1024"
+                    :file-size-limit="5 * 1024 * 1024"
                     placeholder="Choose title image"
                     :initial-image="editPostDTO.titleImg"
                     :placeholder-font-size="32"
@@ -273,7 +273,7 @@
             },
             handleCroppaFileSizeExceed() {
                 // see :file-size-limit
-                alert('Image size must be < than 1 Mb');
+                alert('Image size must be < than 5 Mb');
             },
             handleCroppaFileChoose(e) {
                 console.debug('image chosen', e);
