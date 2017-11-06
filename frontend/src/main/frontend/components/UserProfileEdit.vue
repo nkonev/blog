@@ -42,7 +42,7 @@
     import Error from './Error.vue'
     import Croppa from 'vue-croppa'
     import store, {FETCH_USER_PROFILE} from '../store'
-    import {PROFILE_URL} from '../constants'
+    import {PROFILE_URL, PASSWORD_MIN_LENGTH} from '../constants'
     import VueFormGenerator from "vue-form-generator";
     import "vue-form-generator/dist/vfg.css";  // optional full css additions
     import 'vue-croppa/dist/vue-croppa.css'
@@ -78,16 +78,18 @@
                         inputType: "password",
                         label: "Password",
                         model: "password",
-                        min: 6,
-                        required: false,
-                        hint: "Minimum 6 characters",
+                        min: PASSWORD_MIN_LENGTH,
+                        required: false, // We don't fore user to remember his or her password
+                        hint: `Minimum ${PASSWORD_MIN_LENGTH} characters`,
                         validator: VueFormGenerator.validators.string
                     },{
                         type: "input",
                         inputType: "email",
                         label: "E-mail",
                         model: "email",
-                        placeholder: "User's e-mail address"
+                        required: true,
+                        placeholder: "User's e-mail address",
+                        validator: VueFormGenerator.validators.email
                     }]
                 },
 
@@ -157,6 +159,7 @@
             onValidated(isValid, errors) {
                 console.log("Validation result: ", isValid, ", Errors:", errors);
                 this.submitEnabled = isValid;
+                this.errorMessage = null;
             },
         },
         created(){

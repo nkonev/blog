@@ -49,7 +49,7 @@ module.exports = {
                 NODE_ENV:  JSON.stringify(NODE_ENV) // must be 'production' (with single quotes) for disable Vue warnings, which you can see it if drop_console: false
             }
         }),
-        new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/),
+        new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /^$/),
         new webpack.optimize.CommonsChunkPlugin({
             names: ['vendor'], // (choose the chunks, or omit for all chunks) https://webpack.js.org/plugins/commons-chunk-plugin/#move-common-modules-into-the-parent-chunk
             // children: true,

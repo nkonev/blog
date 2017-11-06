@@ -1,26 +1,12 @@
 <template>
     <div class="registration" id="registration">
         <form v-if="!emailSuccessfullySent">
-            <div class="field">
-                <label for="login">Login <span class="required-mark">*</span></label>
-                <input id="login" v-model="profile.login" name="login" autofocus/>
-                <error v-show="errors.login" :message="errors.login"></error>
-            </div>
-            <div class="field">
-                <label for="email">Email <span class="required-mark">*</span></label>
-                <input id="email" v-model="profile.email" name="email" />
-                <error v-show="errors.email" :message="errors.email"></error>
-            </div>
-            <div class="field">
-                <label for="password">password <span class="required-mark">*</span></label>
-                <input id="password" type="password" v-model="profile.password" name="password" />
-                <error v-show="errors.password" :message="errors.password"></error>
-            </div>
+            <vue-form-generator :schema="schema" :model="profile" :options="formOptions" @validated="onValidated"></vue-form-generator>
             <button id="submit" type="submit" @click.prevent="onSubmit" v-bind:disabled="!submitEnabled">Submit</button>
             <blog-spinner v-if="submitting" message="Sending data"/>
 
             <div class="field">
-                <error v-show="errors.server" :message="errors.server"></error>
+                <error v-if="errorMessage" :message="errorMessage"></error>
             </div>
         </form>
         <div v-else>
@@ -36,13 +22,11 @@
     import Error from './Error.vue'
     Vue.use(VueResource);
 
-    // https://monterail.github.io/vuelidate/
-    // https://github.com/monterail/vuelidate/tree/master/src/validators
-    import required from 'vuelidate/lib/validators/required'
-    import email from 'vuelidate/lib/validators/email'
     import BlogSpinner from './BlogSpinner.vue'
+    import {PASSWORD_MIN_LENGTH} from '../constants'
 
-    const PASSWORD_MIN_LENGTH = 6;
+    import VueFormGenerator from "vue-form-generator";
+    import "vue-form-generator/dist/vfg.css";
 
     export default {
         name: 'registration', // component name
@@ -54,38 +38,57 @@
                     email: '',
                     password: '',
                 },
-                errors: {
-                    // email:
-                            // false if there isn't any error
-                            // 'error message' if error present
-                    // ...
-                },
                 submitEnabled: false, // is submit button enabled
                 submitting: false,
-                emailSuccessfullySent: false
-            }
-        },
-        watch: {
-            'profile': {
-                handler: function (val, oldVal) {
-                    this.hasFormErrors();
+                emailSuccessfullySent: false,
+
+                errorMessage: '',
+
+                schema: {
+                    fields: [{
+                        type: "input",
+                        inputType: "text",
+                        label: "Login",
+                        model: "login",
+                        placeholder: "Your login for enter",
+                        featured: true,
+                        required: true
+                    },{
+                        type: "input",
+                        inputType: "password",
+                        label: "Password",
+                        model: "password",
+                        min: PASSWORD_MIN_LENGTH,
+                        required: true,
+                        hint: `Minimum ${PASSWORD_MIN_LENGTH} characters`,
+                        validator: VueFormGenerator.validators.string
+                    },{
+                        type: "input",
+                        inputType: "email",
+                        label: "E-mail",
+                        id: 'email',
+                        model: "email",
+                        required: true,
+                        placeholder: "User's e-mail address",
+                        validator: VueFormGenerator.validators.email
+                    }]
                 },
-                deep: true
+                formOptions: {
+                    validateAfterLoad: true,
+                    validateAfterChanged: true
+                },
             }
         },
         components: {
-            BlogSpinner, Error
+            BlogSpinner, Error,
+            "vue-form-generator": VueFormGenerator.component,
         },
         methods: {
             onSubmit() {
-                if (this.hasFormErrors()) {
-                    return false;
-                }
-
                 // console.log('start submitting');
                 this.submitEnabled = false;
                 this.submitting = true;
-                this.errors.server = null;
+                this.errorMessage = null;
 
                 this.$http.post('/api/register', this.profile).then(response => {
                     this.submitEnabled = true;
@@ -97,35 +100,15 @@
                     console.error(response);
                     // alert(response);
                     this.submitting = false;
-                    this.errors.server = response.body.message;
+                    this.errorMessage = response.body.message;
                 });
             },
-            hasFormErrors(){
-                let hasErrors = this.validate();
-                this.submitEnabled = !hasErrors;
-                return hasErrors;
+            onValidated(isValid, errors) {
+                console.log("Validation result: ", isValid, ", Errors:", errors);
+                this.submitEnabled = isValid;
+                this.errorMessage = null;
             },
-            validate() {
-                this.errors = { };
-                this.errors.login = required(this.profile.login) ? false : 'login is required';
-                this.errors.email = required(this.profile.email) ? false : 'Email is required';
-                if (!this.errors.email) { // if previous check is passed
-                    this.errors.email = email(this.profile.email) ? false : 'Email is invalid';
-                }
-                this.errors.password = required(this.profile.password)  ? false : 'password is required';
-                if (!this.errors.password){ // if previous check is passed
-                    this.errors.password = this.profile.password.length >= PASSWORD_MIN_LENGTH ? false : 'password must be logger than ' + PASSWORD_MIN_LENGTH;
-                }
 
-                // console.debug("validated", Object.keys(this.errors));
-                let hasErrors = false;
-                Object.keys(this.errors).forEach(item => {
-                    // console.debug(item, this.errors[item]);
-                    hasErrors = hasErrors || !!this.errors[item]; // !! - convert to boolean
-                });
-                // console.debug("validated, hasErrors=", hasErrors);
-                return hasErrors
-            }
         }
     }
 </script>
@@ -137,10 +120,6 @@
         display block
         position relative
         margin 10px;
-
-        .required-mark {
-            color red
-        }
 
         .field {
             margin-bottom 4px;

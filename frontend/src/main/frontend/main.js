@@ -13,7 +13,11 @@ import {UNAUTHORIZED} from './bus'
 import Meta from 'vue-meta'
 
 Vue.use(VueResource);
-Vue.use(Meta)
+Vue.use(Meta);
+
+window.hljs.configure({
+        languages: ['java']
+});
 
 // Vue.config.devtools = false;
 
