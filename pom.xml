@@ -40,7 +40,7 @@
         <module>configs-generator</module>
         <module>api</module>
         <module>common-test</module>
-        <module>frontend</module>
+        <module>backend</module>
         <module>webdriver-test</module>
     </modules>
 

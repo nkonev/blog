@@ -16,4 +16,3 @@ gradlew*
 classes
 node
 node_modules
-docker/blog-context/**

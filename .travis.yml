@@ -2,8 +2,8 @@ language: java
 cache:
   directories:
   - "$HOME/.m2"
-  - frontend/node
-  - frontend/node_modules
+  - backend/node
+  - backend/node_modules
 jdk: oraclejdk8
 before_install:
 #  - sudo apt-get install -y chromium-browser #https://www.ubuntuupdates.org/pm/google-chrome-stable
@@ -20,10 +20,10 @@ script:
   # We use 'install' phase because of use jars in subsequent tests
   - "./mvnw -P frontend -P docker clean install"
 
-  - ./mvnw -pl frontend -P frontend frontend:karma@'karma test' -Dkarma.browsers=FirefoxHeadless
+  - ./mvnw -pl backend -P frontend frontend:karma@'karma test' -Dkarma.browsers=FirefoxHeadless
   - ./mvnw -pl webdriver-test -Dliquibase.drop-first=true -Dliquibase.contexts='main, test' -Dcustom.selenium.browser=FIREFOX -Dcustom.selenium.headless=true -P frontend surefire:test --no-snapshot-updates
 
-  - ./mvnw -pl frontend -P frontend frontend:karma@'karma test' -Dkarma.browsers=ChromeHeadless
+  - ./mvnw -pl backend -P frontend frontend:karma@'karma test' -Dkarma.browsers=ChromeHeadless
   - ./mvnw -pl webdriver-test -Dliquibase.drop-first=true -Dliquibase.contexts='main, test' -Dcustom.selenium.browser=CHROME -Dcustom.selenium.headless=true -P frontend surefire:test --no-snapshot-updates
 
   - rm -rf /home/travis/.m2/repository/com/github/nkonev
@@ -34,7 +34,7 @@ script:
       echo "Will push docker image";
       docker login -u="$DOCKER_LOGIN" -p="$DOCKER_PASSWORD";
       docker push nkonev/blog:latest;
-      docker push nkonev/blog:$(cat frontend/target/VERSION);
+      docker push nkonev/blog:$(cat backend/target/VERSION);
 
       ssh -o "BatchMode yes" -o StrictHostKeyChecking=no -q $CONNECT_LINE $UPDATE_COMMAND;
     ) else (

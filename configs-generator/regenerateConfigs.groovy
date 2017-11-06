@@ -11,8 +11,8 @@ println string
 // documentation https://github.com/groovy/GMavenPlus/wiki
 
 
-def FRONTEND_MAIN_YML_FILE = "${project.basedir}/../frontend/src/main/resources/config/application.yml";
-def FRONTEND_TEST_YML_FILE = "${project.basedir}/../frontend/src/test/resources/config/application.yml";
+def FRONTEND_MAIN_YML_FILE = "${project.basedir}/../backend/src/main/resources/config/application.yml";
+def FRONTEND_TEST_YML_FILE = "${project.basedir}/../backend/src/test/resources/config/application.yml";
 def INTEGRATION_TEST_YML_FILE = "${project.basedir}/../webdriver-test/src/test/resources/config/application.yml";
 
 class ExportedConstants {
@@ -169,7 +169,7 @@ ${WEBSERVER_SNIPPET}
 spring.mvc.static-path-pattern: /**
 # You need to remove "file:..." element for production or you can to remove spring.resources.static-locations
 # first element - for eliminate manual restart app in IntelliJ for copy compiled js to target/classes, last slash is important,, second element - for documentation
-spring.resources.static-locations: file:frontend/src/main/resources/static/, classpath:/static/
+spring.resources.static-locations: file:backend/src/main/resources/static/, classpath:/static/
 
 ${DATA_STORE_SNIPPET('main', false)}
 """;
@@ -201,7 +201,7 @@ ${WEBSERVER_SNIPPET}
 spring.mvc.static-path-pattern: /**
 # You need to remove "file:..." element for production or you can to remove spring.resources.static-locations
 # first element - for eliminate manual restart app in IntelliJ for copy compiled js to target/classes, last slash is important,, second element - for documentation
-spring.resources.static-locations: file:../frontend/src/main/resources/static/, classpath:/static/
+spring.resources.static-locations: file:../backend/src/main/resources/static/, classpath:/static/
 
 custom.selenium.implicitly-wait-timeout: 10
 custom.selenium.browser: PHANTOM
