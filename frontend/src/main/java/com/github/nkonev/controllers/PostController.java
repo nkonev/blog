@@ -87,7 +87,7 @@ public class PostController {
                     "select " +
                             "p.id, " +
                             "p.title, " +
-                            "substring(p.text_no_tags from 0 for 600) || '...' as text_column, " +
+                            "substring(p.text_no_tags from 0 for 700) || '...' as text_column, " +
                             "p.title_img, " +
                             "p.create_date_time," +
                             "u.id as owner_id," +
@@ -105,7 +105,7 @@ public class PostController {
                             "select\n" +
                             " fulltext_result.id, \n" +
                             " ts_headline("+regConfig+", fulltext_result.title, (select * from tsq), 'StartSel=\"<u>\", StopSel=\"</u>\"') as title, \n" +
-                            " ts_headline("+regConfig+", fulltext_result.text_no_tags, (select * from tsq), 'StartSel=\"<b>\", StopSel=\"</b>\"') as text_column, \n" +
+                            " ts_headline("+regConfig+", fulltext_result.text_no_tags, (select * from tsq), 'StartSel=\"<b>\", StopSel=\"</b>\", MaxWords=165, MinWords=85, MaxFragments=5') as text_column, \n" +
                             " fulltext_result.title_img,\n" +
                             " fulltext_result.create_date_time,\n" +
                             " u.id as owner_id," +
