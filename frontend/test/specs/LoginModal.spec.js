@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import LoginModal from "../../../main/frontend/components/LoginModal.vue"
+import LoginModal from "../../src/components/LoginModal.vue"
 import { mount } from 'avoriaz';
 
 // https://jasmine.github.io/2.0/introduction.html

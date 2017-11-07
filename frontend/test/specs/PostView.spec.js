@@ -1,6 +1,6 @@
 import Vue from 'vue'
-import PostView from "../../../main/frontend/components/PostView.vue"
-import postFactory from "../../../main/frontend/factories/PostDtoFactory"
+import PostView from "../../src/components/PostView.vue"
+import postFactory from "../../src/factories/PostDtoFactory"
 import { mount, shallow } from 'avoriaz';
 import VueResource from 'vue-resource'
 Vue.use(VueResource);

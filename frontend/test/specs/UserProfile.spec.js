@@ -1,4 +1,4 @@
-import UserProfile from "../../../main/frontend/components/UserProfile.vue"
+import UserProfile from "../../src/components/UserProfile.vue"
 import { mount } from 'avoriaz';
 import Vue from 'vue'
 

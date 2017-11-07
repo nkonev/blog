@@ -34,12 +34,14 @@
 
         <postgresql.version>42.1.4</postgresql.version>
         <greenmail.version>1.5.5</greenmail.version>
+        <maven.install.plugin.version>2.5.2</maven.install.plugin.version>
     </properties>
 
     <modules>
         <module>configs-generator</module>
         <module>api</module>
         <module>common-test</module>
+        <module>frontend</module>
         <module>backend</module>
         <module>webdriver-test</module>
     </modules>

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>frontend</artifactId>
+
+    <parent>
+        <artifactId>blog.parent</artifactId>
+        <groupId>com.github.nkonev</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <properties>
+        <skipTests>false</skipTests>
+
+        <frontend.maven.plugin.version>1.6</frontend.maven.plugin.version>
+        <npm.production.env>production</npm.production.env>
+        <karma.browsers>PhantomJS</karma.browsers>
+        <node.js.version>v8.2.1</node.js.version>
+        <npm.version>5.5.1</npm.version>
+    </properties>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>jcenter-releases</id>
+            <name>jcenter</name>
+            <url>http://jcenter.bintray.com</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <repositories>
+        <repository>
+            <id>jcentral</id>
+            <name>bintray</name>
+            <url>http://jcenter.bintray.com</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.github.eirslett</groupId>
+                    <artifactId>frontend-maven-plugin</artifactId>
+                    <version>${frontend.maven.plugin.version}</version>
+                    <configuration>
+                        <nodeVersion>${node.js.version}</nodeVersion>
+                        <npmVersion>${npm.version}</npmVersion>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <!-- optional: you don't really need execution ids,
+                            but it looks nice in your build log. -->
+                            <id>install node and npm</id>
+                            <goals>
+                                <goal>install-node-and-npm</goal>
+                            </goals>
+                            <!-- optional: default phase is "generate-resources" -->
+                            <phase>generate-resources</phase>
+                        </execution>
+                        <execution>
+                            <id>npm version</id>
+                            <goals>
+                                <goal>npm</goal>
+                            </goals>
+                            <phase>generate-resources</phase>
+                            <configuration>
+                                <arguments>version</arguments>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>npm install</id>
+                            <goals>
+                                <goal>npm</goal>
+                            </goals>
+                            <phase>generate-resources</phase>
+                            <configuration>
+                                <arguments>install</arguments>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>karma test</id>
+                            <goals>
+                                <goal>karma</goal>
+                            </goals>
+                            <phase>generate-test-sources</phase>
+                            <configuration>
+                                <skip>${skipTests}</skip>
+                                <environmentVariables>
+                                    <KARMA_BROWSERS>${karma.browsers}</KARMA_BROWSERS>
+                                    <NODE_ENV>${npm.production.env}</NODE_ENV>
+                                </environmentVariables>
+                            </configuration>
+                        </execution>
+
+                        <execution>
+                            <id>webpack build</id>
+                            <goals>
+                                <goal>webpack</goal>
+                            </goals>
+
+                            <!-- optional: the default phase is "generate-resources" -->
+                            <phase>generate-resources</phase>
+
+                            <configuration>
+                                <!-- when using new UglifyJsPlugin and -p you are adding the UglifyJsPlugin twice. https://github.com/webpack/webpack/issues/4713#issuecomment-297856632 -->
+                                <arguments>-p</arguments>
+                                <environmentVariables>
+                                    <NODE_ENV>${npm.production.env}</NODE_ENV>
+                                </environmentVariables>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>${maven.clean.plugin.version}</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>${basedir}/../backend/src/main/resources/static/build</directory>
+                            <includes>
+                                <include>**/*</include>
+                            </includes>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven.surefire.plugin.version}</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${maven-jar-plugin.version}</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>${maven.install.plugin.version}</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>frontend</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.eirslett</groupId>
+                        <artifactId>frontend-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+    </profiles>
+
+
+</project>

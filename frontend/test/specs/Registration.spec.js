@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import Registration from "../../../main/frontend/components/Registration.vue"
+import Registration from "../../src/components/Registration.vue"
 import { mount } from 'avoriaz';
 
 describe("Registration.vue", function(){

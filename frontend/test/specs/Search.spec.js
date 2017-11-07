@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import Search from "../../../main/frontend/components/Search.vue"
+import Search from "../../src/components/Search.vue"
 import { mount } from 'avoriaz';
 
 describe('Search.vue', ()=>{

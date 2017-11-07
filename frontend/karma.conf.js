@@ -33,22 +33,22 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       { pattern: 'node_modules/babel-polyfill/dist/polyfill.js', watched: false, included: true, served: true}, // for old WebKit in PhantomJS
-      "src/test/frontend/index.js", // 1/3
-      'src/test/frontend/specs/**/*spec.js' // Test specifications
+      "test/index.js", // 1/3
+      'test/specs/**/*spec.js' // Test specifications
     ],
 
     // list of files to exclude
     exclude: [],
 
     proxies : {
-        '/static/': '/base/src/main/resources/static/'
+        '/static/': '/base/../backend/src/main/resources/static/'
     },
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      "src/test/frontend/index.js": ["webpack", 'sourcemap'], // 2/3
-      'src/test/frontend/specs/**/*spec.js': ['webpack', 'sourcemap']
+      "test/index.js": ["webpack", 'sourcemap'], // 2/3
+      'test/specs/**/*spec.js': ['webpack', 'sourcemap']
     },
 
     // test results reporter to use

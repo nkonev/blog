@@ -1,8 +1,8 @@
 'use strict';
 
 const path = require('path');
-const srcDir = path.join(__dirname, 'src/main/frontend');
-const buildDir = path.join(__dirname, 'src/main/resources/static/build');
+const srcDir = path.join(__dirname, 'src');
+const buildDir = path.join(__dirname, '../backend/src/main/resources/static/build');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const DEVELOPMENT_ENV = 'development';

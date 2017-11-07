@@ -20,10 +20,10 @@ script:
   # We use 'install' phase because of use jars in subsequent tests
   - "./mvnw -P frontend -P docker clean install"
 
-  - ./mvnw -pl backend -P frontend frontend:karma@'karma test' -Dkarma.browsers=FirefoxHeadless
+  - ./mvnw -pl frontend -P frontend frontend:karma@'karma test' -Dkarma.browsers=FirefoxHeadless
   - ./mvnw -pl webdriver-test -Dliquibase.drop-first=true -Dliquibase.contexts='main, test' -Dcustom.selenium.browser=FIREFOX -Dcustom.selenium.headless=true -P frontend surefire:test --no-snapshot-updates
 
-  - ./mvnw -pl backend -P frontend frontend:karma@'karma test' -Dkarma.browsers=ChromeHeadless
+  - ./mvnw -pl frontend -P frontend frontend:karma@'karma test' -Dkarma.browsers=ChromeHeadless
   - ./mvnw -pl webdriver-test -Dliquibase.drop-first=true -Dliquibase.contexts='main, test' -Dcustom.selenium.browser=CHROME -Dcustom.selenium.headless=true -P frontend surefire:test --no-snapshot-updates
 
   - rm -rf /home/travis/.m2/repository/com/github/nkonev

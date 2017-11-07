@@ -5,7 +5,7 @@ public class CommonTestConstants {
     public static final String PASSWORD = "${custom.it.password}";
     public static final String USER_ID = "${custom.it.user.id}";
 
-    public static final String TEST_IMAGE = "backend/src/main/frontend/assets/pen.png";
+    public static final String TEST_IMAGE = "frontend/src/assets/pen.png";
     public static final String NON_DELETABLE_POST_TITLE = "generated_post_1999";
 
     public static final String USER_ALICE = "alice";
