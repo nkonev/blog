@@ -1,10 +1,10 @@
 import UserProfile from "../../src/components/UserProfile.vue"
-import { mount } from 'avoriaz';
+import { mount } from 'vue-test-utils';
 import Vue from 'vue'
 
-describe("UserProfile.vue", function(){
+describe("UserProfile.vue", () => {
 
-    it("render", function(done) {
+    it("render", (done) => {
         expect(UserProfile).toBeDefined();
         const $http = {
             get(){
@@ -25,7 +25,7 @@ describe("UserProfile.vue", function(){
             UserProfile,
             {
                 attachToDocument: false,
-                globals: { $http },
+                mocks: { $http },
                 propsData: {
                     id: 2,
                     onFetchSuccess: () => {

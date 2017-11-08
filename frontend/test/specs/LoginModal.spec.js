@@ -1,16 +1,16 @@
 import Vue from 'vue'
 import LoginModal from "../../src/components/LoginModal.vue"
-import { mount } from 'avoriaz';
+import { mount } from 'vue-test-utils';
 
 // https://jasmine.github.io/2.0/introduction.html
-describe("LoginModal.vue", function(){
+describe("LoginModal.vue", () => {
 
     let LoginModalWrapper;
 
-    beforeEach(function() {
+    beforeEach(() => {
         LoginModalWrapper = mount(LoginModal, { attachToDocument: false });
         expect(LoginModalWrapper).toBeDefined();
-        expect(LoginModalWrapper.data().formError).toBe(null);
+        expect(LoginModalWrapper.vm.formError).toBe(null);
 
         LoginModalWrapper.vm.$modal = {
             show() {
@@ -27,28 +27,28 @@ describe("LoginModal.vue", function(){
         jasmine.Ajax.install();
     });
 
-    afterEach(function() {
+    afterEach(() => {
         jasmine.Ajax.uninstall();
     });
 
-    it("login ok", function(done) {
+    it("login ok", (done) => {
         LoginModalWrapper.setProps({
             onSuccessCallback: ()=> {
                 expect(LoginModalWrapper.vm.$modal.hide).toHaveBeenCalled();
                 done();
             },
         });
-        expect(LoginModalWrapper.data().formError).toBe(null);
+        expect(LoginModalWrapper.vm.formError).toBe(null);
 
         LoginModalWrapper.setData({
             formUsername: 'lol',
             formPassword: '123456',
         });
 
-        expect(LoginModalWrapper.data().formError).toBe(null);
+        expect(LoginModalWrapper.vm.formError).toBe(null);
 
         // simulate event
-        const submit = LoginModalWrapper.find('button#btn-submit')[0];
+        const submit = LoginModalWrapper.find('button#btn-submit');
         submit.trigger('click');
 
         const request = jasmine.Ajax.requests.mostRecent();
@@ -64,31 +64,31 @@ describe("LoginModal.vue", function(){
             "responseText": '{}' // Firefox requires this
         });
 
-        expect(LoginModalWrapper.data().formUsername).toBe('lol');
-        expect(LoginModalWrapper.data().formPassword).toBe('123456');
-        expect(LoginModalWrapper.data().formError).toBe(null);
+        expect(LoginModalWrapper.vm.formUsername).toBe('lol');
+        expect(LoginModalWrapper.vm.formPassword).toBe('123456');
+        expect(LoginModalWrapper.vm.formError).toBe(null);
 
         // done();
     });
 
-    it("login with incorrect credentials", function(done) {
+    it("login with incorrect credentials", (done) => {
         LoginModalWrapper.setData({
             formUsername: 'lol',
             formPassword: '123456',
         });
-        expect(LoginModalWrapper.data().formError).toBe(null);
+        expect(LoginModalWrapper.vm.formError).toBe(null);
 
         LoginModalWrapper.setProps({
             onFailCallback: ()=> {
-                expect(LoginModalWrapper.data().formUsername).toBe('lol');
-                expect(LoginModalWrapper.data().formPassword).toBe('123456');
-                expect(LoginModalWrapper.data().formError).toBe('bad credentialz');
+                expect(LoginModalWrapper.vm.formUsername).toBe('lol');
+                expect(LoginModalWrapper.vm.formPassword).toBe('123456');
+                expect(LoginModalWrapper.vm.formError).toBe('bad credentialz');
                 done();
             },
         });
 
         // simulate event
-        const submit = LoginModalWrapper.find('button#btn-submit')[0];
+        const submit = LoginModalWrapper.find('button#btn-submit');
         submit.trigger('click');
 
         const request = jasmine.Ajax.requests.mostRecent();

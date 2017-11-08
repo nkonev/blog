@@ -1,43 +1,43 @@
 import Vue from 'vue'
 import Registration from "../../src/components/Registration.vue"
-import { mount } from 'avoriaz';
+import { mount } from 'vue-test-utils';
 
-describe("Registration.vue", function(){
+describe("Registration.vue", () => {
 
     let RegistrationWrapper;
 
-    beforeEach(function() {
+    beforeEach(() => {
         RegistrationWrapper = mount(Registration, { attachToDocument: false });
         expect(RegistrationWrapper).toBeDefined();
-        expect(RegistrationWrapper.data().submitEnabled).toBe(false);
+        expect(RegistrationWrapper.vm.submitEnabled).toBe(false);
 
         jasmine.Ajax.install();
     });
 
-    afterEach(function() {
+    afterEach(() => {
         jasmine.Ajax.uninstall();
     });
 
     // https://scotch.io/tutorials/how-to-write-a-unit-test-for-vuejs
-    it("email ok", function(done) {
+    it("email ok", (done) => {
 
-        RegistrationWrapper.find('input#login')[0].element.value = 'lol';
-        RegistrationWrapper.find('input#login')[0].trigger('input');
+        RegistrationWrapper.find('input#login').element.value = 'lol';
+        RegistrationWrapper.find('input#login').trigger('input');
 
-        RegistrationWrapper.find('input#email')[0].element.value = 'good@mail.co';
-        RegistrationWrapper.find('input#email')[0].trigger('input');
+        RegistrationWrapper.find('input#email').element.value = 'good@mail.co';
+        RegistrationWrapper.find('input#email').trigger('input');
 
-        RegistrationWrapper.find('input#password')[0].element.value = '123456';
-        RegistrationWrapper.find('input#password')[0].trigger('input');
+        RegistrationWrapper.find('input#password').element.value = '123456';
+        RegistrationWrapper.find('input#password').trigger('input');
 
 
 
         Vue.nextTick(() => {
-            const submit = RegistrationWrapper.find('button#submit')[0];
+            const submit = RegistrationWrapper.find('button#submit');
 
             // expect(submit.getAttribute('disabled')).not.toBe("disabled");
 
-            expect(RegistrationWrapper.data().submitEnabled).toBe(true);
+            expect(RegistrationWrapper.vm.submitEnabled).toBe(true);
 
             // simulate event
 
@@ -57,27 +57,27 @@ describe("Registration.vue", function(){
                 "responseText": '{}' // Firefox requires this
             });
 
-            expect(RegistrationWrapper.data().profile.email).toBe('good@mail.co');
-            expect(RegistrationWrapper.data().profile.password).toBe('123456');
-            expect(RegistrationWrapper.data().profile.login).toBe('lol');
+            expect(RegistrationWrapper.vm.profile.email).toBe('good@mail.co');
+            expect(RegistrationWrapper.vm.profile.password).toBe('123456');
+            expect(RegistrationWrapper.vm.profile.login).toBe('lol');
 
-            expect(RegistrationWrapper.data().submitEnabled).toBe(false);
+            expect(RegistrationWrapper.vm.submitEnabled).toBe(false);
 
             done();
         });
     });
 
-    it("email and password fail", function(done) {
+    it("email and password fail", (done) => {
 
         // set input value
-        RegistrationWrapper.find('input#login')[0].element.value = 'lol';
-        RegistrationWrapper.find('input#login')[0].trigger('input');
+        RegistrationWrapper.find('input#login').element.value = 'lol';
+        RegistrationWrapper.find('input#login').trigger('input');
 
-        RegistrationWrapper.find('input#email')[0].element.value = 'wrong mail no';
-        RegistrationWrapper.find('input#email')[0].trigger('input');
+        RegistrationWrapper.find('input#email').element.value = 'wrong mail no';
+        RegistrationWrapper.find('input#email').trigger('input');
 
-        RegistrationWrapper.find('input#password')[0].element.value = '12345';
-        RegistrationWrapper.find('input#password')[0].trigger('input');
+        RegistrationWrapper.find('input#password').element.value = '12345';
+        RegistrationWrapper.find('input#password').trigger('input');
 
 
         // Since Vue.js bindings update asynchronously, you should use Vue.nextTick() when asserting DOM updates after changing the data.
@@ -85,8 +85,8 @@ describe("Registration.vue", function(){
             // console.log(">>>", RegistrationWrapper.text());
             expect(RegistrationWrapper.text()).toContain('Invalid e-mail address');
             expect(RegistrationWrapper.text()).toContain('Minimum 6 characters');
-            expect(RegistrationWrapper.data().profile.email).toBe('wrong mail no');
-            expect(RegistrationWrapper.data().submitEnabled).toBe(false);
+            expect(RegistrationWrapper.vm.profile.email).toBe('wrong mail no');
+            expect(RegistrationWrapper.vm.submitEnabled).toBe(false);
             done();
         });
     });

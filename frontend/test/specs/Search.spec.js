@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Search from "../../src/components/Search.vue"
-import { mount } from 'avoriaz';
+import { mount } from 'vue-test-utils';
 
 describe('Search.vue', ()=>{
     let wrapper;
@@ -19,7 +19,7 @@ describe('Search.vue', ()=>{
             done();
         });
 
-        const el = wrapper.find("input.search-input")[0];
+        const el = wrapper.find("input.search-input");
         el.element.value = 'good day for die';
         el.trigger('input');
     });
@@ -34,7 +34,7 @@ describe('Search.vue', ()=>{
             done();
         });
 
-        const el = wrapper.find(".search-clear")[0];
+        const el = wrapper.find(".search-clear");
         el.trigger('click');
     });
 });
