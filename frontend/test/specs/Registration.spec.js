@@ -19,7 +19,7 @@ describe("Registration.vue", () => {
     });
 
     // https://scotch.io/tutorials/how-to-write-a-unit-test-for-vuejs
-    it("email ok", (done) => {
+    xit("email ok", (done) => {
 
         RegistrationWrapper.find('input#login').element.value = 'lol';
         RegistrationWrapper.find('input#login').trigger('input');

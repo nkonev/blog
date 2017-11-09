@@ -22,8 +22,6 @@
 <script>
 //    import router from '../router'
     import Vue from 'vue'
-    import VueResource from 'vue-resource'
-    Vue.use(VueResource);
 
     import store from  '../store';
     import {FETCH_USER_PROFILE} from '../store'

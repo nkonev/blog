@@ -18,9 +18,7 @@
 
 <script>
     import Vue from 'vue'
-    import VueResource from 'vue-resource'
     import Error from './Error.vue'
-    Vue.use(VueResource);
 
     import BlogSpinner from './BlogSpinner.vue'
     import {PASSWORD_MIN_LENGTH} from '../constants'
