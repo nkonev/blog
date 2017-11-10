@@ -68,7 +68,7 @@ services:
         constraints: [node.labels.blog.server.role == db]
 
   rabbitmq:
-    image : nkonev/rabbitmq-web-stomp:3.6.12
+    image : nkonev/rabbitmq-web-stomp:3.6.14
     hostname: rabbitmq
     ports:
       - 55672:15672
