@@ -161,6 +161,7 @@ And correctly setup next properties:
       - spring.mail.password=password
       - custom.base-url=http://your-host.com
 ```
+And remove exlicit ports definition where it's don't need - postgres, redis, rabbit, because of docker publishes ports by add it to iptables chain.
 If you very want, you can skip setting these properties, but you'll have non-working email, wrong links in emails and so on.
 
 Next I'll use renamed file.
