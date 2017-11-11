@@ -94,6 +94,10 @@ services:
     hostname: prerender
     volumes:
       - redis_prerender_data_dir:/var/lib/redis
+    logging:
+      driver: "journald"
+      options:
+        tag: prerender
 
 volumes:
   #enviroment
