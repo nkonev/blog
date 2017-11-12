@@ -5,6 +5,7 @@ package com.github.nkonev;
  */
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.nkonev.config.UtConfig;
 import com.github.nkonev.controllers.CommentControllerTest;
 import com.github.nkonev.dto.PostDTO;
 import com.github.nkonev.repo.redis.UserConfirmationTokenRepository;
@@ -33,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(
-        classes = {Launcher.class, SwaggerConfig.class},
+        classes = {Launcher.class, SwaggerConfig.class, UtConfig.class},
         webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT
 )
 @AutoConfigureMockMvc(printOnlyOnFailure = false, print = MockMvcPrint.LOG_DEBUG)
