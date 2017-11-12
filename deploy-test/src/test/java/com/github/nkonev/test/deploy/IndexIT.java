@@ -1,5 +1,6 @@
 package com.github.nkonev.test.deploy;
 
+import com.github.nkonev.FailoverUtils;
 import com.github.nkonev.util.FileUtils;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.ReadContext;
@@ -193,18 +194,25 @@ public class IndexIT {
     @Test
     public void testPrerenderWorks() throws IOException, InterruptedException {
         {
-            final Request request = new Request.Builder()
-                    .url(baseUrl)
-                    .header("User-Agent", "googlebot")
-                    .header("Accept", "text/html")
-                    .header("X-FORWARDED-URL", inContainerBlogUrl) // url on which prerender container can invoke blog container. Header name must be set in blog application
-                    .build();
+            FailoverUtils.retry(3, () -> {
+                try {
+                    final Request request = new Request.Builder()
+                            .url(baseUrl)
+                            .header("User-Agent", "googlebot")
+                            .header("Accept", "text/html")
+                            .header("X-FORWARDED-URL", inContainerBlogUrl) // url on which prerender container can invoke blog container. Header name must be set in blog application
+                            .build();
 
-            final Response response = client.newCall(request).execute();
-            final String html = response.body().string();
-            LOGGER.info("Response for crawler: {}", html);
-            Assert.assertTrue(html.contains("<body>"));
-            Assert.assertTrue(html.contains("Lorem Ipsum - это текст"));
+                    final Response response = client.newCall(request).execute();
+                    final String html = response.body().string();
+                    LOGGER.info("Response for crawler: {}", html);
+                    Assert.assertTrue(html.contains("<body>"));
+                    Assert.assertTrue(html.contains("Lorem Ipsum - это текст"));
+                    return null;
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
 
         {

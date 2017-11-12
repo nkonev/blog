@@ -21,13 +21,7 @@ script:
   - (cd docker; docker-compose up -d)
   # if there isn't pointed explicitly PhantomJS will be used by default for both webdriver integration test and js unit test
   # We use 'install' phase because of use jars in subsequent tests
-  - "./mvnw -P frontend -P docker clean install"
-
-  - ./mvnw -pl frontend -P frontend frontend:karma@'karma test' -Dkarma.browsers=FirefoxHeadless
-  - ./mvnw -pl webdriver-test -Dliquibase.drop-first=true -Dliquibase.contexts='main, test' -Dcustom.selenium.browser=FIREFOX -Dcustom.selenium.headless=true -P frontend surefire:test --no-snapshot-updates
-
-  - ./mvnw -pl frontend -P frontend frontend:karma@'karma test' -Dkarma.browsers=ChromeHeadless
-  - ./mvnw -pl webdriver-test -Dliquibase.drop-first=true -Dliquibase.contexts='main, test' -Dcustom.selenium.browser=CHROME -Dcustom.selenium.headless=true -P frontend surefire:test --no-snapshot-updates
+  - ./mvnw -P frontend -P docker -P webdriver-chrome -P webdriver-firefox -Dcustom.selenium.headless=true -Dkarma.browsers=PhantomJS,FirefoxHeadless,ChromeHeadless clean install --no-snapshot-updates
   - (cd docker; docker-compose down)
 
   - ./mvnw -pl deploy-test -P deploy-test clean test  --no-snapshot-updates
