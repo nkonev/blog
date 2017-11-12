@@ -90,6 +90,7 @@ public class SeleniumFactory implements FactoryBean<WebDriver> {
             break;
             case FIREFOX:
             {
+                System.setProperty("webdriver.firefox.logfile", "/dev/null");
                 // firefox
                 FirefoxDriverManager.getInstance().version(FIREFOX_DRIVER_VERSION).setup(); // download executables if need and set System.properties
                 // https://developer.mozilla.org/en-US/Firefox/Headless_mode
