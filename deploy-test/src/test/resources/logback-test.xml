@@ -12,6 +12,7 @@
     <logger name="com.github.nkonev.test.deploy" level="INFO"/>
     <logger name="stack-logs" level="INFO"/>
     <logger name="services-ls-logs" level="INFO"/>
+    <logger name="com.github.nkonev.FailoverUtils" level="ERROR"/>
 
     <root level="INFO">
         <appender-ref ref="stdout"/>

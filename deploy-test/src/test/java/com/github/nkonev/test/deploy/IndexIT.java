@@ -230,30 +230,20 @@ public class IndexIT {
     }
 
 
-    private void waitForStart(int timeoutToStartSec) throws InterruptedException {
-        final Request request = new Request.Builder()
-                .url(baseUrl+"/api/post?size=1")
-                .build();
-
-        Throwable t;
-        int i = 0;
-        do {
-            t = null;
-            i++;
-
+    private void waitForStart(int timeoutToStartSec) {
+        FailoverUtils.retry(timeoutToStartSec, () -> {
             try {
+                final Request request = new Request.Builder()
+                        .url(baseUrl + "/api/post?size=1")
+                        .build();
                 final Response response = client.newCall(request).execute();
                 final String version = response.body().string();
                 LOGGER.info("Get posts: \n" + version);
-            } catch (Throwable e){
-                t = e;
-                LOGGER.debug(e.getMessage() + " " + i + "/" + (timeoutToStartSec));
-                TimeUnit.SECONDS.sleep(1);
+                return null;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-        } while (t!=null && i<timeoutToStartSec);
-        if (t!=null && i == timeoutToStartSec) {
-            throw new RuntimeException("Exceed " + timeoutToStartSec + " for start");
-        }
+        });
     }
 
     @Parameters({"testStack"})
