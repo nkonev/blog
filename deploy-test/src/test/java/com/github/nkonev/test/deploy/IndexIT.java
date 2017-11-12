@@ -202,7 +202,7 @@ public class IndexIT {
 
             final Response response = client.newCall(request).execute();
             final String html = response.body().string();
-            LOGGER.info("Response for crowler: {}", html);
+            LOGGER.info("Response for crawler: {}", html);
             Assert.assertTrue(html.contains("<body>"));
             Assert.assertTrue(html.contains("Lorem Ipsum - это текст"));
         }
