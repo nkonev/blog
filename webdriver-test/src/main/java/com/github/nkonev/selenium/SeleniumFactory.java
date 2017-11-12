@@ -9,9 +9,9 @@ import io.github.bonigarcia.wdm.PhantomJsDriverManager;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
@@ -22,7 +22,6 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.beans.factory.FactoryBean;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 /**
  * Created by nik on 07.08.16.
@@ -95,7 +94,7 @@ public class SeleniumFactory implements FactoryBean<WebDriver> {
                 FirefoxDriverManager.getInstance().version(FIREFOX_DRIVER_VERSION).setup(); // download executables if need and set System.properties
                 // https://developer.mozilla.org/en-US/Firefox/Headless_mode
                 FirefoxOptions firefoxOptions = new FirefoxOptions();
-                firefoxOptions.setLogLevel(Level.INFO);
+                firefoxOptions.setLogLevel(FirefoxDriverLogLevel.INFO);
                 if (seleniumConfiguration.isHeadless()) {
                     firefoxOptions.addArguments("-headless");
                 }
