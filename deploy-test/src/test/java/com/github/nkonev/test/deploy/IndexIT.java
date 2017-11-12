@@ -4,6 +4,7 @@ import com.github.nkonev.FailoverUtils;
 import com.github.nkonev.util.FileUtils;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.ReadContext;
+import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -22,7 +23,15 @@ import java.util.stream.Collectors;
 
 public class IndexIT {
 
-    final static OkHttpClient client = new OkHttpClient();
+    private final static OkHttpClient client;
+    static {
+        client = new OkHttpClient.Builder()
+                .readTimeout(60, TimeUnit.SECONDS)
+                .connectTimeout(60 / 2, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
+                .cache(null)
+                .build();
+    }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IndexIT.class);
 
