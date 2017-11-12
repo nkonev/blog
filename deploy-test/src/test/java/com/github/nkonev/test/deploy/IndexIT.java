@@ -67,7 +67,7 @@ public class IndexIT {
         LOGGER.debug("Will run {}", Arrays.toString(splitted));
         processBuilder.command(splitted);
         builderCustomize.accept(processBuilder);
-        Process p = processBuilder.start();
+        final Process p = processBuilder.start();
         if (inheritIo) {
             readStreamInDaemonAndClose(p.getInputStream(), p, STDOUT);
             readStreamInDaemonAndClose(p.getErrorStream(), p, STDERR);
@@ -100,8 +100,10 @@ public class IndexIT {
     }
 
     private void dropVolume(String stackName) throws InterruptedException, IOException {
-        Process p = launch("docker volume rm "+stackName+"_redis_prerender_data_dir", processBuilder -> {});
-        p.waitFor();
+        launch("docker volume rm "+stackName+"_redis_prerender_data_dir", processBuilder -> {}).waitFor();
+        launch("docker volume rm "+stackName+"_redis_data_dir", processBuilder -> {}).waitFor();
+        launch("docker volume rm "+stackName+"_rabbitmq_data_dir", processBuilder -> {}).waitFor();
+        launch("docker volume rm "+stackName+"_postgresql_data_dir", processBuilder -> {}).waitFor();
     }
 
     private static class ProcessInfo {
