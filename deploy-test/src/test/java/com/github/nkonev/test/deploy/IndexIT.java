@@ -23,15 +23,12 @@ import java.util.stream.Collectors;
 
 public class IndexIT {
 
-    private final static OkHttpClient client;
-    static {
-        client = new OkHttpClient.Builder()
-                .readTimeout(60, TimeUnit.SECONDS)
-                .connectTimeout(60 / 2, TimeUnit.SECONDS)
-                .writeTimeout(60, TimeUnit.SECONDS)
-                .cache(null)
-                .build();
-    }
+    private final static OkHttpClient client = new OkHttpClient.Builder()
+            .readTimeout(60, TimeUnit.SECONDS)
+            .connectTimeout(60 / 2, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
+            .cache(null)
+            .build();
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IndexIT.class);
 
@@ -58,6 +55,8 @@ public class IndexIT {
         // initilize swarm if need
         initializeSwarmIfNeed();
 
+        dropVolume(testStack);
+
         // deploy stack
         deployStack(testStack);
 
@@ -71,6 +70,11 @@ public class IndexIT {
         this.inContainerBlogUrl = inContainerBlogUrl;
 
         waitForStart(timeoutToStartSec);
+    }
+
+    private void dropVolume(String stackName) throws InterruptedException, IOException {
+        Process p = launch("docker volume rm "+stackName+"_redis_prerender_data_dir", processBuilder -> {});
+        p.waitFor();
     }
 
     private void log(final String command, final String loggerName, final boolean cycle) {
@@ -166,8 +170,7 @@ public class IndexIT {
 
         final InputStream is = getNodeId.getInputStream();
         Assert.assertEquals(getNodeId.waitFor(), 0);
-        final String nodeId = readAndClose(is);
-        return nodeId;
+        return readAndClose(is);
     }
 
     private void initializeSwarmIfNeed() throws IOException, InterruptedException {
