@@ -2,8 +2,8 @@ language: java
 cache:
   directories:
   - "$HOME/.m2"
-  - backend/node
-  - backend/node_modules
+  - frontend/node
+  - frontend/node_modules
 jdk: oraclejdk8
 services:
   - docker
