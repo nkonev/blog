@@ -84,7 +84,6 @@
                             <includes>
                                 <include>**/*IT.java</include>
                             </includes>
-                            <forkCount>0</forkCount>
                             <skip>false</skip>
                             <suiteXmlFiles>
                                 <suiteXmlFile>testng.xml</suiteXmlFile>

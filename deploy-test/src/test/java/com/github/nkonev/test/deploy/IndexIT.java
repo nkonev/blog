@@ -17,6 +17,7 @@ import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import java.io.*;
 import java.util.Arrays;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -31,6 +32,8 @@ public class IndexIT {
             .build();
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IndexIT.class);
+    public static final String STDERR = "stderr";
+    public static final String STDOUT = "stdout";
 
     private String[] split(String s) {
         return s.split("\\s+");
@@ -47,14 +50,31 @@ public class IndexIT {
      * @throws IOException
      */
     private Process launch(String line, Consumer<ProcessBuilder> builderCustomize) throws IOException {
+        return launch(line, builderCustomize, true);
+    }
+
+    /**
+     *
+     * @param line
+     * @param builderCustomize
+     * @param inheritIo consume IO and write it to SLF4J
+     * @return
+     * @throws IOException
+     */
+    private Process launch(String line, Consumer<ProcessBuilder> builderCustomize, boolean inheritIo) throws IOException {
         final ProcessBuilder processBuilder = new ProcessBuilder();
         final String[] splitted = split(line);
         LOGGER.debug("Will run {}", Arrays.toString(splitted));
         processBuilder.command(splitted);
-        processBuilder.inheritIO();
         builderCustomize.accept(processBuilder);
-        return processBuilder.start();
+        Process p = processBuilder.start();
+        if (inheritIo) {
+            readStreamInDaemonAndClose(p.getInputStream(), p, STDOUT);
+            readStreamInDaemonAndClose(p.getErrorStream(), p, STDERR);
+        }
+        return p;
     }
+
 
     @Parameters({"testStack", "timeoutToStartSec", "baseUrl", "inContainerBlogUrl"})
     @BeforeSuite
@@ -97,16 +117,16 @@ public class IndexIT {
     }
 
     /**
-     * Run process and wait while it stops. Returns process stdout, stderror, exitcode
+     * Run process and wait while it stops. Returns process stdout, stderror, exitcode.
      * @param logs
      * @return
      */
     private ProcessInfo get(Process logs){
         LOGGER.debug("Started cycling logger process");
-        final InputStream is = logs.getInputStream();
-        final InputStream es = logs.getErrorStream();
 
-        try {
+        try (        final InputStream is = logs.getInputStream();
+                     final InputStream es = logs.getErrorStream();
+        ) {
             int ec = logs.waitFor();
             String stdout = readAndClose(is);
             String stderr = readAndClose(es);
@@ -121,14 +141,44 @@ public class IndexIT {
     }
 
     /**
-     *
+     * Read stream in daemon and write to SLF4J. Daemon thread will close stream.
+     * @param is
+     * @param logs
+     * @param name
+     */
+    private void readStreamInDaemonAndClose(InputStream is, Process logs, String name) {
+        final Logger LOGGER = LoggerFactory.getLogger(name);
+        Thread stdOutThread = new Thread(() -> {
+            try (BufferedReader stdoutReader = new BufferedReader(new InputStreamReader(is))) {
+                while (!Thread.currentThread().isInterrupted() && logs.isAlive()) {
+                    String s = stdoutReader.readLine();
+                    if (s!=null) {
+                        LOGGER.info(s);
+                    }
+                }
+                LOGGER.debug("logger is interrupted");
+            } catch (IOException e) {
+                LOGGER.error("I/O Error in reader", e);
+            } finally {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    LOGGER.error("error on closing stream", e);
+                }
+            }
+        });
+        stdOutThread.setDaemon(true);
+        stdOutThread.start();
+    }
+
+    /**
+     * Run dedicated daemon thread which logs.
      * @param command command whiespace separated, if cycle==true => "cat /path/to/log", false => "tail -f /path/to/log"
      * @param loggerName
      * @param cycle
      */
     private void log(final String command, final String loggerName, final boolean cycle) {
         final Logger LOGGER = LoggerFactory.getLogger(loggerName);
-        final int processPollIntervalSeconds = 1;
         final int processRecreateIntervalSeconds = 1;
         final Thread t = new Thread(() -> {
             if (cycle) {
@@ -139,8 +189,8 @@ public class IndexIT {
                         LOGGER.debug("Starting cycling logger process");
                         final Process logs = processBuilder.start();
                         ProcessInfo processInfo = get(logs);
-                        LOGGER.info("Stdout: \n" + processInfo.stdout);
-                        LOGGER.info("Stderr: \n" + processInfo.stderr);
+                        LOGGER.info("stdout:: \n" + processInfo.stdout);
+                        LOGGER.info("stderr:: \n" + processInfo.stderr);
 
                         try {
                             TimeUnit.SECONDS.sleep(processRecreateIntervalSeconds);
@@ -158,21 +208,13 @@ public class IndexIT {
                     LOGGER.debug("Starting long logger process");
                     final Process logs = processBuilder.start();
                     LOGGER.debug("Started long logger process");
-                    final InputStream is = logs.getInputStream();
 
-                    try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is))) {
-                        while (!Thread.currentThread().isInterrupted() && logs.isAlive()) {
-                            if (is.available() > 0) {
-                                LOGGER.info(bufferedReader.readLine());
-                            }
-                            try {
-                                TimeUnit.SECONDS.sleep(processPollIntervalSeconds);
-                            } catch (InterruptedException e) {
-                                Thread.currentThread().interrupt();
-                            }
-                        }
-                        LOGGER.debug("Logger is interrupted");
-                    }
+                    final InputStream is = logs.getInputStream();
+                    final InputStream es = logs.getErrorStream();
+
+                    readStreamInDaemonAndClose(es, logs, STDERR);
+                    readStreamInDaemonAndClose(is, logs, STDOUT);
+
                 } catch (IOException e) {
                     LOGGER.error("Error on get logs", e);
                 }
@@ -203,13 +245,7 @@ public class IndexIT {
     }
 
     private String getSelfNodeId() throws IOException, InterruptedException {
-        final ProcessBuilder processBuilderN = new ProcessBuilder();
-        processBuilderN.command(split("docker node ls -q"));
-        Process getNodeId = processBuilderN.start();
-
-        final InputStream is = getNodeId.getInputStream();
-        Assert.assertEquals(getNodeId.waitFor(), 0);
-        return readAndClose(is);
+        return get(launch("docker node ls -q", c -> {}, false)).stdout;
     }
 
     private void initializeSwarmIfNeed() throws IOException, InterruptedException {
