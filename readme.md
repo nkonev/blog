@@ -14,7 +14,7 @@
 
 # Building with frontend and build docker image
 
-There is highly recommends to shut down your application on 8080, although tests uses 8090, some of
+There is highly recommends to shut down your application on 8080, although tests uses 9080, some of
 them can fails, with websocket for example.
 ```bash
 ./mvnw -P frontend -P docker clean package
