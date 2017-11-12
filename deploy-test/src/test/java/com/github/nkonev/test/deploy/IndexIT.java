@@ -42,6 +42,13 @@ public class IndexIT {
     private String baseUrl;
     private String inContainerBlogUrl;
 
+    /**
+     * Launch process and write its stdout to log
+     * @param line
+     * @param builderCustomize
+     * @return
+     * @throws IOException
+     */
     private Process launch(String line, Consumer<ProcessBuilder> builderCustomize) throws IOException {
         final ProcessBuilder processBuilder = new ProcessBuilder();
         final String[] splitted = split(line);
@@ -73,6 +80,48 @@ public class IndexIT {
         waitForStart(timeoutToStartSec);
     }
 
+    private static class ProcessInfo {
+        String stdout;
+        String stderr;
+        int exitCode;
+
+        public ProcessInfo(String stdout, String stderr, int exitCode) {
+            this.stdout = stdout;
+            this.stderr = stderr;
+            this.exitCode = exitCode;
+        }
+    }
+
+    /**
+     * Run process and wait while it stops. Returns process stdout, stderror, exitcode
+     * @param logs
+     * @return
+     */
+    private ProcessInfo get(Process logs){
+        LOGGER.debug("Started cycling logger process");
+        final InputStream is = logs.getInputStream();
+        final InputStream es = logs.getErrorStream();
+
+        try {
+            int ec = logs.waitFor();
+            String stdout = readAndClose(is);
+            String stderr = readAndClose(es);
+            return new ProcessInfo(stdout, stderr, ec);
+        } catch (IOException e) {
+            LOGGER.error("Error on get logs", e);
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     *
+     * @param command command whiespace separated, if cycle==true => "cat /path/to/log", false => "tail -f /path/to/log"
+     * @param loggerName
+     * @param cycle
+     */
     private void log(final String command, final String loggerName, final boolean cycle) {
         final Logger LOGGER = LoggerFactory.getLogger(loggerName);
         final int processPollIntervalSeconds = 1;
@@ -85,19 +134,9 @@ public class IndexIT {
                         processBuilder.command(split(command));
                         LOGGER.debug("Starting cycling logger process");
                         final Process logs = processBuilder.start();
-                        LOGGER.debug("Started cycling logger process");
-                        final InputStream is = logs.getInputStream();
-                        final InputStream es = logs.getErrorStream();
-
-                        try {
-                            logs.waitFor();
-                            LOGGER.info("Stdout: \n" + readAndClose(is));
-                            LOGGER.info("Stderr: \n" + readAndClose(es));
-                        } catch (IOException e) {
-                            LOGGER.error("Error on get logs", e);
-                        } catch (InterruptedException e) {
-                            Thread.currentThread().interrupt();
-                        }
+                        ProcessInfo processInfo = get(logs);
+                        LOGGER.info("Stdout: \n" + processInfo.stdout);
+                        LOGGER.info("Stderr: \n" + processInfo.stderr);
 
                         try {
                             TimeUnit.SECONDS.sleep(processRecreateIntervalSeconds);
@@ -140,14 +179,14 @@ public class IndexIT {
     }
 
     private void deployStack(String testStack) throws IOException, InterruptedException {
-        final ProcessBuilder processBuilderDockerDeploy = new ProcessBuilder();
         final File dockerDirectory = FileUtils.getExistsFile("../docker", "docker");
-        processBuilderDockerDeploy
-                .command(split("docker stack deploy --compose-file docker-compose.template.yml " + testStack))
-                .directory(dockerDirectory)
-                .inheritIO();
 
-        final Process process = processBuilderDockerDeploy.start();
+        final Process process = launch(
+                "docker stack deploy --compose-file docker-compose.template.yml " + testStack,
+                processBuilder -> {
+                    processBuilder.directory(dockerDirectory);
+                }
+        );
         Assert.assertEquals(process.waitFor(), 0);
     }
 
