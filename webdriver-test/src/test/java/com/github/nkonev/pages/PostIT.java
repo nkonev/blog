@@ -191,11 +191,14 @@ public class PostIT extends AbstractItTestRunner {
 
             loginModal.login();
 
-            postEditPage.save();
+            FailoverUtils.retry(2, () -> {
+                postEditPage.save();
 
-            // TimeUnit.SECONDS.sleep(3);
-            postViewPage.assertText(text);
-            postViewPage.assertTitle(title);
+                // TimeUnit.SECONDS.sleep(3);
+                postViewPage.assertText(text);
+                postViewPage.assertTitle(title);
+                return null;
+            });
 
             createdPost = new URL(driver.getCurrentUrl());
             postId = getPostId(createdPost);
