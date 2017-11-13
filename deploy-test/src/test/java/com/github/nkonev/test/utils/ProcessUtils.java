@@ -140,8 +140,9 @@ public class ProcessUtils {
     public static void log(final String command, final String loggerName, final boolean cycle) {
         final Logger LOGGER = LoggerFactory.getLogger(loggerName);
         final int processRecreateIntervalSeconds = 1;
-        final Thread t = new Thread(() -> {
-            if (cycle) {
+
+        if (cycle) {
+            final Thread t = new Thread(() -> {
                 while (!Thread.currentThread().isInterrupted()) {
                     try {
                         final ProcessBuilder processBuilder = new ProcessBuilder();
@@ -161,27 +162,28 @@ public class ProcessUtils {
                         LOGGER.error("Error on get logs", e);
                     }
                 }
-            } else {
-                try {
-                    final ProcessBuilder processBuilder = new ProcessBuilder();
-                    processBuilder.command(split(command));
-                    LOGGER.debug("Starting long logger process");
-                    final Process logs = processBuilder.start();
-                    LOGGER.debug("Started long logger process");
+            });
+            t.setDaemon(true);
+            t.start();
+        } else {
+            try {
+                final ProcessBuilder processBuilder = new ProcessBuilder();
+                processBuilder.command(split(command));
+                LOGGER.debug("Starting long logger process");
+                final Process logs = processBuilder.start();
+                LOGGER.debug("Started long logger process");
 
-                    final InputStream is = logs.getInputStream();
-                    final InputStream es = logs.getErrorStream();
+                final InputStream is = logs.getInputStream();
+                final InputStream es = logs.getErrorStream();
 
-                    readStreamInDaemonAndClose(es, logs, STDERR);
-                    readStreamInDaemonAndClose(is, logs, STDOUT);
+                readStreamInDaemonAndClose(es, logs, STDERR);
+                readStreamInDaemonAndClose(is, logs, STDOUT);
 
-                } catch (IOException e) {
-                    LOGGER.error("Error on get logs", e);
-                }
+            } catch (IOException e) {
+                LOGGER.error("Error on get logs", e);
             }
-        });
-        t.setDaemon(true);
-        t.start();
+        }
+
     }
 
 }
