@@ -166,3 +166,6 @@ ALTER TABLE posts.comment ADD COLUMN create_date_time timestamp NOT NULL DEFAULT
 ALTER TABLE images.post_title_image ADD COLUMN create_date_time timestamp NOT NULL DEFAULT (now() at time zone 'utc');
 ALTER TABLE images.user_avatar_image ADD COLUMN create_date_time timestamp NOT NULL DEFAULT (now() at time zone 'utc');
 ALTER TABLE images.post_content_image ADD COLUMN create_date_time timestamp NOT NULL DEFAULT (now() at time zone 'utc');
+
+-- changeset nkonev:6_remove_historical_schema context:main failOnError: true
+DROP SCHEMA historical CASCADE;
