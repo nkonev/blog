@@ -17,6 +17,12 @@ public class FailoverUtils {
             } catch (Throwable e) {
                 LOGGER.warn("Next attempt to perform action {}", function);
                 saved = e;
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException e1) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
                 continue;
             }
         }

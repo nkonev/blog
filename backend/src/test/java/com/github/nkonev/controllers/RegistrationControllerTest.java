@@ -4,12 +4,11 @@ import com.github.nkonev.AbstractUtTestRunner;
 import com.github.nkonev.Constants;
 import com.github.nkonev.TestConstants;
 import com.github.nkonev.dto.EditUserDTO;
-import com.github.nkonev.entity.jpa.PasswordResetToken;
+import com.github.nkonev.entity.redis.PasswordResetToken;
 import com.github.nkonev.entity.jpa.UserAccount;
 import com.github.nkonev.entity.redis.UserConfirmationToken;
-import com.github.nkonev.repo.jpa.PasswordResetTokenRepository;
+import com.github.nkonev.repo.redis.PasswordResetTokenRepository;
 import com.github.nkonev.repo.jpa.UserAccountRepository;
-import com.github.nkonev.repo.redis.UserConfirmationTokenRepository;
 import com.github.nkonev.security.SecurityConfig;
 import com.github.nkonev.util.UrlParser;
 import com.github.nkonev.utils.TimeUtil;
@@ -18,7 +17,6 @@ import com.icegreen.greenmail.util.Retriever;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import com.sun.mail.imap.IMAPMessage;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -32,6 +30,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.mail.Message;
 import java.net.URI;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
 import static com.github.nkonev.security.SecurityConfig.PASSWORD_PARAMETER;
 import static com.github.nkonev.security.SecurityConfig.USERNAME_PARAMETER;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -355,7 +355,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
                         .with(csrf())
         )
                 .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$.message").value("password reset token not found"))
+                .andExpect(jsonPath("$.message").value("password reset token not found or expired"))
                 .andExpect(jsonPath("$.error").value("password reset"))
         ;
     }
@@ -366,9 +366,6 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
         if (passwordResetTokenRepository.exists(tokenUuid)) {
             passwordResetTokenRepository.delete(tokenUuid); // delete random if one is occasionally present
         }
-        PasswordResetToken passwordResetToken = new PasswordResetToken(tokenUuid, 1L, TimeUtil.getNowUTC().minusMinutes(10));
-        passwordResetToken = passwordResetTokenRepository.save(passwordResetToken);
-
 
         PasswordResetController.PasswordResetDto passwordResetDto = new PasswordResetController.PasswordResetDto(tokenUuid, "qwqwqwqwqwqwqwqw");
 
@@ -379,7 +376,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
                         .with(csrf())
         )
                 .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$.message").value("password reset token is expired"))
+                .andExpect(jsonPath("$.message").value("password reset token not found or expired"))
                 .andExpect(jsonPath("$.error").value("password reset"))
         ;
     }

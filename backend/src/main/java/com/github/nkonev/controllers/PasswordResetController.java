@@ -2,10 +2,10 @@ package com.github.nkonev.controllers;
 
 import com.github.nkonev.ApiConstants;
 import com.github.nkonev.Constants;
-import com.github.nkonev.entity.jpa.PasswordResetToken;
+import com.github.nkonev.entity.redis.PasswordResetToken;
 import com.github.nkonev.entity.jpa.UserAccount;
 import com.github.nkonev.exception.PasswordResetTokenNotFoundException;
-import com.github.nkonev.repo.jpa.PasswordResetTokenRepository;
+import com.github.nkonev.repo.redis.PasswordResetTokenRepository;
 import com.github.nkonev.repo.jpa.UserAccountRepository;
 import com.github.nkonev.services.EmailService;
 import com.github.nkonev.utils.TimeUtil;
@@ -56,7 +56,7 @@ public class PasswordResetController {
      */
     @PostMapping(value = Constants.Uls.API+Constants.Uls.REQUEST_PASSWORD_RESET)
     public void requestPasswordReset(String email) {
-        UUID uuid = UUID.randomUUID();
+        String uuid = UUID.randomUUID().toString();
 
         Optional<UserAccount> userAccountOptional = userAccountRepository.findByEmail(email);
         if (!userAccountOptional.isPresent()) {
@@ -68,7 +68,8 @@ public class PasswordResetController {
         Duration ttl = Duration.ofMinutes(passwordResetTokenTtlMinutes);
         LocalDateTime expireTime = TimeUtil.getNowUTC().plus(ttl);
 
-        PasswordResetToken passwordResetToken = new PasswordResetToken(uuid, userAccount.getId(), expireTime);
+
+        PasswordResetToken passwordResetToken = new PasswordResetToken(uuid, userAccount.getId(), ttl.getSeconds());
 
         passwordResetToken = passwordResetTokenRepository.save(passwordResetToken);
 
@@ -115,10 +116,7 @@ public class PasswordResetController {
 
         PasswordResetToken passwordResetToken = passwordResetTokenRepository.findOne(passwordResetDto.getPasswordResetToken());
         if (passwordResetToken == null) {
-            throw new PasswordResetTokenNotFoundException("password reset token not found");
-        }
-        if (TimeUtil.getNowUTC().isAfter(passwordResetToken.getExpiredAt()) ) {
-            throw new PasswordResetTokenNotFoundException("password reset token is expired");
+            throw new PasswordResetTokenNotFoundException("password reset token not found or expired");
         }
         Optional<UserAccount> userAccountOptional = userAccountRepository.findById(passwordResetToken.getUserId());
         if(!userAccountOptional.isPresent()) {

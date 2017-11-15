@@ -5,9 +5,8 @@ version: '3.2'
 services:
   #enviroment
   postgresql:
-    image : postgres:${POSTGRES_VERSION}
+    image : postgres:10.0
     hostname: postgresql
-    # имена контейнеров не должны пересекаться с уже существующими
     container_name: postgresql-blog-dev
     restart: unless-stopped
     ports:
@@ -27,7 +26,7 @@ services:
         max-file: "1"
 
   redis:
-    image: redis:${REDIS_VERSION}
+    image: redis:4.0.2
     hostname: redis
     container_name: redis-blog-dev
     restart: unless-stopped
@@ -45,7 +44,7 @@ services:
         max-file: "1"
 
   rabbitmq:
-    image : nkonev/rabbitmq-web-stomp:3.6.12
+    image : nkonev/rabbitmq-web-stomp:3.6.14
     hostname: rabbitmq
     container_name: rabbitmq-blog-dev
     restart: unless-stopped

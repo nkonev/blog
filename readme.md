@@ -14,7 +14,7 @@
 
 # Building with frontend and build docker image
 
-There is highly recommends to shut down your application on 8080, although tests uses 8090, some of
+There is highly recommends to shut down your application on 8080, although tests uses 9080, some of
 them can fails, with websocket for example.
 ```bash
 ./mvnw -P frontend -P docker clean package
@@ -161,6 +161,7 @@ And correctly setup next properties:
       - spring.mail.password=password
       - custom.base-url=http://your-host.com
 ```
+And remove exlicit ports definition where it's don't need - postgres, redis, rabbit, because of docker publishes ports by add it to iptables chain.
 If you very want, you can skip setting these properties, but you'll have non-working email, wrong links in emails and so on.
 
 Next I'll use renamed file.
@@ -208,3 +209,4 @@ Remove exited containers
 ```bash
 docker rm $(docker ps -aq -f name=BLOGSTACK_blog -f status=exited)
 ```
+

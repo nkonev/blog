@@ -91,8 +91,12 @@ public class UserListIT extends AbstractItTestRunner {
         // $(UsersPage.USERS_CONTAINER_SELECTOR).shouldNotHave(Condition.text("generated_user_6"));
         $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("No data")); // it faster than shouldNothave
 
-        loginModal.openLoginModal();
-        loginModal.login();
+        FailoverUtils.retry(2, () -> {
+            loginModal.openLoginModal();
+            loginModal.login();
+            return null;
+        });
+
         usersPage.goNthPaginatorPage(5);
         $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("generated_user_40"));
 

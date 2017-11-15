@@ -2,7 +2,7 @@ package com.github.nkonev.services;
 
 import com.github.nkonev.Constants;
 import com.github.nkonev.config.CustomConfig;
-import com.github.nkonev.entity.jpa.PasswordResetToken;
+import com.github.nkonev.entity.redis.PasswordResetToken;
 import com.github.nkonev.entity.redis.UserConfirmationToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

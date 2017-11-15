@@ -1,12 +1,12 @@
-version: '3.2'
+version: '3.1'
 
 services:
   blog:
     image: nkonev/blog:latest
-    logging:
-      driver: "journald"
-      options:
-        tag: blog
+#    logging:
+#      driver: "journald"
+#      options:
+#        tag: blog
     deploy:
       replicas: 2
     environment:
@@ -18,6 +18,11 @@ services:
       - custom.stomp.broker.port=61613
       - spring.datasource.url=jdbc:postgresql://postgresql:5432/blog?connectTimeout=10
       - spring.redis.url=redis://redis:6379/0
+      - custom.prerender.enable=true
+      - custom.prerender.prerenderServiceUrl=http://prerender:3000/
+      - custom.prerender.crawlerUserAgents=googlebot
+      - custom.prerender.forwardedURLHeader=X-FORWARDED-URL # only for tests
+      - logging.level.com.github.greengerong.PrerenderSeoService=TRACE
     ports:
       - 8000:8080
   visualizer:
@@ -27,27 +32,25 @@ services:
     stop_grace_period: 1m30s
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
-    logging:
-      driver: "journald"
-      options:
-        tag: visualizer
+#    logging:
+#      driver: "journald"
+#      options:
+#        tag: visualizer
     deploy:
       placement:
         constraints: [node.role == manager]
   postgresql:
-    image : postgres:10.0
+    image: postgres:10.0
     hostname: postgresql
-    ports:
-      - 55432:5432
     environment:
       - POSTGRES_PASSWORD=postgresqlPassword
     volumes :
       - ./postgresql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-      - postgresql_blog_dev_data_dir:/var/lib/postgresql/data
-    logging:
-      driver: "journald"
-      options:
-        tag: postgresql
+      - postgresql_data_dir:/var/lib/postgresql/data
+#    logging:
+#      driver: "journald"
+#      options:
+#        tag: postgresql
     deploy:
       placement:
         constraints: [node.labels.blog.server.role == db]
@@ -55,38 +58,45 @@ services:
   redis:
     image: redis:4.0.2
     hostname: redis
-    ports:
-      - 56379:6379
     volumes :
-      - redis_blog_dev_data_dir:/data
-    logging:
-      driver: "journald"
-      options:
-        tag: redis
+      - redis_data_dir:/data
+#    logging:
+#      driver: "journald"
+#      options:
+#        tag: redis
     deploy:
       placement:
         constraints: [node.labels.blog.server.role == db]
 
   rabbitmq:
-    image : nkonev/rabbitmq-web-stomp:3.6.12
+    image: nkonev/rabbitmq-web-stomp:3.6.14
     hostname: rabbitmq
-    ports:
-      - 55672:15672
     environment:
       - RABBITMQ_DEFAULT_USER=blog
       - RABBITMQ_DEFAULT_PASS=blogPazZw0rd
     volumes :
       - rabbitmq_data_dir:/var/lib/rabbitmq/mnesia
-    logging:
-      driver: "journald"
-      options:
-        tag: rabbitmq
+#    logging:
+#      driver: "journald"
+#      options:
+#        tag: rabbitmq
     deploy:
       placement:
         constraints: [node.labels.blog.server.role == db]
 
+  prerender:
+    image: nkonev/prerender-redis
+    hostname: prerender
+    volumes:
+      - redis_prerender_data_dir:/var/lib/redis
+#    logging:
+#      driver: "journald"
+#      options:
+#        tag: prerender
+
 volumes:
   #enviroment
-  postgresql_blog_dev_data_dir:
-  redis_blog_dev_data_dir:
+  postgresql_data_dir:
+  redis_data_dir:
   rabbitmq_data_dir:
+  redis_prerender_data_dir:

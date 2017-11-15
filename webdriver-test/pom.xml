@@ -108,6 +108,35 @@ https://github.com/bonigarcia/webdrivermanager
     </dependencies>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven.surefire.plugin.version}</version>
+                    <configuration>
+                        <includes>
+                            <include>**/*IT.java</include>
+                        </includes>
+                        <skip>false</skip>
+                        <systemProperties>
+                            <custom.selenium.browser>${custom.selenium.browser}</custom.selenium.browser>
+                            <liquibase.drop-first>true</liquibase.drop-first>
+                            <liquibase.contexts>main, test</liquibase.contexts>
+                        </systemProperties>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>default-phantom</id>
+                            <goals>
+                                <goal>test</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -140,24 +169,70 @@ https://github.com/bonigarcia/webdrivermanager
     <profiles>
         <profile>
             <id>frontend</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
-                        <version>${maven.surefire.plugin.version}</version>
                         <configuration>
-                            <includes>
-                                <include>**/*IT.java</include>
-                            </includes>
                             <skip>false</skip>
-                            <systemProperties>
-                                <custom.selenium.browser>${custom.selenium.browser}</custom.selenium.browser>
-                            </systemProperties>
                         </configuration>
+                        <executions>
+                            <execution>
+                                <id>phantom-default</id>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>webdriver-chrome</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>chrome</id>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                                <configuration>
+                                    <systemProperties>
+                                        <custom.selenium.browser>CHROME</custom.selenium.browser>
+                                    </systemProperties>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>webdriver-firefox</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>firefox</id>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                                <configuration>
+                                    <systemProperties>
+                                        <custom.selenium.browser>FIREFOX</custom.selenium.browser>
+                                    </systemProperties>
+                                </configuration>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
