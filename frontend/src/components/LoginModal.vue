@@ -22,8 +22,6 @@
 <script>
 //    import router from '../router'
     import Vue from 'vue'
-
-    import store from  '../store';
     import {FETCH_USER_PROFILE} from '../store'
     import bus from '../bus'
     import {LOGIN} from '../bus'
@@ -57,7 +55,7 @@
                     // get body data
                     this.$modal.hide(LOGIN_MODAL);
 
-                    store.dispatch(FETCH_USER_PROFILE);
+                    this.$store.dispatch(FETCH_USER_PROFILE);
                     bus.$emit(LOGIN, null);
                     if(this.$props.onSuccessCallback){
                         this.$props.onSuccessCallback();

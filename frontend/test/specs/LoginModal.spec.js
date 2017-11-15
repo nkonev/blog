@@ -49,24 +49,24 @@ describe("LoginModal.vue", () => {
         spyOn(LoginModalWrapper.vm.$modal, 'hide').and.callThrough();
     };
 
-    let actions;
-    let store;
     beforeEach(() => {
-        actions = {
-            fetchUserProfile: () => {
-                console.log('Mocked fetchUserProfile');
-            },
-        };
-        store = new Vuex.Store({
-            state: {},
-            actions
-        });
     });
 
     afterEach(() => {
     });
 
     it("login ok", (done) => {
+        const actions = {
+            fetchUserProfile: () => {
+                console.log('Mocked fetchUserProfile');
+                done();
+            },
+        };
+        const store = new Vuex.Store({
+            state: {},
+            actions
+        });
+
         LoginModalWrapper = shallow(
             LoginModal,
             {
@@ -82,7 +82,7 @@ describe("LoginModal.vue", () => {
         LoginModalWrapper.setProps({
             onSuccessCallback: ()=> {
                 expect(LoginModalWrapper.vm.$modal.hide).toHaveBeenCalled();
-                done();
+                // done();
             },
         });
         expect(LoginModalWrapper.vm.formError).toBe(null);
@@ -113,7 +113,7 @@ describe("LoginModal.vue", () => {
                 mocks: {
                     $http: $httpFail
                 },
-                store, localVue
+                localVue
             }
         );
         prepareWrapper(LoginModalWrapper);
