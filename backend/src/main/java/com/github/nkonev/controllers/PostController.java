@@ -135,14 +135,14 @@ public class PostController {
                                 "select\n" +
                                 " contains_result.id, \n" +
                                 " ts_headline(" + regConfig + ", contains_result.title, (select * from tsq_co), 'StartSel=\"<u>\", StopSel=\"</u>\"') as title, \n" +
-                                " ts_headline(" + regConfig + ", contains_result.text_no_tags, (select * from tsq_co)::tsquery, 'StartSel=\"<b>\", StopSel=\"</b>\", MaxWords=165, MinWords=85, MaxFragments=5') as text_column, \n" +
+                                " ts_headline(" + regConfig + ", contains_result.text_no_tags, (select * from tsq_co), 'StartSel=\"<b>\", StopSel=\"</b>\", MaxWords=165, MinWords=85, MaxFragments=5') as text_column, \n" +
                                 " contains_result.title_img,\n" +
                                 " contains_result.create_date_time, \n" +
                                 " contains_result.owner_id " +
                                 "from (\n" +
                                 "  select id, title, text_no_tags, title_img, create_date_time, owner_id \n" +
                                 "  from posts.post \n" +
-                                "  where (title || ' ' || text_no_tags) ILIKE ('%' || :search_string || '%')" +
+                                "  where to_tsvector(" + regConfig + ", title || ' ' || text_no_tags) @@ (select * from tsq_co)" +
                                 "  order by id desc " +
                                 "  limit :limit offset :offset\n" +
                                 ") as contains_result" +
