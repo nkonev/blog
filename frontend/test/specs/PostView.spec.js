@@ -2,43 +2,76 @@ import Vue from 'vue'
 import PostView from "../../src/components/PostView.vue"
 import postFactory from "../../src/factories/PostDtoFactory"
 import { mount, shallow } from 'vue-test-utils';
-import VueResource from 'vue-resource'
-Vue.use(VueResource);
 
 describe("PostView.vue", () => {
-    let PostViewWrapper;
+    let PostViewWrapper, $router, $route;
+    const $httpLeft = {
+        get(url){
+            expect(url).toBe('/api/post/1233');
+            return Promise.resolve({body: {
+                "id": 1233,
+                "title": "Title lefter",
+                "text": "Text with html",
+                "titleImg": "data-png",
+                "canEdit": false,
+                "canDelete": false,
+                "left": 1232,
+                "right": 1234,
+                "owner": {
+                    "id": 42
+                }
+            }});
+        }
+    };
+
+    const $httpRight = {
+        get(url){
+            expect(url).toBe('/api/post/1235');
+            return Promise.resolve({body: {
+                "id": 1235,
+                "title": "Title righter",
+                "text": "Text with html",
+                "titleImg": "data-png",
+                "canEdit": false,
+                "canDelete": false,
+                "left": 1234,
+                "right": 1236,
+                "owner": {
+                    "id": 42
+                }
+            }});
+        }
+    };
+
     beforeEach(() => {
-        jasmine.Ajax.install();
-
-        const instance = Vue.extend();
-
         let routeId = 1234;
-        const $route = {
+        $route = {
             params: {
                 id: routeId
             }
         };
-        const $router = {
+        $router = {
             push(o) {
                 console.log("router push ", o);
                 $route.params.id = o.params.id;
             }
         };
 
-        PostViewWrapper = shallow(PostView, {
-            mocks: { $router,  $route },
-            instance
-        });
-        expect(PostViewWrapper).toBeDefined();
     });
 
     afterEach(() => {
-        jasmine.Ajax.uninstall();
         PostViewWrapper = null;
     });
 
 
     it("tap left", (done) => {
+        const instance = Vue.extend();
+        PostViewWrapper = shallow(PostView, {
+            mocks: { $router,  $route, $http: $httpLeft },
+            instance
+        });
+        expect(PostViewWrapper).toBeDefined();
+
         const postDto = postFactory();
         postDto.owner = {id: 42};
         postDto.id = 1234;
@@ -58,30 +91,16 @@ describe("PostView.vue", () => {
         });
 
         PostViewWrapper.vm.goLeft();
-        const requestL = jasmine.Ajax.requests.mostRecent();
-        expect(requestL.url).toBe('/api/post/1233');
-        expect(requestL.method).toBe('GET');
-        requestL.respondWith({
-            "status": 200,
-            "contentType": 'application/json;charset=UTF-8',
-            "responseText": `{
-                "id": 1233,
-                "title": "Title lefter",
-                "text": "Text with html",
-                "titleImg": "data-png",
-                "canEdit": false,
-                "canDelete": false,
-                "left": 1232,
-                "right": 1234,
-                "owner": {
-                    "id": 42
-                }
-            }`
-        });
-
     });
 
     it("tap right", (done) => {
+        const instance = Vue.extend();
+        PostViewWrapper = shallow(PostView, {
+            mocks: { $router,  $route, $http: $httpRight },
+            instance
+        });
+        expect(PostViewWrapper).toBeDefined();
+
         const postDto = postFactory();
         postDto.owner = {id: 42};
         postDto.id = 1234;
@@ -101,27 +120,6 @@ describe("PostView.vue", () => {
         });
 
         PostViewWrapper.vm.goRight();
-        const requestR = jasmine.Ajax.requests.mostRecent();
-        expect(requestR.url).toBe('/api/post/1235');
-        expect(requestR.method).toBe('GET');
-        requestR.respondWith({
-            "status": 200,
-            "contentType": 'application/json;charset=UTF-8',
-            "responseText": `{
-                "id": 1235,
-                "title": "Title righter",
-                "text": "Text with html",
-                "titleImg": "data-png",
-                "canEdit": false,
-                "canDelete": false,
-                "left": 1234,
-                "right": 1236,
-                "owner": {
-                    "id": 42
-                }
-            }`
-        });
-
     });
 
 });
