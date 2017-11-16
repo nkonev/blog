@@ -102,54 +102,24 @@ public class PostController {
             );
         } else {
             posts = jdbcTemplate.query(
-                    "with tsq_ft as (select plainto_tsquery(" + regConfig + ", :search_string)), \n" +
-                            " tsq_co as (select to_tsquery("+regConfig+", array_to_string(array(select i||':*' from unnest(tsvector_to_array(to_tsvector("+regConfig+", :search_string))) as i), ' & ')) ) \n" +
-
-                            "select " +
-                            "fulltext_union_result.id as id, " +
-                            "fulltext_union_result.title as title, " +
-                            "fulltext_union_result.text_column as text_column, " +
-                            "fulltext_union_result.title_img as title_img, " +
-                            "fulltext_union_result.create_date_time as create_date_time, " +
+                    "with tsq as (select to_tsquery("+regConfig+", array_to_string(array(select i||':*' from unnest(tsvector_to_array(to_tsvector("+regConfig+", :search_string))) as i), ' & ')) ) \n" +
+                            "select\n" +
+                            " fulltext_result.id, \n" +
+                            " ts_headline("+regConfig+", fulltext_result.title, (select * from tsq), 'StartSel=\"<u>\", StopSel=\"</u>\"') as title, \n" +
+                            " ts_headline("+regConfig+", fulltext_result.text_no_tags, (select * from tsq), 'StartSel=\"<b>\", StopSel=\"</b>\", MaxWords=165, MinWords=85, MaxFragments=5') as text_column, \n" +
+                            " fulltext_result.title_img,\n" +
+                            " fulltext_result.create_date_time,\n" +
                             " u.id as owner_id," +
                             " u.username as owner_login," +
                             " u.avatar as owner_avatar \n" +
-                            " from (" +
-                                "select\n" +
-                                " fulltext_result.id, \n" +
-                                " ts_headline(" + regConfig + ", fulltext_result.title, (select * from tsq_ft), 'StartSel=\"<u>\", StopSel=\"</u>\"') as title, \n" +
-                                " ts_headline(" + regConfig + ", fulltext_result.text_no_tags, (select * from tsq_ft), 'StartSel=\"<b>\", StopSel=\"</b>\", MaxWords=165, MinWords=85, MaxFragments=5') as text_column, \n" +
-                                " fulltext_result.title_img,\n" +
-                                " fulltext_result.create_date_time, \n" +
-                                " fulltext_result.owner_id " +
-                                "from (\n" +
-                                "  select id, title, text_no_tags, title_img, create_date_time, owner_id \n" +
-                                "  from posts.post \n" +
-                                "  where to_tsvector(" + regConfig + ", title || ' ' || text_no_tags) @@ (select * from tsq_ft)" +
-                                "  order by id desc " +
-                                "  limit :limit offset :offset\n" +
-                                ") as fulltext_result " +
-
-                                "union " +
-
-                                "select\n" +
-                                " contains_result.id, \n" +
-                                " ts_headline(" + regConfig + ", contains_result.title, (select * from tsq_co), 'StartSel=\"<u>\", StopSel=\"</u>\"') as title, \n" +
-                                " ts_headline(" + regConfig + ", contains_result.text_no_tags, (select * from tsq_co), 'StartSel=\"<b>\", StopSel=\"</b>\", MaxWords=165, MinWords=85, MaxFragments=5') as text_column, \n" +
-                                " contains_result.title_img,\n" +
-                                " contains_result.create_date_time, \n" +
-                                " contains_result.owner_id " +
-                                "from (\n" +
-                                "  select id, title, text_no_tags, title_img, create_date_time, owner_id \n" +
-                                "  from posts.post \n" +
-                                "  where to_tsvector(" + regConfig + ", title || ' ' || text_no_tags) @@ (select * from tsq_co)" +
-                                "  order by id desc " +
-                                "  limit :limit offset :offset\n" +
-                                ") as contains_result" +
-                            ") as fulltext_union_result " +
-                            "join auth.users u on fulltext_union_result.owner_id = u.id " +
-                            "order by id desc " +
-
+                            "from (\n" +
+                            "  select id, title, text_no_tags, title_img, create_date_time, owner_id \n" +
+                            "  from posts.post \n" +
+                            "  where to_tsvector("+regConfig+", title || ' ' || text_no_tags) @@ (select * from tsq) order by id desc " +
+                            "  limit :limit offset :offset\n" +
+                            ") as fulltext_result " +
+                            "join auth.users u on fulltext_result.owner_id = u.id " +
+                            "order by id desc" +
                             ";",
                     params,
                     rowMapper
