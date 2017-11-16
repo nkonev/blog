@@ -76,7 +76,7 @@ public class PostController {
         searchString = StringUtils.trimWhitespace(searchString);
 
         Map<String, Object> params = new HashMap<>();
-        params.put("search", searchString);
+        params.put("search_string", searchString);
         params.put("offset", PageUtils.getOffset(page, size));
         params.put("limit", size);
 
@@ -101,7 +101,7 @@ public class PostController {
             );
         } else {
             posts = jdbcTemplate.query(
-                       "with tsq as (select plainto_tsquery("+regConfig+", :search)) \n" +
+                       "with tsq as (select plainto_tsquery("+regConfig+", :search_string)) \n" +
                             "select\n" +
                             " fulltext_result.id, \n" +
                             " ts_headline("+regConfig+", fulltext_result.title, (select * from tsq), 'StartSel=\"<u>\", StopSel=\"</u>\"') as title, \n" +
@@ -112,14 +112,20 @@ public class PostController {
                             " u.username as owner_login," +
                             " u.avatar as owner_avatar \n" +
                             "from (\n" +
-                            "  select id, title, text_no_tags, title_img, create_date_time, owner_id \n" +
+                            "  (select id, title, text_no_tags, title_img, create_date_time, owner_id \n" +
                             "  from posts.post \n" +
                             "  where to_tsvector("+regConfig+", title || ' ' || text_no_tags) @@ (select * from tsq) order by id desc " +
-                            "  limit :limit offset :offset\n" +
+                            "  limit :limit offset :offset)\n" +
+                            "union "+
+                            "  (select id, title, text_no_tags, title_img, create_date_time, owner_id \n" +
+                            "  from posts.post \n" +
+                            "  where (title || ' ' || text_no_tags) ILIKE ('%' || :search_string || '%')" +
+                            "  order by id desc " +
+                            "  limit :limit offset :offset)\n" +
                             ") as fulltext_result " +
                             "join auth.users u on fulltext_result.owner_id = u.id " +
                             "order by id desc" +
-                            ";",
+                           ";",
                     params,
                     rowMapper
             );
