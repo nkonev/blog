@@ -69,12 +69,10 @@ cd frontend
 npm run dev
 ```
 
-### Run KarmaJS with PhantomJS browser (Chrome will be if not specified)
+### Run Jest
 ```
 cd frontend
-npm run unit
-# or
-npm run unit -- --browsers=Chrome
+npm run test
 ```
 
 ### Update js dependencies
