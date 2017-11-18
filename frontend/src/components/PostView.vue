@@ -76,9 +76,7 @@
         },
         created(){
             // console.log("PostView created");
-            if (!process.env.KARMA_ENV) {
-                this.fetchData();
-            }
+            this.fetchData();
             bus.$on(LOGIN, this.onLogin);
             bus.$on(LOGOUT, this.onLogout);
         },
