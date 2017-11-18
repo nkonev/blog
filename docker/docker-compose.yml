@@ -5,7 +5,7 @@ version: '3.2'
 services:
   #enviroment
   postgresql:
-    image : postgres:10.0
+    image : postgres:10.1
     hostname: postgresql
     container_name: postgresql-blog-dev
     restart: unless-stopped
