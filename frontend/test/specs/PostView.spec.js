@@ -3,7 +3,7 @@ import PostView from "../../src/components/PostView.vue"
 import postFactory from "../../src/factories/PostDtoFactory"
 import { mount, shallow } from 'vue-test-utils';
 
-describe("PostView.vue", () => {
+xdescribe("PostView.vue", () => {
     let PostViewWrapper, $router, $route;
     const $httpLeft = {
         get(url){

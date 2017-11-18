@@ -87,17 +87,14 @@
                             </configuration>
                         </execution>
                         <execution>
-                            <id>karma test</id>
+                            <id>jest test</id>
                             <goals>
-                                <goal>karma</goal>
+                                <goal>npm</goal>
                             </goals>
                             <phase>generate-test-sources</phase>
                             <configuration>
                                 <skip>${skipTests}</skip>
-                                <environmentVariables>
-                                    <KARMA_BROWSERS>${karma.browsers}</KARMA_BROWSERS>
-                                    <NODE_ENV>${npm.production.env}</NODE_ENV>
-                                </environmentVariables>
+                                <arguments>test</arguments>
                             </configuration>
                         </execution>
 

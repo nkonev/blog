@@ -48,3 +48,12 @@ docker-compose -f docker-compose.yml -f docker-compose.demo.yml up -d
 - "./mvnw -Dkarma.browsers=Firefox -Dcustom.selenium.browser=FIREFOX -P frontend clean package"
 - "./mvnw -Dkarma.browsers=Chrome -Dcustom.selenium.browser=CHROME -P frontend clean package"
 ```
+
+# Jest
+You should clear jest cache after change `.babelrc`
+See [here](https://github.com/facebook/jest/issues/2442#issuecomment-269654883).
+
+To see where is jest cache you can
+```bash
+jest --showConfig  | grep -i cache
+```

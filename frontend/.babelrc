@@ -2,5 +2,15 @@
   "presets": [
     ["env", { "modules": false }]
   ],
+  "env": {
+    "test": {
+      "presets": [
+        ["env",  { "targets": { "node": 8 }}]
+      ],
+      "plugins": [
+         "babel-plugin-dynamic-import-node"
+      ]
+    }
+  },
   "plugins": ["syntax-dynamic-import"]
 }
