@@ -4,22 +4,28 @@ import { mount } from 'vue-test-utils';
 
 describe("Registration.vue", () => {
 
-    let RegistrationWrapper;
+    it("email ok", (done) => {
+        const $http = {
+            post(url, dto){
+                expect(url).toBe('/api/register');
+                expect(dto).toEqual({
+                    login: 'lol',
+                    password: '123456',
+                    email: 'good@mail.co'
+                });
 
-    beforeEach(() => {
-        RegistrationWrapper = mount(Registration, { attachToDocument: false });
+                return Promise.resolve({body: {
+                    "status": 200,
+                    "contentType": 'application/json;charset=UTF-8',
+                    "responseText": '{}' // Firefox requires this
+                }});
+            }
+        };
+        const RegistrationWrapper = mount(Registration, { attachToDocument: false, mocks: { $http }});
         expect(RegistrationWrapper).toBeDefined();
         expect(RegistrationWrapper.vm.submitEnabled).toBe(false);
 
-        jasmine.Ajax.install();
-    });
 
-    afterEach(() => {
-        jasmine.Ajax.uninstall();
-    });
-
-    // https://scotch.io/tutorials/how-to-write-a-unit-test-for-vuejs
-    xit("email ok", (done) => {
 
         RegistrationWrapper.find('input#login').element.value = 'lol';
         RegistrationWrapper.find('input#login').trigger('input');
@@ -30,44 +36,27 @@ describe("Registration.vue", () => {
         RegistrationWrapper.find('input#password').element.value = '123456';
         RegistrationWrapper.find('input#password').trigger('input');
 
+        const submit = RegistrationWrapper.find('button#submit');
 
+        expect(RegistrationWrapper.vm.submitEnabled).toBe(true);
+
+        // simulate event
+        submit.trigger('click');
 
         Vue.nextTick(() => {
-            const submit = RegistrationWrapper.find('button#submit');
-
-            // expect(submit.getAttribute('disabled')).not.toBe("disabled");
-
-            expect(RegistrationWrapper.vm.submitEnabled).toBe(true);
-
-            // simulate event
-
-            submit.trigger('click');
-
-            const request = jasmine.Ajax.requests.mostRecent();
-            expect(request.url).toBe('/api/register');
-            expect(request.method).toBe('POST');
-            expect(request.data()).toEqual({
-                login: 'lol',
-                password: '123456',
-                email: 'good@mail.co'
-            });
-            request.respondWith({
-                "status": 200,
-                "contentType": 'application/json;charset=UTF-8',
-                "responseText": '{}' // Firefox requires this
-            });
-
             expect(RegistrationWrapper.vm.profile.email).toBe('good@mail.co');
             expect(RegistrationWrapper.vm.profile.password).toBe('123456');
             expect(RegistrationWrapper.vm.profile.login).toBe('lol');
-
-            expect(RegistrationWrapper.vm.submitEnabled).toBe(false);
 
             done();
         });
     });
 
     it("email and password fail", (done) => {
+        const RegistrationWrapper = mount(Registration, { attachToDocument: false });
+        expect(RegistrationWrapper).toBeDefined();
+        expect(RegistrationWrapper.vm.submitEnabled).toBe(false);
+
 
         // set input value
         RegistrationWrapper.find('input#login').element.value = 'lol';
