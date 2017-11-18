@@ -33,7 +33,6 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       { pattern: 'node_modules/babel-polyfill/dist/polyfill.js', watched: false, included: true, served: true}, // for old WebKit in PhantomJS
-      "test/index.js", // 1/3
       'test/specs/**/*spec.js' // Test specifications
     ],
 
@@ -47,7 +46,6 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      "test/index.js": ["webpack", 'sourcemap'], // 2/3
       'test/specs/**/*spec.js': ['webpack', 'sourcemap']
     },
 
@@ -115,7 +113,6 @@ module.exports = function(config) {
       cache: false,
       devtool: 'inline-source-map',
       // entry: {
-      //       index: "./src/test/frontend/index.js" // 3/3
       // },
       // disable extract-test-plugin spam
       stats: {
