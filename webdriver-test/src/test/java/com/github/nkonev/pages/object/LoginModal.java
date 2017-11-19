@@ -1,5 +1,6 @@
 package com.github.nkonev.pages.object;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
 import com.github.nkonev.FailoverUtils;
@@ -30,6 +31,8 @@ public class LoginModal {
     public void login() {
         SelenideElement modal = $(".v--modal-box");
         WebElement modal2 = modal.getWrappedElement();
+
+        modal.waitUntil(Condition.visible, 5*1000);
 
         modal.shouldHave(text("Please login"));
         modal.find("input#username").setValue(user);
