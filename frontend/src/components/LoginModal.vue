@@ -1,5 +1,5 @@
 <template>
-    <modal :name="modalName" transition="pop-out" @before-open="beforeOpen" :width="380" :height="240">
+    <modal :name="modalName" transition="pop-out" @before-open="beforeOpen" :width="loginModalWidth" :height="240">
         <div class="box">
             <div class="box-part">
                 <div class="login-title">Please login</div>
@@ -8,8 +8,10 @@
                     <input id="password" type="password" placeholder="Password" v-model="formPassword">
 
                     <div class="button-set">
-                        <button id="btn-submit" class="blog-btn ok-btn login-btn" type="submit" @click.prevent="doLogin">Login!</button>
+                        <button id="btn-submit" class="blog-btn login-btn" type="submit" :disabled="loading" @click.prevent="doLogin">Login!</button>
                     </div>
+
+                    <spinner v-show="loading" class="send-spinner" :speed="0.3"></spinner>
 
                     <div class="errors">
                         <div v-show="formError" class="box-error-message">{{formError}}</div>
@@ -26,7 +28,7 @@
     import {FETCH_USER_PROFILE} from '../store'
     import bus from '../bus'
     import {LOGIN} from '../bus'
-
+    import Spinner from 'vue-simple-spinner'
     import {LOGIN_MODAL} from '../constants';
 
     export default {
@@ -38,19 +40,26 @@
                 formPassword: '',
                 formError: null,
 
-                modalName: LOGIN_MODAL
+                modalName: LOGIN_MODAL,
+                loading: false
             }
         },
         props: [
             'onSuccessCallback',
             'onFailCallback'
         ],
+        computed: {
+            loginModalWidth(){
+                return screen.width > 380 ? 380 : screen.width;
+            },
+        },
         methods:{
             beforeOpen (event) {
                 this.formError = null;
             },
             doLogin() {
-                const self = this;
+                this.loading = true;
+                this.formError = null;
                 const options = { emulateJSON: true }; // for pass as form data
                 this.$http.post('/api/login', {username: this.formUsername, password: this.formPassword}, options).then(response => {
                     // get body data
@@ -58,12 +67,14 @@
 
                     this.$store.dispatch(FETCH_USER_PROFILE);
                     bus.$emit(LOGIN, null);
+                    this.loading = false;
                     if(this.$props.onSuccessCallback){
                         this.$props.onSuccessCallback();
                     }
                 }, response => {
                     // error callback
                     // alert('Booh! Wrong credentials, try again!');
+                    this.loading = false;
                     this.formError = response.body.message;
                     if(this.$props.onFailCallback){
                         this.$props.onFailCallback();
@@ -71,6 +82,9 @@
                 });
 
             }
+        },
+        components: {
+            Spinner
         }
     }
 </script>
@@ -149,6 +163,18 @@
 
         .login-btn{
             width 100%
+            background: white;
+            color: $ok_color;
+            border-color: $ok_color;
+            &:hover:enabled {
+                border-color: $ok_color;
+                background: #00cf6b;
+                color: white;
+            }
+            &:disabled{
+                border-color: $grey_color
+                color: $grey_color
+            }
         }
 
         .button-set {
