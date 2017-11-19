@@ -10,7 +10,7 @@ public class FailoverUtils {
 
     public static <T> T retry(int times, Supplier<T> function){
         Throwable saved=null;
-        for (int i=1; i<=times; ++i) {
+        for (int i=1; i<=times && !Thread.currentThread().isInterrupted(); ++i) {
             try {
                 LOGGER.info("Trying {}/{} to perform action {}", i, times, function);
                 return function.get();
