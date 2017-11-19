@@ -11,7 +11,9 @@ export const updateById = (array, newElement) => {
 };
 
 export const getPostId = (vue) => {
-    return vue.$route.params.id;
+    const id = vue.$route.params.id;
+    // console.log("getting post id", id);
+    return id;
 };
 
 export const getTimestampFromUtc = (utcString) => {

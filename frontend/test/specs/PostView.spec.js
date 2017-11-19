@@ -3,11 +3,13 @@ import PostView from "../../src/components/PostView.vue"
 import postFactory from "../../src/factories/PostDtoFactory"
 import { mount, shallow } from 'vue-test-utils';
 
-xdescribe("PostView.vue", () => {
-    let PostViewWrapper, $router, $route;
+describe("PostView.vue", () => {
+    let PostViewWrapper, $router, $route, checkGetPost;
     const $httpLeft = {
         get(url){
-            expect(url).toBe('/api/post/1233');
+            if (checkGetPost) {
+                expect(url).toBe('/api/post/1233');
+            }
             return Promise.resolve({body: {
                 "id": 1233,
                 "title": "Title lefter",
@@ -26,7 +28,9 @@ xdescribe("PostView.vue", () => {
 
     const $httpRight = {
         get(url){
-            expect(url).toBe('/api/post/1235');
+            if (checkGetPost) {
+                expect(url).toBe('/api/post/1235');
+            }
             return Promise.resolve({body: {
                 "id": 1235,
                 "title": "Title righter",
@@ -45,6 +49,7 @@ xdescribe("PostView.vue", () => {
 
     beforeEach(() => {
         let routeId = 1234;
+        checkGetPost=false;
         $route = {
             params: {
                 id: routeId
@@ -91,6 +96,7 @@ xdescribe("PostView.vue", () => {
         });
 
         PostViewWrapper.vm.goLeft();
+        checkGetPost = true;
     });
 
     it("tap right", (done) => {
@@ -120,6 +126,7 @@ xdescribe("PostView.vue", () => {
         });
 
         PostViewWrapper.vm.goRight();
+        checkGetPost = true;
     });
 
 });

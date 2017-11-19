@@ -2,25 +2,21 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import LoginModal from "../../src/components/LoginModal.vue"
 import { mount, shallow, createLocalVue } from 'vue-test-utils';
-
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
 // https://jasmine.github.io/2.0/introduction.html
-xdescribe("LoginModal.vue", () => {
+describe("LoginModal.vue", () => {
 
     let LoginModalWrapper;
 
     const $httpSuccess = {
-        post(){
-            // TODO assert method args
-            /*
-            expect(request.url).toBe('/api/login');
-            expect(request.method).toBe('POST');
-            expect(request.data()).toEqual({
-            username: ['lol'],
-            password: ['123456'],
-             */
+        post(url, data){
+            expect(url).toBe('/api/login');
+            expect(data).toEqual({
+                username: 'lol',
+                password: '123456'
+            });
             return Promise.resolve({body: { message: "success" }});
         }
     };
@@ -41,12 +37,8 @@ xdescribe("LoginModal.vue", () => {
             show() {
                 console.log('[login fake modal] I am opened!!!');
             },
-            hide() {
-                console.log('[login fake modal] I am hided!!!');
-            }
+            hide: jest.fn()
         };
-
-        spyOn(LoginModalWrapper.vm.$modal, 'hide').and.callThrough();
     };
 
     beforeEach(() => {
@@ -81,7 +73,7 @@ xdescribe("LoginModal.vue", () => {
 
         LoginModalWrapper.setProps({
             onSuccessCallback: ()=> {
-                expect(LoginModalWrapper.vm.$modal.hide).toHaveBeenCalled();
+                expect(LoginModalWrapper.vm.$modal.hide.mock.calls.length).toBe(1);
                 // done();
             },
         });

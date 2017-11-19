@@ -104,7 +104,7 @@
                 // console.log("fetching post...");
                 this.isLoading = true;
                 this.errorMessage = null;
-                this.$http.get(API_POST+'/'+this.getId(), { }).then((response) => {
+                this.$http.get(API_POST+'/'+this.getId()).then((response) => {
                     this.postDTO = response.body; // add data from server's response
                     this.isLoading = false;
                     bus.$emit(POST_SWITCHED, this.postDTO.id);
