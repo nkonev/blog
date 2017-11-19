@@ -112,11 +112,14 @@ public class DeployIT {
         Assert.assertFalse(version.isEmpty());
     }
 
+    @Parameters({"testStack"})
     @Test
-    public void testPrerenderWorks() throws IOException, InterruptedException {
+    public void testPrerenderWorks(String testStack) throws IOException, InterruptedException {
         {
             FailoverUtils.retry(120, () -> {
                 try {
+                    clearPrerenderRedisCache(testStack);
+
                     final Request request = new Request.Builder()
                             .url(baseUrl)
                             .header("User-Agent", "googlebot")
@@ -132,6 +135,9 @@ public class DeployIT {
                     return null;
                 } catch (IOException e) {
                     throw new RuntimeException(e);
+                }  catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return null;
                 }
             });
         }
@@ -148,6 +154,24 @@ public class DeployIT {
             Assert.assertFalse(html.contains("Lorem Ipsum - это текст"));
         }
 
+    }
+
+    private void clearPrerenderRedisCache(String testStack) throws InterruptedException, IOException {
+        LOGGER.info("Cleaning prerender redis cache");
+        // clean redis cache
+        launch("docker exec "+getPrerenderRedisContainerId(getPrerenderRedisTaskId(testStack))+" redis-cli flushdb", processBuilder -> {}).waitFor();
+    }
+
+    private String getPrerenderRedisTaskId(String testStack) throws IOException, InterruptedException {
+        String[] lines = get(launch("docker service ps "+testStack+"_prerender -q", c -> {}, false)).stdout.split("\\r?\\n");
+        Assert.assertEquals(lines.length, 1, "Expected one task for prerender");
+        return lines[0];
+    }
+
+    private String getPrerenderRedisContainerId(String taskId) throws IOException, InterruptedException {
+        String[] lines = get(launch("docker inspect --format {{.Status.ContainerStatus.ContainerID}} "+taskId, c -> {}, false)).stdout.split("\\r?\\n");
+        Assert.assertEquals(lines.length, 1, "Expected one container for prerender");
+        return lines[0];
     }
 
 

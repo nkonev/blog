@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -64,24 +65,24 @@ public class PostController {
                     resultSet.getString("owner_avatar")
             )
     );
-    
-    @GetMapping(Constants.Uls.API+Constants.Uls.POST)
+
+    @GetMapping(Constants.Uls.API + Constants.Uls.POST)
     public List<PostDTO> getPosts(
-            @RequestParam(value = "page", required=false, defaultValue = "0") int page,
-            @RequestParam(value = "size", required=false, defaultValue = "0") int size,
-            @RequestParam(value = "searchString", required=false, defaultValue = "") String searchString
+            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+            @RequestParam(value = "size", required = false, defaultValue = "0") int size,
+            @RequestParam(value = "searchString", required = false, defaultValue = "") String searchString
     ) {
         page = PageUtils.fixPage(page);
         size = PageUtils.fixSize(size);
         searchString = StringUtils.trimWhitespace(searchString);
 
         Map<String, Object> params = new HashMap<>();
-        params.put("search", searchString);
+        params.put("search_string", searchString);
         params.put("offset", PageUtils.getOffset(page, size));
         params.put("limit", size);
 
         List<PostDTO> posts;
-        
+
         if (StringUtils.isEmpty(searchString)) {
             posts = jdbcTemplate.query(
                     "select " +
@@ -93,15 +94,15 @@ public class PostController {
                             "u.id as owner_id," +
                             "u.username as owner_login," +
                             "u.avatar as owner_avatar \n" +
-                     "  from posts.post p join auth.users u on p.owner_id = u.id \n" +
-                     "  order by id desc " +
-                     "limit :limit offset :offset\n",
+                            "  from posts.post p join auth.users u on p.owner_id = u.id \n" +
+                            "  order by id desc " +
+                            "limit :limit offset :offset\n",
                     params,
                     rowMapper
             );
         } else {
             posts = jdbcTemplate.query(
-                       "with tsq as (select plainto_tsquery("+regConfig+", :search)) \n" +
+                    "with tsq as (select to_tsquery("+regConfig+", array_to_string(array(select i||':*' from unnest(tsvector_to_array(to_tsvector("+regConfig+", :search_string))) as i), ' & ')) ) \n" +
                             "select\n" +
                             " fulltext_result.id, \n" +
                             " ts_headline("+regConfig+", fulltext_result.title, (select * from tsq), 'StartSel=\"<u>\", StopSel=\"</u>\"') as title, \n" +
@@ -128,7 +129,7 @@ public class PostController {
         return posts;
     }
 
-    @GetMapping(Constants.Uls.API+Constants.Uls.POST+Constants.Uls.POST_ID)
+    @GetMapping(Constants.Uls.API + Constants.Uls.POST + Constants.Uls.POST_ID)
     public PostDTOExtended getPost(
             @PathVariable(Constants.PathVariables.POST_ID) long id,
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount // null if not authenticated
@@ -136,19 +137,19 @@ public class PostController {
         return postRepository
                 .findById(id)
                 .map(post -> postConverter.convertToDtoExtended(post, userAccount))
-                .orElseThrow(()-> new DataNotFoundException("Post " + id + " not found"));
+                .orElseThrow(() -> new DataNotFoundException("Post " + id + " not found"));
     }
 
 
     // ================================================= secured
 
     @PreAuthorize("@blogSecurityService.hasPostPermission(#userAccount, T(com.github.nkonev.security.permissions.PostPermissions).READ_MY)")
-    @GetMapping(Constants.Uls.API+Constants.Uls.POST+Constants.Uls.MY)
+    @GetMapping(Constants.Uls.API + Constants.Uls.POST + Constants.Uls.MY)
     public List<PostDTO> getMyPosts(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount,
-            @RequestParam(value = "page", required=false, defaultValue = "0") int page,
-            @RequestParam(value = "size", required=false, defaultValue = "0") int size,
-            @RequestParam(value = "searchString", required=false, defaultValue = "") String searchString // TODO implement
+            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+            @RequestParam(value = "size", required = false, defaultValue = "0") int size,
+            @RequestParam(value = "searchString", required = false, defaultValue = "") String searchString // TODO implement
     ) {
 
         PageRequest springDataPage = new PageRequest(PageUtils.fixPage(page), PageUtils.fixSize(size));
@@ -162,13 +163,13 @@ public class PostController {
 
     // https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#el-common-built-in
     @PreAuthorize("@blogSecurityService.hasPostPermission(#userAccount, T(com.github.nkonev.security.permissions.PostPermissions).CREATE)")
-    @PostMapping(Constants.Uls.API+Constants.Uls.POST)
+    @PostMapping(Constants.Uls.API + Constants.Uls.POST)
     public PostDTOWithAuthorization addPost(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // null if not authenticated
             @RequestBody @NotNull PostDTO postDTO
     ) {
         Assert.notNull(userAccount, "UserAccountDetailsDTO can't be null");
-        if (postDTO.getId()!=0){
+        if (postDTO.getId() != 0) {
             throw new BadRequestException("id cannot be set");
         }
         Post fromWeb = postConverter.convertToPost(postDTO, null);
@@ -180,7 +181,7 @@ public class PostController {
     }
 
     @PreAuthorize("@blogSecurityService.hasPostPermission(#postDTO, #userAccount, T(com.github.nkonev.security.permissions.PostPermissions).EDIT)")
-    @PutMapping(Constants.Uls.API+Constants.Uls.POST)
+    @PutMapping(Constants.Uls.API + Constants.Uls.POST)
     public PostDTOWithAuthorization updatePost(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // null if not authenticated
             @RequestBody @NotNull PostDTO postDTO
@@ -194,7 +195,7 @@ public class PostController {
     }
 
     @PreAuthorize("@blogSecurityService.hasPostPermission(#postId, #userAccount, T(com.github.nkonev.security.permissions.PostPermissions).DELETE)")
-    @DeleteMapping(Constants.Uls.API+Constants.Uls.POST+Constants.Uls.POST_ID)
+    @DeleteMapping(Constants.Uls.API + Constants.Uls.POST + Constants.Uls.POST_ID)
     public void deletePost(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // null if not authenticated
             @PathVariable(Constants.PathVariables.POST_ID) long postId
