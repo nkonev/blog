@@ -1,6 +1,10 @@
 package com.github.nkonev.entity.jpa;
 
 import com.github.nkonev.Constants;
+import com.vladmihalcea.hibernate.type.array.StringArrayType;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -9,6 +13,12 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
 
+@TypeDefs({
+        @TypeDef(
+                name = "string-array",
+                typeClass = StringArrayType.class
+        )
+})
 @Entity
 @Table(name = "users", schema = Constants.Schemas.AUTH)
 public class UserAccount {
@@ -24,16 +34,17 @@ public class UserAccount {
     @Email
     private String email;
 
-    @Enumerated(EnumType.ORDINAL)
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name="user_roles", schema = Constants.Schemas.AUTH, joinColumns=@JoinColumn(name="user_id"))
-    @Column(name="role_id")
     @NotEmpty
-    private Collection<UserRole> roles = new HashSet<>(); // synonym to "authority"
+    @Type(type = "string-array" )
+    @Column(
+            name = "roles",
+            columnDefinition = "text[]"
+    )
+    private String[] roles = new String[0]; // synonym to "authority"
 
     public UserAccount() { }
 
-    public UserAccount(String username, String password, String avatar, boolean expired, boolean locked, boolean enabled, Collection<UserRole> roles, String email) {
+    public UserAccount(String username, String password, String avatar, boolean expired, boolean locked, boolean enabled, String[] roles, String email) {
         this.username = username;
         this.password = password;
         this.avatar = avatar;
@@ -100,19 +111,19 @@ public class UserAccount {
         this.password = password;
     }
 
-    public Collection<UserRole> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Collection<UserRole> roles) {
-        this.roles = roles;
-    }
-
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String[] getRoles() {
+        return roles;
+    }
+
+    public void setRoles(String[] roles) {
+        this.roles = roles;
     }
 }

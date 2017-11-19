@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,7 +30,7 @@ public class UserAccountConverter {
                 userAccount.isExpired(),
                 userAccount.isLocked(),
                 userAccount.isEnabled(),
-                convertRoles(userAccount.getRoles()),
+                convertRoles(Arrays.asList(userAccount.getRoles()).stream().map(s -> UserRole.valueOf(s)).collect(Collectors.toList())),
                 userAccount.getEmail()
         );
     }
@@ -98,7 +99,7 @@ public class UserAccountConverter {
                 expired,
                 locked,
                 enabled,
-                newUserRoles,
+                newUserRoles.stream().map(userRole -> userRole.toString()).collect(Collectors.toList()).toArray(new String[newUserRoles.size()]),
                 userAccountDTO.getEmail()
         );
     }
