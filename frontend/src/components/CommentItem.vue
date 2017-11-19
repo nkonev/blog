@@ -12,7 +12,7 @@
             {{commentDTO.text}}
         </div>
         <comment-edit v-else :commentDTO="commentDTO"></comment-edit>
-        <hr/>
+        <hr size="1"/>
     </div>
 </template>
 
@@ -104,6 +104,10 @@
                 transition: 0.2s all;
                 box-shadow: 0 0 2em red;
             }
+        }
+
+        hr {
+            color lightgrey
         }
     }
 </style>
