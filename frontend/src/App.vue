@@ -54,17 +54,10 @@
 
 <style lang="stylus">
     @import "./constants.styl"
+    @import "./buttons.styl"
 
     body {
-        //background-color: $bgColor;
-        background: repeating-linear-gradient(
-                45deg,
-                #ffffff 0px,
-                #ffffff 2px,
-                rgba(255, 209, 128, 0.3) 2px,
-                rgba(255, 209, 128, 0.2) 6px
-        ),
-        url(./assets/bg.png);
+        background-color white;
     }
 
     #app {

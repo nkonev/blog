@@ -4,8 +4,8 @@
         <error v-show="errorMessage" :message="errorMessage"></error>
         <div class="comment-command-buttons">
             <blog-spinner v-if="submitting" message="Sending..."></blog-spinner>
-            <button v-if="!submitting" class="save-btn" @click="onBtnSave">Save</button>
-            <button v-if="!submitting && !isAdd" class="cancel-btn" @click="onBtnCancel">Отмена</button>
+            <button v-if="!submitting" class="blog-btn ok-btn" @click="onBtnSave">Save comment</button>
+            <button v-if="!submitting && !isAdd" class="blog-btn cancel-btn" @click="onBtnCancel">Cancel</button>
         </div>
     </div>
 </template>
@@ -81,12 +81,17 @@
 </script>
 
 
-<style lang="stylus">
+<style lang="stylus" scoped>
     .comment-edit {
 
         textarea {
             width 99%
             min-height 60px
         }
+
+        .comment-command-buttons {
+            margin-top 0.3em
+        }
+
     }
 </style>

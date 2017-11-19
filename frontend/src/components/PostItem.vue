@@ -85,7 +85,10 @@
                 h2 {
                     padding 2px;
                     margin 2px;
-                    color blue
+                    color $postTitleColorLink
+                    font-size $postTitleFontSize
+                    font-weight $postTitleFontWeight
+                    font-family $postTitleFontFamily
 
                     u {
                         color red

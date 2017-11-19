@@ -2,7 +2,7 @@
     <div class="registration" id="registration">
         <form v-if="!emailSuccessfullySent">
             <vue-form-generator :schema="schema" :model="profile" :options="formOptions" @validated="onValidated"></vue-form-generator>
-            <button id="submit" type="submit" @click.prevent="onSubmit" v-bind:disabled="!submitEnabled">Submit</button>
+            <button id="submit" type="submit" @click.prevent="onSubmit" v-bind:disabled="!submitEnabled" class="blog-btn ok-btn">Submit</button>
             <blog-spinner v-if="submitting" message="Sending data"/>
 
             <div class="field">
@@ -121,6 +121,10 @@
 
         .field {
             margin-bottom 4px;
+        }
+
+        #submit{
+            margin-top 0.5em
         }
     }
 </style>

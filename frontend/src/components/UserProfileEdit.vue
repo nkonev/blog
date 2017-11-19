@@ -30,8 +30,8 @@
         </div>
 
         <div class="profile-edit-buttons">
-            <button class="save" @click="save" v-bind:disabled="!submitEnabled">Save</button>
-            <button @click="cancel">Cancel</button>
+            <button class="save blog-btn ok-btn" @click="save" v-bind:disabled="!submitEnabled">Save</button>
+            <button @click="cancel" class="blog-btn">Cancel</button>
         </div>
         <error v-if="errorMessage" :message="errorMessage"></error>
     </div>

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="post-edit">
         <!--
             You shouldn't change parent postDTO here, if you do it you will have bugs
             1) your changes will reset on server 401 response
@@ -9,11 +9,13 @@
         -->
 
         <!-- https://zhanziyang.github.io/vue-croppa/#/file-input -->
-        <div>
+        <div class="post-edit-cropper">
             <croppa v-model="myCroppa"
-                    :width="400"
-                    :height="250"
+                    :width="cropperWidth"
+                    :height="cropperHeight"
+                    :remove-button-size="cropperRemoveButtonSize"
                     :file-size-limit="5 * 1024 * 1024"
+                    :show-loading="true"
                     placeholder="Choose title image"
                     :initial-image="editPostDTO.titleImg"
                     :placeholder-font-size="32"
@@ -27,7 +29,7 @@
                     >
             </croppa >
         </div>
-        <input class="title" placeholder="Title of your megapost" v-model="editPostDTO.title"/>
+        <input class="title" placeholder="Title of your megapost" type="text" autofocus v-model="editPostDTO.title"/>
         <quill-editor v-model="editPostDTO.text"
                       ref="myQuillEditor"
                       :options="editorOption"
@@ -39,9 +41,9 @@
         <div class="post-command-buttons">
             <div class="send">
                 <blog-spinner v-if="submitting" message="Sending..."></blog-spinner>
-                <button v-if="!submitting" class="save-btn" @click="onBtnSave" v-bind:disabled="!isPostValid()">Сохранить</button>
+                <button v-if="!submitting" class="blog-btn ok-btn" @click="onBtnSave" v-bind:disabled="!isPostValid()">Сохранить</button>
             </div>
-            <button v-if="!submitting" class="save-btn" @click="onBtnCancel">Отмена</button>
+            <button v-if="!submitting" class="blog-btn cancel-btn" @click="onBtnCancel">Отмена</button>
         </div>
     </div>
 </template>
@@ -184,6 +186,17 @@
         beforeDestroy(){
             this.quillInstance = null;
         },
+        computed: {
+            cropperWidth(){
+                return screen.width > 969 ? 800 : screen.width - 25
+            },
+            cropperHeight(){
+                return screen.width > 969 ? 600 : this.cropperWidth;
+            },
+            cropperRemoveButtonSize(){
+                return screen.width > 969 ? 30 : 45;
+            },
+        },
         methods: {
             onEditorBlur(editor) {
                 // console.debug('editor blur!')
@@ -304,33 +317,35 @@
 </script>
 
 <style lang="stylus" scoped>
-    $signin_color= #00cf6b;
-    @import "../buttons.styl"
+    @import "../constants.styl"
+
+    .post-edit {
+        &-cropper {
+            text-align center
+        }
+        .title {
+            width 100%
+            margin-left 0px
+            margin-right 0px
+            padding-right 0px
+            padding-left 0.3em
+            border-style hidden
+            border-width 0px
+            box-sizing: border-box;
+            font-size $postTitleFontSize
+            font-weight $postTitleFontWeight
+            font-family $postTitleFontFamily
+            color $postTitleColor
+        }
+        div.quill-editor {
+            margin-top: 0.3em
+            margin-bottom: 0.5em
+        }
+    }
 
     .post-command-buttons {
         .send {
             display inline
-
-            .save-btn {
-                height 32px
-                min-width 64px
-                border-radius 2px;
-                border-width 1px;
-                background: white;
-                color: $signin_color;
-                &:hover:enabled {
-                    border-color: $signin_color;
-                    background: cornflowerblue;
-                    color: white;
-                }
-                &:disabled{
-                    color: red
-                }
-                &:hover:disabled {
-                    background: red;
-                    color: white;
-                }
-            }
         }
     }
 </style>

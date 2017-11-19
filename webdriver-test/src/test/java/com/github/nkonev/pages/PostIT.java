@@ -100,7 +100,7 @@ public class PostIT extends AbstractItTestRunner {
         }
 
         public void save() {
-            $(".post-command-buttons button.save-btn")
+            $(".post-command-buttons button.ok-btn")
                     .waitUntil(Condition.exist, 20 * 1000)
                     .waitUntil(Condition.visible, 20 * 1000)
                     .waitUntil(Condition.enabled, 20 * 1000)
@@ -120,7 +120,7 @@ public class PostIT extends AbstractItTestRunner {
                     .waitUntil(Condition.enabled, waitSec * 1000)
                     .scrollTo()
                     .setValue(text);
-            $(".comment-command-buttons .save-btn")
+            $(".comment-command-buttons .ok-btn")
                     .waitUntil(Condition.exist, waitSec * 1000)
                     .waitUntil(Condition.visible, waitSec * 1000)
                     .waitUntil(Condition.enabled, waitSec * 1000)
@@ -146,7 +146,7 @@ public class PostIT extends AbstractItTestRunner {
             SelenideElement comment = findComment(index);
             comment.find(".comment-manage-buttons .edit-container-pen").click();
             comment.find(COMMENT_EDIT_TEXTAREA_SELECTOR).setValue(newText);
-            comment.find(".comment-command-buttons .save-btn").click();
+            comment.find(".comment-command-buttons .ok-btn").click();
 
             $(COMMENT_LIST_SELECTOR).shouldHave(Condition.text(newText));
         }

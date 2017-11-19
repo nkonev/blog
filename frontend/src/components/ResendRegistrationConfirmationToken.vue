@@ -4,7 +4,7 @@
         Enter email for resend confirmation
         <input v-model="email"/>
         <error v-show="errors.email" :message="errors.email"></error>
-        <button @click="resend()" v-bind:disabled="!submitEnabled">Resend</button>
+        <button @click="resend()" v-bind:disabled="!submitEnabled" class="blog-btn ok-btn">Resend</button>
         <span class="email-successfully-sent" v-if="emailSuccessfullySent">Sent</span>
         <error v-show="errors.server" :message="errors.server"></error>
     </div>

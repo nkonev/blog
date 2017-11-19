@@ -1,5 +1,5 @@
 <template>
-    <modal :name="modalName" transition="pop-out" @before-open="beforeOpen" :width="380" :height="250">
+    <modal :name="modalName" transition="pop-out" @before-open="beforeOpen" :width="380" :height="240">
         <div class="box">
             <div class="box-part">
                 <div class="login-title">Please login</div>
@@ -7,11 +7,12 @@
                     <input id="username" type="text" placeholder="Username" v-model="formUsername">
                     <input id="password" type="password" placeholder="Password" v-model="formPassword">
 
+                    <div class="button-set">
+                        <button id="btn-submit" class="blog-btn ok-btn login-btn" type="submit" @click.prevent="doLogin">Login!</button>
+                    </div>
+
                     <div class="errors">
                         <div v-show="formError" class="box-error-message">{{formError}}</div>
-                    </div>
-                    <div class="button-set">
-                        <button id="btn-submit" class="large-btn login-btn" type="submit" @click.prevent="doLogin">Login!</button>
                     </div>
                 </form>
             </div>
@@ -76,7 +77,6 @@
 
 <style lang="stylus" scoped>
     $background_color=#404142;
-    $signin_color= #00cf6b;
     @import "../buttons.styl"
 
     .box {
@@ -101,14 +101,12 @@
 
         .errors {
             display: block
-            height 20px;
-            width: 334px;
-            margin-top 4px;
-            margin-bottom 4px;
+            margin-top 0.5em;
+            margin-bottom 0.5em;
 
             .box-error-message {
-                //display: inline
-                padding 4px;
+                padding 0.4em;
+                box-sizing: border-box;
                 //width 100%;
                 //height 100%
                 //margin-left auto;
@@ -149,56 +147,13 @@
             outline: none;
         }
 
-        button {
-            background: white;
-            border-radius: 4px;
-            box-sizing: border-box;
-            padding: 10px;
-            letter-spacing: 1px;
-            font-family: "Open Sans", sans-serif;
-            font-weight: 400;
-            min-width: 140px;
-            margin-top: 8px;
-            color: #8b8c8d;
-            cursor: pointer;
-            border: 1px solid #DDDEDF;
-            text-transform: uppercase;
-            transition: 0.1s all;
-            font-size: 10px;
-            outline: none;
-            &:hover {
-                border-color: mix(#DDDEDF, black, 90%);
-                color: mix(#8b8c8d, black, 80%);
-            }
-        }
-
-        .large-btn {
-            width: 100%;
-            background: white;
-
-            span {
-                font-weight: 600;
-            }
-            &:hover {
-                color: white !important;
-            }
+        .login-btn{
+            width 100%
         }
 
         .button-set {
-            margin-bottom: 8px;
-        }
-
-        #signin-btn {
-            margin-left: 8px;
-        }
-
-        .login-btn {
-            border-color: $signin_color;
-            color: $signin_color;
-            &:hover {
-                border-color: $signin_color;
-                background: $signin_color;
-            }
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
         }
     }
 

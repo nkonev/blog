@@ -2,7 +2,7 @@
     <div class="password-reset-enter-new" v-if="!isPasswordSuccessfullyReset">
         Please enter new password for {{login}}
         <input id="new-password" v-model="newPassword"/>
-        <button id="set-password" @click="resetPassword()">Set new password</button>
+        <button id="set-password" @click="resetPassword()" class="blog-btn ok-btn">Set new password</button>
         <error v-show="errors.server" :message="errors.server"></error>
     </div>
     <div v-else>

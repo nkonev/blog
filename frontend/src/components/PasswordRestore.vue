@@ -2,7 +2,7 @@
     <div class="restore-password" v-if="!isPasswordResetTokenSent">
         <h1>Restore your password</h1>
         <input id="email" v-model="email" placeholder="Your email"/>
-        <button id="send" @click="requestPasswordResetToken()" v-bind:disabled="!submitEnabled">Send password reset token</button>
+        <button id="send" @click="requestPasswordResetToken()" v-bind:disabled="!submitEnabled" class="blog-btn ok-btn">Send password reset token</button>
         <error v-show="errors.email" :message="errors.email"></error>
     </div>
     <div class="check-your-email" v-else>

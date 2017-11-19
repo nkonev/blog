@@ -35,7 +35,7 @@
             <aside class="left" @click="goLeft()" v-if="postDTO.id && !isEditing && postDTO.left"><span><< left</span></aside>
             <aside class="right" @click="goRight()" v-if="postDTO.id && !isEditing && postDTO.right"><span>right >></span></aside>
 
-            <CommentList v-show="!(isLoading || errorMessage)"/>
+            <CommentList v-show="!(isLoading || errorMessage || isEditing)"/>
         </template>
         <template v-else>
             Error
@@ -269,8 +269,13 @@
             flex-wrap wrap
             //align-items: baseline
 
-            h1 {
+            h2 {
+                font-size $postTitleFontSize
+                font-weight $postTitleFontWeight
+                font-family $postTitleFontFamily
+                color $postTitleColor
             }
+
             img.edit-container-pen {
                 height 32px;
                 cursor pointer
