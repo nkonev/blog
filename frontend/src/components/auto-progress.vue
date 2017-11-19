@@ -20,14 +20,23 @@
             };
 
             var excludedVal = this.$props.excludedUrls;
+            var excludedRegexp = excludedVal.map(currentVal => new RegExp(currentVal, "i"));
+
+            var canUseProgress = function(url){
+                return !excludedRegexp.find(el => el.test(url))
+            };
+
+            var startProgress = function(){
+                progress.start();
+            };
 
             XMLHttpRequest.prototype.open = function(a='',b='') {
                 if (excludedVal) {
-                    if (!excludedVal.includes(b)) {
-                        progress.start();
+                    if (canUseProgress(b)) {
+                        startProgress();
                     }
                 } else {
-                    progress.start();
+                    startProgress();
                 }
                 listener.tempOpen.apply(this, arguments);
                 listener.method = a;
@@ -46,7 +55,7 @@
 
             XMLHttpRequest.prototype.send = function(a='',b='') {
                 if (excludedVal) {
-                    if (!excludedVal.includes(listener.url)) {
+                    if (canUseProgress(listener.url)) {
                         doneProgress();
                     }
                 } else {

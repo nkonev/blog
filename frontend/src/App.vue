@@ -2,7 +2,7 @@
     <div id="app">
         <div id="content">
             <LoginModal></LoginModal>
-            <auto-progress :excludedUrls="['/api/profile']"/>
+            <auto-progress :excludedUrls="['/api/profile', '/api/post/\\d+/comment.*']"/>
 
             <h1 class="logo">Blog</h1>
             <nav>
