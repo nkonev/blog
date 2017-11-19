@@ -94,7 +94,7 @@
                             <phase>generate-test-sources</phase>
                             <configuration>
                                 <skip>${skipTests}</skip>
-                                <arguments>test</arguments>
+                                <arguments>test -- --coverage</arguments>
                             </configuration>
                         </execution>
 
