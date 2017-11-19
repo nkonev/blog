@@ -2,7 +2,7 @@
     <div id="app">
         <div id="content">
             <LoginModal></LoginModal>
-            <auto-progress/>
+            <auto-progress :excludedUrls="['/api/profile']"/>
 
             <h1 class="logo">Blog</h1>
             <nav>
@@ -21,7 +21,7 @@
     import Vue from 'vue';
     import LoginModal from './components/LoginModal.vue';
     import vmodal from 'vue-js-modal'
-    import autoProgress from 'vue-auto-progress'
+    import autoProgress from './components/auto-progress.vue'
     import userProfileNav from './components/UserProfileNav.vue'
     import store, {GET_USER, FETCH_USER_PROFILE} from './store'
     import {mapGetters} from 'vuex'
@@ -36,7 +36,7 @@
         // used components for provide custom tags
         components: {
             LoginModal,
-            autoProgress,
+            'auto-progress':autoProgress,
             userProfileNav
         },
         mounted() {
