@@ -13,10 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class UserAccountConverter {
@@ -30,7 +27,7 @@ public class UserAccountConverter {
                 userAccount.isExpired(),
                 userAccount.isLocked(),
                 userAccount.isEnabled(),
-                convertRoles(Arrays.asList(userAccount.getRoles()).stream().map(s -> UserRole.valueOf(s)).collect(Collectors.toList())),
+                Collections.singletonList(convertRole(userAccount.getRole())),
                 userAccount.getEmail()
         );
     }
@@ -45,6 +42,10 @@ public class UserAccountConverter {
         );
     }
 
+    private static SimpleGrantedAuthority convertRole(UserRole role) {
+        if (role==null) {return null;}
+        return new SimpleGrantedAuthority(role.name());
+    }
 
     private static Collection<SimpleGrantedAuthority> convertRoles(Collection<UserRole> roles) {
         if (roles==null) {return null;}
@@ -82,8 +83,7 @@ public class UserAccountConverter {
         final boolean locked = false;
         final boolean enabled = false;
 
-        Set<UserRole> newUserRoles = new HashSet<>();
-        newUserRoles.add(UserRole.ROLE_USER);
+        final UserRole newUserRole = UserRole.ROLE_USER;
 
         String password = userAccountDTO.getPassword();
         try {
@@ -99,7 +99,7 @@ public class UserAccountConverter {
                 expired,
                 locked,
                 enabled,
-                newUserRoles.stream().map(userRole -> userRole.toString()).collect(Collectors.toList()).toArray(new String[newUserRoles.size()]),
+                newUserRole,
                 userAccountDTO.getEmail()
         );
     }

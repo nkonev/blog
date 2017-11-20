@@ -171,8 +171,11 @@ ALTER TABLE images.post_content_image ADD COLUMN create_date_time timestamp NOT 
 DROP SCHEMA historical CASCADE;
 
 -- changeset nkonev:7_roles_array context:main failOnError: true
-ALTER TABLE auth.users ADD COLUMN roles text[] NOT NULL DEFAULT '{"ROLE_USER"}';
+CREATE TYPE auth.user_role AS ENUM (
+    'ROLE_ADMIN',
+    'ROLE_MODERATOR',
+    'ROLE_USER'
+);
+ALTER TABLE auth.users ADD COLUMN role auth.user_role NOT NULL DEFAULT 'ROLE_USER';
 DROP TABLE auth.user_roles;
-
--- changeset nkonev:8_roles_array_test context:test failOnError: true
-UPDATE auth.users SET roles = '{"ROLE_ADMIN"}' WHERE id = (SELECT id FROM auth.users WHERE username = 'admin');
+UPDATE auth.users SET role = 'ROLE_ADMIN' WHERE id = (SELECT id FROM auth.users WHERE username = 'admin');

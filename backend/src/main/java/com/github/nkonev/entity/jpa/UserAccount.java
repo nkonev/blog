@@ -2,6 +2,7 @@ package com.github.nkonev.entity.jpa;
 
 import com.github.nkonev.Constants;
 import com.vladmihalcea.hibernate.type.array.StringArrayType;
+import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
@@ -9,14 +10,15 @@ import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
 
 @TypeDefs({
         @TypeDef(
-                name = "string-array",
-                typeClass = StringArrayType.class
+                name = "pgsql_enum",
+                typeClass = PostgreSQLEnumType.class
         )
 })
 @Entity
@@ -34,24 +36,25 @@ public class UserAccount {
     @Email
     private String email;
 
-    @NotEmpty
-    @Type(type = "string-array" )
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Type(type = "pgsql_enum")
     @Column(
-            name = "roles",
-            columnDefinition = "text[]"
+            name = "role",
+            columnDefinition = "user_role"
     )
-    private String[] roles = new String[0]; // synonym to "authority"
+    private UserRole role; // synonym to "authority"
 
     public UserAccount() { }
 
-    public UserAccount(String username, String password, String avatar, boolean expired, boolean locked, boolean enabled, String[] roles, String email) {
+    public UserAccount(String username, String password, String avatar, boolean expired, boolean locked, boolean enabled, UserRole role, String email) {
         this.username = username;
         this.password = password;
         this.avatar = avatar;
         this.expired = expired;
         this.locked = locked;
         this.enabled = enabled;
-        this.roles = roles;
+        this.role = role;
         this.email = email;
     }
 
@@ -119,11 +122,11 @@ public class UserAccount {
         this.email = email;
     }
 
-    public String[] getRoles() {
-        return roles;
+    public UserRole getRole() {
+        return role;
     }
 
-    public void setRoles(String[] roles) {
-        this.roles = roles;
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 }

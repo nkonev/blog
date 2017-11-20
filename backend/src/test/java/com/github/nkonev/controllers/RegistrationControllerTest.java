@@ -233,7 +233,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
         Assert.assertEquals(TestConstants.USER_ALICE, userAccountBefore.getUsername());
         Assert.assertEquals(userAccountBefore.getUsername(), userAccountAfter.getUsername());
         Assert.assertEquals(userAccountBefore.getPassword(), userAccountAfter.getPassword());
-        Assert.assertEquals(userAccountBefore.getRoles(), userAccountAfter.getRoles());
+        Assert.assertEquals(userAccountBefore.getRole(), userAccountAfter.getRole());
     }
 
 
