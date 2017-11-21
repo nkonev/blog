@@ -39,5 +39,5 @@ script:
       echo "Won't push docker image and deploy because subsequent build failed";
     ) fi
 addons:
-  firefox: "56.0"
+  firefox: "57.0"
   chrome: stable
