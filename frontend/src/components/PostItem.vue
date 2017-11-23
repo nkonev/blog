@@ -1,6 +1,6 @@
 <template>
     <div class="post">
-        <div class="img-wrapper">
+        <div v-if="postDTO.titleImg" class="img-wrapper">
             <img :src="postDTO.titleImg"/>
         </div>
         <div class="text-wrapper">
@@ -58,7 +58,7 @@
             img {
                 float: left
                 margin 10px;
-                width: 250px;
+                width: 350px;
                 // display inline
                 // height: auto;
                 //max-height 400px;
@@ -72,6 +72,8 @@
             // float: right;
             min-height 100px
             max-height 600px;
+            font-size $postBodyFontSize
+            font-family $postBodyFontFamily
 
             .post-head{
                 display flex

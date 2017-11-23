@@ -319,6 +319,8 @@
             blockquote p {
                 display: inline
             }
+            font-size $postBodyFontSize
+            font-family $postBodyFontFamily
         }
         &-error {
             font-size 4em

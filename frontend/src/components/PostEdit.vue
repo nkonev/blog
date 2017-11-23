@@ -349,3 +349,11 @@
         }
     }
 </style>
+
+<style lang="stylus">
+    @import "../constants.styl"
+    .ql-editor > * {
+        font-size $postBodyFontSize
+        font-family $postBodyFontFamily
+    }
+</style>
