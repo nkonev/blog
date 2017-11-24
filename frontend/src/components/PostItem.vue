@@ -1,7 +1,7 @@
 <template>
     <div class="post">
         <div v-if="postDTO.titleImg" class="img-wrapper">
-            <img :src="postDTO.titleImg"/>
+            <router-link :to="{name: post, params: { id: postDTO.id} }"><img :src="postDTO.titleImg"/></router-link>
         </div>
         <div class="text-wrapper">
             <div class="post-head">
@@ -63,6 +63,12 @@
                 // height: auto;
                 //max-height 400px;
                 max-height $imgMaxHeight
+            }
+
+            img:hover {
+                transform scale(1.2)
+                box-shadow: 11px 18px 38px 11px rgba(0,0,0,0.75);
+                transition all 0.2s
             }
         }
 
