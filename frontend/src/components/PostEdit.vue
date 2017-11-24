@@ -96,7 +96,7 @@
             return {
                 submitting: false,
                 editorOption: {
-                    //highlight: hljs,
+                    theme: 'bubble',
                     modules: {
                         syntax: true,              // Include syntax module
                         toolbar: toolbarOptions,
