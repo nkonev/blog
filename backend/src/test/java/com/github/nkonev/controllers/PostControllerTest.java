@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.nkonev.AbstractUtTestRunner;
 import com.github.nkonev.Constants;
 import com.github.nkonev.dto.UserAccountDTO;
+import com.github.nkonev.dto.UserAccountDetailsDTO;
+import com.github.nkonev.entity.jpa.Post;
 import com.github.nkonev.repo.jpa.PostRepository;
 import com.github.nkonev.utils.PageUtils;
 import com.github.nkonev.TestConstants;
@@ -16,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +43,9 @@ public class PostControllerTest extends AbstractUtTestRunner {
 
     @Autowired
     private PostController postController;
+
+    @Autowired
+    private PostRepository postRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -125,6 +131,24 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andExpect(jsonPath("$.size()").value(PageUtils.DEFAULT_SIZE))
                 .andExpect(jsonPath("$.[0].title").value("generated_post_2000"))
                 .andExpect(jsonPath("$.[0].text").value("Lorem Ipsum - это текст-\"рыба\", часто <b>используемый</b> в печати и вэб-дизайне. Lorem Ipsum является стандартной \"рыбой\" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, <b>используя</b> Lorem Ipsum для распечатки образцов. Lorem Ipsum не только успешно пережил без заметных изменений пять веков, но и перешагнул в электронный дизайн. Его популяризации в новое время послужили публикация листов Letraset с образцами Lorem Ipsum в 60-х годах и, в более недавнее время, программы электронной вёрстки типа Aldus PageMaker, в шаблонах которых <b>используется</b> Lorem Ipsum"))
+                .andReturn();
+    }
+
+    @WithUserDetails(TestConstants.USER_ADMIN)
+    @Test
+    public void testFulltextSearchHostPort() throws Exception {
+        UserAccountDetailsDTO userAccountDetailsDTO = (UserAccountDetailsDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        postController.updatePost(userAccountDetailsDTO, new PostDTO(500L, "edited for search host port", "A new host for test www.google.com:80 with port too", "", null, null));
+        postRepository.flush();
+
+        MvcResult getPostsRequest = mockMvc.perform(
+                get(Constants.Uls.API+Constants.Uls.POST+"?searchString=www.google.com:80")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(1))
+                .andExpect(jsonPath("$.[0].title").value("edited for search host port"))
+                .andExpect(jsonPath("$.[0].text").value("host for test <b>www.google.com:80</b> with port"))
                 .andReturn();
     }
 
