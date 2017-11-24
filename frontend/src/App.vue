@@ -137,6 +137,13 @@
                 display: block;
                 margin: 0 auto;
             }
+
+            .logo {
+                margin 0
+                padding 0
+                text-align center
+            }
+
         }
 
     }
