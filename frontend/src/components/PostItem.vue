@@ -67,7 +67,7 @@
 
             img:hover {
                 transform scale(1.2)
-                box-shadow: 11px 18px 38px 11px rgba(0,0,0,0.75);
+                box-shadow: 7px 7px 34px 22px rgba(0,0,0,0.6);
                 transition all 0.2s
             }
         }
@@ -123,6 +123,11 @@
                     width auto
                     max-width 100%
                     max-height 500px
+                }
+                img:hover {
+                    transform none
+                    box-shadow: none
+                    transition none
                 }
             }
 
