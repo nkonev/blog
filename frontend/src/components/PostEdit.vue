@@ -355,5 +355,8 @@
     .ql-editor > * {
         font-size $postBodyFontSize
         font-family $postBodyFontFamily
+
+        margin-top $postBodyMarginTop
+        margin-bottom $postBodyMarginBottom
     }
 </style>

@@ -321,6 +321,11 @@
             }
             font-size $postBodyFontSize
             font-family $postBodyFontFamily
+
+            * {
+                margin-top $postBodyMarginTop
+                margin-bottom $postBodyMarginBottom
+            }
         }
         &-error {
             font-size 4em
