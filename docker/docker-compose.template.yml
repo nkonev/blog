@@ -99,12 +99,12 @@ services:
     image: kbudde/rabbitmq-exporter
     hostname: rabbitmq_exporter
     ports:
-      - 9090:9090
+      - 9191:9191
     environment:
       - RABBIT_URL=http://rabbitmq:15672
       - RABBIT_USER=blog
       - RABBIT_PASSWORD=blogPazZw0rd
-      - PUBLISH_PORT=9090
+      - PUBLISH_PORT=9191
 
   postgresql_exporter:
     image: wrouesnel/postgres_exporter
