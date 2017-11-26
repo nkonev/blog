@@ -35,8 +35,6 @@ public class AppConfig {
     @Value("${custom.redirect.to.https.port:443}")
     private int toHttpsPort;
 
-    @Value("${server.tomcat.basedir}")
-
     @PostConstruct
     public void pc() throws Exception {
         SimpleModule rejectUserAccountDetailsDTOModule = new SimpleModule("Reject serialize UserAccountDetailsDTO");
