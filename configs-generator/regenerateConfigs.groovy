@@ -11,8 +11,8 @@ println string
 // documentation https://github.com/groovy/GMavenPlus/wiki
 
 
-def FRONTEND_MAIN_YML_FILE = "${project.basedir}/../backend/src/main/resources/config/application.yml";
-def FRONTEND_TEST_YML_FILE = "${project.basedir}/../backend/src/test/resources/config/application.yml";
+def BACKEND_MAIN_YML_FILE = "${project.basedir}/../backend/src/main/resources/config/application.yml";
+def BACKEND_TEST_YML_FILE = "${project.basedir}/../backend/src/test/resources/config/application.yml";
 def INTEGRATION_TEST_YML_FILE = "${project.basedir}/../webdriver-test/src/test/resources/config/application.yml";
 
 class ExportedConstants {
@@ -51,6 +51,7 @@ spring.jpa:
   hibernate.ddl-auto: validate
 
 spring.datasource:
+    # https://jdbc.postgresql.org/documentation/94/connect.html#connection-parameters
     url: jdbc:postgresql://172.22.0.2:5432/blog?connectTimeout=10&socketTimeout=40
     username: blog
     password: "blogPazZw0rd"
@@ -160,7 +161,7 @@ custom:
 ////////////////////////////////////////////////////////////// config files ///////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-def FRONTEND_MAIN_YML_CONTENT =
+def BACKEND_MAIN_YML_CONTENT =
 """${AUTOGENERATE_SNIPPET}
 logging.level.: INFO
 logging.level.org.springframework.web.socket: WARN
@@ -188,11 +189,11 @@ spring.resources.static-locations: file:backend/src/main/resources/static/, clas
 
 ${DATA_STORE_SNIPPET('main', false)}
 """;
-writeAndLog(FRONTEND_MAIN_YML_FILE, FRONTEND_MAIN_YML_CONTENT);
+writeAndLog(BACKEND_MAIN_YML_FILE, BACKEND_MAIN_YML_CONTENT);
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-def FRONTEND_TEST_YML_CONTENT =
+def BACKEND_TEST_YML_CONTENT =
 """${AUTOGENERATE_SNIPPET}
 logging.level.: INFO
 ${common(true)}
@@ -202,7 +203,7 @@ ${WEBSERVER_SNIPPET}
 ${TEST_USERS_SNIPPET}
 ${DATA_STORE_SNIPPET('main, test', true)}
 """;
-writeAndLog(FRONTEND_TEST_YML_FILE, FRONTEND_TEST_YML_CONTENT);
+writeAndLog(BACKEND_TEST_YML_FILE, BACKEND_TEST_YML_CONTENT);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 def INTEGRATION_TEST_YML_CONTENT =
