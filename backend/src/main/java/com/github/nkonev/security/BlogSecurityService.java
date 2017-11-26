@@ -118,6 +118,9 @@ public class BlogSecurityService {
     }
 
     public boolean hasSessionManagementPermission(UserAccountDetailsDTO userAccount) {
+        if (userAccount==null){
+            return false;
+        }
         if (roleHierarchy.getReachableGrantedAuthorities(userAccount.getAuthorities()).contains(new SimpleGrantedAuthority(UserRole.ROLE_MODERATOR.name()))){
             return true;
         } else {

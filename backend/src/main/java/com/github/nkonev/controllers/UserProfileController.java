@@ -4,6 +4,7 @@ import com.github.nkonev.Constants;
 import com.github.nkonev.dto.*;
 import com.github.nkonev.entity.jpa.UserAccount;
 import com.github.nkonev.exception.UserAlreadyPresentException;
+import com.github.nkonev.security.BlogSecurityService;
 import com.github.nkonev.security.BlogUserDetailsService;
 import com.github.nkonev.utils.PageUtils;
 import com.github.nkonev.converter.UserAccountConverter;
@@ -53,6 +54,9 @@ public class UserProfileController {
     @Autowired
     private BlogUserDetailsService blogUserDetailsService;
 
+    @Autowired
+    private BlogSecurityService blogSecurityService;
+
     /**
      *
      * @param userAccount
@@ -64,7 +68,8 @@ public class UserProfileController {
     }
 
     @GetMapping(value = Constants.Uls.USER)
-    public Wrapper<UserAccountDTO> getUsersGet(
+    public UserListWrapper getUsersGet(
+            @AuthenticationPrincipal UserAccountDetailsDTO userAccount,
             @RequestParam(value = "page", required=false, defaultValue = "0") int page,
             @RequestParam(value = "size", required=false, defaultValue = "0") int size,
             @RequestParam(value = "searchString", required=false, defaultValue = "") String searchString
@@ -72,10 +77,10 @@ public class UserProfileController {
         PageRequest springDataPage = new PageRequest(PageUtils.fixPage(page), PageUtils.fixSize(size), Sort.Direction.ASC, "id");
 
         Page<UserAccount> resultPage = userAccountRepository.findByUsernameContains(springDataPage, searchString);
-        return new Wrapper<>(
-                resultPage.getContent().stream()
-                        .map(UserAccountConverter::convertToUserAccountDTO).collect(Collectors.toList()),
-                resultPage.getTotalElements()
+        return new UserListWrapper(
+                resultPage.getContent().stream().map(UserAccountConverter::convertToUserAccountDTO).collect(Collectors.toList()),
+                resultPage.getTotalElements(),
+                blogSecurityService.hasSessionManagementPermission(userAccount)
         );
     }
 

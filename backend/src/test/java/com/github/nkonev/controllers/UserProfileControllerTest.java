@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -248,6 +249,7 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
                 .andReturn();
 
     }
+
     @Test
     @Ignore
     public void userCanSeeOnlyOwnProfileEmail() {
@@ -291,4 +293,35 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
         String str = responseEntity.getBody();
         Assert.assertEquals(200, responseEntity.getStatusCodeValue());
     }
+
+    @WithUserDetails(TestConstants.USER_ALICE)
+    @Test
+    public void userCannotManageSessionsView() throws Exception {
+
+        MvcResult mvcResult = mockMvc.perform(
+                get(Constants.Uls.API+Constants.Uls.USER)
+        )
+                .andDo(result -> {
+                    LOGGER.info(result.getResponse().getContentAsString());
+                })
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.canManageSessions").value(false))
+                .andReturn();
+    }
+
+    @WithUserDetails(TestConstants.USER_ADMIN)
+    @Test
+    public void moderatorCanManageSessionsView() throws Exception {
+
+        MvcResult mvcResult = mockMvc.perform(
+                get(Constants.Uls.API+Constants.Uls.USER)
+        )
+                .andDo(result -> {
+                    LOGGER.info(result.getResponse().getContentAsString());
+                })
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.canManageSessions").value(true))
+                .andReturn();
+    }
+
 }
