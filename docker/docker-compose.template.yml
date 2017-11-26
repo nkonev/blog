@@ -108,6 +108,15 @@ services:
       - RABBIT_USER=blog
       - RABBIT_PASSWORD=blogPazZw0rd
       - PUBLISH_PORT=9090
+
+  postgresql_exporter:
+    image: wrouesnel/postgres_exporter
+    hostname: postgresql_exporter
+    ports:
+      - 9187:9187
+    environment:
+      - DATA_SOURCE_NAME=postgresql://postgres:postgresqlPassword@postgresql:5432/blog?sslmode=disable
+
 volumes:
   #enviroment
   postgresql_data_dir:
