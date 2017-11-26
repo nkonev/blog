@@ -13,6 +13,7 @@
                 <user-profile-nav v-bind:currentUser="currentUser"/>
             </nav>
             <router-view></router-view>
+            <vm-back-top :bottom="80" :right="18"></vm-back-top>
         </div>
     </div>
 </template>
@@ -25,8 +26,10 @@
     import userProfileNav from './components/UserProfileNav.vue'
     import store, {GET_USER, FETCH_USER_PROFILE} from './store'
     import {mapGetters} from 'vuex'
+    import VmBackTop from 'vue-multiple-back-top'
 
     Vue.use(vmodal);
+    Vue.component(VmBackTop.name, VmBackTop);
 
     export default {
         name: 'app',
