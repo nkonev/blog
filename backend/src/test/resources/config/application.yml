@@ -84,7 +84,7 @@ spring.datasource:
     tomcat:
       minIdle: 4
       maxIdle: 8
-      maxActive: 8
+      maxActive: 10
       maxWait: 60000
       testOnBorrow: true
       testOnConnect: true
@@ -92,6 +92,7 @@ spring.datasource:
       timeBetweenEvictionRunsMillis: 5000
       validationQuery: SELECT 1;
       validationQueryTimeout: 4
+      logValidationErrors: true
 
 liquibase:
   change-log: classpath:liquibase/migration.yml
