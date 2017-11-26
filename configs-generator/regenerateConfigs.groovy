@@ -51,7 +51,7 @@ spring.jpa:
   hibernate.ddl-auto: validate
 
 spring.datasource:
-    # https://jdbc.postgresql.org/documentation/94/connect.html#connection-parameters
+    # https://jdbc.postgresql.org/documentation/head/connect.html#connection-parameters
     url: jdbc:postgresql://172.22.0.2:5432/blog?connectTimeout=10&socketTimeout=40
     username: blog
     password: "blogPazZw0rd"
