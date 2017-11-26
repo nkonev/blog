@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
 
 @Configuration
 public class AppConfig {
@@ -34,6 +35,8 @@ public class AppConfig {
     @Value("${custom.redirect.to.https.port:443}")
     private int toHttpsPort;
 
+    @Value("${server.tomcat.basedir}")
+
     @PostConstruct
     public void pc() throws Exception {
         SimpleModule rejectUserAccountDetailsDTOModule = new SimpleModule("Reject serialize UserAccountDetailsDTO");
@@ -48,8 +51,9 @@ public class AppConfig {
 
     @Bean
     public EmbeddedServletContainerFactory servletContainer() {
+        TomcatEmbeddedServletContainerFactory tomcat;
         if (serverProperties.getSsl()!=null && serverProperties.getSsl().isEnabled()) {
-            TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory() {
+            tomcat = new TomcatEmbeddedServletContainerFactory() {
                 @Override
                 protected void postProcessContext(Context context) {
                     SecurityConstraint securityConstraint = new SecurityConstraint();
@@ -63,8 +67,17 @@ public class AppConfig {
             tomcat.addAdditionalTomcatConnectors(additionalRedirectHttpToHttpsConnector(fromHttpPost, toHttpsPort));
             return tomcat;
         } else {
-            return new TomcatEmbeddedServletContainerFactory();
+            tomcat =  new TomcatEmbeddedServletContainerFactory();
         }
+
+        File baseDir = serverProperties.getTomcat().getBasedir();
+        if (baseDir!=null) {
+            File docRoot = new File(baseDir, "document-root");
+            docRoot.mkdirs();
+            tomcat.setDocumentRoot(docRoot);
+        }
+
+        return tomcat;
     }
 
     private Connector additionalRedirectHttpToHttpsConnector(int httpPort, int redirectHttpsPort) {
