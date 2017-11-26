@@ -74,12 +74,16 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=blog
       - RABBITMQ_DEFAULT_PASS=blogPazZw0rd
+      - RABBITMQ_NODENAME=my-rabbit
     volumes :
       - rabbitmq_data_dir:/var/lib/rabbitmq/mnesia
 #    logging:
 #      driver: "journald"
 #      options:
 #        tag: rabbitmq
+    ports:
+#      - 9090:9090
+      - 15672:15672
     deploy:
       placement:
         constraints: [node.labels.blog.server.role == db]
@@ -94,6 +98,16 @@ services:
 #      options:
 #        tag: prerender
 
+  rabbitmq_exporter:
+    image: kbudde/rabbitmq-exporter
+    hostname: rabbitmq_exporter
+    ports:
+      - 9090:9090
+    environment:
+      - RABBIT_URL=http://rabbitmq:15672
+      - RABBIT_USER=blog
+      - RABBIT_PASSWORD=blogPazZw0rd
+      - PUBLISH_PORT=9090
 volumes:
   #enviroment
   postgresql_data_dir:
