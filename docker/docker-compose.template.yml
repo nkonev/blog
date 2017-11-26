@@ -81,9 +81,6 @@ services:
 #      driver: "journald"
 #      options:
 #        tag: rabbitmq
-    ports:
-#      - 9090:9090
-      - 15672:15672
     deploy:
       placement:
         constraints: [node.labels.blog.server.role == db]
@@ -116,6 +113,14 @@ services:
       - 9187:9187
     environment:
       - DATA_SOURCE_NAME=postgresql://postgres:postgresqlPassword@postgresql:5432/blog?sslmode=disable
+
+  redis_exporter:
+    image: oliver006/redis_exporter
+    hostname: redis_exporter
+    ports:
+      - 9121:9121
+    environment:
+      - REDIS_ADDR=redis://redis:6379
 
 volumes:
   #enviroment
