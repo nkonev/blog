@@ -51,10 +51,23 @@ spring.jpa:
   hibernate.ddl-auto: validate
 
 spring.datasource:
-    url: jdbc:postgresql://172.22.0.2:5432/blog?connectTimeout=10&socketTimeout=20
+    url: jdbc:postgresql://172.22.0.2:5432/blog?connectTimeout=10&socketTimeout=40
     username: blog
     password: "blogPazZw0rd"
     driverClassName: org.postgresql.Driver
+    # https://tomcat.apache.org/tomcat-8.5-doc/jdbc-pool.html#Common_Attributes
+    # https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-connect-to-production-database
+    tomcat:
+      minIdle: 4
+      maxIdle: 8
+      maxActive: 8
+      maxWait: 60000
+      testOnBorrow: true
+      testOnConnect: true
+      testWhileIdle: true
+      timeBetweenEvictionRunsMillis: 5000
+      validationQuery: SELECT 1;
+      validationQueryTimeout: 2
 
 liquibase:
   change-log: classpath:liquibase/migration.yml
