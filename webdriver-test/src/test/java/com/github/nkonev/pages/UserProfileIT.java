@@ -103,10 +103,13 @@ public class UserProfileIT extends AbstractItTestRunner {
     @Test
     public void userSeeThisIsYouAfterLogin() throws Exception {
         UserProfilePage userPage = new UserProfilePage(urlPrefix, driver);
-        userPage.openPage(userId);
-
         LoginModal loginModal = new LoginModal(user, password);
-        loginModal.login();
+
+        FailoverUtils.retry(3, () -> {
+            userPage.openPage(userId);
+            loginModal.login();
+            return null;
+        });
 
         userPage.assertThisIsYou();
 
