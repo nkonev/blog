@@ -9,6 +9,7 @@ public class CommonTestConstants {
     public static final String NON_DELETABLE_POST_TITLE = "generated_post_1999";
 
     public static final String USER_ALICE = "alice";
+    public static final String USER_ALICE_PASSWORD = "password";
     public static final String USER_ADMIN  ="admin";
     public static final String USER_BOB = "bob";
     public static final String USER_NIKITA = "nikita";

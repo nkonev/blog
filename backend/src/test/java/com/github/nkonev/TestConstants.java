@@ -14,6 +14,7 @@ public class TestConstants {
     public static final String USER_DETAILS = "/user-details-vuln";
 
     public static final String USER_ALICE = CommonTestConstants.USER_ALICE;
+    public static final String USER_ALICE_PASSWORD = CommonTestConstants.USER_ALICE_PASSWORD;
     public static final String USER_ADMIN  = CommonTestConstants.USER_ADMIN;
     public static final String USER_BOB = CommonTestConstants.USER_BOB;
     public static final String USER_NIKITA = CommonTestConstants.USER_NIKITA;

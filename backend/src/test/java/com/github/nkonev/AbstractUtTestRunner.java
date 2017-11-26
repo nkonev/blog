@@ -6,11 +6,10 @@ package com.github.nkonev;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.nkonev.config.UtConfig;
-import com.github.nkonev.controllers.CommentControllerTest;
 import com.github.nkonev.dto.PostDTO;
 import com.github.nkonev.repo.redis.UserConfirmationTokenRepository;
+import com.github.nkonev.security.SecurityConfig;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,13 +22,21 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.restdocs.JUnitRestDocumentation;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.HttpCookie;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
+import static com.github.nkonev.security.SecurityConfig.PASSWORD_PARAMETER;
+import static com.github.nkonev.security.SecurityConfig.USERNAME_PARAMETER;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -86,6 +93,36 @@ public abstract class AbstractUtTestRunner {
         String getStr = getPostRequest.getResponse().getContentAsString();
         LOGGER.debug(getStr);
         return objectMapper.readValue(getStr, PostDTO.class);
+    }
+
+
+    public static final String COOKIE_SESSION = "SESSION";
+    public static final String HEADER_XSRF_TOKEN = "X-XSRF-TOKEN";
+    public static final String HEADER_COOKIE = "Cookie";
+
+    protected String buildCookieHeader(HttpCookie... cookies) {
+        return String.join("; ", Arrays.stream(cookies).map(httpCookie -> httpCookie.toString()).collect(Collectors.toList()));
+    }
+
+    /**
+     * This method changes in runtime with ReflectionUtils Spring Security Csrf Filter .with(csrf()) so it ignores any CSRF token
+     * @param xsrf
+     * @param username
+     * @param password
+     * @return
+     * @throws Exception
+     */
+    protected String getSession(String xsrf, String username, String password) throws Exception {
+        MvcResult mvcResult = mockMvc.perform(
+                post(SecurityConfig.API_LOGIN_URL)
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param(USERNAME_PARAMETER, username)
+                        .param(PASSWORD_PARAMETER, password)
+                        .with(csrf())
+        )
+                .andExpect(status().isOk())
+                .andReturn();
+        return mvcResult.getResponse().getCookie(COOKIE_SESSION).getValue();
     }
 
     @Before

@@ -8,6 +8,7 @@ import com.github.nkonev.converter.UserAccountConverter;
 import com.github.nkonev.dto.EditUserDTO;
 import com.github.nkonev.entity.jpa.UserAccount;
 import com.github.nkonev.repo.jpa.UserAccountRepository;
+import com.github.nkonev.security.BlogUserDetailsService;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -16,10 +17,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.net.HttpCookie;
+import java.net.URI;
 import java.util.Map;
 import java.util.Optional;
 
@@ -35,6 +40,9 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private BlogUserDetailsService blogUserDetailsService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserProfileControllerTest.class);
 
@@ -246,4 +254,41 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
 
     }
 
+
+    @Test
+    public void userCannotManageSessions() throws Exception {
+        String xsrf = "xsrf";
+
+        String session = getSession(xsrf, TestConstants.USER_ALICE, TestConstants.USER_ALICE_PASSWORD);
+
+        String headerValue = buildCookieHeader(new HttpCookie(HEADER_XSRF_TOKEN, xsrf), new HttpCookie(COOKIE_SESSION, session));
+
+        RequestEntity requestEntity = RequestEntity
+                .get(new URI(urlWithContextPath() + Constants.Uls.API + Constants.Uls.SESSIONS + "?userId=1"))
+                .header(HEADER_COOKIE, headerValue).build();
+
+        ResponseEntity<String> responseEntity = restTemplate.exchange(requestEntity, String.class);
+        String str = responseEntity.getBody();
+
+        Assert.assertEquals(403, responseEntity.getStatusCodeValue());
+
+        Map<String, Object> resp = objectMapper.readValue(str, new TypeReference<Map<String, Object>>() { });
+        Assert.assertEquals("Access is denied", resp.get("message"));
+    }
+
+    @Test
+    public void moderatorCanManageSessions() throws Exception {
+        String xsrf = "xsrf";
+        String session = getSession(xsrf, username, password);
+
+        String headerValue = buildCookieHeader(new HttpCookie(HEADER_XSRF_TOKEN, xsrf), new HttpCookie(COOKIE_SESSION, session));
+
+        RequestEntity requestEntity = RequestEntity
+                .get(new URI(urlWithContextPath() + Constants.Uls.API + Constants.Uls.SESSIONS + "?userId=1"))
+                .header(HEADER_COOKIE, headerValue).build();
+
+        ResponseEntity<String> responseEntity = restTemplate.exchange(requestEntity, String.class);
+        String str = responseEntity.getBody();
+        Assert.assertEquals(200, responseEntity.getStatusCodeValue());
+    }
 }

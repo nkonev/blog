@@ -22,6 +22,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.session.ExpiringSession;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
@@ -31,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.net.MalformedURLException;
 import java.util.Collection;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -47,6 +49,9 @@ public class UserProfileController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private BlogUserDetailsService blogUserDetailsService;
 
     /**
      *
@@ -87,9 +92,6 @@ public class UserProfileController {
         }
     }
 
-    @Autowired
-    private BlogUserDetailsService blogUserDetailsService;
-
     @PostMapping(Constants.Uls.PROFILE)
     public EditUserDTO editProfile(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount,
@@ -120,4 +122,21 @@ public class UserProfileController {
     }
 
     // TODO delete user with delete avatar
+
+    @GetMapping(Constants.Uls.SESSIONS+"/my")
+    public Map<String, ExpiringSession> mySessions(@AuthenticationPrincipal UserAccountDetailsDTO userDetails){
+        return blogUserDetailsService.getMySessions(userDetails);
+    }
+
+    @PreAuthorize("@blogSecurityService.hasSessionManagementPermission(#userAccount)")
+    @GetMapping(Constants.Uls.SESSIONS)
+    public Map<String, ExpiringSession> sessions(@AuthenticationPrincipal UserAccountDetailsDTO userAccount, @RequestParam("userId") long userId){
+        return blogUserDetailsService.getSessions(userId);
+    }
+
+    @PreAuthorize("@blogSecurityService.hasSessionManagementPermission(#userAccount)")
+    @DeleteMapping(Constants.Uls.SESSIONS)
+    public void killSessions(@AuthenticationPrincipal UserAccountDetailsDTO userAccount, @RequestParam("userId") long userId){
+        blogUserDetailsService.killSessions(userId);
+    }
 }
