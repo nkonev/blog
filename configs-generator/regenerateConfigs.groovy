@@ -67,7 +67,7 @@ spring.datasource:
       testWhileIdle: true
       timeBetweenEvictionRunsMillis: 5000
       validationQuery: SELECT 1;
-      validationQueryTimeout: 2
+      validationQueryTimeout: 4
 
 liquibase:
   change-log: classpath:liquibase/migration.yml
