@@ -208,3 +208,7 @@ Remove exited containers
 docker rm $(docker ps -aq -f name=BLOGSTACK_blog -f status=exited)
 ```
 
+# Run `boot-run`
+```bash
+./mvnw clean spring-boot:run
+```
