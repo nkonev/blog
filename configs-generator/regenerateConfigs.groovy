@@ -163,7 +163,8 @@ custom:
 def FRONTEND_MAIN_YML_CONTENT =
 """${AUTOGENERATE_SNIPPET}
 logging.level.: INFO
-logging.level.org.springframework.web.socket: INFO
+logging.level.org.springframework.web.socket: WARN
+#logging.level.org.apache.tomcat.jdbc.pool: TRACE
 #logging.level.org.springframework.security: DEBUG
 #logging.level.org.springframework.session: DEBUG
 #logging.level.org.springframework.security.web: DEBUG
