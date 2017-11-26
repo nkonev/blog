@@ -51,7 +51,7 @@ spring.jpa:
   hibernate.ddl-auto: validate
 
 spring.datasource:
-    url: jdbc:postgresql://172.22.0.2:5432/blog?connectTimeout=10
+    url: jdbc:postgresql://172.22.0.2:5432/blog?connectTimeout=10&socketTimeout=20
     username: blog
     password: "blogPazZw0rd"
     driverClassName: org.postgresql.Driver
