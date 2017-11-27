@@ -14,7 +14,7 @@ import PasswordRestore from './components/PasswordRestore.vue'
 import PasswordReset from './components/PasswordReset.vue'
 import Help from './components/Help.vue'
 import {root, root_name, users, useProfileName, post} from './routes'
-import PostView from './components/PostView.vue'
+const PostView = () => import('./components/PostView.vue');
 const PostEdit = () => import('./components/PostEdit.vue');
 
 // This installs <router-view> and <router-link>,
