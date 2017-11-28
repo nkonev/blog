@@ -34,7 +34,6 @@
                     :editorOptions="editorOptions"
                     useCustomImageHandler
                     @imageAdded="handleImageAdded" v-model="editPostDTO.text"
-                    :editorToolbar="customToolbar"
         >
         </vue-editor>
 
@@ -96,8 +95,13 @@
         data () {
             return {
                 submitting: false,
-                customToolbar: toolbarOptions,
-                editorOptions: {theme: 'bubble'},
+                editorOptions: {
+                    theme: 'bubble',
+                    modules: {
+                        syntax: true,
+                        toolbar: toolbarOptions,
+                    }
+                },
                 editPostDTO: {}, // will be overriden below in created()
                 myCroppa: {},
                 chosenFile: null,
