@@ -30,13 +30,14 @@
             </croppa >
         </div>
         <input class="title" placeholder="Title of your megapost" type="text" autofocus v-model="editPostDTO.title"/>
-        <quill-editor v-model="editPostDTO.text"
-                      ref="myQuillEditor"
-                      :options="editorOption"
-                      @blur="onEditorBlur($event)"
-                      @focus="onEditorFocus($event)"
-                      @ready="onEditorReady($event)">
-        </quill-editor>
+        <vue-editor id="editor"
+                    :editorOptions="editorOptions"
+                    useCustomImageHandler
+                    @imageAdded="handleImageAdded" v-model="editPostDTO.text"
+                    :editorToolbar="customToolbar"
+        >
+        </vue-editor>
+
 
         <div class="post-command-buttons">
             <div class="send">
@@ -49,10 +50,10 @@
 </template>
 
 <script>
-    import 'highlight.js/styles/monokai.css'
+    import 'quill/dist/quill.bubble.css'
+    import { VueEditor } from 'vue2-editor'
     import 'vue-croppa/dist/vue-croppa.css'
     import Vue from 'vue'
-    import { quillEditor } from 'vue-quill-editor'
     import BlogSpinner from './BlogSpinner.vue'
     import {API_POST} from '../constants'
     import Croppa from 'vue-croppa'
@@ -95,96 +96,20 @@
         data () {
             return {
                 submitting: false,
-                editorOption: {
-                    theme: 'bubble',
-                    modules: {
-                        syntax: true,              // Include syntax module
-                        toolbar: toolbarOptions,
-                    },
-                },
+                customToolbar: toolbarOptions,
+                editorOptions: {theme: 'bubble'},
                 editPostDTO: {}, // will be overriden below in created()
                 myCroppa: {},
                 chosenFile: null,
             }
         },
         mounted() {
-            this.quillInstance = this.$refs.myQuillEditor.quill;
+//            this.quillInstance = this.$refs.myQuillEditor.quill;
 
 
-            /////////////////////////////////////////////////////////////////////////////
-            //// https://github.com/quilljs/quill/issues/1400#issuecomment-318260547 ////
-            /////////////////////////////////////////////////////////////////////////////
-            /**
-             * Step1. select local image
-             *
-             */
-            const selectLocalImage = () => {
-                const input = document.createElement('input');
-                input.setAttribute('type', 'file');
-                input.click();
-
-                // Listen upload local image and save to server
-                input.onchange = () => {
-                    const file = input.files[0];
-
-                    // file type is only image.
-                    if (/^image\//.test(file.type)) {
-                        saveToServer(file);
-                    } else {
-                        console.warn('You could only upload images.');
-                    }
-                };
-            }
-
-            /**
-             * Step2. save to server
-             *
-             * @param {File} file
-             */
-            const saveToServer = (file) => {
-                const fd = new FormData();
-                fd.append('image', file);
-
-                Vue.http.post('/api/image/post/content', fd)
-                    .then(successResp => {
-                        const url =  successResp.body.relativeUrl;
-                        insertToEditor(url);
-                    }, failResp => {
-                        throw "failed to upload title img"
-                    })
-                    .catch(e => {
-                        console.log("Catch error in sending post content image", e);
-                    })
-
-            }
-
-            /**
-             * Step3. insert image url to rich editor.
-             *
-             * @param {string} url
-             */
-            const insertToEditor = (url) => {
-                // push image url to rich editor.
-                const range = this.quillInstance.getSelection();
-                this.quillInstance.insertEmbed(range.index, 'image', url);
-            }
-
-
-            this.quillInstance.getModule('toolbar').addHandler('image', () => {
-                selectLocalImage();
-            });
-            /**
-             * https://quilljs.com/playground/#class-vs-inline-style
-             *   Quill uses classes for most inline styles.
-             The exception is background and color,
-             where it uses inline styles.
-             This demo shows how to change this.
-             */
-            // https://quilljs.com/guides/how-to-customize-quill/#content-and-formatting
-            // warning: "// if you need register quill modules, you need to introduce and register before the vue program is instantiated" @ https://github.com/surmon-china/vue-quill-editor
         },
         beforeDestroy(){
-            this.quillInstance = null;
+//            this.quillInstance = null;
         },
         computed: {
             cropperWidth(){
@@ -198,24 +123,11 @@
             },
         },
         methods: {
-            onEditorBlur(editor) {
-                // console.debug('editor blur!')
-            },
-            onEditorFocus(editor) {
-                // console.debug('editor focus!')
-            },
-            onEditorReady(editor) {
-                // console.debug('editor ready!')
-            },
             startSending() {
-                // console.log('start submitting', this.editPostDTO.title, this.editPostDTO.text);
                 this.submitting = true;
-                this.quillInstance.enable(false);
             },
             finishSending() {
                 this.submitting = false;
-                this.quillInstance.enable(true);
-                // console.log('end submitting', this.editPostDTO.title, this.editPostDTO.text);
             },
             onBtnSave() {
                 this.startSending();
@@ -295,10 +207,28 @@
             handleCroppaImageRemove() {
                 console.debug('image removed');
                 this.$data.chosenFile = null;
+            },
+            handleImageAdded: function(file, Editor, cursorLocation) {
+                // An example of using FormData
+                // NOTE: Your key could be different such as:
+                // formData.append('file', file)
+
+                var formData = new FormData();
+                formData.append('image', file)
+
+                this.$http.post('/api/image/post/content', formData)
+                    .then((result) => {
+                        let url = result.data.url // Get url from response
+                        Editor.insertEmbed(cursorLocation, 'image', url);
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    })
             }
+
         },
         components: {
-            quillEditor,
+            VueEditor,
             BlogSpinner,
             'croppa': Croppa.component
         },
