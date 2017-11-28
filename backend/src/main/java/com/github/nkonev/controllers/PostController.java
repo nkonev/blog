@@ -88,7 +88,7 @@ public class PostController {
                     "select " +
                             "p.id, " +
                             "p.title, " +
-                            "substring(p.text_no_tags from 0 for 700) || '...' as text_column, " +
+                            "substring(p.text_no_tags from 0 for 700) as text_column, " +
                             "p.title_img, " +
                             "p.create_date_time," +
                             "u.id as owner_id," +
