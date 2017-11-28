@@ -104,6 +104,7 @@ public class DeployIT {
 
         final Response response = client.newCall(request).execute();
         final String json = response.body().string();
+        LOGGER.info("Git version response: {}", json);
 
         ReadContext ctx = JsonPath.parse(json);
         String version = ctx.read("$.['build.version']", String.class);
