@@ -21,3 +21,16 @@ export const getTimestampFromUtc = (utcString) => {
     const local = gmtDateTime.local().format('YYYY-MM-DD HH:mm:ss');
     return local;
 };
+
+/**
+ * Pre cutting (0, 700) in PostController#getPosts
+ * @param obj
+ */
+export const cutPost = (obj) => {
+    let temp = obj.text.substring(0, 700);
+    const last = temp.slice(-1);
+    if (!(last == '.')){
+        temp += '...';
+    }
+    obj.text = temp;
+};

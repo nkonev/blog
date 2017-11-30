@@ -30,7 +30,7 @@
     import BlogSpinner from './BlogSpinner.vue'
     import PostAddFab from './PostAddFab.vue'
     import Search from './Search.vue';
-    import {updateById} from '../utils'
+    import {updateById, cutPost} from '../utils'
 
     const Stomp = require("@stomp/stompjs/lib/stomp.js").Stomp; // https://github.com/jmesnil/stomp-websocket/issues/119 https://stomp-js.github.io/stomp-websocket/codo/extra/docs-src/Usage.md.html
 
@@ -65,7 +65,12 @@
                     },
                 }).then((res) => {
                     if (res.data.length) {
-                        this.posts = this.posts.concat(res.data); // add data from server's response
+                        var new_array = res.data.map((e) => {
+                            cutPost(e);
+                            return e;
+                        });
+
+                        this.posts = this.posts.concat(new_array); // add data from server's response
                         $state.loaded();
 
                         if (Math.floor(this.posts.length / POSTS_PAGE_SIZE) === MAX_PAGES) {
@@ -97,18 +102,21 @@
             stompClient = Stomp.client(url);
             stompClient.reconnect_delay = 5000; // reconnect after 5 sec
 
+
             stompClient.connect({ }, (frame) => {
                 // allowed prefixes here http://www.rabbitmq.com/stomp.html#d
                 // subscribe
                 stompClient.subscribe("/topic/posts.insert", (data) => {
                     const message = data.body;
                     const obj = JSON.parse(message);
+                    cutPost(obj);
                     // console.log(message);
                     this.posts.unshift(obj);
                 });
                 stompClient.subscribe("/topic/posts.update", (data) => {
                     const message = data.body;
                     const obj = JSON.parse(message);
+                    cutPost(obj);
                     // console.log(message);
                     const foundPost = updateById(this.posts, obj);
                     if (foundPost) {
