@@ -1,0 +1,24 @@
+# my global config
+global:
+  scrape_interval:     5s
+  evaluation_interval: 30s
+  # scrape_timeout is set to the global default (10s).
+
+scrape_configs:
+- job_name: postgres
+  metrics_path: /metrics
+  static_configs:
+    - targets:
+      - postgresql_exporter:9187
+
+- job_name: rabbitmq
+  metrics_path: /metrics
+  static_configs:
+    - targets:
+      - rabbitmq_exporter:9191
+
+- job_name: redis
+  metrics_path: /metrics
+  static_configs:
+    - targets:
+      - redis_exporter:9121
