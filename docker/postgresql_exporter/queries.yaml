@@ -113,3 +113,16 @@ pg_stat_longest_query:
     - rows:
         usage: "COUNTER"
         description: "Total number of rows retrieved or affected by the statement"
+
+pg_stat_running_queries:
+  query: "SELECT datname::text, usename::text, COUNT(*)::float AS count FROM pg_stat_activity GROUP BY datname, usename;"
+  metrics:
+    - datname:
+        usage: "LABEL"
+        description: "name of database"
+    - usename:
+        usage: "LABEL"
+        description: "usename"
+    - count:
+        usage: "GAUGE"
+        description: "count"
