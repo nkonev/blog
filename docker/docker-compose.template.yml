@@ -125,9 +125,9 @@ services:
     environment:
       - REDIS_ADDR=redis://redis:6379
 
-  node-exporter:
+  node_exporter:
     image: prom/node-exporter
-    hostname: 'node-exporter'
+    hostname: 'node_exporter'
     ports:
       - '9100:9100'
 
