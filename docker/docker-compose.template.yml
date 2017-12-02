@@ -94,6 +94,9 @@ services:
 #      driver: "journald"
 #      options:
 #        tag: prerender
+    deploy:
+      placement:
+        constraints: [node.labels.blog.server.role == db]
 
   rabbitmq_exporter:
     image: kbudde/rabbitmq-exporter
@@ -139,6 +142,9 @@ services:
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
 #      - prometheus_data:/prometheus
+    deploy:
+      placement:
+        constraints: [node.role == manager]
 
   grafana:
     image: grafana/grafana:3.1.1
@@ -150,6 +156,9 @@ services:
       - "3000:3000"
     volumes:
       - grafana_data:/var/lib/grafana
+    deploy:
+      placement:
+        constraints: [node.role == manager]
 
 volumes:
   #enviroment

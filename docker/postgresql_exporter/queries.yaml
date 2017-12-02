@@ -88,3 +88,28 @@ pg_database:
     - size:
         usage: "GAUGE"
         description: "Disk space used by the database"
+
+pg_stat_longest_query:
+  query: "select calls, total_time, min_time, max_time, mean_time, query as sql, rows from pg_stat_statements order by max_time desc limit 1;"
+  metrics:
+    - calls:
+        usage: "COUNTER"
+        description: "Number of times executed"
+    - total_time:
+        usage: "COUNTER"
+        description: "Total time spent in the statement, in milliseconds"
+    - min_time:
+        usage: "GAUGE"
+        description: "Minimum time spent in the statement, in milliseconds"
+    - max_time:
+        usage: "GAUGE"
+        description: "Maximum time spent in the statement, in milliseconds"
+    - mean_time:
+        usage: "GAUGE"
+        description: "Mean time spent in the statement, in milliseconds"
+    - sql:
+        usage: "LABEL"
+        description: "Text of a representative statement"
+    - rows:
+        usage: "COUNTER"
+        description: "Total number of rows retrieved or affected by the statement"
