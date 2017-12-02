@@ -111,8 +111,11 @@ services:
     hostname: postgresql_exporter
     ports:
       - 9187:9187
+    volumes:
+      - ./postgresql_exporter/queries.yaml:/queries.yaml
     environment:
       - DATA_SOURCE_NAME=postgresql://postgres:postgresqlPassword@postgresql:5432/blog?sslmode=disable
+    command: ["--extend.query-path", "/queries.yaml"]
 
   redis_exporter:
     image: oliver006/redis_exporter
