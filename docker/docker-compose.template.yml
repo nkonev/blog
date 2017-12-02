@@ -122,6 +122,12 @@ services:
     environment:
       - REDIS_ADDR=redis://redis:6379
 
+  node-exporter:
+    image: prom/node-exporter
+    hostname: 'node-exporter'
+    ports:
+      - '9100:9100'
+
   prometheus:
     image: prom/prometheus
     hostname: prometheus
@@ -129,6 +135,18 @@ services:
       - 9090:9090
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+#      - prometheus_data:/prometheus
+
+  grafana:
+    image: grafana/grafana:3.1.1
+    hostname: grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SERVER_ROOT_URL=http://grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
 
 volumes:
   #enviroment
@@ -136,3 +154,5 @@ volumes:
   redis_data_dir:
   rabbitmq_data_dir:
   redis_prerender_data_dir:
+  # prometheus_data:
+  grafana_data:
