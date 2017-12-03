@@ -128,7 +128,7 @@ pg_stat_running_queries:
         usage: "GAUGE"
         description: "count"
 
-# https://postgrespro.ru/docs/postgrespro/9.5/monitoring-stats
+# https://www.postgresql.org/docs/10/static/monitoring-stats.html
 pg_stat_activity:
   query: "select q.client_addr, q.duration_sec, q.query from (SELECT client_addr, extract(epoch from (now() at time zone 'utc' - query_start)::interval) AS duration_sec, query, state FROM pg_stat_activity WHERE (state = 'active' OR state ='idle in transaction' OR state = 'fastpath function call') AND query NOT ILIKE '%pg_stat_activity%' ORDER BY (now() at time zone 'utc' - query_start) DESC LIMIT 1) as q UNION SELECT NULL, 0.0, NULL FETCH FIRST 1 ROW ONLY;"
   metrics:
