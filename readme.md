@@ -218,4 +218,5 @@ docker rm $(docker ps -aq -f name=BLOGSTACK_blog -f status=exited)
 ```bash
 docker ps -aq | xargs docker rm
 docker volume ls -q | xargs docker volume rm
+docker images -q -a | xargs  docker rmi
 ```
