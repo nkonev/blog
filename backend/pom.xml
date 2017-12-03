@@ -170,6 +170,8 @@
                 </executions>
             </plugin>
 
+            <!-- put surefire here in case troubles - doc generation must be after surefire -->
+
             <!-- documentation generation -->
             <plugin>
                 <groupId>org.asciidoctor</groupId>
@@ -178,7 +180,7 @@
                 <executions>
                     <execution>
                         <id>generate-docs</id>
-                        <phase>prepare-package</phase>
+                        <phase>test</phase>
                         <goals>
                             <goal>process-asciidoc</goal>
                         </goals>
@@ -220,7 +222,7 @@
                 <executions>
                     <execution>
                         <id>copy-resources</id>
-                        <phase>prepare-package</phase>
+                        <phase>test</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
