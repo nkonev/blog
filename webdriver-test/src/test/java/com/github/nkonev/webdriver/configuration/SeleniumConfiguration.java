@@ -1,6 +1,6 @@
-package com.github.nkonev.configuration;
+package com.github.nkonev.webdriver.configuration;
 
-import com.github.nkonev.selenium.Browser;
+import com.github.nkonev.webdriver.selenium.Browser;
 
 /**
  * Created by nik on 15.07.17.

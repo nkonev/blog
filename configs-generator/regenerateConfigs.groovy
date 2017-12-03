@@ -42,13 +42,13 @@ def writeAndLog(filePath, content) {
 ////////////////////////////////////////////////////////////// common snippets //////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-def DATA_STORE_SNIPPET = {String contexts, boolean dropFirst ->
+def DATA_STORE_SNIPPET = {String contexts, boolean dropFirst, String ddlAuto ->
 return """
 spring.jpa:
   properties:
     hibernate.use_sql_comments: true
     hibernate.format_sql: true
-  hibernate.ddl-auto: validate
+  hibernate.ddl-auto: ${ddlAuto}
 
 spring.datasource:
     # https://jdbc.postgresql.org/documentation/head/connect.html#connection-parameters
@@ -187,7 +187,7 @@ spring.mvc.static-path-pattern: /**
 # first element - for eliminate manual restart app in IntelliJ for copy compiled js to target/classes, last slash is important,, second element - for documentation
 spring.resources.static-locations: file:backend/src/main/resources/static/, classpath:/static/
 
-${DATA_STORE_SNIPPET('main', false)}
+${DATA_STORE_SNIPPET('main', false, 'validate')}
 """;
 writeAndLog(BACKEND_MAIN_YML_FILE, BACKEND_MAIN_YML_CONTENT);
 
@@ -201,7 +201,7 @@ ${custom(true)}
 server.port: ${ExportedConstants.TEST_PORT}
 ${WEBSERVER_SNIPPET}
 ${TEST_USERS_SNIPPET}
-${DATA_STORE_SNIPPET('main, test', true)}
+${DATA_STORE_SNIPPET('main, test', true, 'validate')}
 """;
 writeAndLog(BACKEND_TEST_YML_FILE, BACKEND_TEST_YML_CONTENT);
 
@@ -229,6 +229,6 @@ custom.selenium.selenide-collections-timeout: 10
 custom.it.url.prefix: ${ExportedConstants.SCHEME}://127.0.0.1:\${server.port}
 custom.it.user.id: 1
 ${TEST_USERS_SNIPPET}
-${DATA_STORE_SNIPPET('main, test', true)}
+${DATA_STORE_SNIPPET('main, test', true, 'none')}
 """;
 writeAndLog(INTEGRATION_TEST_YML_FILE, WEBDRIVER_TEST_YML_CONTENT);

@@ -57,3 +57,13 @@ To see where is jest cache you can
 ```bash
 jest --showConfig  | grep -i cache
 ```
+
+# Show goals on phase
+```bash
+mvn help:describe -Dcmd=compile
+```
+
+https://stackoverflow.com/questions/1709625/maven-command-to-list-lifecycle-phases-along-with-bound-goals/35610377#35610377
+```bash
+./mvnw fr.jcgay.maven.plugins:buildplan-maven-plugin:list-phase
+```

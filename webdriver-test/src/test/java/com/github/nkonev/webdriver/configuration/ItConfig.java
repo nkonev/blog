@@ -1,4 +1,4 @@
-package com.github.nkonev.configuration;
+package com.github.nkonev.webdriver.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

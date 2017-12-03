@@ -1,8 +1,8 @@
-package com.github.nkonev.selenium;
+package com.github.nkonev.webdriver.selenium;
 
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.WebDriverRunner;
-import com.github.nkonev.configuration.SeleniumConfiguration;
+import com.github.nkonev.webdriver.configuration.SeleniumConfiguration;
 import io.github.bonigarcia.wdm.ChromeDriverManager;
 import io.github.bonigarcia.wdm.FirefoxDriverManager;
 import io.github.bonigarcia.wdm.PhantomJsDriverManager;
