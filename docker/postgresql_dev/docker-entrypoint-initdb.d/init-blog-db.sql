@@ -8,14 +8,13 @@ ALTER SYSTEM SET full_page_writes=FALSE;
 ALTER SYSTEM SET commit_delay=100000;
 ALTER SYSTEM SET commit_siblings=10;
 -- ALTER SYSTEM SET work_mem='50MB';
-ALTER SYSTEM SET shared_preload_libraries = 'pg_stat_statements';
 
 create user blog with password 'blogPazZw0rd';
 create database blog with owner blog;
+
 \connect blog;
 
--- https://www.postgresql.org/docs/current/static/pgstatstatements.html
-create extension if not exists "pg_stat_statements";
-create extension if not exists "uuid-ossp";
+create extension if not exists "uuid-ossp" schema pg_catalog;
 -- create extension if not exists "hstore" schema pg_catalog;
 
+\connect blog blog;

@@ -45,8 +45,8 @@ services:
     environment:
       - POSTGRES_PASSWORD=postgresqlPassword
     volumes :
-      - ./postgresql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-      - postgresql_data_dir:/var/lib/postgresql/data
+      - ./postgresql_prod/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - postgresql_prod_data_dir:/var/lib/postgresql/data
 #    logging:
 #      driver: "journald"
 #      options:
@@ -59,7 +59,7 @@ services:
     image: redis:4.0.5
     hostname: redis
     volumes :
-      - redis_data_dir:/data
+      - redis_prod_data_dir:/data
 #    logging:
 #      driver: "journald"
 #      options:
@@ -76,7 +76,7 @@ services:
       - RABBITMQ_DEFAULT_PASS=blogPazZw0rd
       - RABBITMQ_NODENAME=my-rabbit
     volumes :
-      - rabbitmq_data_dir:/var/lib/rabbitmq/mnesia
+      - rabbitmq_prod_data_dir:/var/lib/rabbitmq/mnesia
 #    logging:
 #      driver: "journald"
 #      options:
@@ -89,7 +89,7 @@ services:
     image: nkonev/prerender-redis
     hostname: prerender
     volumes:
-      - redis_prerender_data_dir:/var/lib/redis
+      - redis_prerender_prod_data_dir:/var/lib/redis
 #    logging:
 #      driver: "journald"
 #      options:
@@ -155,16 +155,16 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - grafana_data:/var/lib/grafana
+      - grafana_data_prod_data_dir:/var/lib/grafana
     deploy:
       placement:
         constraints: [node.role == manager]
 
 volumes:
   #enviroment
-  postgresql_data_dir:
-  redis_data_dir:
-  rabbitmq_data_dir:
-  redis_prerender_data_dir:
+  postgresql_prod_data_dir:
+  redis_prod_data_dir:
+  rabbitmq_prod_data_dir:
+  redis_prerender_prod_data_dir:
   # prometheus_data:
-  grafana_data:
+  grafana_data_prod_data_dir:

@@ -14,7 +14,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=postgresqlPassword
     volumes :
-      - ./postgresql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./postgresql_dev/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - postgresql_blog_dev_data_dir:/var/lib/postgresql/data
     networks:
       blog-dev:
