@@ -146,6 +146,14 @@ https://github.com/bonigarcia/webdrivermanager
                     <skip>true</skip>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${maven-jar-plugin.version}</version>
+                <configuration>
+                    <skipIfEmpty>false</skipIfEmpty> <!-- stub for jacoco aggregate -->
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
