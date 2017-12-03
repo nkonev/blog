@@ -147,7 +147,7 @@ services:
         constraints: [node.role == manager]
 
   grafana:
-    image: grafana/grafana:3.1.1
+    image: grafana/grafana:4.6.2
     hostname: grafana
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
