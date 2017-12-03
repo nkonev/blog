@@ -89,7 +89,8 @@ pg_database:
         usage: "GAUGE"
         description: "Disk space used by the database"
 
-pg_stat_longest_query:
+# https://www.postgresql.org/docs/current/static/pgstatstatements.html
+pg_stat_statements:
   query: "select calls, total_time, min_time, max_time, mean_time, query as sql, rows from pg_stat_statements order by max_time desc limit 1;"
   metrics:
     - calls:
@@ -126,3 +127,17 @@ pg_stat_running_queries:
     - count:
         usage: "GAUGE"
         description: "count"
+
+# https://postgrespro.ru/docs/postgrespro/9.5/monitoring-stats
+pg_stat_activity:
+  query: "SELECT client_addr, extract(epoch from (now() at time zone 'utc' - query_start)::interval) AS duration_sec, query FROM pg_stat_activity WHERE query_start IS NOT NULL AND query NOT ILIKE '%pg_stat_activity%' ORDER BY (now() at time zone 'utc' - query_start) DESC LIMIT 1;"
+  metrics:
+    - client_addr:
+        usage: "LABEL"
+        description: "IP address of client"
+    - duration_sec:
+        usage: "GAUGE"
+        description: "duration"
+    - query:
+        usage: "LABEL"
+        description: "SQL query"
