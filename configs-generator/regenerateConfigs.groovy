@@ -206,7 +206,7 @@ ${DATA_STORE_SNIPPET('main, test', true)}
 writeAndLog(BACKEND_TEST_YML_FILE, BACKEND_TEST_YML_CONTENT);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-def INTEGRATION_TEST_YML_CONTENT =
+def WEBDRIVER_TEST_YML_CONTENT =
 """${AUTOGENERATE_SNIPPET}
 logging.level.: INFO
 ${common(true)}
@@ -229,6 +229,6 @@ custom.selenium.selenide-collections-timeout: 10
 custom.it.url.prefix: ${ExportedConstants.SCHEME}://127.0.0.1:\${server.port}
 custom.it.user.id: 1
 ${TEST_USERS_SNIPPET}
-${DATA_STORE_SNIPPET('main, test', false)}
+${DATA_STORE_SNIPPET('main, test', true)}
 """;
-writeAndLog(INTEGRATION_TEST_YML_FILE, INTEGRATION_TEST_YML_CONTENT);
+writeAndLog(INTEGRATION_TEST_YML_FILE, WEBDRIVER_TEST_YML_CONTENT);

@@ -113,7 +113,7 @@ spring.datasource:
 liquibase:
   change-log: classpath:liquibase/migration.yml
   contexts: main, test
-  drop-first: false
+  drop-first: true
 
 spring.redis.url: redis://172.22.0.3:6379/0
 spring.data.redis.repositories.enabled: false

@@ -121,8 +121,6 @@ https://github.com/bonigarcia/webdrivermanager
                         <skip>false</skip>
                         <systemProperties>
                             <custom.selenium.browser>${custom.selenium.browser}</custom.selenium.browser>
-                            <liquibase.drop-first>true</liquibase.drop-first>
-                            <liquibase.contexts>main, test</liquibase.contexts>
                         </systemProperties>
                     </configuration>
                     <executions>
