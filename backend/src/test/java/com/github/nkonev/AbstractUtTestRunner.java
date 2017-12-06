@@ -119,7 +119,9 @@ public abstract class AbstractUtTestRunner {
                         .param(USERNAME_PARAMETER, username)
                         .param(PASSWORD_PARAMETER, password)
                         .with(csrf())
-        )
+        ).andDo(mvcResult1 -> {
+            LOGGER.info(mvcResult1.getResponse().getContentAsString());
+        })
                 .andExpect(status().isOk())
                 .andReturn();
         return mvcResult.getResponse().getCookie(COOKIE_SESSION).getValue();

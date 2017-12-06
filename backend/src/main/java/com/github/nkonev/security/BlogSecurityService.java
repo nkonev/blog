@@ -127,4 +127,15 @@ public class BlogSecurityService {
             return false;
         }
     }
+
+    public boolean canLock(UserAccountDetailsDTO userAccount) {
+        if (userAccount==null){
+            return false;
+        }
+        if (roleHierarchy.getReachableGrantedAuthorities(userAccount.getAuthorities()).contains(new SimpleGrantedAuthority(UserRole.ROLE_MODERATOR.name()))){
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
