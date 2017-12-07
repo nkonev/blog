@@ -1,7 +1,7 @@
-package com.github.nkonev.configuration;
+package com.github.nkonev.webdriver.configuration;
 
-import com.github.nkonev.selenium.Browser;
-import com.github.nkonev.selenium.SeleniumFactory;
+import com.github.nkonev.webdriver.selenium.Browser;
+import com.github.nkonev.webdriver.selenium.SeleniumFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

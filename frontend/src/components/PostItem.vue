@@ -131,8 +131,12 @@
                 }
             }
 
-            .post-content {
-                overflow-x auto
+            .text-wrapper {
+                max-height none
+
+                .post-content {
+                    overflow-x auto
+                }
             }
 
         }

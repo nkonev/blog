@@ -144,4 +144,14 @@ public class UserProfileController {
     public void killSessions(@AuthenticationPrincipal UserAccountDetailsDTO userAccount, @RequestParam("userId") long userId){
         blogUserDetailsService.killSessions(userId);
     }
+
+    @PreAuthorize("@blogSecurityService.canLock(#userAccountDetailsDTO)")
+    @PostMapping(Constants.Uls.USER + Constants.Uls.LOCK)
+    public void setLocked(@AuthenticationPrincipal UserAccountDetailsDTO userAccountDetailsDTO, @RequestBody LockDTO locked){
+        UserAccount userAccount = blogUserDetailsService.getUserAccount(locked.getUserId());
+        if (locked.isLock()){
+            blogUserDetailsService.killSessions(locked.getUserId());
+        }
+        userAccount.setLocked(locked.isLock());
+    }
 }

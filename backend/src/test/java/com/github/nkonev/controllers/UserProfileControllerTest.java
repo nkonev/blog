@@ -6,6 +6,7 @@ import com.github.nkonev.Constants;
 import com.github.nkonev.TestConstants;
 import com.github.nkonev.converter.UserAccountConverter;
 import com.github.nkonev.dto.EditUserDTO;
+import com.github.nkonev.dto.LockDTO;
 import com.github.nkonev.entity.jpa.UserAccount;
 import com.github.nkonev.repo.jpa.UserAccountRepository;
 import com.github.nkonev.security.BlogUserDetailsService;
@@ -21,6 +22,9 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.session.ExpiringSession;
+import org.springframework.session.FindByIndexNameSessionRepository;
+import org.springframework.session.data.redis.RedisOperationsSessionRepository;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.net.HttpCookie;
@@ -28,6 +32,7 @@ import java.net.URI;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.github.nkonev.CommonTestConstants.COMMON_PASSWORD;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -324,4 +329,47 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
                 .andReturn();
     }
 
+    @WithUserDetails(TestConstants.USER_ADMIN)
+    @Test
+    public void moderatorCanLock() throws Exception {
+        final long userId = 10;
+
+        // lock user 10
+        LockDTO lockDTO = new LockDTO(userId, true);
+        MvcResult mvcResult = mockMvc.perform(
+                post(Constants.Uls.API+Constants.Uls.USER + Constants.Uls.LOCK)
+                        .content(objectMapper.writeValueAsBytes(lockDTO))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .with(csrf())
+        )
+                .andDo(result -> {
+                    LOGGER.info(result.getResponse().getContentAsString());
+                })
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // check that user 10 is locked
+        UserAccount userAccountFound = userAccountRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        Assert.assertTrue(userAccountFound.isLocked());
+    }
+
+    @WithUserDetails(TestConstants.USER_ALICE)
+    @Test
+    public void userCanNotLock() throws Exception {
+        final long userId = 10;
+
+        // lock user 10
+        LockDTO lockDTO = new LockDTO(userId, true);
+        MvcResult mvcResult = mockMvc.perform(
+                post(Constants.Uls.API+Constants.Uls.USER + Constants.Uls.LOCK)
+                        .content(objectMapper.writeValueAsBytes(lockDTO))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .with(csrf())
+        )
+                .andDo(result -> {
+                    LOGGER.info(result.getResponse().getContentAsString());
+                })
+                .andExpect(status().isForbidden())
+                .andReturn();
+    }
 }

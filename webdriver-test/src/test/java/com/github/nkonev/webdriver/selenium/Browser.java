@@ -1,4 +1,4 @@
-package com.github.nkonev.selenium;
+package com.github.nkonev.webdriver.selenium;
 
 /**
  * Created by nik on 04.10.16.
