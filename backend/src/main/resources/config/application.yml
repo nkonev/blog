@@ -76,7 +76,6 @@ server.session.persistent: true
 server.tomcat.basedir: ${java.io.tmpdir}/com.github.nkonev.tomcat
 server.session.store-dir: ${server.tomcat.basedir}/sessions
 
-
 # this is URL
 spring.mvc.static-path-pattern: /**
 # You need to remove "file:..." element for production or you can to remove spring.resources.static-locations
@@ -120,4 +119,7 @@ spring.redis.url: redis://172.22.0.3:6379/0
 spring.data.redis.repositories.enabled: false
 # Also see index in bootstrap.sql
 custom.postgres.fulltext.reg-config: "'russian'::regconfig"
+management:
+  security:
+    enabled: false
 
