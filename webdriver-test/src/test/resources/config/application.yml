@@ -120,3 +120,8 @@ spring.data.redis.repositories.enabled: false
 # Also see index in bootstrap.sql
 custom.postgres.fulltext.reg-config: "'russian'::regconfig"
 
+
+management:
+  security:
+    enabled: false
+

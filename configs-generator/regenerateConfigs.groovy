@@ -82,6 +82,13 @@ spring.data.redis.repositories.enabled: false
 custom.postgres.fulltext.reg-config: "'russian'::regconfig"
 """};
 
+def MANAGEMENT_SNIPPET =
+"""
+management:
+  security:
+    enabled: false
+"""
+
 def WEBSERVER_SNIPPET =
 """
 server.tomcat.basedir: \${java.io.tmpdir}/com.github.nkonev.tomcat
@@ -188,6 +195,7 @@ spring.mvc.static-path-pattern: /**
 spring.resources.static-locations: file:backend/src/main/resources/static/, classpath:/static/
 
 ${DATA_STORE_SNIPPET('main', false, 'validate')}
+${MANAGEMENT_SNIPPET}
 """;
 writeAndLog(BACKEND_MAIN_YML_FILE, BACKEND_MAIN_YML_CONTENT);
 
@@ -202,6 +210,7 @@ server.port: ${ExportedConstants.TEST_PORT}
 ${WEBSERVER_SNIPPET}
 ${TEST_USERS_SNIPPET}
 ${DATA_STORE_SNIPPET('main, test', true, 'validate')}
+${MANAGEMENT_SNIPPET}
 """;
 writeAndLog(BACKEND_TEST_YML_FILE, BACKEND_TEST_YML_CONTENT);
 
@@ -230,5 +239,6 @@ custom.it.url.prefix: ${ExportedConstants.SCHEME}://127.0.0.1:\${server.port}
 custom.it.user.id: 1
 ${TEST_USERS_SNIPPET}
 ${DATA_STORE_SNIPPET('main, test', true, 'none')}
+${MANAGEMENT_SNIPPET}
 """;
 writeAndLog(INTEGRATION_TEST_YML_FILE, WEBDRIVER_TEST_YML_CONTENT);
