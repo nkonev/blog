@@ -124,4 +124,7 @@ custom.postgres.fulltext.reg-config: "'russian'::regconfig"
 management:
   security:
     enabled: false
+  port: 3010
+  ssl:
+    enabled: false
 

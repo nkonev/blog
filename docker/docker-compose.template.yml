@@ -14,6 +14,8 @@ services:
       # https://blogs.oracle.com/poonam/about-g1-garbage-collector%2c-permanent-generation-and-metaspace
       - _JAVA_OPTIONS=-Djava.security.egd=file:/dev/./urandom -Xms256m -Xmx512m -XX:MetaspaceSize=128M -XX:MaxMetaspaceSize=256M -XX:OnOutOfMemoryError="kill -9 %p"
       - liquibase.contexts=main,test
+      # todo set keystore and enable security.require-ssl=true
+      - server.port=8443
       - custom.stomp.broker.host=rabbitmq
       - custom.stomp.broker.port=61613
       - spring.datasource.url=jdbc:postgresql://postgresql:5432/blog?connectTimeout=10
@@ -24,7 +26,7 @@ services:
       - custom.prerender.forwardedURLHeader=X-FORWARDED-URL # only for tests
       - logging.level.com.github.greengerong.PrerenderSeoService=TRACE
     ports:
-      - 8000:8080
+      - 8443:8443
   visualizer:
     image: dockersamples/visualizer:stable
     ports:
@@ -159,6 +161,18 @@ services:
     deploy:
       placement:
         constraints: [node.role == manager]
+
+  nginx:
+     image: nginx:1.13.7
+     hostname: nginx
+     volumes:
+       - ./nginx/etc/nginx/conf.d:/etc/nginx/conf.d
+       - ./nginx/etc/nginx/nginx.conf:/etc/nginx/nginx.conf
+     ports:
+       - "80:80"
+     deploy:
+       placement:
+         constraints: [node.role == manager]
 
 volumes:
   #enviroment

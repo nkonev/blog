@@ -6,10 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.github.nkonev.dto.UserAccountDetailsDTO;
-import org.apache.catalina.Context;
-import org.apache.catalina.connector.Connector;
-import org.apache.tomcat.util.descriptor.web.SecurityCollection;
-import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
@@ -30,7 +27,7 @@ public class AppConfig {
     private ServerProperties serverProperties;
 
     @Value("${custom.redirect.additional.http.port:8080}")
-    private int fromHttpPost;
+    private int fromHttpPort;
 
     @Value("${custom.redirect.to.https.port:443}")
     private int toHttpsPort;
@@ -49,26 +46,9 @@ public class AppConfig {
 
     @Bean
     public EmbeddedServletContainerFactory servletContainer() {
-        TomcatEmbeddedServletContainerFactory tomcat;
-        if (serverProperties.getSsl()!=null && serverProperties.getSsl().isEnabled()) {
-            tomcat = new TomcatEmbeddedServletContainerFactory() {
-                @Override
-                protected void postProcessContext(Context context) {
-                    SecurityConstraint securityConstraint = new SecurityConstraint();
-                    securityConstraint.setUserConstraint("CONFIDENTIAL");
-                    SecurityCollection collection = new SecurityCollection();
-                    collection.addPattern("/*");
-                    securityConstraint.addCollection(collection);
-                    context.addConstraint(securityConstraint);
-                }
-            };
-            tomcat.addAdditionalTomcatConnectors(additionalRedirectHttpToHttpsConnector(fromHttpPost, toHttpsPort));
-            return tomcat;
-        } else {
-            tomcat =  new TomcatEmbeddedServletContainerFactory();
-        }
+        TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory();
 
-        File baseDir = serverProperties.getTomcat().getBasedir();
+        final File baseDir = serverProperties.getTomcat().getBasedir();
         if (baseDir!=null) {
             File docRoot = new File(baseDir, "document-root");
             docRoot.mkdirs();
@@ -76,13 +56,5 @@ public class AppConfig {
         }
 
         return tomcat;
-    }
-
-    private Connector additionalRedirectHttpToHttpsConnector(int httpPort, int redirectHttpsPort) {
-        Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
-        connector.setScheme("http");
-        connector.setPort(httpPort);
-        connector.setRedirectPort(redirectHttpsPort);
-        return connector;
     }
 }

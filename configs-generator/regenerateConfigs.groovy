@@ -87,6 +87,9 @@ def MANAGEMENT_SNIPPET =
 management:
   security:
     enabled: false
+  port: 3010
+  ssl:
+    enabled: false
 """
 
 def WEBSERVER_SNIPPET =
