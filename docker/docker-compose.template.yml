@@ -2,7 +2,7 @@ version: '3.1'
 
 services:
   blog:
-    image: nkonev/blog:latest
+    image: nkonev/blog:1.0.1-SNAPSHOT
 #    logging:
 #      driver: "journald"
 #      options:
@@ -27,6 +27,7 @@ services:
       - logging.level.com.github.greengerong.PrerenderSeoService=TRACE
     ports:
       - 8443:8443
+      - 3020:3010
   visualizer:
     image: dockersamples/visualizer:stable
     ports:
