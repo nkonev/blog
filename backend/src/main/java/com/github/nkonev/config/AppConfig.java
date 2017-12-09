@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.github.nkonev.dto.UserAccountDetailsDTO;
 
+import io.prometheus.client.spring.boot.EnablePrometheusEndpoint;
+import io.prometheus.client.spring.boot.EnableSpringBootMetricsCollector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
@@ -18,6 +20,8 @@ import org.springframework.context.annotation.Configuration;
 import javax.annotation.PostConstruct;
 import java.io.File;
 
+@EnablePrometheusEndpoint
+@EnableSpringBootMetricsCollector
 @Configuration
 public class AppConfig {
     @Autowired
@@ -25,12 +29,6 @@ public class AppConfig {
 
     @Autowired
     private ServerProperties serverProperties;
-
-    @Value("${custom.redirect.additional.http.port:8080}")
-    private int fromHttpPort;
-
-    @Value("${custom.redirect.to.https.port:443}")
-    private int toHttpsPort;
 
     @PostConstruct
     public void pc() throws Exception {
