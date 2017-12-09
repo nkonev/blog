@@ -56,7 +56,7 @@ services:
         constraints: [node.labels.blog.server.role == db]
 
   redis:
-    image: redis:4.0.5
+    image: redis:4.0.6
     hostname: redis
     volumes :
       - redis_data_dir:/data
