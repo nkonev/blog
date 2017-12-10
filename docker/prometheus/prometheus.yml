@@ -10,9 +10,13 @@ scrape_configs:
   static_configs:
     - targets: ['prometheus:9090']
 
-- job_name: 'node-exporter'
-  static_configs:
-    - targets: ['node_exporter:9100']
+- job_name: node-exporter
+  dns_sd_configs:
+  - names:
+    - tasks.node_exporter
+    refresh_interval: 30s
+    type: A
+    port: 9100
 
 - job_name: postgres
   metrics_path: /metrics
