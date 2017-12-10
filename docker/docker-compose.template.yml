@@ -154,7 +154,7 @@ services:
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - ./prometheus/alerting.yml:/etc/prometheus/alerting.yml
-#      - prometheus_data:/prometheus
+      - prometheus_data:/prometheus
     deploy:
       placement:
         constraints: [node.role == manager]
@@ -191,5 +191,5 @@ volumes:
   redis_prod_data_dir:
   rabbitmq_prod_data_dir:
   redis_prerender_prod_data_dir:
-  # prometheus_data:
+  prometheus_data:
   grafana_data_prod_data_dir:
