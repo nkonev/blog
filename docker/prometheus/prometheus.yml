@@ -44,3 +44,15 @@ scrape_configs:
     refresh_interval: 30s
     type: A
     port: 3010
+
+- job_name: 'prerender'
+  metrics_path: /probe
+  params:
+    module: ['prerender']
+    target: ['http://blog:8443']
+  static_configs:
+    - targets:
+      - blackbox_exporter:9115
+
+rule_files:
+  - /etc/prometheus/alerting.yml
