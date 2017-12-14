@@ -165,10 +165,13 @@ services:
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
       - GF_SERVER_ROOT_URL=http://grafana
+      - PROMETHEUS_URL=http://prometheus:9090
     ports:
       - "3000:3000"
     volumes:
       - grafana_data_prod_data_dir:/var/lib/grafana
+      - ./grafana/entrypoint.sh:/custom-entrypoint.sh
+    entrypoint: ["/custom-entrypoint.sh"]
     deploy:
       placement:
         constraints: [node.role == manager]
