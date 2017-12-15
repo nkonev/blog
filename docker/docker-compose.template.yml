@@ -183,7 +183,7 @@ services:
        - ./nginx/etc/nginx/conf.d:/etc/nginx/conf.d
        - ./nginx/etc/nginx/nginx.conf:/etc/nginx/nginx.conf
      ports:
-       - "8080:80"
+       - "8088:80"
      deploy:
        placement:
          constraints: [node.role == manager]
