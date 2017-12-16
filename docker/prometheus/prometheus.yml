@@ -49,6 +49,7 @@ scrape_configs:
   metrics_path: /probe
   params:
     module: ['prerender']
+    # set your hostname here too
     target: ['http://blog:8443']
   static_configs:
     - targets:
