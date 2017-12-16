@@ -237,3 +237,9 @@ docker ps -aq | xargs docker rm
 docker volume ls -q | xargs docker volume rm
 docker images -q -a | xargs  docker rmi
 ```
+
+## Restore PostgreSQL backup
+
+```bash
+cat /tmp/blog.sql | docker exec -i $(docker ps --filter label=com.docker.swarm.service.name=BLOGSTACK_postgresql -q) psql -U postgres
+```
