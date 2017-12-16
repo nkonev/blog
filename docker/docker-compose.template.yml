@@ -153,6 +153,7 @@ services:
 #      driver: "journald"
 #      options:
 #        tag: node_exporter
+    command: ["--log.level", "fatal", "--log.format", "logger:stdout"]
 
   blackbox_exporter:
     image: prom/blackbox-exporter

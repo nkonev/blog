@@ -126,7 +126,7 @@ Q: I suddenly get http 403 error in JUnit mockMvc tests.
 
 A: Add `.with(csrf())` to MockMvcRequestBuilder chain
 
-# Demo Run
+# Demo Run / Installation
 
 First unlock `--compose-file`
 add accords https://github.com/moby/moby/issues/30585#issuecomment-280822231
@@ -149,6 +149,17 @@ docker node update --label-add 'blog.server.role=db' $(docker node ls -q)
 docker node inspect -f '{{index .Spec.Labels "blog.server.role"}}' $(docker node ls -q)
 ```
 
+Copy on server
+```bash
+scp -r /path/to/blog/docker/* user@your-host.com:/path/to/blog/
+```
+
+# Generating monitoring nginx password
+```bash
+sudo yum install -y httpd-tools
+htpasswd -c ./nginx/etc/nginx/htpasswd admin
+```
+
 I strongly recommend copy and rename `docker-compose.template.yml` to `docker-compose.stack.yml`.
 And correctly setup next properties:
 
@@ -159,8 +170,13 @@ And correctly setup next properties:
       - spring.mail.username=username
       - spring.mail.password=password
       - custom.base-url=http://your-host.com
+      - security.require-ssl=true
+      - server.ssl.key-store=/etc/letsencrypt/live/your-host.com/keystore.p12
+      - server.ssl.key-store-password=yourPassword
+      - server.ssl.keyStoreType=PKCS12
+      - server.ssl.keyAlias=tomcat
 ```
-And remove exlicit ports definition where it's don't need - postgres, redis, rabbit, because of docker publishes ports by add it to iptables chain.
+And remove explicit ports definition where it's don't need - postgres, redis, rabbit, because of docker publishes ports by add it to iptables chain.
 If you very want, you can skip setting these properties, but you'll have non-working email, wrong links in emails and so on.
 
 Next I'll use renamed file.
@@ -220,10 +236,4 @@ docker rm $(docker ps -aq -f name=BLOGSTACK_blog -f status=exited)
 docker ps -aq | xargs docker rm
 docker volume ls -q | xargs docker volume rm
 docker images -q -a | xargs  docker rmi
-```
-
-# Generating nginx password
-```bash
-sudo yum install -y httpd-tools
-htpasswd -c ./nginx/etc/nginx/htpasswd admin
 ```
