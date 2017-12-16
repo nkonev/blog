@@ -3,6 +3,7 @@
 
 logging.level.: INFO
 logging.level.org.springframework.web.socket: WARN
+logging.level.org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: WARN
 #logging.level.org.apache.tomcat.jdbc.pool: TRACE
 #logging.level.org.springframework.security: DEBUG
 #logging.level.org.springframework.session: DEBUG
@@ -68,7 +69,7 @@ custom:
     token:
       ttl-minutes: 5
 
-server.tomcat.accesslog.enabled: true
+server.tomcat.accesslog.enabled: false
 server.tomcat.accesslog.pattern: '%t %a "%r" %s (%D ms)'
 server.port: 8080
 server.session.persistent: true

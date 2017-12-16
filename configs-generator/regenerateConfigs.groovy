@@ -176,6 +176,7 @@ def BACKEND_MAIN_YML_CONTENT =
 """${AUTOGENERATE_SNIPPET}
 logging.level.: INFO
 logging.level.org.springframework.web.socket: WARN
+logging.level.org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: WARN
 #logging.level.org.apache.tomcat.jdbc.pool: TRACE
 #logging.level.org.springframework.security: DEBUG
 #logging.level.org.springframework.session: DEBUG
@@ -186,7 +187,7 @@ logging.level.org.springframework.web.socket: WARN
 #logging.level.org.hibernate.type: TRACE
 ${common(false)}
 ${custom(false)}
-server.tomcat.accesslog.enabled: true
+server.tomcat.accesslog.enabled: false
 server.tomcat.accesslog.pattern: '%t %a "%r" %s (%D ms)'
 server.port: ${ExportedConstants.PROD_PORT}
 server.session.persistent: true
@@ -208,6 +209,7 @@ writeAndLog(BACKEND_MAIN_YML_FILE, BACKEND_MAIN_YML_CONTENT);
 def BACKEND_TEST_YML_CONTENT =
 """${AUTOGENERATE_SNIPPET}
 logging.level.: INFO
+logging.level.org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: WARN
 ${common(true)}
 ${custom(true)}
 server.port: ${ExportedConstants.TEST_PORT}
@@ -222,6 +224,7 @@ writeAndLog(BACKEND_TEST_YML_FILE, BACKEND_TEST_YML_CONTENT);
 def WEBDRIVER_TEST_YML_CONTENT =
 """${AUTOGENERATE_SNIPPET}
 logging.level.: INFO
+logging.level.org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: WARN
 ${common(true)}
 ${custom(true)}
 server.port: ${ExportedConstants.TEST_PORT}

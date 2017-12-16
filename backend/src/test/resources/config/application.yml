@@ -2,6 +2,7 @@
 # Please do not edit it manually.
 
 logging.level.: INFO
+logging.level.org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: WARN
 
 custom.base-url: "http://127.0.0.1:${server.port}"
 
