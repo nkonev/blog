@@ -15,7 +15,6 @@ import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletCon
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import javax.annotation.PostConstruct;
-import javax.persistence.EntityManagerFactory;
 import java.io.File;
 
 @EnablePrometheusEndpoint
@@ -26,9 +25,6 @@ public class AppConfig {
 
     @Autowired
     private ServerProperties serverProperties;
-
-    @Autowired
-    private EntityManagerFactory entityManagerFactory;
 
     @PostConstruct
     public void pc() throws Exception {
