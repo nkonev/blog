@@ -6,11 +6,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.github.nkonev.dto.UserAccountDetailsDTO;
-
+import io.prometheus.client.hotspot.DefaultExports;
 import io.prometheus.client.spring.boot.EnablePrometheusEndpoint;
 import io.prometheus.client.spring.boot.EnableSpringBootMetricsCollector;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
@@ -18,6 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.EntityManagerFactory;
 import java.io.File;
 
 @EnablePrometheusEndpoint
@@ -30,6 +30,9 @@ public class AppConfig {
     @Autowired
     private ServerProperties serverProperties;
 
+    @Autowired
+    private EntityManagerFactory entityManagerFactory;
+
     @PostConstruct
     public void pc() throws Exception {
         SimpleModule rejectUserAccountDetailsDTOModule = new SimpleModule("Reject serialize UserAccountDetailsDTO");
@@ -40,6 +43,8 @@ public class AppConfig {
             }
         });
         objectMapper.registerModule(rejectUserAccountDetailsDTOModule);
+
+        DefaultExports.initialize();
     }
 
     @Bean
