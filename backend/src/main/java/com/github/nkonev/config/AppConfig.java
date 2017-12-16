@@ -6,8 +6,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.github.nkonev.dto.UserAccountDetailsDTO;
+import io.prometheus.client.hibernate.HibernateStatisticsCollector;
 import io.prometheus.client.hotspot.DefaultExports;
 import io.prometheus.client.spring.boot.EnablePrometheusEndpoint;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
@@ -15,6 +17,7 @@ import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletCon
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import javax.annotation.PostConstruct;
+import javax.persistence.EntityManagerFactory;
 import java.io.File;
 
 @EnablePrometheusEndpoint
@@ -25,6 +28,9 @@ public class AppConfig {
 
     @Autowired
     private ServerProperties serverProperties;
+
+    @Autowired
+    private EntityManagerFactory entityManagerFactory;
 
     @PostConstruct
     public void pc() throws Exception {
@@ -38,6 +44,9 @@ public class AppConfig {
         objectMapper.registerModule(rejectUserAccountDetailsDTOModule);
 
         DefaultExports.initialize();
+
+        SessionFactory sessionFactory = entityManagerFactory.unwrap(SessionFactory.class);
+        new HibernateStatisticsCollector(sessionFactory, "blog").register();
     }
 
     @Bean
