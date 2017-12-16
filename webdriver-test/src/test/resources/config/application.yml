@@ -2,6 +2,7 @@
 # Please do not edit it manually.
 
 logging.level.: INFO
+logging.level.org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: WARN
 
 custom.base-url: "http://127.0.0.1:${server.port}"
 
@@ -87,6 +88,7 @@ spring.jpa:
   properties:
     hibernate.use_sql_comments: true
     hibernate.format_sql: true
+    hibernate.generate_statistics: true
   hibernate.ddl-auto: none
 
 spring.datasource:
@@ -119,4 +121,12 @@ spring.redis.url: redis://172.22.0.3:6379/0
 spring.data.redis.repositories.enabled: false
 # Also see index in bootstrap.sql
 custom.postgres.fulltext.reg-config: "'russian'::regconfig"
+
+
+management:
+  security:
+    enabled: false
+  port: 3010
+  ssl:
+    enabled: false
 

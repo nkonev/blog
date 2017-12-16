@@ -6,21 +6,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.github.nkonev.dto.UserAccountDetailsDTO;
-import org.apache.catalina.Context;
-import org.apache.catalina.connector.Connector;
-import org.apache.tomcat.util.descriptor.web.SecurityCollection;
-import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
+import io.prometheus.client.hibernate.HibernateStatisticsCollector;
+import io.prometheus.client.hotspot.DefaultExports;
+import io.prometheus.client.spring.boot.EnablePrometheusEndpoint;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import javax.annotation.PostConstruct;
+import javax.persistence.EntityManagerFactory;
 import java.io.File;
 
+@EnablePrometheusEndpoint
 @Configuration
 public class AppConfig {
     @Autowired
@@ -29,11 +29,8 @@ public class AppConfig {
     @Autowired
     private ServerProperties serverProperties;
 
-    @Value("${custom.redirect.additional.http.port:8080}")
-    private int fromHttpPost;
-
-    @Value("${custom.redirect.to.https.port:443}")
-    private int toHttpsPort;
+    @Autowired
+    private EntityManagerFactory entityManagerFactory;
 
     @PostConstruct
     public void pc() throws Exception {
@@ -45,30 +42,18 @@ public class AppConfig {
             }
         });
         objectMapper.registerModule(rejectUserAccountDetailsDTOModule);
+
+        DefaultExports.initialize();
+
+        SessionFactory sessionFactory = entityManagerFactory.unwrap(SessionFactory.class);
+        new HibernateStatisticsCollector(sessionFactory, "blog").register();
     }
 
     @Bean
     public EmbeddedServletContainerFactory servletContainer() {
-        TomcatEmbeddedServletContainerFactory tomcat;
-        if (serverProperties.getSsl()!=null && serverProperties.getSsl().isEnabled()) {
-            tomcat = new TomcatEmbeddedServletContainerFactory() {
-                @Override
-                protected void postProcessContext(Context context) {
-                    SecurityConstraint securityConstraint = new SecurityConstraint();
-                    securityConstraint.setUserConstraint("CONFIDENTIAL");
-                    SecurityCollection collection = new SecurityCollection();
-                    collection.addPattern("/*");
-                    securityConstraint.addCollection(collection);
-                    context.addConstraint(securityConstraint);
-                }
-            };
-            tomcat.addAdditionalTomcatConnectors(additionalRedirectHttpToHttpsConnector(fromHttpPost, toHttpsPort));
-            return tomcat;
-        } else {
-            tomcat =  new TomcatEmbeddedServletContainerFactory();
-        }
+        TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory();
 
-        File baseDir = serverProperties.getTomcat().getBasedir();
+        final File baseDir = serverProperties.getTomcat().getBasedir();
         if (baseDir!=null) {
             File docRoot = new File(baseDir, "document-root");
             docRoot.mkdirs();
@@ -76,13 +61,5 @@ public class AppConfig {
         }
 
         return tomcat;
-    }
-
-    private Connector additionalRedirectHttpToHttpsConnector(int httpPort, int redirectHttpsPort) {
-        Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
-        connector.setScheme("http");
-        connector.setPort(httpPort);
-        connector.setRedirectPort(redirectHttpsPort);
-        return connector;
     }
 }

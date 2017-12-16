@@ -249,7 +249,7 @@ public class PostIT extends AbstractItTestRunner {
 
         String urlBefore = driver.getCurrentUrl();
 
-        FailoverUtils.retry(2, () -> {
+        FailoverUtils.retry(3, () -> {
             postViewPage.delete();
             String urlAfter = driver.getCurrentUrl();
             Assert.assertNotEquals(urlBefore, urlAfter);

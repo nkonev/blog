@@ -1,0 +1,58 @@
+# my global config
+global:
+  scrape_interval:     5s
+  evaluation_interval: 30s
+  # scrape_timeout is set to the global default (10s).
+
+scrape_configs:
+
+- job_name: 'prometheus'
+  static_configs:
+    - targets: ['prometheus:9090']
+
+- job_name: node-exporter
+  dns_sd_configs:
+  - names:
+    - tasks.node_exporter
+    refresh_interval: 30s
+    type: A
+    port: 9100
+
+- job_name: postgres
+  metrics_path: /metrics
+  static_configs:
+    - targets:
+      - postgresql_exporter:9187
+
+- job_name: rabbitmq
+  metrics_path: /metrics
+  static_configs:
+    - targets:
+      - rabbitmq_exporter:9191
+
+- job_name: redis
+  metrics_path: /metrics
+  static_configs:
+    - targets:
+      - redis_exporter:9121
+
+- job_name: blog
+  metrics_path: /prometheus
+  dns_sd_configs:
+  - names:
+    - tasks.blog
+    refresh_interval: 30s
+    type: A
+    port: 3010
+
+- job_name: 'prerender'
+  metrics_path: /probe
+  params:
+    module: ['prerender']
+    target: ['http://blog:8443']
+  static_configs:
+    - targets:
+      - blackbox_exporter:9115
+
+rule_files:
+  - /etc/prometheus/alerting.yml

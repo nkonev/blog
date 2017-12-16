@@ -9,7 +9,7 @@
     <parent>
         <artifactId>blog.parent</artifactId>
         <groupId>com.github.nkonev</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.1-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -31,10 +31,9 @@
         <swagger.input>${swagger.output.dir}/swagger.json</swagger.input>
         <swagger-annotations.version>1.5.16</swagger-annotations.version>
         <!-- /swagger stuff -->
-
         <liquibaseSlf4jVersion>2.0.0</liquibaseSlf4jVersion>
-
         <hibernate-types.version>1.2.0</hibernate-types.version>
+        <prometheus.version>0.1.0</prometheus.version>
 
         <git-template-json>git.template.json</git-template-json>
         <git-json>git.json</git-json>
@@ -268,6 +267,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
             <type>jar</type>
@@ -365,7 +369,7 @@
         <dependency>
             <groupId>com.github.nkonev</groupId>
             <artifactId>common-test</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0.1-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 
@@ -373,7 +377,7 @@
         <dependency>
             <groupId>com.github.nkonev</groupId>
             <artifactId>api</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0.1-SNAPSHOT</version>
         </dependency>
 
         <!-- https://www.owasp.org/index.php/OWASP_Java_HTML_Sanitizer_Project -->
@@ -423,6 +427,29 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
+        <!-- The client -->
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient</artifactId>
+            <version>${prometheus.version}</version>
+        </dependency>
+        <!-- Hotspot JVM metrics-->
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient_hotspot</artifactId>
+            <version>${prometheus.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient_spring_boot</artifactId>
+            <version>${prometheus.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient_hibernate</artifactId>
+            <version>${prometheus.version}</version>
         </dependency>
 
         <dependency>

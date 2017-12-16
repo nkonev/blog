@@ -1,0 +1,22 @@
+# https://github.com/prometheus/blackbox_exporter/blob/master/example.yml
+modules:
+  prerender:
+    prober: http
+    timeout: 20s
+    http:
+      valid_http_versions: ["HTTP/1.1", "HTTP/2"]
+      valid_status_codes: [200]  # Defaults to 2xx
+      method: GET
+      headers:
+        User-Agent: prometheus
+        Accept: text/html
+      no_follow_redirects: false
+      fail_if_ssl: false
+      fail_if_not_ssl: false
+      fail_if_matches_regexp:
+        - "app-container"
+      fail_if_not_matches_regexp:
+        - "content"
+      tls_config:
+        insecure_skip_verify: false
+      preferred_ip_protocol: "ip4" # defaults to "ip6"

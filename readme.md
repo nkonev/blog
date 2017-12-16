@@ -213,3 +213,17 @@ docker rm $(docker ps -aq -f name=BLOGSTACK_blog -f status=exited)
 ```bash
 ./mvnw clean spring-boot:run
 ```
+
+# Maintenance
+
+```bash
+docker ps -aq | xargs docker rm
+docker volume ls -q | xargs docker volume rm
+docker images -q -a | xargs  docker rmi
+```
+
+# Generating nginx password
+```bash
+sudo yum install -y httpd-tools
+htpasswd -c ./nginx/etc/nginx/htpasswd admin
+```

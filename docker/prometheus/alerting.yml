@@ -1,0 +1,22 @@
+groups:
+- name: exporter
+  rules:
+  - alert: Exporter instance down
+    expr: up == 0
+#    for: 5m
+    labels:
+      severity: page
+    annotations:
+      summary: "Instance {{ $labels.instance }} down"
+      description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes."
+
+- name: prerender
+  rules:
+  - alert: Prerender not renders html page
+    expr: probe_success{job="prerender"} == 0
+#    for: 5m
+    labels:
+      severity: page
+    annotations:
+      summary: "Prerender not renders html page"
+      description: "Please check if prerender alive & blackbox exporter send correct useragent which configured in java blog application too"

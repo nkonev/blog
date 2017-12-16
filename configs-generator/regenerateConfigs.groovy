@@ -48,6 +48,7 @@ spring.jpa:
   properties:
     hibernate.use_sql_comments: true
     hibernate.format_sql: true
+    hibernate.generate_statistics: true
   hibernate.ddl-auto: ${ddlAuto}
 
 spring.datasource:
@@ -81,6 +82,16 @@ spring.data.redis.repositories.enabled: false
 # Also see index in bootstrap.sql
 custom.postgres.fulltext.reg-config: "'russian'::regconfig"
 """};
+
+def MANAGEMENT_SNIPPET =
+"""
+management:
+  security:
+    enabled: false
+  port: 3010
+  ssl:
+    enabled: false
+"""
 
 def WEBSERVER_SNIPPET =
 """
@@ -165,6 +176,7 @@ def BACKEND_MAIN_YML_CONTENT =
 """${AUTOGENERATE_SNIPPET}
 logging.level.: INFO
 logging.level.org.springframework.web.socket: WARN
+logging.level.org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: WARN
 #logging.level.org.apache.tomcat.jdbc.pool: TRACE
 #logging.level.org.springframework.security: DEBUG
 #logging.level.org.springframework.session: DEBUG
@@ -175,7 +187,7 @@ logging.level.org.springframework.web.socket: WARN
 #logging.level.org.hibernate.type: TRACE
 ${common(false)}
 ${custom(false)}
-server.tomcat.accesslog.enabled: true
+server.tomcat.accesslog.enabled: false
 server.tomcat.accesslog.pattern: '%t %a "%r" %s (%D ms)'
 server.port: ${ExportedConstants.PROD_PORT}
 server.session.persistent: true
@@ -188,6 +200,7 @@ spring.mvc.static-path-pattern: /**
 spring.resources.static-locations: file:backend/src/main/resources/static/, classpath:/static/
 
 ${DATA_STORE_SNIPPET('main', false, 'validate')}
+${MANAGEMENT_SNIPPET}
 """;
 writeAndLog(BACKEND_MAIN_YML_FILE, BACKEND_MAIN_YML_CONTENT);
 
@@ -196,12 +209,14 @@ writeAndLog(BACKEND_MAIN_YML_FILE, BACKEND_MAIN_YML_CONTENT);
 def BACKEND_TEST_YML_CONTENT =
 """${AUTOGENERATE_SNIPPET}
 logging.level.: INFO
+logging.level.org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: WARN
 ${common(true)}
 ${custom(true)}
 server.port: ${ExportedConstants.TEST_PORT}
 ${WEBSERVER_SNIPPET}
 ${TEST_USERS_SNIPPET}
 ${DATA_STORE_SNIPPET('main, test', true, 'validate')}
+${MANAGEMENT_SNIPPET}
 """;
 writeAndLog(BACKEND_TEST_YML_FILE, BACKEND_TEST_YML_CONTENT);
 
@@ -209,6 +224,7 @@ writeAndLog(BACKEND_TEST_YML_FILE, BACKEND_TEST_YML_CONTENT);
 def WEBDRIVER_TEST_YML_CONTENT =
 """${AUTOGENERATE_SNIPPET}
 logging.level.: INFO
+logging.level.org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: WARN
 ${common(true)}
 ${custom(true)}
 server.port: ${ExportedConstants.TEST_PORT}
@@ -230,5 +246,6 @@ custom.it.url.prefix: ${ExportedConstants.SCHEME}://127.0.0.1:\${server.port}
 custom.it.user.id: 1
 ${TEST_USERS_SNIPPET}
 ${DATA_STORE_SNIPPET('main, test', true, 'none')}
+${MANAGEMENT_SNIPPET}
 """;
 writeAndLog(INTEGRATION_TEST_YML_FILE, WEBDRIVER_TEST_YML_CONTENT);
