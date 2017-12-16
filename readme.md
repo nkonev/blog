@@ -179,6 +179,8 @@ And correctly setup next properties:
 And remove explicit ports definition where it's don't need - postgres, redis, rabbit, because of docker publishes ports by add it to iptables chain.
 If you very want, you can skip setting these properties, but you'll have non-working email, wrong links in emails and so on.
 
+Also you need set host in `./docker/prometheus/prometheus.yml:53`
+
 Next I'll use renamed file.
 
 Copy files on our server:
