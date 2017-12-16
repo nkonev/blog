@@ -26,6 +26,8 @@ services:
       - custom.prerender.crawlerUserAgents=googlebot,prometheus
       - custom.prerender.forwardedURLHeader=X-FORWARDED-URL # only for tests
 #      - logging.level.com.github.greengerong.PrerenderSeoService=TRACE
+    volumes :
+      - ./www:/opt/blog/www
     ports:
       - 8443:8443
       - 3020:3010
