@@ -143,17 +143,22 @@ public class DeployIT {
             });
         }
 
-        {
+        FailoverUtils.retry(120, () ->  {
             final Request request = new Request.Builder()
                     .url(baseUrl)
                     .build();
 
-            final Response response = client.newCall(request).execute();
-            final String html = response.body().string();
-            LOGGER.info("Response for human: {}", html);
-            Assert.assertTrue(html.contains("<body>"));
-            Assert.assertFalse(html.contains("Lorem Ipsum - это текст"));
-        }
+            try {
+                final Response response = client.newCall(request).execute();
+                final String html = response.body().string();
+                LOGGER.info("Response for human: {}", html);
+                Assert.assertTrue(html.contains("<body>"));
+                Assert.assertFalse(html.contains("Lorem Ipsum - это текст"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return null;
+        });
 
     }
 
