@@ -171,7 +171,7 @@ And correctly setup next properties:
       - spring.mail.password=password
       - custom.base-url=http://your-host.com
       - security.require-ssl=true
-      - server.ssl.key-store=/etc/letsencrypt/live/your-host.com/keystore.p12
+      - server.ssl.key-store=/etc/letsencrypt/live/your-host.com/keystore.p1
       - server.ssl.key-store-password=yourPassword
       - server.ssl.keyStoreType=PKCS12
       - server.ssl.keyAlias=tomcat
