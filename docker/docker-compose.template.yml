@@ -3,8 +3,8 @@ version: '3.1'
 services:
   blog:
     image: nkonev/blog:1.0.1-SNAPSHOT
-#    logging:
-#      driver: "journald"
+    logging:
+      driver: "json-file"
 #      options:
 #        tag: blog
     deploy:
@@ -44,8 +44,8 @@ services:
     stop_grace_period: 1m30s
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
-#    logging:
-#      driver: "journald"
+    logging:
+      driver: "json-file"
 #      options:
 #        tag: visualizer
     deploy:
@@ -59,8 +59,8 @@ services:
     volumes :
       - ./postgresql_prod/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - postgresql_prod_data_dir:/var/lib/postgresql/data
-#    logging:
-#      driver: "journald"
+    logging:
+      driver: "json-file"
 #      options:
 #        tag: postgresql
     deploy:
@@ -72,8 +72,8 @@ services:
     hostname: redis
     volumes :
       - redis_prod_data_dir:/data
-#    logging:
-#      driver: "journald"
+    logging:
+      driver: "json-file"
 #      options:
 #        tag: redis
     deploy:
@@ -89,8 +89,8 @@ services:
       - RABBITMQ_NODENAME=my-rabbit
     volumes :
       - rabbitmq_prod_data_dir:/var/lib/rabbitmq/mnesia
-#    logging:
-#      driver: "journald"
+    logging:
+      driver: "json-file"
 #      options:
 #        tag: rabbitmq
     deploy:
@@ -102,8 +102,8 @@ services:
     hostname: prerender
     volumes:
       - redis_prerender_prod_data_dir:/var/lib/redis
-#    logging:
-#      driver: "journald"
+    logging:
+      driver: "json-file"
 #      options:
 #        tag: prerender
     deploy:
@@ -120,8 +120,8 @@ services:
       - RABBIT_USER=blog
       - RABBIT_PASSWORD=blogPazZw0rd
       - PUBLISH_PORT=9191
-#    logging:
-#      driver: "journald"
+    logging:
+      driver: "json-file"
 #      options:
 #        tag: rabbitmq_exporter
 
@@ -135,8 +135,8 @@ services:
     environment:
       - DATA_SOURCE_NAME=postgresql://postgres:postgresqlPassword@postgresql:5432/blog?sslmode=disable
     command: ["--extend.query-path", "/queries.yaml"]
-#    logging:
-#      driver: "journald"
+    logging:
+      driver: "json-file"
 #      options:
 #        tag: postgresql_exporter
 
@@ -147,8 +147,8 @@ services:
       - 9121:9121
     environment:
       - REDIS_ADDR=redis://redis:6379
-#    logging:
-#      driver: "journald"
+    logging:
+      driver: "json-file"
 #      options:
 #        tag: redis_exporter
 
@@ -157,8 +157,8 @@ services:
     hostname: 'node_exporter'
     ports:
       - '9100:9100'
-#    logging:
-#      driver: "journald"
+    logging:
+      driver: "json-file"
 #      options:
 #        tag: node_exporter
     command: ["--log.level", "fatal", "--log.format", "logger:stdout"]
@@ -171,8 +171,8 @@ services:
     volumes:
       - ./blackbox_exporter/blackbox.yml:/config/blackbox.yml
     command: ['--config.file=/config/blackbox.yml']
-#    logging:
-#      driver: "journald"
+    logging:
+      driver: "json-file"
 #      options:
 #        tag: blackbox_exporter
 
@@ -188,8 +188,8 @@ services:
     deploy:
       placement:
         constraints: [node.role == manager]
-#    logging:
-#      driver: "journald"
+    logging:
+      driver: "json-file"
 #      options:
 #        tag: prometheus
 
@@ -211,8 +211,8 @@ services:
     deploy:
       placement:
         constraints: [node.role == manager]
-#    logging:
-#      driver: "journald"
+    logging:
+      driver: "json-file"
 #      options:
 #        tag: grafana
 
@@ -232,8 +232,8 @@ services:
      deploy:
        placement:
          constraints: [node.role == manager]
-#    logging:
-#      driver: "journald"
+     logging:
+       driver: "json-file"
 #      options:
 #        tag: nginx
 
