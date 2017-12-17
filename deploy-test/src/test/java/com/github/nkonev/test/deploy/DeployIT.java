@@ -182,6 +182,7 @@ public class DeployIT {
 
 
     private void waitForStart(int timeoutToStartSec) {
+        LOGGER.info("Start waiting for start");
         FailoverUtils.retry(timeoutToStartSec, () -> {
             try {
                 final Request request = new Request.Builder()
