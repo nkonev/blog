@@ -34,9 +34,9 @@ public class DeployIT {
     private String inContainerBlogUrl;
 
 
-    @Parameters({"testStack", "timeoutToStartSec", "baseUrl", "inContainerBlogUrl"})
+    @Parameters({"testStack", "timeoutToStartSec", "baseUrl", "inContainerBlogUrl", "lbCheckTimes"})
     @BeforeSuite
-    public void startup(String testStack, int timeoutToStartSec, String baseUrl, String inContainerBlogUrl) throws IOException, InterruptedException {
+    public void startup(String testStack, int timeoutToStartSec, String baseUrl, String inContainerBlogUrl, int lbCheckTimes) throws IOException, InterruptedException {
         // initilize swarm if need
         initializeSwarmIfNeed();
 
@@ -54,7 +54,7 @@ public class DeployIT {
         this.baseUrl = baseUrl;
         this.inContainerBlogUrl = inContainerBlogUrl;
 
-        waitForStart(timeoutToStartSec);
+        waitForStart(timeoutToStartSec, lbCheckTimes);
     }
 
     private void dropVolumes(String stackName) throws InterruptedException, IOException {
@@ -116,49 +116,44 @@ public class DeployIT {
     @Parameters({"testStack"})
     @Test
     public void testPrerenderWorks(String testStack) throws IOException, InterruptedException {
-        {
-            FailoverUtils.retry(480, () -> {
-                try {
-                    clearPrerenderRedisCache(testStack);
-
-                    final Request request = new Request.Builder()
-                            .url(baseUrl)
-                            .header("User-Agent", "googlebot")
-                            .header("Accept", "text/html")
-                            .header("X-FORWARDED-URL", inContainerBlogUrl) // url on which prerender container can invoke blog container. Header name must be set in blog application
-                            .build();
-
-                    final Response response = client.newCall(request).execute();
-                    final String html = response.body().string();
-                    LOGGER.info("Response for crawler: {}", html.substring(0, Math.min(600, html.length())));
-                    Assert.assertTrue(html.contains("<body>"));
-                    Assert.assertTrue(html.contains("Lorem Ipsum - это текст"));
-                    return null;
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }  catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    return null;
-                }
-            });
-        }
-
-        FailoverUtils.retry(120, () ->  {
-            final Request request = new Request.Builder()
-                    .url(baseUrl)
-                    .build();
-
+        FailoverUtils.retry(480, () -> {
             try {
+                clearPrerenderRedisCache(testStack);
+
+                final Request request = new Request.Builder()
+                        .url(baseUrl)
+                        .header("User-Agent", "googlebot")
+                        .header("Accept", "text/html")
+                        .header("X-FORWARDED-URL", inContainerBlogUrl) // url on which prerender container can invoke blog container. Header name must be set in blog application
+                        .build();
+
                 final Response response = client.newCall(request).execute();
                 final String html = response.body().string();
-                LOGGER.info("Response for human: {}", html);
+                LOGGER.info("Response for crawler: {}", html.substring(0, Math.min(600, html.length())));
                 Assert.assertTrue(html.contains("<body>"));
-                Assert.assertFalse(html.contains("Lorem Ipsum - это текст"));
+                Assert.assertTrue(html.contains("Lorem Ipsum - это текст"));
+                return null;
             } catch (IOException e) {
                 throw new RuntimeException(e);
+            }  catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return null;
             }
-            return null;
         });
+
+        final Request request = new Request.Builder()
+                .url(baseUrl)
+                .build();
+
+        try {
+            final Response response = client.newCall(request).execute();
+            final String html = response.body().string();
+            LOGGER.info("Response for human: {}", html);
+            Assert.assertTrue(html.contains("<body>"));
+            Assert.assertFalse(html.contains("Lorem Ipsum - это текст"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
@@ -181,17 +176,20 @@ public class DeployIT {
     }
 
 
-    private void waitForStart(int timeoutToStartSec) {
+    private void waitForStart(int timeoutToStartSec, int lbCheckTimes) {
         LOGGER.info("Start waiting for start");
         FailoverUtils.retry(timeoutToStartSec, () -> {
             try {
-                final Request request = new Request.Builder()
-                        .url(baseUrl + "/api/post?size=1")
-                        .build();
-                LOGGER.info("Requesting " + request.toString());
-                final Response response = client.newCall(request).execute();
-                final String version = response.body().string();
-                LOGGER.info("Get posts: \n" + version);
+                for (int i = 0; i<lbCheckTimes; ++i) {
+                    final Request request = new Request.Builder()
+                            .url(baseUrl + "/api/post?size=1")
+                            .build();
+                    LOGGER.info("Requesting " + request.toString());
+                    final Response response = client.newCall(request).execute();
+                    final String version = response.body().string();
+                    Assert.assertEquals(200, response.code());
+                    LOGGER.info("Successful get posts: \n" + version);
+                }
                 return null;
             } catch (IOException e) {
                 throw new RuntimeException(e);
