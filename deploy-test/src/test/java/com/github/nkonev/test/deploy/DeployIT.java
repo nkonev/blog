@@ -188,6 +188,7 @@ public class DeployIT {
                 final Request request = new Request.Builder()
                         .url(baseUrl + "/api/post?size=1")
                         .build();
+                LOGGER.info("Requesting " + request.toString());
                 final Response response = client.newCall(request).execute();
                 final String version = response.body().string();
                 LOGGER.info("Get posts: \n" + version);
