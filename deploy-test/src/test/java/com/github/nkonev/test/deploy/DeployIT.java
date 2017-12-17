@@ -180,19 +180,18 @@ public class DeployIT {
         LOGGER.info("Start waiting for start");
         FailoverUtils.retry(timeoutToStartSec, () -> {
             try {
-                for (int i = 0; i<lbCheckTimes; ++i) {
+                for (int i = 0; i < lbCheckTimes; ++i) {
                     final Request request = new Request.Builder()
                             .url(baseUrl + "/api/post?size=1")
                             .build();
-                    LOGGER.info("Requesting " + request.toString());
+                    LOGGER.info("Requesting " + (i + 1) + "/" + lbCheckTimes + " " + request.toString());
                     final Response response = client.newCall(request).execute();
                     final String version = response.body().string();
                     Assert.assertEquals(200, response.code());
                     LOGGER.info("Successful get posts: \n" + version);
                 }
                 return null;
-            } catch (Exception e) {
-                LOGGER.error("Exception on waiting for start", e);
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
