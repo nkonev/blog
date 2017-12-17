@@ -117,7 +117,7 @@ public class DeployIT {
     @Test
     public void testPrerenderWorks(String testStack) throws IOException, InterruptedException {
         {
-            FailoverUtils.retry(120, () -> {
+            FailoverUtils.retry(480, () -> {
                 try {
                     clearPrerenderRedisCache(testStack);
 
