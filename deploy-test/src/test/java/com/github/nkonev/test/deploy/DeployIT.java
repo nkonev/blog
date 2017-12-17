@@ -191,7 +191,8 @@ public class DeployIT {
                     LOGGER.info("Successful get posts: \n" + version);
                 }
                 return null;
-            } catch (IOException e) {
+            } catch (Exception e) {
+                LOGGER.error("Exception on waiting for start", e);
                 throw new RuntimeException(e);
             }
         });
