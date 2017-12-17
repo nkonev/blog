@@ -26,6 +26,12 @@ services:
       - custom.prerender.crawlerUserAgents=googlebot,prometheus
       - custom.prerender.forwardedURLHeader=X-FORWARDED-URL # only for tests
 #      - logging.level.com.github.greengerong.PrerenderSeoService=TRACE
+      - spring.mail.host=smtp.yandex.ru
+      - custom.email.from=username@yandex.ru
+      - spring.mail.username=username
+      - spring.mail.password=password
+      - custom.base-url=http://your-host.com
+
     volumes :
       - ./www:/opt/blog/www
     ports:
@@ -218,6 +224,7 @@ services:
        - ./nginx/etc/nginx/htpasswd:/etc/nginx/htpasswd
        - ./nginx/etc/nginx/nginx.conf:/etc/nginx/nginx.conf
      ports:
+       - "8444:443" # blog https
        - "8088:80" # blog http -> https
        - "3001:3001" # grafana
        - "9091:9091" # prometheus
