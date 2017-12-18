@@ -170,11 +170,7 @@ And correctly setup next properties:
       - spring.mail.username=username
       - spring.mail.password=password
       - custom.base-url=http://your-host.com
-      - security.require-ssl=true
-      - server.ssl.key-store=/etc/letsencrypt/live/your-host.com/keystore.p12
-      - server.ssl.key-store-password=yourPassword
-      - server.ssl.keyStoreType=PKCS12
-      - server.ssl.keyAlias=tomcat
+ 
 ```
 And remove explicit ports definition where it's don't need - postgres, redis, rabbit, because of docker publishes ports by add it to iptables chain.
 If you very want, you can skip setting these properties, but you'll have non-working email, wrong links in emails and so on.

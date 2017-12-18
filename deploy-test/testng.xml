@@ -4,7 +4,7 @@
     <parameter name="timeoutToStartSec" value="720"/>
     <parameter name="lbCheckTimes" value="100"/>
     <parameter name="testStack" value="TESTBLOGSTACK"/>
-    <parameter name="baseUrl" value="http://127.0.0.1:8444"/>
+    <parameter name="baseUrl" value="http://127.0.0.1:8443"/>
     <parameter name="inContainerBlogUrl" value="http://blog:8443"/>
     <test name="Deploy" >
         <packages>
