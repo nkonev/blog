@@ -34,9 +34,9 @@ public class DeployIT {
     private String inContainerBlogUrl;
 
 
-    @Parameters({"testStack", "timeoutToStartSec", "baseUrl", "inContainerBlogUrl", "lbCheckTimes"})
+    @Parameters({"testStack", "timeoutToStartSec", "baseUrl", "inContainerBlogUrl", "lbCheckTimes", "hostHeader"})
     @BeforeSuite
-    public void startup(String testStack, int timeoutToStartSec, String baseUrl, String inContainerBlogUrl, int lbCheckTimes) throws IOException, InterruptedException {
+    public void startup(String testStack, int timeoutToStartSec, String baseUrl, String inContainerBlogUrl, int lbCheckTimes, String hostHeader) throws IOException, InterruptedException {
         // initilize swarm if need
         initializeSwarmIfNeed();
 
@@ -54,7 +54,7 @@ public class DeployIT {
         this.baseUrl = baseUrl;
         this.inContainerBlogUrl = inContainerBlogUrl;
 
-        waitForStart(timeoutToStartSec, lbCheckTimes);
+        waitForStart(timeoutToStartSec, lbCheckTimes, hostHeader);
     }
 
     private void dropVolumes(String stackName) throws InterruptedException, IOException {
@@ -86,20 +86,25 @@ public class DeployIT {
         final Process swarmChecker = launch("docker node ls", processBuilder -> {});
         final int checkerExit = swarmChecker.waitFor();
         if (checkerExit!=0) {
-            Process swarmInit = launch("docker swarm init", processBuilder -> { });
+            Process swarmInit = launch("docker swarm init", b -> { });
             Assert.assertEquals(swarmInit.waitFor(), 0);
 
             final String nodeId = getSelfNodeId();
-            Process addLabel = launch("docker node update --label-add blog.server.role=db " + nodeId, processBuilder -> { });
+            Process addLabel = launch("docker node update --label-add blog.server.role=db " + nodeId, b -> { });
             Assert.assertEquals(addLabel.waitFor(), 0);
+
+            Process addNetwork = launch("docker network create --driver=overlay proxy_backend", b -> { });
+            Assert.assertEquals(addNetwork.waitFor(), 0);
         }
     }
 
     @Test
-    public void testVersionGit() throws IOException, InterruptedException {
+    @Parameters({"hostHeader"})
+    public void testVersionGit(String hostHeader) throws IOException, InterruptedException {
 
         final Request request = new Request.Builder()
                 .url(baseUrl+"/git.json")
+                .header("Host", hostHeader)
                 .build();
 
         final Response response = client.newCall(request).execute();
@@ -113,9 +118,9 @@ public class DeployIT {
         Assert.assertFalse(version.isEmpty());
     }
 
-    @Parameters({"testStack"})
+    @Parameters({"testStack", "hostHeader"})
     @Test
-    public void testPrerenderWorks(String testStack) throws IOException, InterruptedException {
+    public void testPrerenderWorks(String testStack, String hostHeader) throws IOException, InterruptedException {
         FailoverUtils.retry(480, () -> {
             try {
                 clearPrerenderRedisCache(testStack);
@@ -125,6 +130,7 @@ public class DeployIT {
                         .header("User-Agent", "googlebot")
                         .header("Accept", "text/html")
                         .header("X-FORWARDED-URL", inContainerBlogUrl) // url on which prerender container can invoke blog container. Header name must be set in blog application
+                        .header("Host", hostHeader)
                         .build();
 
                 final Response response = client.newCall(request).execute();
@@ -143,6 +149,7 @@ public class DeployIT {
 
         final Request request = new Request.Builder()
                 .url(baseUrl)
+                .header("Host", hostHeader)
                 .build();
 
         try {
@@ -156,6 +163,46 @@ public class DeployIT {
         }
 
     }
+
+
+    @Parameters({"hostHeader"})
+    @Test
+    public void testMetricsAreHidden(String hostHeader) {
+        final Request request = new Request.Builder()
+                .url(baseUrl + "/metrics")
+                .header("Host", hostHeader)
+                .build();
+
+        try {
+            final Response response = client.newCall(request).execute();
+            final String html = response.body().string();
+            LOGGER.info("Metrics response: {}", html);
+            Assert.assertEquals(response.code(), 404);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    @Test
+    public void testMetricsAreHiddenWithoutHost() {
+
+        final Request request = new Request.Builder()
+                .url(baseUrl + "/metrics")
+                .build();
+
+        try {
+            final Response response = client.newCall(request).execute();
+            final String html = response.body().string();
+            LOGGER.info("Metrics response: {}", html);
+            Assert.assertEquals(response.code(), 404);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
 
     private void clearPrerenderRedisCache(String testStack) throws InterruptedException, IOException {
         LOGGER.info("Cleaning prerender redis cache");
@@ -176,13 +223,14 @@ public class DeployIT {
     }
 
 
-    private void waitForStart(int timeoutToStartSec, int lbCheckTimes) {
+    private void waitForStart(int timeoutToStartSec, int lbCheckTimes, String hostHeader) {
         LOGGER.info("Start waiting for start");
         FailoverUtils.retry(timeoutToStartSec, () -> {
             try {
                 for (int i = 0; i < lbCheckTimes; ++i) {
                     final Request request = new Request.Builder()
                             .url(baseUrl + "/api/post?size=1")
+                            .header("Host", hostHeader)
                             .build();
                     LOGGER.info("Requesting " + (i + 1) + "/" + lbCheckTimes + " " + request.toString());
                     final Response response = client.newCall(request).execute();

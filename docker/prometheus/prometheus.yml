@@ -45,10 +45,15 @@ scrape_configs:
   metrics_path: /probe
   params:
     module: ['prerender']
-    target: ['http://blog:8443']
+    target: ['http://blog:8098']
   static_configs:
     - targets:
       - blackbox_exporter:9115
+
+- job_name: traefik
+  static_configs:
+    - targets:
+      - traefik:8080
 
 rule_files:
   - /etc/prometheus/alerting.yml

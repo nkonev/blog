@@ -1,0 +1,34 @@
+logLevel = "DEBUG"
+
+[metrics]
+  [metrics.prometheus]
+      entryPoint = "traefik"
+      buckets = [0.1,0.3,1.2,5.0]
+
+[web]
+address = ":8080"
+[web.statistics]
+recentErrors = 10
+
+# http(s) blog entrypoint
+[entryPoints]
+  [entryPoints.http]
+  address = ":80"
+
+# http->https
+#[entryPoints.http.redirect]
+#  entryPoint = "https"
+# https letsencrypt
+# https://docs.traefik.io/configuration/acme/, http://docs.traefik.io/user-guide/docker-and-lets-encrypt/
+#[entryPoints.https]
+#address = ":443"
+#  [entryPoints.https.tls]
+#    [acme]
+#        email = "test@traefik.io"
+#        storage = "/acme.json"
+#        entryPoint = "https"
+
+[docker]
+watch = true
+exposedbydefault = false
+swarmmode = true

@@ -126,7 +126,13 @@ Q: I suddenly get http 403 error in JUnit mockMvc tests.
 
 A: Add `.with(csrf())` to MockMvcRequestBuilder chain
 
+
 # Demo Run / Installation
+
+```bash
+docker swarm init
+docker network create --driver=overlay proxy_backend
+```
 
 First unlock `--compose-file`
 add accords https://github.com/moby/moby/issues/30585#issuecomment-280822231
@@ -151,13 +157,14 @@ docker node inspect -f '{{index .Spec.Labels "blog.server.role"}}' $(docker node
 
 Copy on server
 ```bash
-scp -r /path/to/blog/docker/* user@your-host.com:/path/to/blog/
+scp -r /path/to/blog/docker/* user@blog.test:/path/to/blog/
 ```
 
-# Generating monitoring nginx password
+## Generating monitoring grafana & prometheus password
 ```bash
 sudo yum install -y httpd-tools
-htpasswd -c ./nginx/etc/nginx/htpasswd admin
+# generate login and hash with replaced $ with $$ sign for able to copy-paste to docker-compose.stack.yml
+htpasswd -nb admin admin | sed -e 's/\$/\$\$/g'
 ```
 
 I strongly recommend copy and rename `docker-compose.template.yml` to `docker-compose.stack.yml`.
@@ -169,7 +176,7 @@ And correctly setup next properties:
       - custom.email.from=username@yandex.ru
       - spring.mail.username=username
       - spring.mail.password=password
-      - custom.base-url=http://your-host.com
+      - custom.base-url=http://blog.test
  
 ```
 And remove explicit ports definition where it's don't need - postgres, redis, rabbit, because of docker publishes ports by add it to iptables chain.
@@ -221,6 +228,21 @@ docker stack rm BLOGSTACK
 Remove exited containers
 ```bash
 docker rm $(docker ps -aq -f name=BLOGSTACK_blog -f status=exited)
+```
+
+# Test
+
+## curl
+```bash
+curl -H "Host: blog.test" http://127.0.0.1:8088
+curl -H "Host: grafana.test" -u "admin:admin" http://127.0.0.1:8088
+curl -H "Host: prometheus.test" -u "admin:admin" http://127.0.0.1:8088
+```
+
+## Browser
+
+```bash
+echo -e '127.0.0.1 blog.test\n127.0.0.1 grafana.test\n127.0.0.1 prometheus.test' | sudo tee --append /etc/hosts
 ```
 
 # Run `boot-run`

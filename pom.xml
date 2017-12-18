@@ -7,7 +7,7 @@
     <name>blog</name>
     <artifactId>blog.parent</artifactId>
     <groupId>com.github.nkonev</groupId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.2-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 

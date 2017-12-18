@@ -1,21 +1,26 @@
-version: '3.1'
+version: '3.4'
 
 services:
   blog:
-    image: nkonev/blog:latest
+    image: nkonev/blog:1.0.2-SNAPSHOT
     logging:
       driver: "json-file"
 #      options:
 #        tag: blog
     deploy:
       replicas: 2
+      labels:
+        - traefik.enable=true
+        - traefik.backend=blog
+        - traefik.frontend.rule=PathPrefix:/;Host:blog.test
+        - traefik.port=8098
+        - traefik.docker.network=proxy_backend
     environment:
       # https://stackoverflow.com/questions/28327620/difference-between-java-options-java-tool-options-and-java-opts
       # https://blogs.oracle.com/poonam/about-g1-garbage-collector%2c-permanent-generation-and-metaspace
       - _JAVA_OPTIONS=-Djava.security.egd=file:/dev/./urandom -Xms256m -Xmx512m -XX:MetaspaceSize=128M -XX:MaxMetaspaceSize=256M -XX:OnOutOfMemoryError="kill -9 %p"
       - liquibase.contexts=main,test
-      # todo set keystore and enable security.require-ssl=true
-      - server.port=8443
+      - server.port=8098
       - custom.stomp.broker.host=rabbitmq
       - custom.stomp.broker.port=61613
       - spring.datasource.url=jdbc:postgresql://postgresql:5432/blog?connectTimeout=10&socketTimeout=40
@@ -31,12 +36,37 @@ services:
       - spring.mail.username=username
       - spring.mail.password=password
       - custom.base-url=http://your-host.com
-
+      - management.health.mail.enabled=false
     volumes :
       - ./www:/opt/blog/www
     ports:
-      - 8443:8443
+      - 8098:8098
       - 3020:3010
+    networks:
+      - traefik_backend
+      - backend
+  traefik:
+    image: traefik:1.5
+    hostname: traefik
+    command: -c /traefik.toml
+    ports:
+      - "8088:80"
+      - "10000:8080"
+      - "8445:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik/traefik.toml:/traefik.toml
+#      - /dev/null:/traefik.toml
+      - ./traefik/acme.json:/acme.json
+    depends_on:
+      - blog
+    logging:
+      driver: "json-file"
+#      options:
+#        tag: traefik
+    networks:
+      - traefik_backend
+      - backend
   visualizer:
     image: dockersamples/visualizer:stable
     ports:
@@ -51,6 +81,9 @@ services:
     deploy:
       placement:
         constraints: [node.role == manager]
+    networks:
+      - traefik_backend
+      - backend
   postgresql:
     image: postgres:10.1
     hostname: postgresql
@@ -66,7 +99,9 @@ services:
     deploy:
       placement:
         constraints: [node.labels.blog.server.role == db]
-
+    networks:
+      - traefik_backend
+      - backend
   redis:
     image: redis:4.0.6
     hostname: redis
@@ -79,7 +114,9 @@ services:
     deploy:
       placement:
         constraints: [node.labels.blog.server.role == db]
-
+    networks:
+      - traefik_backend
+      - backend
   rabbitmq:
     image: nkonev/rabbitmq-web-stomp:3.7.0
     hostname: rabbitmq
@@ -96,7 +133,9 @@ services:
     deploy:
       placement:
         constraints: [node.labels.blog.server.role == db]
-
+    networks:
+      - traefik_backend
+      - backend
   prerender:
     image: nkonev/prerender-redis
     hostname: prerender
@@ -109,7 +148,9 @@ services:
     deploy:
       placement:
         constraints: [node.labels.blog.server.role == db]
-
+    networks:
+      - traefik_backend
+      - backend
   rabbitmq_exporter:
     image: kbudde/rabbitmq-exporter
     hostname: rabbitmq_exporter
@@ -124,7 +165,9 @@ services:
       driver: "json-file"
 #      options:
 #        tag: rabbitmq_exporter
-
+    networks:
+      - traefik_backend
+      - backend
   postgresql_exporter:
     image: wrouesnel/postgres_exporter
     hostname: postgresql_exporter
@@ -139,7 +182,9 @@ services:
       driver: "json-file"
 #      options:
 #        tag: postgresql_exporter
-
+    networks:
+      - traefik_backend
+      - backend
   redis_exporter:
     image: oliver006/redis_exporter
     hostname: redis_exporter
@@ -151,7 +196,9 @@ services:
       driver: "json-file"
 #      options:
 #        tag: redis_exporter
-
+    networks:
+      - traefik_backend
+      - backend
   node_exporter:
     image: prom/node-exporter
     hostname: 'node_exporter'
@@ -162,7 +209,9 @@ services:
 #      options:
 #        tag: node_exporter
     command: ["--log.level", "fatal", "--log.format", "logger:stdout"]
-
+    networks:
+      - traefik_backend
+      - backend
   blackbox_exporter:
     image: prom/blackbox-exporter
     hostname: 'blackbox_exporter'
@@ -175,7 +224,9 @@ services:
       driver: "json-file"
 #      options:
 #        tag: blackbox_exporter
-
+    networks:
+      - traefik_backend
+      - backend
   prometheus:
     image: prom/prometheus
     hostname: prometheus
@@ -188,11 +239,20 @@ services:
     deploy:
       placement:
         constraints: [node.role == manager]
+      labels:
+        - traefik.enable=true
+        - traefik.backend=prometheus
+        - traefik.frontend.rule=PathPrefix:/;Host:prometheus.test
+        - traefik.port=9090
+        - traefik.docker.network=proxy_backend
+        - traefik.frontend.auth.basic=admin:$$apr1$$naLpVBK2$$beVtB2oo9bUZuNjkBHyeA1
     logging:
       driver: "json-file"
 #      options:
 #        tag: prometheus
-
+    networks:
+      - traefik_backend
+      - backend
   grafana:
     image: grafana/grafana:3.1.1
     hostname: grafana
@@ -211,32 +271,20 @@ services:
     deploy:
       placement:
         constraints: [node.role == manager]
+      labels:
+        - traefik.enable=true
+        - traefik.backend=grafana
+        - traefik.frontend.rule=PathPrefix:/;Host:grafana.test
+        - traefik.port=3000
+        - traefik.docker.network=proxy_backend
+        - traefik.frontend.auth.basic=admin:$$apr1$$naLpVBK2$$beVtB2oo9bUZuNjkBHyeA1
     logging:
       driver: "json-file"
 #      options:
 #        tag: grafana
-
-  nginx:
-     image: nginx:1.13.7
-     hostname: nginx
-     volumes:
-       - ./nginx/etc/nginx/conf.d:/etc/nginx/conf.d
-       - ./nginx/etc/nginx/htpasswd:/etc/nginx/htpasswd
-       - ./nginx/etc/nginx/nginx.conf:/etc/nginx/nginx.conf
-     ports:
-       - "8444:443" # blog https
-       - "8088:80" # blog http -> https
-       - "3001:3001" # grafana
-       - "9091:9091" # prometheus
-       - "8090:8090" # visualizer
-     deploy:
-       placement:
-         constraints: [node.role == manager]
-     logging:
-       driver: "json-file"
-#      options:
-#        tag: nginx
-
+    networks:
+      - traefik_backend
+      - backend
 volumes:
   #enviroment
   postgresql_prod_data_dir:
@@ -245,3 +293,10 @@ volumes:
   redis_prerender_prod_data_dir:
   prometheus_data:
   grafana_data_prod_data_dir:
+
+networks:
+  backend:
+    driver: overlay
+  traefik_backend:
+    external:
+      name: proxy_backend        
