@@ -264,3 +264,9 @@ docker images -q -a | xargs  docker rmi
 ```bash
 cat /tmp/blog.sql | docker exec -i $(docker ps --filter label=com.docker.swarm.service.name=BLOGSTACK_postgresql -q) psql -U postgres
 ```
+
+## clean prerender cache
+
+```bash
+docker exec -t $(docker ps --filter label=com.docker.swarm.service.name=BLOGSTACK_prerender -q) redis-cli flushdb
+```
