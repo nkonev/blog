@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -56,8 +57,11 @@ public class WebConfig extends WebMvcConfigurerAdapter implements ApplicationCon
     public FilterRegistrationBean someFilterRegistration(PrerenderConfig prerenderConfig) {
         FilterRegistrationBean registration = new FilterRegistrationBean();
         registration.setFilter(new PreRenderSEOFilter());
+        final String baseUrl = customConfig.getBaseUrl();
         registration.addUrlPatterns("/*");
-        registration.addInitParameter("forwardedURLPrefix", customConfig.getBaseUrl());
+        if (!StringUtils.isEmpty(baseUrl)) {
+            registration.addInitParameter("forwardedURLPrefix", baseUrl);
+        }
         for (Map.Entry<String, String> e : prerenderConfig.getPrerender().entrySet()) {
             registration.addInitParameter(e.getKey(), e.getValue());
         }
