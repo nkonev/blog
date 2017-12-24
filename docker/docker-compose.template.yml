@@ -30,7 +30,7 @@ services:
       - custom.prerender.enable=true
       - custom.prerender.prerenderServiceUrl=http://prerender:3000/
       - custom.prerender.crawlerUserAgents=googlebot,prometheus
-      - custom.prerender.forwardedURLHeader=X-FORWARDED-URL # only for tests
+      - custom.prerender.forwardedURLPrefixHeader=X-FORWARDED-URL
 #      - logging.level.com.github.greengerong.PrerenderSeoService=TRACE
       - spring.mail.host=smtp.yandex.ru
       - custom.email.from=username@yandex.ru
