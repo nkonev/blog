@@ -19,10 +19,8 @@
 </template>
 
 <script>
-    import Multiselect from 'vue-multiselect'
     import store from '../store'
     import {UNSET_USER} from '../store'
-    import "vue-multiselect/dist/vue-multiselect.min.css"
     import {LOGIN_MODAL} from '../constants'
     import bus from '../bus'
     import {LOGOUT} from '../bus'
