@@ -118,7 +118,7 @@ services:
       - traefik_backend
       - backend
   rabbitmq:
-    image: nkonev/rabbitmq-web-stomp:3.7.0
+    image: nkonev/rabbitmq-web-stomp:3.7.2
     hostname: rabbitmq
     environment:
       - RABBITMQ_DEFAULT_USER=blog
