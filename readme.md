@@ -76,6 +76,13 @@ cd frontend
 npm run test
 ```
 
+#### clean Jest cache
+```bash
+# where is it
+npm run test -- --showConfig | grep cache
+rm -rf /var/tmp/jest_rs
+```
+
 ### Update js dependencies
 
 https://www.npmjs.com/package/npm-check-updates

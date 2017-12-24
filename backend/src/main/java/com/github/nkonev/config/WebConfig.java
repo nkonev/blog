@@ -2,6 +2,7 @@ package com.github.nkonev.config;
 
 import com.github.greengerong.PreRenderSEOFilter;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.ApplicationContext;
@@ -20,6 +21,9 @@ import java.util.Map;
 public class WebConfig extends WebMvcConfigurerAdapter implements ApplicationContextAware {
 
     private ApplicationContext applicationContext;
+
+    @Autowired
+    private CustomConfig customConfig;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -53,6 +57,7 @@ public class WebConfig extends WebMvcConfigurerAdapter implements ApplicationCon
         FilterRegistrationBean registration = new FilterRegistrationBean();
         registration.setFilter(new PreRenderSEOFilter());
         registration.addUrlPatterns("/*");
+        registration.addInitParameter("forwardedURLPrefix", customConfig.getBaseUrl());
         for (Map.Entry<String, String> e : prerenderConfig.getPrerender().entrySet()) {
             registration.addInitParameter(e.getKey(), e.getValue());
         }
