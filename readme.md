@@ -158,6 +158,7 @@ docker node inspect -f '{{index .Spec.Labels "blog.server.role"}}' $(docker node
 Copy on server
 ```bash
 scp -r /path/to/blog/docker/* user@blog.test:/path/to/blog/
+chmod 600 traefik/acme.json
 ```
 
 ## Generating monitoring grafana & prometheus password
@@ -235,14 +236,14 @@ docker rm $(docker ps -aq -f name=BLOGSTACK_blog -f status=exited)
 ## curl
 ```bash
 curl -H "Host: blog.test" http://127.0.0.1:8088
-curl -H "Host: grafana.test" -u "admin:admin" http://127.0.0.1:8088
-curl -H "Host: prometheus.test" -u "admin:admin" http://127.0.0.1:8088
+curl -H "Host: grafana.blog.test" -u "admin:admin" http://127.0.0.1:8088
+curl -H "Host: prometheus.blog.test" -u "admin:admin" http://127.0.0.1:8088
 ```
 
 ## Browser
 
 ```bash
-echo -e '127.0.0.1 blog.test\n127.0.0.1 grafana.test\n127.0.0.1 prometheus.test' | sudo tee --append /etc/hosts
+echo -e '127.0.0.1 blog.test\n127.0.0.1 grafana.blog.test\n127.0.0.1 prometheus.blog.test' | sudo tee --append /etc/hosts
 ```
 
 # Run `boot-run`

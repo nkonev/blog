@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   blog:
-    image: nkonev/blog:1.0.2-SNAPSHOT
+    image: nkonev/blog:latest
     logging:
       driver: "json-file"
 #      options:
@@ -204,11 +204,11 @@ services:
     hostname: 'node_exporter'
     ports:
       - '9100:9100'
+    command: ["--log.level", "fatal", "--log.format", "logger:stdout"]
     logging:
       driver: "json-file"
 #      options:
 #        tag: node_exporter
-    command: ["--log.level", "fatal", "--log.format", "logger:stdout"]
     networks:
       - traefik_backend
       - backend
@@ -242,7 +242,7 @@ services:
       labels:
         - traefik.enable=true
         - traefik.backend=prometheus
-        - traefik.frontend.rule=PathPrefix:/;Host:prometheus.test
+        - traefik.frontend.rule=PathPrefix:/;Host:prometheus.blog.test
         - traefik.port=9090
         - traefik.docker.network=proxy_backend
         - traefik.frontend.auth.basic=admin:$$apr1$$naLpVBK2$$beVtB2oo9bUZuNjkBHyeA1
@@ -253,10 +253,12 @@ services:
     networks:
       - traefik_backend
       - backend
+
   grafana:
     image: grafana/grafana:3.1.1
     hostname: grafana
     environment:
+      - GF_AUTH_BASIC_ENABLED=false
       - GF_SECURITY_ADMIN_PASSWORD=admin
       - GF_SERVER_ROOT_URL=http://grafana
       - GF_AUTH_ANONYMOUS_ENABLED=true
@@ -274,7 +276,7 @@ services:
       labels:
         - traefik.enable=true
         - traefik.backend=grafana
-        - traefik.frontend.rule=PathPrefix:/;Host:grafana.test
+        - traefik.frontend.rule=PathPrefix:/;Host:grafana.blog.test
         - traefik.port=3000
         - traefik.docker.network=proxy_backend
         - traefik.frontend.auth.basic=admin:$$apr1$$naLpVBK2$$beVtB2oo9bUZuNjkBHyeA1

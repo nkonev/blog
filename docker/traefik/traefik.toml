@@ -1,4 +1,8 @@
 logLevel = "DEBUG"
+defaultEntryPoints = ["https","http"]
+
+[accessLog]
+filePath = "/dev/stdout"
 
 [metrics]
   [metrics.prometheus]
@@ -7,6 +11,7 @@ logLevel = "DEBUG"
 
 [web]
 address = ":8080"
+readOnly = true
 [web.statistics]
 recentErrors = 10
 
@@ -23,12 +28,19 @@ recentErrors = 10
 #[entryPoints.https]
 #address = ":443"
 #  [entryPoints.https.tls]
-#    [acme]
-#        email = "test@traefik.io"
-#        storage = "/acme.json"
-#        entryPoint = "https"
+
+#[acme]
+#  email = "test@traefik.io"
+#  storage = "/acme.json"
+#  entryPoint = "https"
+#  onHostRule = true
+
+#[[acme.domains]]
+# main = "blog.test"
+# sans = ["grafana.blog.test", "prometheus.blog.test"]
 
 [docker]
 watch = true
 exposedbydefault = false
 swarmmode = true
+
