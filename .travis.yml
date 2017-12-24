@@ -27,7 +27,7 @@ script:
   - ./mvnw -P frontend -P jacoco -P docker -P webdriver-chrome -P webdriver-firefox -Dcustom.selenium.headless=true clean install --no-snapshot-updates
   - (cd docker; docker-compose down)
   - ./mvnw -pl deploy-test -P deploy-test clean test  --no-snapshot-updates
-  - rm -rf /home/travis/.m2/repository/com/github/nkonev
+  - find  ~/.m2/repository/com/github/nkonev -mindepth 1 -maxdepth 1 -not -name 'prerender-java' -type d -exec rm -r {} +
   - bash <(curl -s https://codecov.io/bash)
   - if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_TEST_RESULT" == "0" ]]; then (
       echo "Will push docker image";
