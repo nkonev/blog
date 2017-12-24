@@ -242,7 +242,7 @@ public class DeployIT {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        });
+        }, 8);
     }
 
     @Parameters({"testStack"})

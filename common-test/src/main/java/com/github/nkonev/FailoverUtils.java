@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 public class FailoverUtils {
     public static final Logger LOGGER = LoggerFactory.getLogger(FailoverUtils.class);
 
-    public static <T> T retry(int times, Supplier<T> function){
+    public static <T> T retry(int times, Supplier<T> function, int waitSec){
         Throwable saved=null;
         for (int i=1; i<=times && !Thread.currentThread().isInterrupted(); ++i) {
             try {
@@ -18,7 +18,7 @@ public class FailoverUtils {
                 LOGGER.warn("Next attempt to perform action {}", function);
                 saved = e;
                 try {
-                    TimeUnit.SECONDS.sleep(1);
+                    TimeUnit.SECONDS.sleep(waitSec);
                 } catch (InterruptedException e1) {
                     Thread.currentThread().interrupt();
                     break;
@@ -27,6 +27,11 @@ public class FailoverUtils {
             }
         }
         throw new RuntimeException("Couldn't successful perform action "+function+" after "+times+" times", saved);
+    }
+
+
+    public static <T> T retry(int times, Supplier<T> function){
+        return retry(times, function, 1);
     }
 
     /**
