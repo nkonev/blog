@@ -45,6 +45,7 @@ scrape_configs:
   metrics_path: /probe
   params:
     module: ['prerender']
+    # set https://blog.test
     target: ['http://blog:8098']
   static_configs:
     - targets:

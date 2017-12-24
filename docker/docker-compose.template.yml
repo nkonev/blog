@@ -15,6 +15,7 @@ services:
         - traefik.frontend.rule=PathPrefix:/;Host:blog.test
         - traefik.port=8098
         - traefik.docker.network=proxy_backend
+#        - traefik.frontend.headers.customRequestHeaders=X-FORWARDED-URL:https://blog.test
     environment:
       # https://stackoverflow.com/questions/28327620/difference-between-java-options-java-tool-options-and-java-opts
       # https://blogs.oracle.com/poonam/about-g1-garbage-collector%2c-permanent-generation-and-metaspace
