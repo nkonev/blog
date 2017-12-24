@@ -1,7 +1,7 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
 <suite name="Suite1" verbose="1" >
-    <parameter name="timeoutToStartSec" value="720"/>
+    <parameter name="timeoutToStartSec" value="72"/>
     <parameter name="lbCheckTimes" value="100"/>
     <parameter name="testStack" value="TESTBLOGSTACK"/>
     <parameter name="baseUrl" value="http://127.0.0.1:8088"/>
