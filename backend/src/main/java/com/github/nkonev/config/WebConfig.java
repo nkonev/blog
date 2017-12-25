@@ -1,5 +1,6 @@
 package com.github.nkonev.config;
 
+import com.github.greengerong.PreRenderConstants;
 import com.github.greengerong.PreRenderSEOFilter;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,10 +58,10 @@ public class WebConfig extends WebMvcConfigurerAdapter implements ApplicationCon
     public FilterRegistrationBean someFilterRegistration(PrerenderConfig prerenderConfig) {
         FilterRegistrationBean registration = new FilterRegistrationBean();
         registration.setFilter(new PreRenderSEOFilter());
-        final String baseUrl = customConfig.getBaseUrl();
         registration.addUrlPatterns("/*");
+        final String baseUrl = customConfig.getBaseUrl();
         if (!StringUtils.isEmpty(baseUrl)) {
-            registration.addInitParameter("forwardedURLPrefix", baseUrl);
+            registration.addInitParameter(PreRenderConstants.InitFilterParams.FORWARDED_URL_PREFIX, baseUrl);
         }
         for (Map.Entry<String, String> e : prerenderConfig.getPrerender().entrySet()) {
             registration.addInitParameter(e.getKey(), e.getValue());
