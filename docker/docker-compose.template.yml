@@ -29,7 +29,7 @@ services:
       - custom.prerender.enable=true
       - custom.prerender.prerenderServiceUrl=http://prerender:3000/
       - custom.prerender.crawlerUserAgents=googlebot,prometheus
-      - custom.prerender.forwardedURLHeader=X-FORWARDED-URL # only for tests
+      - custom.prerender.forwardedURLPrefix=http://blog:8098
 #      - logging.level.com.github.greengerong.PrerenderSeoService=TRACE
       - spring.mail.host=smtp.yandex.ru
       - custom.email.from=username@yandex.ru
@@ -50,9 +50,16 @@ services:
     hostname: traefik
     command: -c /traefik.toml
     ports:
-      - "8088:80"
+      # https://docs.docker.com/engine/swarm/services/#publish-a-services-ports-directly-on-the-swarm-node
+      # https://docs.docker.com/compose/compose-file/#long-syntax-1
+      # https://stackoverflow.com/questions/39854682/log-clients-real-ip-address-in-docker-swarm-1-12-when-accessing-a-service
+      - target: 80
+        published: 8088
+        mode: host
+      - target: 443
+        published: 8445
+        mode: host
       - "10000:8080"
-      - "8445:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik/traefik.toml:/traefik.toml
@@ -83,7 +90,7 @@ services:
         constraints: [node.role == manager]
     networks:
       - traefik_backend
-      - backend
+
   postgresql:
     image: postgres:10.1
     hostname: postgresql
@@ -100,7 +107,6 @@ services:
       placement:
         constraints: [node.labels.blog.server.role == db]
     networks:
-      - traefik_backend
       - backend
   redis:
     image: redis:4.0.6
@@ -115,7 +121,6 @@ services:
       placement:
         constraints: [node.labels.blog.server.role == db]
     networks:
-      - traefik_backend
       - backend
   rabbitmq:
     image: nkonev/rabbitmq-web-stomp:3.7.2
@@ -134,7 +139,6 @@ services:
       placement:
         constraints: [node.labels.blog.server.role == db]
     networks:
-      - traefik_backend
       - backend
   prerender:
     image: nkonev/prerender-redis
@@ -166,7 +170,6 @@ services:
 #      options:
 #        tag: rabbitmq_exporter
     networks:
-      - traefik_backend
       - backend
   postgresql_exporter:
     image: wrouesnel/postgres_exporter
@@ -197,7 +200,6 @@ services:
 #      options:
 #        tag: redis_exporter
     networks:
-      - traefik_backend
       - backend
   node_exporter:
     image: prom/node-exporter
@@ -210,7 +212,6 @@ services:
 #      options:
 #        tag: node_exporter
     networks:
-      - traefik_backend
       - backend
   blackbox_exporter:
     image: prom/blackbox-exporter

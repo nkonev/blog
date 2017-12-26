@@ -9,16 +9,16 @@ filePath = "/dev/stdout"
       entryPoint = "traefik"
       buckets = [0.1,0.3,1.2,5.0]
 
-[web]
-address = ":8080"
-readOnly = true
-[web.statistics]
-recentErrors = 10
+[api]
+entryPoint = "traefik"
+dashboard = true
 
 # http(s) blog entrypoint
 [entryPoints]
   [entryPoints.http]
   address = ":80"
+  [entryPoints.traefik]
+  address = ":8080"
 
 # http->https
 #[entryPoints.http.redirect]
@@ -28,6 +28,8 @@ recentErrors = 10
 #[entryPoints.https]
 #address = ":443"
 #  [entryPoints.https.tls]
+
+[retry]
 
 #[acme]
 #  email = "test@traefik.io"
