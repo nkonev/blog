@@ -16,7 +16,7 @@ Vue.use(VueResource);
 Vue.use(Meta);
 
 window.hljs.configure({
-        languages: ['java', 'bash', 'javascript']
+        languages: ['java', 'bash', 'javascript', 'sql']
 });
 
 // Vue.config.devtools = false;
