@@ -91,6 +91,7 @@ management:
   port: 3010
   ssl:
     enabled: false
+  add-application-context-header: false
 """
 
 def WEBSERVER_SNIPPET =
