@@ -6,12 +6,12 @@
             </template>
             <template v-else>
                 <template v-if="!isLoading && !errorMessage">
-                    <div class="img-container">
+                    <div v-if="postDTO.titleImg" class="img-container post-title">
                         <img class="title-img" :src="postDTO.titleImg"/>
+                        <h1>{{postDTO.title}}</h1>
                     </div>
+                    <div v-else class="post-title"><h1>{{postDTO.title}}</h1></div>
                     <div class="post-head">
-                        <h2>{{postDTO.title}}</h2>
-
                         <owner v-if="postDTO.owner" prepend="written by" :owner="postDTO.owner" :time="createTime"></owner>
 
                         <div class="manage-buttons" v-if="postDTO.canEdit || postDTO.canDelete">
@@ -335,9 +335,19 @@
             //display flex
             //flex-direction row
             justify-content center
+            position: relative;
 
             .title-img {
                 max-width 100%
+            }
+
+            h1 {
+                color: white;
+                position: absolute;
+                bottom: 20px;
+                left: 0;
+                width: 100%;
+                background: rgba(0, 0, 0, 0.7);
             }
         }
     }

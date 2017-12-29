@@ -59,7 +59,7 @@ public class PostIT extends AbstractItTestRunner {
         }
 
         public void assertTitle(String expected) {
-            $(".post .post-head").waitUntil(Condition.visible, 20 * 1000).should(Condition.text(expected));
+            $(".post .post-title").waitUntil(Condition.visible, 20 * 1000).should(Condition.text(expected));
         }
 
         public void assertText(String expected) {
