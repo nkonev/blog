@@ -331,6 +331,7 @@
             font-size 4em
         }
 
+        // https://css-tricks.com/text-blocks-over-image/
         .img-container {
             //display flex
             //flex-direction row
@@ -338,6 +339,7 @@
             position: relative;
 
             .title-img {
+                filter blur(2px) contrast(0.8) grayscale(0.3)
                 max-width 100%
             }
 

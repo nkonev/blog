@@ -66,7 +66,6 @@
             }
 
             img:hover {
-                transform scale(1.2)
                 box-shadow: 7px 7px 34px 22px rgba(0,0,0,0.6);
                 transition all 0.2s
             }
