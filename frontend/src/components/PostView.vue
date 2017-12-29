@@ -332,8 +332,8 @@
         }
 
         .img-container {
-            display flex
-            flex-direction row
+            //display flex
+            //flex-direction row
             justify-content center
 
             .title-img {

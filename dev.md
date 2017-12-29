@@ -67,3 +67,9 @@ https://stackoverflow.com/questions/1709625/maven-command-to-list-lifecycle-phas
 ```bash
 ./mvnw fr.jcgay.maven.plugins:buildplan-maven-plugin:list-phase
 ```
+
+# Restore dump
+```bash
+echo 'drop database blog;' | docker exec -i postgresql-blog-dev psql -U postgres
+cat ~/blog/backup/blog.sql | docker exec -i postgresql-blog-dev psql -U postgres
+```
