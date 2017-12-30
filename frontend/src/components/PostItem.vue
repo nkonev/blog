@@ -43,6 +43,7 @@
     @import "../constants.styl"
     $borderColor=red;
     $imgMaxHeight=200px
+    $imgMaxWidth=400px
     .post {
         display block
         // border-style solid
@@ -58,11 +59,12 @@
             img {
                 float: left
                 margin 10px;
-                width: 350px;
+                //width: 350px;
                 // display inline
                 // height: auto;
                 //max-height 400px;
                 max-height $imgMaxHeight
+                max-width $imgMaxWidth
             }
 
             img:hover {
