@@ -112,7 +112,7 @@ spring.datasource:
       validationQueryTimeout: 4
       logValidationErrors: true
 
-liquibase:
+spring.liquibase:
   change-log: classpath:liquibase/migration.yml
   contexts: main, test
   drop-first: true
@@ -124,12 +124,13 @@ custom.postgres.fulltext.reg-config: "'russian'::regconfig"
 
 
 management:
+  server:
+    port: 3011
+    ssl:
+      enabled: false
+    add-application-context-header: false
   security:
     enabled: false
-  port: 3011
-  ssl:
-    enabled: false
-  add-application-context-header: false
 
 custom.frontend:
     titleTemplate: "%s | owner's blog"

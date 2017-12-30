@@ -280,15 +280,20 @@
         </dependency>
 
         <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
+            <groupId>io.lettuce</groupId>
+            <artifactId>lettuce-core</artifactId>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.session</groupId>
-            <artifactId>spring-session</artifactId>
+            <artifactId>spring-session-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
         </dependency>
 
         <dependency>

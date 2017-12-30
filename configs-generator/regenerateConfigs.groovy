@@ -78,7 +78,7 @@ spring.datasource:
       validationQueryTimeout: 4
       logValidationErrors: true
 
-liquibase:
+spring.liquibase:
   change-log: classpath:liquibase/migration.yml
   contexts: ${contexts}
   drop-first: ${dropFirst}
@@ -93,12 +93,13 @@ def MANAGEMENT_SNIPPET = { boolean test ->
 
 """
 management:
+  server:
+    port: ${test?'3011':'3010'}
+    ssl:
+      enabled: false
+    add-application-context-header: false
   security:
     enabled: false
-  port: ${test?'3011':'3010'}
-  ssl:
-    enabled: false
-  add-application-context-header: false
 """
 }
 

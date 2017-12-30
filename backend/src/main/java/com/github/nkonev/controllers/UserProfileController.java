@@ -1,38 +1,25 @@
 package com.github.nkonev.controllers;
 
 import com.github.nkonev.Constants;
+import com.github.nkonev.converter.UserAccountConverter;
 import com.github.nkonev.dto.*;
 import com.github.nkonev.entity.jpa.UserAccount;
 import com.github.nkonev.exception.UserAlreadyPresentException;
+import com.github.nkonev.repo.jpa.UserAccountRepository;
 import com.github.nkonev.security.BlogSecurityService;
 import com.github.nkonev.security.BlogUserDetailsService;
 import com.github.nkonev.utils.PageUtils;
-import com.github.nkonev.converter.UserAccountConverter;
-import com.github.nkonev.repo.jpa.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.session.ExpiringSession;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.WebRequest;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.net.MalformedURLException;
-import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 

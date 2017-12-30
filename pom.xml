@@ -23,7 +23,7 @@
         <maven.jxr.report.plugin.version>2.5</maven.jxr.report.plugin.version>
         <maven.clean.plugin.version>3.0.0</maven.clean.plugin.version>
         <java.version>1.8</java.version>
-        <spring.boot.version>1.5.9.RELEASE</spring.boot.version>
+        <spring.boot.version>2.0.0.M7</spring.boot.version>
 	    <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
         <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
 
@@ -51,6 +51,26 @@
 
     <url>https://github.com/nikit-cpp/blog.git</url>
 
+    <repositories>
+        <repository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>spring-milestones</id>
+            <url>http://repo.spring.io/milestone</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>spring-milestones</id>
+            <url>http://repo.spring.io/milestone</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <build>
         <pluginManagement>
@@ -135,15 +155,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <!-- Import dependency management from Spring Boot -->
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring.boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
             <!-- It's important to redefine Selenium versions exactly here if you wants to reuse same test module (e. g. "commons-test" in several projects for correct Spring Boot's version overriding)  -->
             <dependency>
                 <groupId>org.seleniumhq.selenium</groupId>
@@ -216,6 +227,15 @@
                 </exclusions>
             </dependency>
 
+            <!-- https://docs.spring.io/spring-boot/docs/2.0.0.M7/reference/htmlsingle/#using-boot-maven-without-a-parent -->
+            <dependency>
+                <!-- Import dependency management from Spring Boot -->
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
