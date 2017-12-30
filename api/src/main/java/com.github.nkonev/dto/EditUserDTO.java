@@ -1,7 +1,7 @@
 package com.github.nkonev.dto;
 
-import org.hibernate.validator.constraints.NotEmpty;
-import java.net.URL;
+
+import javax.validation.constraints.NotEmpty;
 
 public class EditUserDTO {
     @NotEmpty

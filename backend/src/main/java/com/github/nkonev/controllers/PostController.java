@@ -152,7 +152,7 @@ public class PostController {
             @RequestParam(value = "searchString", required = false, defaultValue = "") String searchString // TODO implement
     ) {
 
-        PageRequest springDataPage = new PageRequest(PageUtils.fixPage(page), PageUtils.fixSize(size));
+        PageRequest springDataPage = PageRequest.of(PageUtils.fixPage(page), PageUtils.fixSize(size));
 
         return postRepository
                 .findMyPosts(springDataPage).getContent()

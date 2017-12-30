@@ -396,7 +396,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
                 .andExpect(jsonPath("$.error").value("validation error"))
                 .andExpect(jsonPath("$.message").value("validation error, see validationErrors[]"))
                 .andExpect(jsonPath("$.validationErrors[0].field").value("newPassword"))
-                .andExpect(jsonPath("$.validationErrors[0].message").value("may not be empty"))
+                .andExpect(jsonPath("$.validationErrors[0].message").value("must not be empty"))
         ;
 
     }

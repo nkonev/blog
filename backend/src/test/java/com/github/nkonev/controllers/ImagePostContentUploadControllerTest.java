@@ -27,7 +27,7 @@ public class ImagePostContentUploadControllerTest extends AbstractImageUploadCon
 		MockMultipartFile mf0 = new MockMultipartFile(ImagePostTitleUploadController.IMAGE_PART, "lol-content.png", "image/ololo", img0);
 
 		MvcResult mvcResult = mockMvc.perform(
-				MockMvcRequestBuilders.fileUpload(POST_TEMPLATE)
+				MockMvcRequestBuilders.multipart(POST_TEMPLATE)
 						.file(mf0).with(csrf())
 		)
 				.andExpect(status().isUnsupportedMediaType())
@@ -48,7 +48,7 @@ public class ImagePostContentUploadControllerTest extends AbstractImageUploadCon
 		MockMultipartFile mf0 = new MockMultipartFile(ImagePostTitleUploadController.IMAGE_PART, "lol-content.png", "image/ololo", img0);
 
 		MvcResult mvcResult = mockMvc.perform(
-				MockMvcRequestBuilders.fileUpload(POST_TEMPLATE)
+				MockMvcRequestBuilders.multipart(POST_TEMPLATE)
 						.file(mf0).with(csrf())
 		)
 				.andExpect(status().isPayloadTooLarge())

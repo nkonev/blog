@@ -51,10 +51,12 @@ def FRONT_CONFIGURATION_SNIPPET =
 def DATA_STORE_SNIPPET = {String contexts, boolean dropFirst, String ddlAuto ->
 return """
 spring.jpa:
+  open-in-view: false
   properties:
     hibernate.use_sql_comments: true
     hibernate.format_sql: true
     hibernate.generate_statistics: true
+    hibernate.temp.use_jdbc_metadata_defaults: false
   hibernate.ddl-auto: ${ddlAuto}
 
 spring.datasource:
@@ -63,20 +65,7 @@ spring.datasource:
     username: blog
     password: "blogPazZw0rd"
     driverClassName: org.postgresql.Driver
-    # https://tomcat.apache.org/tomcat-8.5-doc/jdbc-pool.html#Common_Attributes
-    # https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-connect-to-production-database
-    tomcat:
-      minIdle: 4
-      maxIdle: 8
-      maxActive: 10
-      maxWait: 60000
-      testOnBorrow: true
-      testOnConnect: true
-      testWhileIdle: true
-      timeBetweenEvictionRunsMillis: 5000
-      validationQuery: SELECT 1;
-      validationQueryTimeout: 4
-      logValidationErrors: true
+    # https://docs.spring.io/spring-boot/docs/2.0.0.M7/reference/htmlsingle/#boot-features-connect-to-production-database
 
 spring.liquibase:
   change-log: classpath:liquibase/migration.yml

@@ -50,7 +50,7 @@ public class CommentController {
             @RequestParam(value = "size", required=false, defaultValue = "0") int size
             ) {
 
-        PageRequest springDataPage = new PageRequest(PageUtils.fixPage(page), PageUtils.fixSize(size));
+        PageRequest springDataPage = PageRequest.of(PageUtils.fixPage(page), PageUtils.fixSize(size));
 
         long count = commentRepository.countByPostId(postId);
         List<Comment> comments = commentRepository.findCommentByPostIdOrderByIdAsc(springDataPage, postId);
