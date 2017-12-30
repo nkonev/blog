@@ -111,8 +111,12 @@ custom.postgres.fulltext.reg-config: "'russian'::regconfig"
 management:
   security:
     enabled: false
-  port: 3010
+  port: 3011
   ssl:
     enabled: false
   add-application-context-header: false
+
+custom.frontend:
+    titleTemplate: "%s | owner's blog"
+    header: "Owner's blog"
 

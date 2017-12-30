@@ -132,3 +132,7 @@ management:
     enabled: false
   add-application-context-header: false
 
+custom.frontend:
+    titleTemplate: "%s | owner's blog"
+    header: "Owner's blog"
+

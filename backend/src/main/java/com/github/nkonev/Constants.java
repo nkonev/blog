@@ -33,6 +33,7 @@ public class Constants {
         public static final String REQUEST_PASSWORD_RESET = "/request-password-reset";
         public static final String PASSWORD_RESET_SET_NEW = "/password-reset-set-new";
         public static final String SESSIONS = "/sessions";
+        public static final String CONFIG = "/config";
     }
 
     public static class PathVariables {

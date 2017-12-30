@@ -2,9 +2,9 @@
     <div id="app">
         <div id="content">
             <LoginModal></LoginModal>
-            <auto-progress :excludedUrls="['/api/profile', '/api/post/\\d+/comment.*']"/>
+            <auto-progress :excludedUrls="['/api/profile', '/api/post/\\d+/comment.*', '/api/config']"/>
 
-            <h1 class="logo">Blog</h1>
+            <h1 class="logo">{{config.header}}</h1>
             <nav>
                 <router-link class="router-link" to="/" exact>Posts</router-link>
                 <router-link class="router-link" to="/users">Users</router-link>
@@ -27,6 +27,7 @@
     import store, {GET_USER, FETCH_USER_PROFILE} from './store'
     import {mapGetters} from 'vuex'
     import VmBackTop from 'vue-multiple-back-top'
+    import {API_CONFIG} from './constants'
 
     Vue.use(vmodal);
     Vue.component(VmBackTop.name, VmBackTop);
@@ -45,12 +46,26 @@
         mounted() {
             // attempt to initialize LoginModal
             store.dispatch(FETCH_USER_PROFILE);
+            this.$http.get(API_CONFIG).then((response) => {
+                this.$data.config = response.body
+            }, response => {
+                console.error("Error on get config", response);
+            });
         },
-        metaInfo: {
-            // if no subcomponents specify a metaInfo.title, this title will be used
-            title: 'Welcome to',
-            // all titles will be injected into this template
-            titleTemplate: '%s | nkonev Blog'
+        data(){
+            return {
+                config: {}
+            }
+        },
+        metaInfo(){
+            return Vue.util.extend(
+                {
+                    title: 'Welcome to'
+                },
+                {
+                    titleTemplate: this.$data.config.titleTemplate
+                }
+            );
         }
     }
 </script>

@@ -42,6 +42,12 @@ def writeAndLog(filePath, content) {
 ////////////////////////////////////////////////////////////// common snippets //////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+def FRONT_CONFIGURATION_SNIPPET =
+"""custom.frontend:
+    titleTemplate: "%s | owner's blog"
+    header: "Owner's blog"
+"""
+
 def DATA_STORE_SNIPPET = {String contexts, boolean dropFirst, String ddlAuto ->
 return """
 spring.jpa:
@@ -83,16 +89,18 @@ spring.data.redis.repositories.enabled: false
 custom.postgres.fulltext.reg-config: "'russian'::regconfig"
 """};
 
-def MANAGEMENT_SNIPPET =
+def MANAGEMENT_SNIPPET = { boolean test ->
+
 """
 management:
   security:
     enabled: false
-  port: 3010
+  port: ${test?'3011':'3010'}
   ssl:
     enabled: false
   add-application-context-header: false
 """
+}
 
 def WEBSERVER_SNIPPET =
 """
@@ -201,7 +209,8 @@ spring.mvc.static-path-pattern: /**
 spring.resources.static-locations: file:backend/src/main/resources/static/, classpath:/static/
 
 ${DATA_STORE_SNIPPET('main', false, 'validate')}
-${MANAGEMENT_SNIPPET}
+${MANAGEMENT_SNIPPET(false)}
+${FRONT_CONFIGURATION_SNIPPET}
 """;
 writeAndLog(BACKEND_MAIN_YML_FILE, BACKEND_MAIN_YML_CONTENT);
 
@@ -217,7 +226,8 @@ server.port: ${ExportedConstants.TEST_PORT}
 ${WEBSERVER_SNIPPET}
 ${TEST_USERS_SNIPPET}
 ${DATA_STORE_SNIPPET('main, test', true, 'validate')}
-${MANAGEMENT_SNIPPET}
+${MANAGEMENT_SNIPPET(true)}
+${FRONT_CONFIGURATION_SNIPPET}
 """;
 writeAndLog(BACKEND_TEST_YML_FILE, BACKEND_TEST_YML_CONTENT);
 
@@ -247,6 +257,7 @@ custom.it.url.prefix: ${ExportedConstants.SCHEME}://127.0.0.1:\${server.port}
 custom.it.user.id: 1
 ${TEST_USERS_SNIPPET}
 ${DATA_STORE_SNIPPET('main, test', true, 'none')}
-${MANAGEMENT_SNIPPET}
+${MANAGEMENT_SNIPPET(true)}
+${FRONT_CONFIGURATION_SNIPPET}
 """;
 writeAndLog(INTEGRATION_TEST_YML_FILE, WEBDRIVER_TEST_YML_CONTENT);
