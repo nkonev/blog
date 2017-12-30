@@ -274,7 +274,7 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
         Assert.assertEquals(403, responseEntity.getStatusCodeValue());
 
         Map<String, Object> resp = objectMapper.readValue(str, new TypeReference<Map<String, Object>>() { });
-        Assert.assertEquals("Access is denied", resp.get("message"));
+        Assert.assertEquals("Forbidden", resp.get("message"));
     }
 
     @Test

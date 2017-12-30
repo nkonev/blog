@@ -66,7 +66,7 @@ public class BlogErrorControllerTest extends AbstractUtTestRunner {
         Assert.assertFalse(resp.containsValue("org.springframework.security.access.AccessDeniedException"));
 
         Assert.assertTrue(resp.containsKey("message"));
-        Assert.assertEquals("Access is denied", resp.get("message"));
+        Assert.assertNotNull(resp.get("message"));
     }
 
     @Test
