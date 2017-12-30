@@ -11,7 +11,7 @@
     <parent>
         <artifactId>blog.parent</artifactId>
         <groupId>com.github.nkonev</groupId>
-        <version>1.0.2-SNAPSHOT</version>
+        <version>1.0.3-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -19,6 +19,16 @@
     </properties>
 
     <dependencies>
+
+        <!-- for work hibernate with java 9 -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.transaction</groupId>
+            <artifactId>javax.transaction-api</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -94,13 +104,13 @@ https://github.com/bonigarcia/webdrivermanager
         <dependency>
             <groupId>com.github.nkonev</groupId>
             <artifactId>backend</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>1.0.3-SNAPSHOT</version>
             <!--<scope>test</scope>-->
         </dependency>
         <dependency>
             <groupId>com.github.nkonev</groupId>
             <artifactId>common-test</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>1.0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.icegreen</groupId>
@@ -121,6 +131,7 @@ https://github.com/bonigarcia/webdrivermanager
                             <include>**/*IT.java</include>
                         </includes>
                         <skip>false</skip>
+                        <argLine>--add-modules java.xml.bind</argLine>
                         <systemProperties>
                             <custom.selenium.browser>${custom.selenium.browser}</custom.selenium.browser>
                         </systemProperties>

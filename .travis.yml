@@ -7,7 +7,7 @@ cache:
   - "$HOME/.m2"
   - frontend/node
   - frontend/node_modules
-jdk: oraclejdk8
+jdk: oraclejdk9
 services:
   - docker
 before_install:

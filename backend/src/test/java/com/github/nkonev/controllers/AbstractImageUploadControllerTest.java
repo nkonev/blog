@@ -32,7 +32,7 @@ public abstract class AbstractImageUploadControllerTest extends AbstractUtTestRu
 
     protected String postImage(String putUrlTemplate, MockMultipartFile mpf) throws Exception {
         MvcResult mvcResult = mockMvc.perform(
-                MockMvcRequestBuilders.fileUpload(putUrlTemplate)
+                MockMvcRequestBuilders.multipart(putUrlTemplate)
                         .file(mpf).with(csrf())
         )
                 .andExpect(status().isOk())
@@ -106,7 +106,7 @@ public abstract class AbstractImageUploadControllerTest extends AbstractUtTestRu
 
 
         MvcResult mvcResult = mockMvc.perform(
-                MockMvcRequestBuilders.fileUpload(postTemplate())
+                MockMvcRequestBuilders.multipart(postTemplate())
                         .file(mf1)
                         .with(csrf())
         )
@@ -135,7 +135,7 @@ public abstract class AbstractImageUploadControllerTest extends AbstractUtTestRu
         byte[] img0 = {(byte)0xFF, (byte)0x01, (byte)0x1A};
         MockMultipartFile mf0 = new MockMultipartFile(ImagePostTitleUploadController.IMAGE_PART, "lol-content.png", "image/png", img0);
         MvcResult mvcResult = mockMvc.perform(
-                MockMvcRequestBuilders.fileUpload(postTemplate())
+                MockMvcRequestBuilders.multipart(postTemplate())
                         .file(mf0).with(csrf())
         )
                 .andExpect(status().isUnauthorized())

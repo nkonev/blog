@@ -2,6 +2,8 @@ package com.github.nkonev.config;
 
 import com.github.greengerong.PreRenderConstants;
 import com.github.greengerong.PreRenderSEOFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -15,14 +17,17 @@ import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.annotation.PostConstruct;
 import java.util.Map;
 
 @Configuration
-public class WebConfig extends WebMvcConfigurerAdapter implements ApplicationContextAware {
+public class WebConfig implements WebMvcConfigurer, ApplicationContextAware {
 
     private ApplicationContext applicationContext;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebConfig.class);
 
     @Autowired
     private CustomConfig customConfig;
@@ -53,9 +58,14 @@ public class WebConfig extends WebMvcConfigurerAdapter implements ApplicationCon
         ;
     }
 
+    @PostConstruct
+    public void log(){
+        LOGGER.info("Base url: {}", customConfig.getBaseUrl());
+    }
+
     @ConditionalOnProperty("custom.prerender.enable")
     @Bean
-    public FilterRegistrationBean someFilterRegistration(PrerenderConfig prerenderConfig) {
+    public FilterRegistrationBean prerenderFilterRegistration(PrerenderConfig prerenderConfig) {
         FilterRegistrationBean registration = new FilterRegistrationBean();
         registration.setFilter(new PreRenderSEOFilter());
         registration.addUrlPatterns("/*");
@@ -63,10 +73,16 @@ public class WebConfig extends WebMvcConfigurerAdapter implements ApplicationCon
         if (!StringUtils.isEmpty(baseUrl)) {
             registration.addInitParameter(PreRenderConstants.InitFilterParams.FORWARDED_URL_PREFIX, baseUrl);
         }
-        for (Map.Entry<String, String> e : prerenderConfig.getPrerender().entrySet()) {
-            registration.addInitParameter(e.getKey(), e.getValue());
+        LOGGER.info("Prerender configuration: {}", prerenderConfig);
+
+        if (!StringUtils.isEmpty(prerenderConfig.getForwardedURLPrefix())){
+            registration.addInitParameter(PreRenderConstants.InitFilterParams.FORWARDED_URL_PREFIX, prerenderConfig.getForwardedURLPrefix());
         }
+        registration.addInitParameter(PreRenderConstants.InitFilterParams.CRAWLER_USER_AGENTS, prerenderConfig.getCrawlerUserAgents());
+        registration.addInitParameter(PreRenderConstants.InitFilterParams.PRERENDER_SERVICE_URL, prerenderConfig.getPrerenderServiceUrl());
+
         registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return registration;
     }
+
 }

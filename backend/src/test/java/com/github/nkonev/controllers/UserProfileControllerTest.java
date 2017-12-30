@@ -22,17 +22,11 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.session.ExpiringSession;
-import org.springframework.session.FindByIndexNameSessionRepository;
-import org.springframework.session.data.redis.RedisOperationsSessionRepository;
 import org.springframework.test.web.servlet.MvcResult;
-
 import java.net.HttpCookie;
 import java.net.URI;
 import java.util.Map;
 import java.util.Optional;
-
-import static com.github.nkonev.CommonTestConstants.COMMON_PASSWORD;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -280,7 +274,7 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
         Assert.assertEquals(403, responseEntity.getStatusCodeValue());
 
         Map<String, Object> resp = objectMapper.readValue(str, new TypeReference<Map<String, Object>>() { });
-        Assert.assertEquals("Access is denied", resp.get("message"));
+        Assert.assertEquals("Forbidden", resp.get("message"));
     }
 
     @Test

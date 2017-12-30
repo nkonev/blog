@@ -1,38 +1,26 @@
 package com.github.nkonev.controllers;
 
 import com.github.nkonev.Constants;
+import com.github.nkonev.converter.UserAccountConverter;
 import com.github.nkonev.dto.*;
 import com.github.nkonev.entity.jpa.UserAccount;
 import com.github.nkonev.exception.UserAlreadyPresentException;
+import com.github.nkonev.repo.jpa.UserAccountRepository;
 import com.github.nkonev.security.BlogSecurityService;
 import com.github.nkonev.security.BlogUserDetailsService;
 import com.github.nkonev.utils.PageUtils;
-import com.github.nkonev.converter.UserAccountConverter;
-import com.github.nkonev.repo.jpa.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.session.ExpiringSession;
+import org.springframework.session.Session;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.WebRequest;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.net.MalformedURLException;
-import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -74,7 +62,7 @@ public class UserProfileController {
             @RequestParam(value = "size", required=false, defaultValue = "0") int size,
             @RequestParam(value = "searchString", required=false, defaultValue = "") String searchString
     ) {
-        PageRequest springDataPage = new PageRequest(PageUtils.fixPage(page), PageUtils.fixSize(size), Sort.Direction.ASC, "id");
+        PageRequest springDataPage = PageRequest.of(PageUtils.fixPage(page), PageUtils.fixSize(size), Sort.Direction.ASC, "id");
 
         Page<UserAccount> resultPage = userAccountRepository.findByUsernameContains(springDataPage, searchString);
         return new UserListWrapper(
@@ -129,13 +117,13 @@ public class UserProfileController {
     // TODO delete user with delete avatar
 
     @GetMapping(Constants.Uls.SESSIONS+"/my")
-    public Map<String, ExpiringSession> mySessions(@AuthenticationPrincipal UserAccountDetailsDTO userDetails){
+    public Map<String, Session> mySessions(@AuthenticationPrincipal UserAccountDetailsDTO userDetails){
         return blogUserDetailsService.getMySessions(userDetails);
     }
 
     @PreAuthorize("@blogSecurityService.hasSessionManagementPermission(#userAccount)")
     @GetMapping(Constants.Uls.SESSIONS)
-    public Map<String, ExpiringSession> sessions(@AuthenticationPrincipal UserAccountDetailsDTO userAccount, @RequestParam("userId") long userId){
+    public Map<String, Session> sessions(@AuthenticationPrincipal UserAccountDetailsDTO userAccount, @RequestParam("userId") long userId){
         return blogUserDetailsService.getSessions(userId);
     }
 

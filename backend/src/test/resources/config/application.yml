@@ -70,18 +70,23 @@ custom.it.password: admin
 
 
 spring.jpa:
+  open-in-view: false
   properties:
     hibernate.use_sql_comments: true
     hibernate.format_sql: true
     hibernate.generate_statistics: true
+    hibernate.temp.use_jdbc_metadata_defaults: false
   hibernate.ddl-auto: validate
 
 spring.datasource:
+    name: blog_ds
+    type: org.apache.tomcat.jdbc.pool.DataSource
     # https://jdbc.postgresql.org/documentation/head/connect.html#connection-parameters
     url: jdbc:postgresql://172.22.0.2:5432/blog?connectTimeout=10&socketTimeout=40
     username: blog
     password: "blogPazZw0rd"
     driverClassName: org.postgresql.Driver
+    # https://docs.spring.io/spring-boot/docs/2.0.0.M7/reference/htmlsingle/#boot-features-connect-to-production-database
     # https://tomcat.apache.org/tomcat-8.5-doc/jdbc-pool.html#Common_Attributes
     # https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-connect-to-production-database
     tomcat:
@@ -97,10 +102,13 @@ spring.datasource:
       validationQueryTimeout: 4
       logValidationErrors: true
 
-liquibase:
-  change-log: classpath:liquibase/migration.yml
-  contexts: main, test
+# https://docs.spring.io/spring-boot/docs/2.0.0.M7/reference/htmlsingle/#howto-execute-flyway-database-migrations-on-startup
+# https://flywaydb.org/documentation/configfiles
+spring.flyway:
+  locations: classpath:/db/migration, classpath:/db/demo
   drop-first: true
+  schemas: migrations, auth, posts, images
+  out-of-order: true
 
 spring.redis.url: redis://172.22.0.3:6379/0
 spring.data.redis.repositories.enabled: false
@@ -108,13 +116,14 @@ spring.data.redis.repositories.enabled: false
 custom.postgres.fulltext.reg-config: "'russian'::regconfig"
 
 
+spring.metrics.export.prometheus.enabled: true
+management.endpoints.web.expose: "*"
 management:
-  security:
-    enabled: false
-  port: 3011
-  ssl:
-    enabled: false
-  add-application-context-header: false
+  server:
+    port: 3011
+    ssl:
+      enabled: false
+    add-application-context-header: false
 
 custom.frontend:
     titleTemplate: "%s | owner's blog"

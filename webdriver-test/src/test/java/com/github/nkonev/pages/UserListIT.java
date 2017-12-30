@@ -97,12 +97,18 @@ public class UserListIT extends AbstractItTestRunner {
             return null;
         });
 
-        usersPage.goNthPaginatorPage(5);
-        $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("generated_user_40"));
+        FailoverUtils.retry(2, () -> {
+            usersPage.goNthPaginatorPage(5);
+            $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("generated_user_40"));
+            return null;
+        });
 
-        usersPage.goNthPaginatorPage(101);
-        $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("generated_user_1000"));
-        $(UsersPage.NEXT_PAGE_LI_SELECTOR).shouldHave(Condition.cssClass(UsersPage.DISABLED_CLASS));
+        FailoverUtils.retry(2, () -> {
+            usersPage.goNthPaginatorPage(101);
+            $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("generated_user_1000"));
+            $(UsersPage.NEXT_PAGE_LI_SELECTOR).shouldHave(Condition.cssClass(UsersPage.DISABLED_CLASS));
+            return null;
+        });
     }
 
     @Test

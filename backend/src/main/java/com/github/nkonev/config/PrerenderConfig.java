@@ -7,11 +7,44 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-@ConfigurationProperties("custom")
+@ConfigurationProperties("custom.prerender")
 public class PrerenderConfig {
-    private final Map<String, String> prerender = new HashMap<>();
+    private String crawlerUserAgents;
+    private String forwardedURLPrefix;
+    private String prerenderServiceUrl;
 
-    public Map<String, String> getPrerender() {
-        return prerender;
+    public PrerenderConfig() { }
+
+    public String getCrawlerUserAgents() {
+        return crawlerUserAgents;
+    }
+
+    public void setCrawlerUserAgents(String crawlerUserAgents) {
+        this.crawlerUserAgents = crawlerUserAgents;
+    }
+
+    public String getForwardedURLPrefix() {
+        return forwardedURLPrefix;
+    }
+
+    public void setForwardedURLPrefix(String forwardedURLPrefix) {
+        this.forwardedURLPrefix = forwardedURLPrefix;
+    }
+
+    public String getPrerenderServiceUrl() {
+        return prerenderServiceUrl;
+    }
+
+    public void setPrerenderServiceUrl(String prerenderServiceUrl) {
+        this.prerenderServiceUrl = prerenderServiceUrl;
+    }
+
+    @Override
+    public String toString() {
+        return "PrerenderConfig{" +
+                "crawlerUserAgents='" + crawlerUserAgents + '\'' +
+                ", forwardedURLPrefix='" + forwardedURLPrefix + '\'' +
+                ", prerenderServiceUrl='" + prerenderServiceUrl + '\'' +
+                '}';
     }
 }

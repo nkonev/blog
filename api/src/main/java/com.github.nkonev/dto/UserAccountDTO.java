@@ -1,8 +1,7 @@
 package com.github.nkonev.dto;
 
-import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
-import java.net.URL;
 
 /**
  * Created by nik on 22.06.17.

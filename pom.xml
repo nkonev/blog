@@ -7,7 +7,7 @@
     <name>blog</name>
     <artifactId>blog.parent</artifactId>
     <groupId>com.github.nkonev</groupId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.3-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 
@@ -15,15 +15,15 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.compiler.plugin.version>3.6.1</maven.compiler.plugin.version>
+        <maven.compiler.plugin.version>3.7.0</maven.compiler.plugin.version>
         <git.commit.id.plugin.version>2.2.3</git.commit.id.plugin.version>
         <maven.project.info.reports.plugin.version>2.9</maven.project.info.reports.plugin.version>
-        <maven.surefire.report.plugin.version>2.20</maven.surefire.report.plugin.version>
+        <maven.surefire.report.plugin.version>2.20.1</maven.surefire.report.plugin.version>
         <maven.surefire.plugin.version>2.20.1</maven.surefire.plugin.version>
         <maven.jxr.report.plugin.version>2.5</maven.jxr.report.plugin.version>
         <maven.clean.plugin.version>3.0.0</maven.clean.plugin.version>
-        <java.version>1.8</java.version>
-        <spring.boot.version>1.5.9.RELEASE</spring.boot.version>
+        <java.version>1.9</java.version>
+        <spring.boot.version>2.0.0.M7</spring.boot.version>
 	    <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
         <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
 
@@ -51,6 +51,26 @@
 
     <url>https://github.com/nikit-cpp/blog.git</url>
 
+    <repositories>
+        <repository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>spring-milestones</id>
+            <url>http://repo.spring.io/milestone</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>spring-milestones</id>
+            <url>http://repo.spring.io/milestone</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <build>
         <pluginManagement>
@@ -68,7 +88,7 @@
                   <plugin>
                       <groupId>org.codehaus.mojo</groupId>
                       <artifactId>versions-maven-plugin</artifactId>
-                      <version>2.4</version>
+                      <version>2.5</version>
                   </plugin>
 
                   <plugin>
@@ -135,15 +155,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <!-- Import dependency management from Spring Boot -->
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring.boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
             <!-- It's important to redefine Selenium versions exactly here if you wants to reuse same test module (e. g. "commons-test" in several projects for correct Spring Boot's version overriding)  -->
             <dependency>
                 <groupId>org.seleniumhq.selenium</groupId>
@@ -215,7 +226,27 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>2.2.11</version>
+            </dependency>
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-core</artifactId>
+                <version>5.0.3</version>
+            </dependency>
 
+
+            <!-- https://docs.spring.io/spring-boot/docs/2.0.0.M7/reference/htmlsingle/#using-boot-maven-without-a-parent -->
+            <dependency>
+                <!-- Import dependency management from Spring Boot -->
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

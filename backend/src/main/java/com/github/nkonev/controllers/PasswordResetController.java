@@ -9,7 +9,6 @@ import com.github.nkonev.repo.redis.PasswordResetTokenRepository;
 import com.github.nkonev.repo.jpa.UserAccountRepository;
 import com.github.nkonev.services.EmailService;
 import com.github.nkonev.utils.TimeUtil;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.Duration;
@@ -114,10 +114,11 @@ public class PasswordResetController {
         // webpage parses token uuid from URL
         // .. and js sends this request
 
-        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findOne(passwordResetDto.getPasswordResetToken());
-        if (passwordResetToken == null) {
+        Optional<PasswordResetToken> passwordResetTokenOptional = passwordResetTokenRepository.findById(passwordResetDto.getPasswordResetToken());
+        if (!passwordResetTokenOptional.isPresent()) {
             throw new PasswordResetTokenNotFoundException("password reset token not found or expired");
         }
+        PasswordResetToken passwordResetToken = passwordResetTokenOptional.get();
         Optional<UserAccount> userAccountOptional = userAccountRepository.findById(passwordResetToken.getUserId());
         if(!userAccountOptional.isPresent()) {
             return;

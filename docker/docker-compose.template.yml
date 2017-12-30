@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   blog:
-    image: nkonev/blog:latest
+    image: nkonev/blog:current-test
     logging:
       driver: "json-file"
 #      options:
@@ -19,24 +19,24 @@ services:
       # https://stackoverflow.com/questions/28327620/difference-between-java-options-java-tool-options-and-java-opts
       # https://blogs.oracle.com/poonam/about-g1-garbage-collector%2c-permanent-generation-and-metaspace
       - _JAVA_OPTIONS=-Djava.security.egd=file:/dev/./urandom -Xms256m -Xmx512m -XX:MetaspaceSize=128M -XX:MaxMetaspaceSize=256M -XX:OnOutOfMemoryError="kill -9 %p"
-      - liquibase.contexts=main,test
-      - server.port=8098
-      - custom.stomp.broker.host=rabbitmq
-      - custom.stomp.broker.port=61613
-      - spring.datasource.url=jdbc:postgresql://postgresql:5432/blog?connectTimeout=10&socketTimeout=40
-      - spring.redis.url=redis://redis:6379/0
-      - spring.resources.static-locations=file:/opt/blog/www/, classpath:/static/
-      - custom.prerender.enable=true
-      - custom.prerender.prerenderServiceUrl=http://prerender:3000/
-      - custom.prerender.crawlerUserAgents=googlebot,prometheus
-      - custom.prerender.forwardedURLPrefix=http://blog:8098
-#      - logging.level.com.github.greengerong.PrerenderSeoService=TRACE
-      - spring.mail.host=smtp.yandex.ru
-      - custom.email.from=username@yandex.ru
-      - spring.mail.username=username
-      - spring.mail.password=password
-      - custom.base-url=http://blog.test # also used for prerender's forwardedURLPrefix
-      - management.health.mail.enabled=false
+      - SPRING_PROFILES_ACTIVE=demo
+      - SERVER_PORT=8098
+      - CUSTOM_STOMP_BROKER_HOST=rabbitmq
+      - CUSTOM_STOMP_BROKER_PORT=61613
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/blog?connectTimeout=10&socketTimeout=40
+      - SPRING_REDIS_URL=redis://redis:6379/0
+      - SPRING_RESOURCES_STATIC-LOCATIONS=file:/opt/blog/www/, classpath:/static/
+      - CUSTOM_PRERENDER_ENABLE=true
+      - CUSTOM_PRERENDER_PRERENDER-SERVICE-URL=http://prerender:3000/
+      - CUSTOM_PRERENDER_CRAWLER-USER-AGENTS=googlebot,prometheus
+      - CUSTOM_PRERENDER_FORWARDED-URL-PREFIX=http://blog:8098
+#      - LOGGING_LEVEL_COM_GITHUB_GREENGERONG_PRERENDER-SEO-SERVICE=TRACE
+      - SPRING_MAIL_HOST=smtp.yandex.ru
+      - CUSTOM_EMAIL_FROM=username@yandex.ru
+      - SPRING_MAIL_USERNAME=username
+      - SPRING_MAIL_PASSWORD=password
+      - CUSTOM_BASE-URL=http://blog.test # also used for prerender's forwardedURLPrefix
+      - MANAGEMENT_HEALTH_MAIL_ENABLED=false
     volumes :
       - ./www:/opt/blog/www
     ports:

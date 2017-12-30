@@ -48,21 +48,26 @@ def FRONT_CONFIGURATION_SNIPPET =
     header: "Owner's blog"
 """
 
-def DATA_STORE_SNIPPET = {String contexts, boolean dropFirst, String ddlAuto ->
+def DATA_STORE_SNIPPET = {boolean dropFirst, String ddlAuto ->
 return """
 spring.jpa:
+  open-in-view: false
   properties:
     hibernate.use_sql_comments: true
     hibernate.format_sql: true
     hibernate.generate_statistics: true
+    hibernate.temp.use_jdbc_metadata_defaults: false
   hibernate.ddl-auto: ${ddlAuto}
 
 spring.datasource:
+    name: blog_ds
+    type: org.apache.tomcat.jdbc.pool.DataSource
     # https://jdbc.postgresql.org/documentation/head/connect.html#connection-parameters
     url: jdbc:postgresql://172.22.0.2:5432/blog?connectTimeout=10&socketTimeout=40
     username: blog
     password: "blogPazZw0rd"
     driverClassName: org.postgresql.Driver
+    # https://docs.spring.io/spring-boot/docs/2.0.0.M7/reference/htmlsingle/#boot-features-connect-to-production-database
     # https://tomcat.apache.org/tomcat-8.5-doc/jdbc-pool.html#Common_Attributes
     # https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-connect-to-production-database
     tomcat:
@@ -78,10 +83,13 @@ spring.datasource:
       validationQueryTimeout: 4
       logValidationErrors: true
 
-liquibase:
-  change-log: classpath:liquibase/migration.yml
-  contexts: ${contexts}
+# https://docs.spring.io/spring-boot/docs/2.0.0.M7/reference/htmlsingle/#howto-execute-flyway-database-migrations-on-startup
+# https://flywaydb.org/documentation/configfiles
+spring.flyway:
+  locations: ${dropFirst ? 'classpath:/db/migration, classpath:/db/demo': 'classpath:/db/migration'}
   drop-first: ${dropFirst}
+  schemas: migrations, auth, posts, images
+  out-of-order: true
 
 spring.redis.url: redis://172.22.0.3:6379/0
 spring.data.redis.repositories.enabled: false
@@ -92,13 +100,14 @@ custom.postgres.fulltext.reg-config: "'russian'::regconfig"
 def MANAGEMENT_SNIPPET = { boolean test ->
 
 """
+spring.metrics.export.prometheus.enabled: true
+management.endpoints.web.expose: "*"
 management:
-  security:
-    enabled: false
-  port: ${test?'3011':'3010'}
-  ssl:
-    enabled: false
-  add-application-context-header: false
+  server:
+    port: ${test?'3011':'3010'}
+    ssl:
+      enabled: false
+    add-application-context-header: false
 """
 }
 
@@ -184,6 +193,7 @@ custom:
 def BACKEND_MAIN_YML_CONTENT =
 """${AUTOGENERATE_SNIPPET}
 logging.level.: INFO
+#logging.level.org.springframework.core.env.PropertySourcesPropertyResolver: DEBUG
 logging.level.org.springframework.web.socket: WARN
 logging.level.org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: WARN
 #logging.level.org.apache.tomcat.jdbc.pool: TRACE
@@ -208,9 +218,17 @@ spring.mvc.static-path-pattern: /**
 # first element - for eliminate manual restart app in IntelliJ for copy compiled js to target/classes, last slash is important,, second element - for documentation
 spring.resources.static-locations: file:backend/src/main/resources/static/, classpath:/static/
 
-${DATA_STORE_SNIPPET('main', false, 'validate')}
+${DATA_STORE_SNIPPET(false, 'validate')}
 ${MANAGEMENT_SNIPPET(false)}
 ${FRONT_CONFIGURATION_SNIPPET}
+
+---
+# Profile for demo data
+spring:
+  profiles: demo
+  flyway:
+    locations: classpath:/db/migration, classpath:/db/demo
+
 """;
 writeAndLog(BACKEND_MAIN_YML_FILE, BACKEND_MAIN_YML_CONTENT);
 
@@ -225,7 +243,7 @@ ${custom(true)}
 server.port: ${ExportedConstants.TEST_PORT}
 ${WEBSERVER_SNIPPET}
 ${TEST_USERS_SNIPPET}
-${DATA_STORE_SNIPPET('main, test', true, 'validate')}
+${DATA_STORE_SNIPPET(true, 'validate')}
 ${MANAGEMENT_SNIPPET(true)}
 ${FRONT_CONFIGURATION_SNIPPET}
 """;
@@ -256,7 +274,7 @@ custom.selenium.selenide-collections-timeout: 10
 custom.it.url.prefix: ${ExportedConstants.SCHEME}://127.0.0.1:\${server.port}
 custom.it.user.id: 1
 ${TEST_USERS_SNIPPET}
-${DATA_STORE_SNIPPET('main, test', true, 'none')}
+${DATA_STORE_SNIPPET(true, 'none')}
 ${MANAGEMENT_SNIPPET(true)}
 ${FRONT_CONFIGURATION_SNIPPET}
 """;

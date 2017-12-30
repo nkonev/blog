@@ -1,94 +1,3 @@
--- liquibase formatted sql
-
--- changeset nkonev:0_drop_schemas context:test failOnError: true
-DROP SCHEMA IF EXISTS auth cascade;
-DROP SCHEMA IF EXISTS posts cascade;
-DROP SCHEMA IF EXISTS historical cascade;
-DROP SCHEMA IF EXISTS images cascade;
-
--- changeset nkonev:0_initial_spring_security context:main failOnError: true
--- https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#appendix-schema
-CREATE SCHEMA auth;
-CREATE SCHEMA posts;
-CREATE SCHEMA historical;
-CREATE SCHEMA images;
-
-SET search_path = auth, pg_catalog;
-
--- User Schema
-CREATE TABLE users (
-  id BIGSERIAL PRIMARY KEY,
-	username VARCHAR(50) NOT NULL UNIQUE,
-	password VARCHAR(100) NOT NULL,
-	avatar VARCHAR(256),
-	enabled BOOLEAN NOT NULL DEFAULT TRUE,
-	expired BOOLEAN NOT NULL DEFAULT FALSE,
-	locked BOOLEAN NOT NULL DEFAULT FALSE,
-	email VARCHAR(100) NOT NULL
-);
-
-CREATE TABLE user_roles (
-	user_id BIGINT NOT NULL REFERENCES users(id),
-	role_id INT NOT NULL, -- enum UserRole value starts with 0
-	UNIQUE(user_id, role_id)
-);
-
-/*
--- Persistent Login (Remember-Me)
-CREATE TABLE persistent_logins (
-	username VARCHAR(64) NOT NULL,
-	series VARCHAR(64) PRIMARY KEY,
-	token VARCHAR(64) NOT NULL,
-	last_used TIMESTAMP NOT NULL
-);
-*/
-
-SET search_path = public, pg_catalog;
-
-
--- changeset nkonev:1_initial_post context:main failOnError: true
-CREATE TABLE posts.post (
-  id BIGSERIAL PRIMARY KEY,
-  title CHARACTER VARYING(256) NOT NULL,
-  text TEXT NOT NULL,
-	text_no_tags TEXT NOT NULL,
-  title_img TEXT NOT NULL,
-  owner_id BIGINT NOT NULL REFERENCES auth.users(id),
-  UNIQUE (title)
-);
-
-CREATE TABLE posts.comment (
-  id BIGSERIAL PRIMARY KEY,
-  text TEXT NOT NULL,
-  post_id BIGINT NOT NULL REFERENCES posts.post(id),
-  owner_id BIGINT NOT NULL REFERENCES auth.users(id)
-);
-
-CREATE TABLE historical.password_reset_token (
-	uuid UUID PRIMARY KEY,
-	user_id BIGINT NOT NULL REFERENCES auth.users(id),
-	expired_at timestamp NOT NULL
-);
-
-CREATE TABLE images.post_title_image (
-	id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-	img BYTEA,
-	content_type VARCHAR(64)
-);
-
-CREATE TABLE images.user_avatar_image (
-	id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-	img BYTEA,
-	content_type VARCHAR(64)
-);
-
-CREATE TABLE images.post_content_image (
-	id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-	img BYTEA,
-	content_type VARCHAR(64)
-);
-
--- changeset nkonev:2_test_data context:test failOnError: true
 -- insert test data
 INSERT INTO auth.users(username, password, avatar, email) VALUES
 	('admin', '$2a$10$HsyFGy9IO//nJZxYc2xjDeV/kF7koiPrgIDzPOfgmngKVe9cOyOS2', 'https://cdn3.iconfinder.com/data/icons/rcons-user-action/32/boy-512.png', 'admin@example.com'), -- bcrypt('admin', 10)
@@ -107,27 +16,12 @@ INSERT INTO auth.users (username, password, avatar, email)
 		'generated' || i || '@example.com'
 	FROM generate_series(0, 1000) AS i;
 
-/**
-enum UserRole:
-0 ROLE_ADMIN
-1 ROLE_USER
- */
 
-INSERT INTO auth.user_roles(user_id, role_id) VALUES
-	((SELECT id FROM auth.users WHERE username = 'admin'), 0),
-	((SELECT id FROM auth.users WHERE username = 'nikita'), 1),
-	((SELECT id FROM auth.users WHERE username = 'alice'), 1),
-	((SELECT id FROM auth.users WHERE username = 'bob'), 1);
--- insert many test user roles
-INSERT INTO auth.user_roles (user_id, role_id)
-	SELECT i, 1
-	FROM generate_series(5, 1000) AS i;
+UPDATE auth.users SET role = 'ROLE_ADMIN' WHERE id = (SELECT id FROM auth.users WHERE username = 'admin');
 
 -- insert additional users and roles
 INSERT INTO auth.users(username, password, avatar, email) VALUES
 	('forgive-password-user', '$2a$10$e3pEnL2d3RB7jBrlEA3B9eUhayb/bmEG1V35h.4EhdReUAMzlAWxS', NULL, 'forgive-password-user@example.com');
-INSERT INTO auth.user_roles(user_id, role_id) VALUES
-	((SELECT id FROM auth.users WHERE username = 'forgive-password-user'), 1);
 
 
 INSERT INTO posts.post (title, text, text_no_tags, title_img, owner_id)
@@ -154,28 +48,3 @@ INSERT INTO posts.post (title, text, text_no_tags, title_img, owner_id) VALUES
 	('for delete with comments', 'text. This post will be deleted.', 'text. This post will be deleted.', 'https://postgrespro.ru/img/logo_mono.png', (SELECT id FROM auth.users WHERE username = 'nikita'));
 INSERT INTO posts.comment (text, post_id, owner_id) VALUES
 	('commment', (SELECT id from posts.post ORDER BY id DESC LIMIT 1), (SELECT id FROM auth.users WHERE username = 'alice'));
-
--- changeset nkonev:3_fulltext context:main failOnError: true
-create index title_text_idx on posts.post using gin (to_tsvector('russian', title || ' ' || text_no_tags));
-
--- changeset nkonev:4_post_and_comment_create_datetime context:main failOnError: true
-ALTER TABLE posts.post ADD COLUMN create_date_time timestamp NOT NULL DEFAULT (now() at time zone 'utc');
-ALTER TABLE posts.comment ADD COLUMN create_date_time timestamp NOT NULL DEFAULT (now() at time zone 'utc');
-
--- changeset nkonev:5_cache_time context:main failOnError: true
-ALTER TABLE images.post_title_image ADD COLUMN create_date_time timestamp NOT NULL DEFAULT (now() at time zone 'utc');
-ALTER TABLE images.user_avatar_image ADD COLUMN create_date_time timestamp NOT NULL DEFAULT (now() at time zone 'utc');
-ALTER TABLE images.post_content_image ADD COLUMN create_date_time timestamp NOT NULL DEFAULT (now() at time zone 'utc');
-
--- changeset nkonev:6_remove_historical_schema context:main failOnError: true
-DROP SCHEMA historical CASCADE;
-
--- changeset nkonev:7_roles_array context:main failOnError: true
-CREATE TYPE auth.user_role AS ENUM (
-    'ROLE_ADMIN',
-    'ROLE_MODERATOR',
-    'ROLE_USER'
-);
-ALTER TABLE auth.users ADD COLUMN role auth.user_role NOT NULL DEFAULT 'ROLE_USER';
-DROP TABLE auth.user_roles;
-UPDATE auth.users SET role = 'ROLE_ADMIN' WHERE id = (SELECT id FROM auth.users WHERE username = 'admin');

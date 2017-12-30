@@ -73,3 +73,17 @@ https://stackoverflow.com/questions/1709625/maven-command-to-list-lifecycle-phas
 echo 'drop database blog;' | docker exec -i postgresql-blog-dev psql -U postgres
 cat ~/blog/backup/blog.sql | docker exec -i postgresql-blog-dev psql -U postgres
 ```
+
+# Install
+```bash
+./mvnw -DskipTests clean install
+```
+
+# Java 9
+https://dou.ua/lenta/articles/problems-with-java-9/
+https://stackoverflow.com/questions/43258796/hibernate-support-for-java-9
+
+# Pull up exists database
+Add in docker yml
+```    command: ["--spring.flyway.baselineOnMigrate=true"]```
+```    command: ["--spring.flyway.baselineOnMigrate=true", "--spring.flyway.baselineVersion=32767"]``` if demo profile enabled

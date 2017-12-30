@@ -33,7 +33,7 @@ scrape_configs:
       - redis_exporter:9121
 
 - job_name: blog
-  metrics_path: /prometheus
+  metrics_path: /actuator/prometheus
   dns_sd_configs:
   - names:
     - tasks.blog

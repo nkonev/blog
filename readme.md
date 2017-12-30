@@ -3,9 +3,9 @@
 
 # Requirements
 
-* JDK 8
-* Docker 17.05.0-ce +
-* docker-compose 1.16.0 +
+* JDK 9
+* Docker 17.09.1-ce +
+* docker-compose 1.16.1 +
 
 # Start test environment
 
@@ -40,26 +40,31 @@ docker-compose -f docker-compose.yml -f docker-compose.nginx.yml -f docker-compo
 # Run
 ```bash
 # By default
-java -jar frontend/target/frontend-1.0-SNAPSHOT-exec.jar
+java -jar frontend/target/frontend-1.0.3-SNAPSHOT-exec.jar
 # .. or with pre-generated content
-java -Dliquibase.contexts=main,test -jar frontend/target/frontend-1.0-SNAPSHOT-exec.jar
+java -jar frontend/target/frontend-1.0.3-SNAPSHOT-exec.jar --spring.profiles.active=demo
 ```
 
-Test user credentials can be found in `frontend/src/main/resources/liquibase/migration/bootstrap.sql`:74
+Test user credentials can be found in `backend/src/main/resources/db/demo/V32767__demo.sql`:4
 
 # Development
 ## Changing version
-```
+```bash
 ./mvnw -DnewVersion=1.0.0 versions:set versions:commit
 ```
 
 ## Check for update maven dependency versions
-```
+```bash
 ./mvnw -DlogOutput=false -DprocessDependencyManagement=false versions:display-dependency-updates | less
 ./mvnw -DlogOutput=false versions:display-property-updates | less
 
 ./mvnw -DlogOutput=false versions:display-plugin-updates | less
 
+```
+
+# Run `boot-run`
+```bash
+./mvnw clean spring-boot:run
 ```
 
 ## Frontend development
@@ -134,14 +139,16 @@ Q: I suddenly get http 403 error in JUnit mockMvc tests.
 A: Add `.with(csrf())` to MockMvcRequestBuilder chain
 
 
+
+
+
 # Demo Run / Installation
 
 ```bash
-docker swarm init
-docker network create --driver=overlay proxy_backend
+./swarm-init.sh
 ```
 
-First unlock `--compose-file`
+Next unlock `--compose-file`
 add accords https://github.com/moby/moby/issues/30585#issuecomment-280822231
 
 in `/etc/docker/daemon.json` (create it)
@@ -153,55 +160,63 @@ in `/etc/docker/daemon.json` (create it)
 sudo systemctl restart docker
 ```
 
-Second add constraint on database node (It can be manager) for prevent instantiate db containers on another nodes for prevent data loss:
-```bash
-# Run it on node which will be database
-docker node update --label-add 'blog.server.role=db' $(docker node ls -q)
 
-# check it
-docker node inspect -f '{{index .Spec.Labels "blog.server.role"}}' $(docker node ls -q)
-```
+I strongly recommend copy and rename `docker-compose.template.yml` to `docker-compose.stack.yml`.
+Next I'll use renamed file.
 
-Copy on server
+
+
+## Copy files on your server:
 ```bash
 scp -r /path/to/blog/docker/* user@blog.test:/path/to/blog/
 chmod 600 traefik/acme.json
 ```
 
-## Generating monitoring grafana & prometheus password
+
+## Manual changes
+In `docker-compose.template.yml` or `docker-compose.stack.yml`:
+
+a) Change tag in service blog `image: nkonev/blog:current-test` -> `image: nkonev/blog:latest`
+
+Also uoy can remove demo profile
+
+b) Change next properties:
+
+```
+      - SPRING_MAIL_HOST=smtp.yandex.ru
+      - CUSTOM_EMAIL_FROM=username@yandex.ru
+      - SPRING_MAIL_USERNAME=username
+      - SPRING_MAIL_PASSWORD=password
+      - CUSTOM_BASE-URL=http://blog.test
+ 
+```
+And remove explicit ports definition where it's don't need - postgres, redis, rabbit, because of docker publishes ports by add it to iptables chain.
+If you very want, you can skip setting these properties, but you'll have non-working email, wrong links in emails and so on.
+
+c) Generating monitoring grafana & prometheus password
 ```bash
 sudo yum install -y httpd-tools
 # generate login and hash with replaced $ with $$ sign for able to copy-paste to docker-compose.stack.yml
 htpasswd -nb admin admin | sed -e 's/\$/\$\$/g'
 ```
 
-I strongly recommend copy and rename `docker-compose.template.yml` to `docker-compose.stack.yml`.
-And correctly setup next properties:
+d) Set `journald` logging with appropriate tag for all services
 
+```yaml
+    logging:
+      driver: "journald"
+      options:
+        tag: blog
 ```
-      - liquibase.contexts=main
-      - spring.mail.host=smtp.yandex.ru
-      - custom.email.from=username@yandex.ru
-      - spring.mail.username=username
-      - spring.mail.password=password
-      - custom.base-url=http://blog.test
- 
-```
-And remove explicit ports definition where it's don't need - postgres, redis, rabbit, because of docker publishes ports by add it to iptables chain.
-If you very want, you can skip setting these properties, but you'll have non-working email, wrong links in emails and so on.
 
-Also you need set host in `./docker/prometheus/prometheus.yml:53`
 
-Next I'll use renamed file.
+e) Uncomment & change SSL setting in `./docker/traefik/traefik.toml`
 
-Copy files on our server:
-```
-.
-|-- docker-compose.stack.yml
-`-- postgresql
-    `-- docker-entrypoint-initdb.d
-        `-- init-blog-db.sql
-```
+
+
+
+
+## Playing with docker
 
 Next you can 
 ```bash
@@ -238,6 +253,8 @@ Remove exited containers
 docker rm $(docker ps -aq -f name=BLOGSTACK_blog -f status=exited)
 ```
 
+
+
 # Test
 
 ## curl
@@ -253,10 +270,7 @@ curl -H "Host: prometheus.blog.test" -u "admin:admin" http://127.0.0.1:8088
 echo -e '127.0.0.1 blog.test\n127.0.0.1 grafana.blog.test\n127.0.0.1 prometheus.blog.test' | sudo tee --append /etc/hosts
 ```
 
-# Run `boot-run`
-```bash
-./mvnw clean spring-boot:run
-```
+
 
 # Maintenance
 
@@ -264,6 +278,13 @@ echo -e '127.0.0.1 blog.test\n127.0.0.1 grafana.blog.test\n127.0.0.1 prometheus.
 docker ps -aq | xargs docker rm
 docker volume ls -q | xargs docker volume rm
 docker images -q -a | xargs  docker rmi
+```
+
+
+## Open PostgreSQL
+```bash
+docker exec -it $(docker ps --filter label=com.docker.swarm.service.name=BLOGSTACK_postgresql -q) psql -U blog
+docker exec -it $(docker ps --filter label=com.docker.swarm.service.name=TESTBLOGSTACK_postgresql -q) psql -U blog
 ```
 
 ## Restore PostgreSQL backup

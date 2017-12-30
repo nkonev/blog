@@ -50,7 +50,7 @@ public class CommentController {
             @RequestParam(value = "size", required=false, defaultValue = "0") int size
             ) {
 
-        PageRequest springDataPage = new PageRequest(PageUtils.fixPage(page), PageUtils.fixSize(size));
+        PageRequest springDataPage = PageRequest.of(PageUtils.fixPage(page), PageUtils.fixSize(size));
 
         long count = commentRepository.countByPostId(postId);
         List<Comment> comments = commentRepository.findCommentByPostIdOrderByIdAsc(springDataPage, postId);
@@ -78,8 +78,7 @@ public class CommentController {
         long count = commentRepository.countByPostId(postId);
         Comment comment = commentConverter.convertFromDto(commentDTO, postId, null);
 
-        UserAccount ua = userAccountRepository.findOne(userAccount.getId()); // Hibernate caches it
-        Assert.notNull(ua, "User account not found");
+        UserAccount ua = userAccountRepository.findById(userAccount.getId()).orElseThrow(()->new IllegalArgumentException("User account not found")); // Hibernate caches it
         comment.setOwner(ua);
         Comment saved = commentRepository.save(comment);
 
@@ -97,8 +96,7 @@ public class CommentController {
 
         long count = commentRepository.countByPostId(postId);
 
-        Comment found = commentRepository.findOne(commentDTO.getId());
-        Assert.notNull(found, "Comment with id " + commentDTO.getId() + " not found");
+        Comment found = commentRepository.findById(commentDTO.getId()).orElseThrow(()-> new IllegalArgumentException("Comment with id " + commentDTO.getId() + " not found"));
 
         Comment updatedEntity = commentConverter.convertFromDto(commentDTO, 0, found);
         Comment saved = commentRepository.save(updatedEntity);
@@ -114,7 +112,7 @@ public class CommentController {
             @PathVariable(Constants.PathVariables.COMMENT_ID) long commentId
     ) {
         Assert.notNull(userAccount, "UserAccountDetailsDTO can't be null");
-        commentRepository.delete(commentId);
+        commentRepository.deleteById(commentId);
 
         return commentRepository.countByPostId(postId);
     }
