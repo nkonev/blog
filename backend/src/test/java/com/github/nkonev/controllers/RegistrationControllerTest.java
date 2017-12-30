@@ -106,11 +106,11 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
             String parsedUrl = UrlParser.parseUrlFromMessage(content);
 
             String tokenUuidString = UriComponentsBuilder.fromUri(new URI(parsedUrl)).build().getQueryParams().get(Constants.Uls.UUID).get(0);
-            Assert.assertTrue(userConfirmationTokenRepository.exists(tokenUuidString));
+            Assert.assertTrue(userConfirmationTokenRepository.existsById(tokenUuidString));
 
             // perform confirm
             mockMvc.perform(get(parsedUrl)).andExpect(status().isOk());
-            Assert.assertFalse(userConfirmationTokenRepository.exists(tokenUuidString));
+            Assert.assertFalse(userConfirmationTokenRepository.existsById(tokenUuidString));
         }
 
         // login confirmed ok
@@ -240,7 +240,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
     @Test
     public void testConfirmationTokenNotFound() throws Exception {
         String token = UUID.randomUUID().toString(); // create random token
-        userConfirmationTokenRepository.delete(token); // if random token exists we delete it
+        userConfirmationTokenRepository.deleteById(token); // if random token exists we delete it
 
         // create /confirm?uuid=<uuid>
         String uri = UriComponentsBuilder.fromUriString(Constants.Uls.CONFIRM).queryParam(Constants.Uls.UUID, token).build().toUriString();
@@ -342,8 +342,8 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
     @Test
     public void handlePasswordResetTokenNotFound() throws Exception {
         UUID tokenUuid = UUID.randomUUID();
-        if (passwordResetTokenRepository.exists(tokenUuid)) {
-            passwordResetTokenRepository.delete(tokenUuid); // delete random if one is occasionally present
+        if (passwordResetTokenRepository.existsById(tokenUuid)) {
+            passwordResetTokenRepository.deleteById(tokenUuid); // delete random if one is occasionally present
         }
 
         PasswordResetController.PasswordResetDto passwordResetDto = new PasswordResetController.PasswordResetDto(tokenUuid, "qwqwqwqwqwqwqwqw");
@@ -363,8 +363,8 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
     @Test
     public void handlePasswordResetTokenExpired() throws Exception {
         UUID tokenUuid = UUID.randomUUID();
-        if (passwordResetTokenRepository.exists(tokenUuid)) {
-            passwordResetTokenRepository.delete(tokenUuid); // delete random if one is occasionally present
+        if (passwordResetTokenRepository.existsById(tokenUuid)) {
+            passwordResetTokenRepository.deleteById(tokenUuid); // delete random if one is occasionally present
         }
 
         PasswordResetController.PasswordResetDto passwordResetDto = new PasswordResetController.PasswordResetDto(tokenUuid, "qwqwqwqwqwqwqwqw");

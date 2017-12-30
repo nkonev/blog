@@ -12,6 +12,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.session.FindByIndexNameSessionRepository;
+import org.springframework.session.Session;
+import org.springframework.session.data.redis.RedisOperationsSessionRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -56,12 +59,12 @@ public class BlogUserDetailsService implements UserDetailsService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-    private Map<String, ExpiringSession> getSessions(String userName){
+    private Map<String, Session> getSessions(String userName){
         Object o = redisOperationsSessionRepository.findByIndexNameAndIndexValue(FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME, userName);
-        return (Map<String, ExpiringSession>)o;
+        return (Map<String, Session>)o;
     }
 
-    public Map<String, ExpiringSession> getMySessions(UserDetails userDetails){
+    public Map<String, Session> getMySessions(UserDetails userDetails){
         if (userDetails == null){
             throw new RuntimeException("getMySessions may be called only by authorized users");
         }
@@ -74,16 +77,16 @@ public class BlogUserDetailsService implements UserDetailsService {
 
     public void killSessions(long userId){
         String userName = getUserAccount(userId).getUsername();
-        Map<String, ExpiringSession> sessionMap = getSessions(userName);
-        sessionMap.keySet().forEach(session -> redisOperationsSessionRepository.delete(session));
+        Map<String, Session> sessionMap = getSessions(userName);
+        sessionMap.keySet().forEach(session -> redisOperationsSessionRepository.deleteById(session));
     }
 
     public void killSessions(String userName){
-        Map<String, ExpiringSession> sessionMap = getSessions(userName);
-        sessionMap.keySet().forEach(session -> redisOperationsSessionRepository.delete(session));
+        Map<String, Session> sessionMap = getSessions(userName);
+        sessionMap.keySet().forEach(session -> redisOperationsSessionRepository.deleteById(session));
     }
 
-    public Map<String, ExpiringSession> getSessions(long userId) {
+    public Map<String, Session> getSessions(long userId) {
         UserAccount userAccount = getUserAccount(userId);
         return getSessions(userAccount.getUsername());
     }

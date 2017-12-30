@@ -4,9 +4,9 @@ import com.github.nkonev.Constants;
 import com.github.nkonev.dto.BlogError;
 import com.github.nkonev.dto.BlogErrorWithDebug;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.web.AbstractErrorController;
-import org.springframework.boot.autoconfigure.web.ErrorAttributes;
-import org.springframework.boot.autoconfigure.web.ErrorViewResolver;
+import org.springframework.boot.autoconfigure.web.servlet.error.AbstractErrorController;
+import org.springframework.boot.autoconfigure.web.servlet.error.ErrorViewResolver;
+import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @see org.springframework.boot.autoconfigure.web.BasicErrorController, it describes how to use both REST And ModelAndView handling depends on Accept header
+ * @see org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController, it describes how to use both REST And ModelAndView handling depends on Accept header
  * @see "https://gist.github.com/jonikarppinen/662c38fb57a23de61c8b"
  */
 @Controller

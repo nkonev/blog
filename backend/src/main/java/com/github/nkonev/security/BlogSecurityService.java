@@ -36,8 +36,7 @@ public class BlogSecurityService {
     }
 
     private Post getPostOrException(long id) {
-        Post post = postRepository.findOne(id);
-        Assert.notNull(post, "Post with id "+id+" not found");
+        Post post = postRepository.findById(id).orElseThrow(()->new IllegalArgumentException("Post with id "+id+" not found"));
         return post;
     }
 
@@ -85,8 +84,7 @@ public class BlogSecurityService {
     }
 
     public boolean hasCommentPermission(long id, UserAccountDetailsDTO userAccount, CommentPermissions permission) {
-        Comment comment = commentRepository.findOne(id);
-        Assert.notNull(comment, "Comment with id "+id+" not found");
+        Comment comment = commentRepository.findById(id).orElseThrow(()->new IllegalArgumentException("Comment with id "+id+" not found"));
         return hasCommentPermission(comment, userAccount, permission);
     }
 

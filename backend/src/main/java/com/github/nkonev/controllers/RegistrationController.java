@@ -84,15 +84,16 @@ public class RegistrationController {
     @GetMapping(value = Constants.Uls.CONFIRM)
     public String confirm(@RequestParam(Constants.Uls.UUID) UUID uuid) {
         String stringUuid = uuid.toString();
-        UserConfirmationToken userConfirmationToken = userConfirmationTokenRepository.findOne(stringUuid);
-        if (userConfirmationToken == null) {
+        Optional<UserConfirmationToken> userConfirmationTokenOptional = userConfirmationTokenRepository.findById(stringUuid);
+        if (!userConfirmationTokenOptional.isPresent()) {
             return "redirect:/confirm/registration/token-not-found";
         }
-
-        UserAccount userAccount = userAccountRepository.findOne(userConfirmationToken.getUserId());
-        if (userAccount == null) {
+        UserConfirmationToken userConfirmationToken = userConfirmationTokenOptional.get();
+        Optional<UserAccount> userAccountOptional = userAccountRepository.findById(userConfirmationToken.getUserId());
+        if (!userAccountOptional.isPresent()) {
             return "redirect:/confirm/registration/user-not-found";
         }
+        UserAccount userAccount = userAccountOptional.get();
         if (userAccount.isEnabled()) {
             LOGGER.warn("Somebody attempts secondary confirm already confirmed user account with email='{}'", userAccount);
             return Constants.Uls.ROOT;  // respond static
@@ -100,7 +101,7 @@ public class RegistrationController {
 
         userAccount.setEnabled(true);
 
-        userConfirmationTokenRepository.delete(stringUuid);
+        userConfirmationTokenRepository.deleteById(stringUuid);
 
         return Constants.Uls.ROOT; // respond static
     }

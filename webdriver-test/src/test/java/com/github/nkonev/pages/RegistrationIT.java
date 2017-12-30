@@ -87,11 +87,11 @@ public class RegistrationIT extends AbstractItTestRunner {
             String parsedUrl = UrlParser.parseUrlFromMessage(content);
 
             String tokenUuidString = UriComponentsBuilder.fromUri(new URI(parsedUrl)).build().getQueryParams().get(Constants.Uls.UUID).get(0);
-            Assert.assertTrue(userConfirmationTokenRepository.exists(tokenUuidString));
+            Assert.assertTrue(userConfirmationTokenRepository.existsById(tokenUuidString));
 
             // perform confirm
             driver.navigate().to(parsedUrl);
-            Assert.assertFalse(userConfirmationTokenRepository.exists(tokenUuidString));
+            Assert.assertFalse(userConfirmationTokenRepository.existsById(tokenUuidString));
             $(".successfully-confirmed").should(Condition.text("You successfully confirmed, now you can"));
         }
 

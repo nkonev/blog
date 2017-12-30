@@ -181,8 +181,7 @@ public class CommentControllerTest extends AbstractUtTestRunner {
     }
 
     public CommentDTO getForeignComment(long id) {
-        Comment comment = commentRepository.findOne(id);
-        Assert.notNull(comment, "comment not found during test");
+        Comment comment = commentRepository.findById(id).orElseThrow(()->new IllegalArgumentException("comment not found during test"));
         return commentConverter.convertToDto(comment);
     }
 

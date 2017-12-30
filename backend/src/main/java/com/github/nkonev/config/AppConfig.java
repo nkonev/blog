@@ -12,13 +12,15 @@ import io.prometheus.client.spring.boot.EnablePrometheusEndpoint;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManagerFactory;
 import java.io.File;
 
-@EnablePrometheusEndpoint
+// @EnablePrometheusEndpoint // TODO https://github.com/prometheus/client_java/issues/299
 @Configuration
 public class AppConfig {
     @Autowired
@@ -48,8 +50,8 @@ public class AppConfig {
     }
 
     @Bean
-    public EmbeddedServletContainerFactory servletContainer() {
-        TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory();
+    public ServletWebServerFactory servletContainer() {
+        TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
 
         final File baseDir = serverProperties.getTomcat().getBasedir();
         if (baseDir!=null) {

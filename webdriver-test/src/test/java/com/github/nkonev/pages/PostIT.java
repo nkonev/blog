@@ -221,7 +221,7 @@ public class PostIT extends AbstractItTestRunner {
             postEditPage.save();
 
             if (seleniumConfiguration.getBrowser()==Browser.CHROME || seleniumConfiguration.getBrowser()==Browser.FIREFOX) {
-                FailoverUtils.assertPoll(() -> !StringUtils.isEmpty(postRepository.findOne(postId).getTitleImg()), 15);
+                FailoverUtils.assertPoll(() -> !StringUtils.isEmpty(postRepository.findById(postId).orElseThrow(()->new RuntimeException("not found test post by id")).getTitleImg()), 15);
             }
 
             postViewPage.assertText(newText);

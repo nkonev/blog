@@ -114,10 +114,11 @@ public class PasswordResetController {
         // webpage parses token uuid from URL
         // .. and js sends this request
 
-        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findOne(passwordResetDto.getPasswordResetToken());
-        if (passwordResetToken == null) {
+        Optional<PasswordResetToken> passwordResetTokenOptional = passwordResetTokenRepository.findById(passwordResetDto.getPasswordResetToken());
+        if (!passwordResetTokenOptional.isPresent()) {
             throw new PasswordResetTokenNotFoundException("password reset token not found or expired");
         }
+        PasswordResetToken passwordResetToken = passwordResetTokenOptional.get();
         Optional<UserAccount> userAccountOptional = userAccountRepository.findById(passwordResetToken.getUserId());
         if(!userAccountOptional.isPresent()) {
             return;

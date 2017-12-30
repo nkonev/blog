@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.session.Session;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
@@ -61,7 +62,7 @@ public class UserProfileController {
             @RequestParam(value = "size", required=false, defaultValue = "0") int size,
             @RequestParam(value = "searchString", required=false, defaultValue = "") String searchString
     ) {
-        PageRequest springDataPage = new PageRequest(PageUtils.fixPage(page), PageUtils.fixSize(size), Sort.Direction.ASC, "id");
+        PageRequest springDataPage = PageRequest.of(PageUtils.fixPage(page), PageUtils.fixSize(size), Sort.Direction.ASC, "id");
 
         Page<UserAccount> resultPage = userAccountRepository.findByUsernameContains(springDataPage, searchString);
         return new UserListWrapper(
@@ -116,13 +117,13 @@ public class UserProfileController {
     // TODO delete user with delete avatar
 
     @GetMapping(Constants.Uls.SESSIONS+"/my")
-    public Map<String, ExpiringSession> mySessions(@AuthenticationPrincipal UserAccountDetailsDTO userDetails){
+    public Map<String, Session> mySessions(@AuthenticationPrincipal UserAccountDetailsDTO userDetails){
         return blogUserDetailsService.getMySessions(userDetails);
     }
 
     @PreAuthorize("@blogSecurityService.hasSessionManagementPermission(#userAccount)")
     @GetMapping(Constants.Uls.SESSIONS)
-    public Map<String, ExpiringSession> sessions(@AuthenticationPrincipal UserAccountDetailsDTO userAccount, @RequestParam("userId") long userId){
+    public Map<String, Session> sessions(@AuthenticationPrincipal UserAccountDetailsDTO userAccount, @RequestParam("userId") long userId){
         return blogUserDetailsService.getSessions(userId);
     }
 

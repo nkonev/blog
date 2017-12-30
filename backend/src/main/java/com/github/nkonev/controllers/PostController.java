@@ -173,8 +173,7 @@ public class PostController {
             throw new BadRequestException("id cannot be set");
         }
         Post fromWeb = postConverter.convertToPost(postDTO, null);
-        UserAccount ua = userAccountRepository.findOne(userAccount.getId()); // Hibernate caches it
-        Assert.notNull(ua, "User account not found");
+        UserAccount ua = userAccountRepository.findById(userAccount.getId()).orElseThrow(()->new IllegalArgumentException("User account not found")); // Hibernate caches it
         fromWeb.setOwner(ua);
         Post saved = postRepository.save(fromWeb);
         return postConverter.convertToDto(saved, userAccount);
@@ -187,8 +186,7 @@ public class PostController {
             @RequestBody @NotNull PostDTO postDTO
     ) {
         Assert.notNull(userAccount, "UserAccountDetailsDTO can't be null");
-        Post found = postRepository.findOne(postDTO.getId());
-        Assert.notNull(found, "Post with id " + postDTO.getId() + " not found");
+        Post found = postRepository.findById(postDTO.getId()).orElseThrow(()->new IllegalArgumentException("Post with id " + postDTO.getId() + " not found"));
         Post updatedEntity = postConverter.convertToPost(postDTO, found);
         Post saved = postRepository.save(updatedEntity);
         return postConverter.convertToDto(saved, userAccount);
@@ -202,7 +200,7 @@ public class PostController {
     ) {
         Assert.notNull(userAccount, "UserAccountDetailsDTO can't be null");
         commentRepository.deleteByPostId(postId);
-        postRepository.delete(postId);
+        postRepository.deleteById(postId);
         postRepository.flush();
     }
 }
