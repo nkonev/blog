@@ -61,7 +61,7 @@ spring.jpa:
 
 spring.datasource:
     # https://jdbc.postgresql.org/documentation/head/connect.html#connection-parameters
-    url: jdbc:postgresql://172.22.0.2:5432/blog?connectTimeout=10&socketTimeout=40
+    url: jdbc:postgresql://postgresql:5432/blog?connectTimeout=10&socketTimeout=40
     username: blog
     password: "blogPazZw0rd"
     driverClassName: org.postgresql.Driver
@@ -72,7 +72,7 @@ spring.liquibase:
   contexts: ${contexts}
   drop-first: ${dropFirst}
 
-spring.redis.url: redis://172.22.0.3:6379/0
+spring.redis.url: redis://redis:6379/0
 spring.data.redis.repositories.enabled: false
 # Also see index in bootstrap.sql
 custom.postgres.fulltext.reg-config: "'russian'::regconfig"
@@ -124,7 +124,7 @@ spring.mail:
     mail.smtp.writetimeout: 5000
 
 custom.stomp.broker:
-  host: "172.22.0.4"
+  host: "rabbitmq"
   port: 61613
   virtual-host: /
   client-login: blog

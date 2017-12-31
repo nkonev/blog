@@ -509,7 +509,7 @@
                                 <configuration>
                                     <tasks>
                                         <exec dir="${project.basedir}" executable="docker" failonerror="true" searchpath="true">
-                                            <arg line="build -t ${docker.repository}:latest -t ${docker.repository}:${project.version} ."/>
+                                            <arg line="build -t ${docker.repository}:current -t ${docker.repository}:latest -t ${docker.repository}:${project.version} ."/>
                                         </exec>
                                     </tasks>
                                 </configuration>

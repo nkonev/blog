@@ -2,13 +2,13 @@ version: '3.4'
 
 services:
   blog:
-    image: nkonev/blog:latest
+    image: nkonev/blog:current
     logging:
       driver: "json-file"
 #      options:
 #        tag: blog
     deploy:
-      replicas: 2
+      replicas: 1
       labels:
         - traefik.enable=true
         - traefik.backend=blog
