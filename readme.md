@@ -287,6 +287,11 @@ docker exec -it $(docker ps --filter label=com.docker.swarm.service.name=BLOGSTA
 docker exec -it $(docker ps --filter label=com.docker.swarm.service.name=TESTBLOGSTACK_postgresql -q) psql -U blog
 ```
 
+## Open blog
+```bash
+docker exec -it $(docker ps --filter label=com.docker.swarm.service.name=BLOGSTACK_blog -q | head -n 1) bash
+```
+
 ## Restore PostgreSQL backup
 
 ```bash
