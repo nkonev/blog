@@ -64,6 +64,9 @@ public abstract class AbstractUtTestRunner {
     @Autowired
     protected TestRestTemplate restTemplate;
 
+    @Value("${local.management.port}")
+    protected int mgmtPort;
+
     @Autowired
     protected AbstractServletWebServerFactory abstractConfigurableEmbeddedServletContainer;
 
