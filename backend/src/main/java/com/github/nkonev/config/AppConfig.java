@@ -6,10 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.github.nkonev.dto.UserAccountDetailsDTO;
-import io.prometheus.client.hibernate.HibernateStatisticsCollector;
-import io.prometheus.client.hotspot.DefaultExports;
-//import io.prometheus.client.spring.boot.EnablePrometheusEndpoint;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
@@ -20,7 +16,6 @@ import javax.annotation.PostConstruct;
 import javax.persistence.EntityManagerFactory;
 import java.io.File;
 
-//@EnablePrometheusEndpoint // TODO https://github.com/prometheus/client_java/issues/299
 @Configuration
 public class AppConfig {
     @Autowired
@@ -42,11 +37,6 @@ public class AppConfig {
             }
         });
         objectMapper.registerModule(rejectUserAccountDetailsDTOModule);
-
-        DefaultExports.initialize();
-
-        SessionFactory sessionFactory = entityManagerFactory.unwrap(SessionFactory.class);
-        new HibernateStatisticsCollector(sessionFactory, "blog").register();
     }
 
     @Bean
