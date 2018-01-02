@@ -101,6 +101,7 @@ def MANAGEMENT_SNIPPET = { boolean test ->
 
 """
 spring.metrics.export.prometheus.enabled: true
+management.endpoint.health.show-details: true
 management.endpoints.web.expose: "*"
 management:
   server:

@@ -31,6 +31,7 @@
         <selenide.version>4.8</selenide.version>
         <phantomjsdriver.version>1.4.3</phantomjsdriver.version>
         <webdrivermanager.version>2.0.1</webdrivermanager.version>
+        <actuator.version>2.0.0.BUILD-SNAPSHOT</actuator.version>
 
         <postgresql.version>42.1.4</postgresql.version>
         <greenmail.version>1.5.6</greenmail.version>
@@ -61,7 +62,12 @@
         </repository>
         <repository>
             <id>spring-milestones</id>
-            <url>http://repo.spring.io/milestone</url>
+            <url>https://repo.spring.io/libs-milestone</url>
+        </repository>
+        <repository>
+            <id>spring-snapshots</id>
+            <url>https://repo.spring.io/libs-snapshot</url>
+            <snapshots><enabled>true</enabled></snapshots>
         </repository>
     </repositories>
 
@@ -236,7 +242,21 @@
                 <artifactId>flyway-core</artifactId>
                 <version>5.0.3</version>
             </dependency>
-
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-actuator</artifactId>
+                <version>${actuator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-actuator-autoconfigure</artifactId>
+                <version>${actuator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-actuator</artifactId>
+                <version>${actuator.version}</version>
+            </dependency>
 
             <!-- https://docs.spring.io/spring-boot/docs/2.0.0.M7/reference/htmlsingle/#using-boot-maven-without-a-parent -->
             <dependency>
