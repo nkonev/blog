@@ -31,7 +31,7 @@ import static com.github.nkonev.security.SecurityConfig.*;
 import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.HttpHeaders.COOKIE;
 
-public class SessionTest extends AbstractItTestRunner {
+public class SessionIT extends AbstractItTestRunner {
 
 
     @Autowired
