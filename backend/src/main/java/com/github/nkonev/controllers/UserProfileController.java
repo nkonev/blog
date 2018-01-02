@@ -21,7 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.MalformedURLException;
+import java.util.Collection;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -65,11 +67,20 @@ public class UserProfileController {
         PageRequest springDataPage = PageRequest.of(PageUtils.fixPage(page), PageUtils.fixSize(size), Sort.Direction.ASC, "id");
 
         Page<UserAccount> resultPage = userAccountRepository.findByUsernameContains(springDataPage, searchString);
+
         return new UserListWrapper(
-                resultPage.getContent().stream().map(UserAccountConverter::convertToUserAccountDTO).collect(Collectors.toList()),
+                resultPage.getContent().stream().map(getConvertToUserAccountDTO(userAccount)).collect(Collectors.toList()),
                 resultPage.getTotalElements(),
                 blogSecurityService.hasSessionManagementPermission(userAccount)
         );
+    }
+
+    private Function<UserAccount, UserAccountDTO> getConvertToUserAccountDTO(UserAccountDetailsDTO currentUser) {
+        if (blogSecurityService.hasUserManagementPermission(currentUser)) {
+            return UserAccountConverter::convertToUserAccountDTOExtended;
+        } else {
+            return UserAccountConverter::convertToUserAccountDTO;
+        }
     }
 
     @GetMapping(value = Constants.Uls.USER+Constants.Uls.USER_ID)
@@ -135,11 +146,13 @@ public class UserProfileController {
 
     @PreAuthorize("@blogSecurityService.canLock(#userAccountDetailsDTO)")
     @PostMapping(Constants.Uls.USER + Constants.Uls.LOCK)
-    public void setLocked(@AuthenticationPrincipal UserAccountDetailsDTO userAccountDetailsDTO, @RequestBody LockDTO locked){
+    public UserAccountDTOExtended setLocked(@AuthenticationPrincipal UserAccountDetailsDTO userAccountDetailsDTO, @RequestBody LockDTO locked){
         UserAccount userAccount = blogUserDetailsService.getUserAccount(locked.getUserId());
         if (locked.isLock()){
             blogUserDetailsService.killSessions(locked.getUserId());
         }
         userAccount.setLocked(locked.isLock());
+
+        return UserAccountConverter.convertToUserAccountDTOExtended(userAccount);
     }
 }

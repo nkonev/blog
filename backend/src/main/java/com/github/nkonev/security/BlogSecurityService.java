@@ -136,4 +136,8 @@ public class BlogSecurityService {
             return false;
         }
     }
+
+    public boolean hasUserManagementPermission(UserAccountDetailsDTO userAccount) {
+        return hasSessionManagementPermission(userAccount);
+    }
 }

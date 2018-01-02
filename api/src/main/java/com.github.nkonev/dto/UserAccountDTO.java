@@ -16,13 +16,9 @@ public class UserAccountDTO implements Serializable {
 
     private String avatar;
 
-    public UserAccountDTO(Long id, String login) {
+    public UserAccountDTO(Long id, String login, String avatar) {
         this.id = id;
         this.login = login;
-    }
-
-    public UserAccountDTO(Long id, String login, String avatar) {
-        this(id, login);
         this.avatar = avatar;
     }
 

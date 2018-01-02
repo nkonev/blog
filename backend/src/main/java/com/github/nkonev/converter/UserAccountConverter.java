@@ -1,10 +1,7 @@
 package com.github.nkonev.converter;
 
 import com.github.nkonev.ApiConstants;
-import com.github.nkonev.dto.EditUserDTO;
-import com.github.nkonev.dto.UserAccountDTO;
-import com.github.nkonev.dto.UserAccountDetailsDTO;
-import com.github.nkonev.dto.UserSelfProfileDTO;
+import com.github.nkonev.dto.*;
 import com.github.nkonev.entity.jpa.UserAccount;
 import com.github.nkonev.entity.jpa.UserRole;
 import com.github.nkonev.exception.BadRequestException;
@@ -60,6 +57,19 @@ public class UserAccountConverter {
                 userAccount.getAvatar()
         );
     }
+
+    public static UserAccountDTOExtended convertToUserAccountDTOExtended(UserAccount userAccount) {
+        if (userAccount == null) { return null; }
+        return new UserAccountDTOExtended(
+                userAccount.getId(),
+                userAccount.getUsername(),
+                userAccount.getAvatar(),
+                userAccount.isEnabled(),
+                userAccount.isExpired(),
+                userAccount.isLocked()
+        );
+    }
+
 
     public static UserAccountDTO convertToUserAccountDTO(UserAccountDetailsDTO userAccount) {
         if (userAccount == null) { return null; }
