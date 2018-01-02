@@ -2,6 +2,7 @@ package com.github.nkonev.controllers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.nkonev.AbstractUtTestRunner;
+import com.github.nkonev.CommonTestConstants;
 import com.github.nkonev.Constants;
 import com.github.nkonev.TestConstants;
 import com.github.nkonev.converter.UserAccountConverter;
@@ -262,11 +263,11 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
 
         String session = getSession(xsrf, TestConstants.USER_ALICE, TestConstants.USER_ALICE_PASSWORD);
 
-        String headerValue = buildCookieHeader(new HttpCookie(HEADER_XSRF_TOKEN, xsrf), new HttpCookie(COOKIE_SESSION, session));
+        String headerValue = buildCookieHeader(new HttpCookie(CommonTestConstants.HEADER_XSRF_TOKEN, xsrf), new HttpCookie(CommonTestConstants.COOKIE_SESSION, session));
 
         RequestEntity requestEntity = RequestEntity
                 .get(new URI(urlWithContextPath() + Constants.Uls.API + Constants.Uls.SESSIONS + "?userId=1"))
-                .header(HEADER_COOKIE, headerValue).build();
+                .header(CommonTestConstants.HEADER_COOKIE, headerValue).build();
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(requestEntity, String.class);
         String str = responseEntity.getBody();
@@ -282,11 +283,11 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
         String xsrf = "xsrf";
         String session = getSession(xsrf, username, password);
 
-        String headerValue = buildCookieHeader(new HttpCookie(HEADER_XSRF_TOKEN, xsrf), new HttpCookie(COOKIE_SESSION, session));
+        String headerValue = buildCookieHeader(new HttpCookie(CommonTestConstants.HEADER_XSRF_TOKEN, xsrf), new HttpCookie(CommonTestConstants.COOKIE_SESSION, session));
 
         RequestEntity requestEntity = RequestEntity
                 .get(new URI(urlWithContextPath() + Constants.Uls.API + Constants.Uls.SESSIONS + "?userId=1"))
-                .header(HEADER_COOKIE, headerValue).build();
+                .header(CommonTestConstants.HEADER_COOKIE, headerValue).build();
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(requestEntity, String.class);
         String str = responseEntity.getBody();

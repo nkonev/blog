@@ -9,6 +9,7 @@ import com.github.nkonev.config.UtConfig;
 import com.github.nkonev.dto.PostDTO;
 import com.github.nkonev.repo.redis.UserConfirmationTokenRepository;
 import com.github.nkonev.security.SecurityConfig;
+import com.github.nkonev.utils.ContextPathHelper;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -20,7 +21,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.Ssl;
 import org.springframework.boot.web.servlet.server.AbstractServletWebServerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -71,9 +71,7 @@ public abstract class AbstractUtTestRunner {
     protected AbstractServletWebServerFactory abstractConfigurableEmbeddedServletContainer;
 
     public String urlWithContextPath(){
-        Ssl ssl = abstractConfigurableEmbeddedServletContainer.getSsl();
-        String protocol = ssl!=null && ssl.isEnabled() ? "https" : "http";
-        return protocol+"://127.0.0.1:"+abstractConfigurableEmbeddedServletContainer.getPort()+abstractConfigurableEmbeddedServletContainer.getContextPath();
+        return ContextPathHelper.urlWithContextPath(abstractConfigurableEmbeddedServletContainer);
     }
 
     @Value(CommonTestConstants.USER)
@@ -99,10 +97,6 @@ public abstract class AbstractUtTestRunner {
     }
 
 
-    public static final String COOKIE_SESSION = "SESSION";
-    public static final String HEADER_XSRF_TOKEN = "X-XSRF-TOKEN";
-    public static final String HEADER_COOKIE = "Cookie";
-
     protected String buildCookieHeader(HttpCookie... cookies) {
         return String.join("; ", Arrays.stream(cookies).map(httpCookie -> httpCookie.toString()).collect(Collectors.toList()));
     }
@@ -127,7 +121,7 @@ public abstract class AbstractUtTestRunner {
         })
                 .andExpect(status().isOk())
                 .andReturn();
-        return mvcResult.getResponse().getCookie(COOKIE_SESSION).getValue();
+        return mvcResult.getResponse().getCookie(CommonTestConstants.COOKIE_SESSION).getValue();
     }
 
     @Before
