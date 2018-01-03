@@ -4,7 +4,8 @@
   "description": "frontend project",
   "scripts": {
     "dev": "webpack",
-    "test": "jest"
+    "test": "jest",
+    "clear": "jest --clearCache"
   },
   "repository": {
     "type": "git",
@@ -40,7 +41,7 @@
     "vue-loader": "^13.6.1",
     "vue-style-loader": "^3.0.3",
     "vue-template-compiler": "^2.5.13",
-    "vue-test-utils": "^1.0.0-beta.8",
+    "vue-test-utils": "^1.0.0-beta.9",
     "vue-top-progress": "^0.5.0",
     "webpack": "^3.10.0",
     "webpack-livereload-plugin": "^1.0.0"
