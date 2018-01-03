@@ -262,6 +262,7 @@ docker rm $(docker ps -aq -f name=BLOGSTACK_blog -f status=exited)
 curl -H "Host: blog.test" http://127.0.0.1:8088
 curl -H "Host: grafana.blog.test" -u "admin:admin" http://127.0.0.1:8088
 curl -H "Host: prometheus.blog.test" -u "admin:admin" http://127.0.0.1:8088
+curl -H "Host: alertmanager.blog.test" -u "admin:admin" http://127.0.0.1:8088
 ```
 
 ## Browser
@@ -271,6 +272,7 @@ sudo tee --append /etc/hosts <<'EOF'
 127.0.0.1 blog.test
 127.0.0.1 grafana.blog.test
 127.0.0.1 prometheus.blog.test
+127.0.0.1 alertmanager.blog.test
 EOF
 ```
 
