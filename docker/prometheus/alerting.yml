@@ -20,3 +20,20 @@ groups:
     annotations:
       summary: "Prerender not renders html page"
       description: "Please check if prerender alive & blackbox exporter send correct useragent which configured in java blog application too"
+
+- name: blog_log_events
+  rules:
+  - alert: Increasing blog app errors
+    expr: increase(logback_events_total{level="error"}[30s]) > 0
+    labels:
+      severity: page
+    annotations:
+      summary: "Errors count is increasing for 30s"
+      description: "Please check application logs"
+  - alert: Increasing blog app warnings
+    expr: increase(logback_events_total{level="warn"}[30s]) > 0
+    labels:
+      severity: page
+    annotations:
+      summary: "Warnings count is increasing for 30s"
+      description: "Please check application logs"

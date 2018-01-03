@@ -254,6 +254,21 @@ services:
     networks:
       - traefik_backend
       - backend
+  alertmanager:
+    image: prom/alertmanager
+    hostname: alertmanager
+    volumes:
+      - ./alertmanager/alert.yml:/alert.yml
+    command: ["-config.file", "/alert.yml"]
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    logging:
+      driver: "json-file"
+#      options:
+#        tag: alertmanager
+    networks:
+      - backend
 
   grafana:
     image: grafana/grafana:3.1.1

@@ -1,0 +1,19 @@
+# https://prometheus.io/docs/alerting/configuration/
+# https://github.com/prometheus/alertmanager/blob/master/doc/examples/simple.yml
+global:
+  smtp_smarthost: 'smtp.yandex.ru:465'
+  smtp_from: 'alertmanager@blog.test'
+  smtp_auth_username: 'username'
+  smtp_auth_password: 'password'
+
+route:
+  receiver: 'default-receiver'
+  group_wait: 10s
+  group_interval: 1m
+  repeat_interval: 30m
+
+receivers:
+- name: 'default-receiver'
+  email_configs:
+  - to: 'team-X+alerts@example.org'
+    require_tls: false
