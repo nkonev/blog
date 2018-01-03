@@ -47,7 +47,7 @@
     };
 </script>
 
-<style lang="stylus" scoped>
+<style lang="stylus">
     @import "../buttons.styl"
     $lockBtnMargin=4px 8px
     $lockBtnWidth=80px
@@ -67,6 +67,12 @@
             width 48px;
             height 48px;
             margin 2px;
+
+            // needs for correct display in Chrome
+            img {
+                width 100%;
+                height 100%;
+            }
         }
 
         &-info {
@@ -81,10 +87,6 @@
             flex-direction: row;
             justify-content: flex-end;
             align-items center
-        }
-
-        .space {
-            width 100%
         }
 
         button.blog-btn.lock-btn {

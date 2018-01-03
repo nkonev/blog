@@ -267,7 +267,11 @@ curl -H "Host: prometheus.blog.test" -u "admin:admin" http://127.0.0.1:8088
 ## Browser
 
 ```bash
-echo -e '127.0.0.1 blog.test\n127.0.0.1 grafana.blog.test\n127.0.0.1 prometheus.blog.test' | sudo tee --append /etc/hosts
+sudo tee --append /etc/hosts <<'EOF'
+127.0.0.1 blog.test
+127.0.0.1 grafana.blog.test
+127.0.0.1 prometheus.blog.test
+EOF
 ```
 
 
