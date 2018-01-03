@@ -50,6 +50,16 @@ scrape_configs:
     - targets:
       - blackbox_exporter:9115
 
+# https://www.dedoimedo.com/computers/docker-networking.html
+- job_name: 'blog_app_html'
+  metrics_path: /probe
+  params:
+    module: ['api']
+    target: ['http://blog:8098'] # rename to external https://blog.test
+  static_configs:
+    - targets:
+      - blackbox_exporter:9115
+
 - job_name: traefik
   static_configs:
     - targets:
