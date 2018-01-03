@@ -16,4 +16,4 @@ receivers:
 - name: 'default-receiver'
   email_configs:
   - to: 'team-X+alerts@example.org'
-    require_tls: false
+    require_tls: false # this very strange value need for enable secured(sic!) connection

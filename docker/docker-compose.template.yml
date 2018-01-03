@@ -50,6 +50,7 @@ services:
     hostname: traefik
     command: -c /traefik.toml
     ports:
+      # need for visibility real ip in traefik logs
       # https://docs.docker.com/engine/swarm/services/#publish-a-services-ports-directly-on-the-swarm-node
       # https://docs.docker.com/compose/compose-file/#long-syntax-1
       # https://stackoverflow.com/questions/39854682/log-clients-real-ip-address-in-docker-swarm-1-12-when-accessing-a-service
