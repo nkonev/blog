@@ -17,6 +17,7 @@
                         :disabled="false"
                         :prevent-white-space="true"
                         :show-remove-button="true"
+                        accept="image/*"
                         @file-size-exceed="handleCroppaFileSizeExceed"
                         @file-type-mismatch="handleCroppaFileTypeMismatch"
                 >

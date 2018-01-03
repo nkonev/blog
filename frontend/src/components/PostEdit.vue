@@ -22,6 +22,7 @@
                     :disabled="false"
                     :prevent-white-space="true"
                     :show-remove-button="true"
+                    accept="image/*"
                     @file-choose="handleCroppaFileChoose"
                     @image-remove="handleCroppaImageRemove"
                     @file-size-exceed="handleCroppaFileSizeExceed"
