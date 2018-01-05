@@ -210,10 +210,32 @@ d) Set `journald` logging with appropriate tag for all services
 ```
 
 
-e) Uncomment & change SSL setting in `./docker/traefik/traefik.toml`
+e) Uncomment & change SSL setting in `./traefik/traefik.toml`
 
+f) Configure notifications in `./alertmanager/alert.yml`
 
+g) For able to http(s) request your domain registrar name with curl from container
+ensure that 
+```bash
+cat /proc/sys/net/ipv4/ip_forward
+```
+returns non-zero
 
+next insert iptables rule
+```bash
+iptables -I INPUT -i docker_gwbridge -p tcp -m multiport --dports 80,443 -j ACCEPT
+```
+
+If all ok, you can do it persistent by
+```bash
+chmod +x /etc/rc.local
+vim /etc/rc.local
+```
+
+```bash
+iptables -I INPUT -i docker_gwbridge -p tcp -m multiport --dports 80,443 -j ACCEPT
+echo "Successful inserted docker_gwbridge rule"
+```
 
 
 ## Playing with docker
@@ -255,7 +277,7 @@ docker rm $(docker ps -aq -f name=BLOGSTACK_blog -f status=exited)
 
 
 
-# Test
+# Test on locla machine
 
 ## curl
 ```bash
@@ -267,6 +289,7 @@ curl -H "Host: alertmanager.blog.test" -u "admin:admin" http://127.0.0.1:8088
 
 ## Browser
 
+We add domains to /etc/hosts for browser sends correct Host header
 ```bash
 sudo tee --append /etc/hosts <<'EOF'
 127.0.0.1 blog.test
