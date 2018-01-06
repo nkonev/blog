@@ -12,8 +12,10 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLStreamHandler;
+import java.time.Duration;
 
 /**
  * Created by nik on 28.05.17.
@@ -26,7 +28,7 @@ public class SwaggerConfig {
     @Bean
     public Docket restApi() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .ignoredParameterTypes(UserAccountDetailsDTO.class, URLStreamHandler.class, URL.class)
+                .ignoredParameterTypes(UserAccountDetailsDTO.class, URLStreamHandler.class, URL.class, Duration.class, InputStream.class)
                 .apiInfo(apiInfo())
                 .select()
                 .paths(input ->
