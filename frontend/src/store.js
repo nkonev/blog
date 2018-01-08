@@ -11,17 +11,9 @@ export const FETCH_USER_PROFILE = 'fetchUserProfile';
 
 const store = new Vuex.Store({
     state: {
-        count: 0,
         currentUser: null
     },
     mutations: {
-        increment (state) {
-            state.count++
-        },
-        decrement (state) {
-            state.count--
-        },
-
         [SET_USER](state, payload) {
             state.currentUser = payload;
         },

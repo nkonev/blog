@@ -5,8 +5,10 @@
             <router-link :to="{ name: 'user-profile', params: { id: model.id } }">{{ model.login }}</router-link>
         </div>
         <div class="user-management" v-if="model.managementData">
-            <button v-if="model.managementData.locked" id="unlock" @click="requestUnlock()" class="blog-btn unlock-btn">Unlock</button>
-            <button v-else id="lock" @click="requestLock()" class="blog-btn lock-btn">Lock</button>
+            <template v-if="!(currentUser && currentUser.id==model.id)">
+                <button v-if="model.managementData.locked" id="unlock" @click="requestUnlock()" class="blog-btn unlock-btn">Unlock</button>
+                <button v-else id="lock" @click="requestLock()" class="blog-btn lock-btn">Lock</button>
+            </template>
         </div>
     </div>
 </template>
@@ -16,7 +18,7 @@
     
     export default {
         name: 'user-item', // это имя компонента, которое м. б. тегом в другом компоненте
-        props: ['userDTO'], // it may be an object, for ability to set default values
+        props: ['userDTO', 'currentUser'], // it may be an object, for ability to set default values
         data(){
             return {
                 model: {}
@@ -70,7 +72,7 @@
 
             // needs for correct display in Chrome
             img {
-                width 100%;
+                //width 100%;
                 height 100%;
             }
         }

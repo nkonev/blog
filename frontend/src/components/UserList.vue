@@ -20,7 +20,7 @@
         ></paginate>
 
         <div v-if="users.length>0" id="user-list">
-            <user-item v-for="user in users" v-bind:userDTO="user" :key="user.id"></user-item>
+            <user-item v-for="user in users" v-bind:userDTO="user" :key="user.id" :currentUser="currentUser"></user-item>
         </div>
         <div v-else id="user-list">
             No data
@@ -38,6 +38,8 @@
     import bus from '../bus'
     import {LOGIN, LOGOUT, UNAUTHORIZED} from '../bus'
     import Search from './Search.vue';
+    import store, {GET_USER} from '../store'
+    import {mapGetters} from 'vuex'
 
     Vue.component('paginate', Paginate);
 
@@ -48,6 +50,7 @@
                 pageCount: 0,
             }
         },
+        store,
         methods: {
             reloadPage: function(pageNum, searchString) {
                 if (!searchString) {searchString=''}
@@ -96,7 +99,8 @@
             // The index of initial page which selected. default: 0
             initialPageIndex() {
                 return this.$route.query.page ? parseInt(this.$route.query.page-1) : 0;
-            }
+            },
+            ...mapGetters({currentUser: GET_USER})
         },
         created() {
             //console.log("created");
