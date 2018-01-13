@@ -57,6 +57,7 @@
     import CommentList from './CommentList.vue'
     import Owner from './Owner.vue'
     import {getPostId, getTimestampFromUtc} from '../utils'
+    import VueScrollTo from 'vue-scrollto';
 
     // Lazy load heavy component https://router.vuejs.org/en/advanced/lazy-loading.html. see also in .babelrc
     const PostEdit = () => import('./PostEdit.vue');
@@ -109,6 +110,13 @@
                     this.postDTO = response.body; // add data from server's response
                     this.isLoading = false;
                     bus.$emit(POST_SWITCHED, this.postDTO.id);
+
+                    setTimeout(
+                    Vue.nextTick(()=>{
+                        const element = document.querySelector('.post-title h1');
+                        VueScrollTo.scrollTo(element, 500, { offset: -50});
+                    }), 10000);
+
                     if (this.$props.onGetPostSuccess) {
                         this.$props.onGetPostSuccess(this.postDTO);
                     }
