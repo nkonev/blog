@@ -83,7 +83,7 @@
         [{ 'header': [1, 2, 3, false] }],
 
         [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-
+        [{ 'align': [] }],
         ['clean']                                         // remove formatting button
     ];
 
