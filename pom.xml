@@ -241,21 +241,6 @@
                 <artifactId>flyway-core</artifactId>
                 <version>5.0.3</version>
             </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-actuator</artifactId>
-                <version>2.0.0.BUILD-20180105.203031-341</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-actuator-autoconfigure</artifactId>
-                <version>2.0.0.BUILD-20180105.203006-341</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-actuator</artifactId>
-                <version>2.0.0.BUILD-20180105.203008-341</version>
-            </dependency>
 
             <!-- https://docs.spring.io/spring-boot/docs/2.0.0.M7/reference/htmlsingle/#using-boot-maven-without-a-parent -->
             <dependency>
