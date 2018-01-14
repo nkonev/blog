@@ -42,9 +42,9 @@
         <div class="post-command-buttons">
             <div class="send">
                 <blog-spinner v-if="submitting" message="Sending..."></blog-spinner>
-                <button v-if="!submitting" class="blog-btn ok-btn" @click="onBtnSave" v-bind:disabled="!isPostValid()">Сохранить</button>
+                <button v-if="!submitting" class="blog-btn ok-btn" @click="onBtnSave" v-bind:disabled="!isPostValid()">Save</button>
             </div>
-            <button v-if="!submitting" class="blog-btn cancel-btn" @click="onBtnCancel">Отмена</button>
+            <button v-if="!submitting" class="blog-btn cancel-btn" @click="onBtnCancel">Cancel</button>
         </div>
     </div>
 </template>

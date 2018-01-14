@@ -19,7 +19,9 @@
                             <img class="remove-container-x" src="../assets/remove.png" v-if="postDTO.canDelete" @click="doDelete()"/>
                         </div>
                     </div>
-                    <div class="post-content ql-editor" v-html="postDTO.text"></div>
+                    <div class="ql-container ql-bubble">
+                        <div class="post-content ql-editor" v-html="postDTO.text"></div>
+                    </div>
                 </template>
                 <template v-if="errorMessage">
                     <div class="post-error">
@@ -323,7 +325,10 @@
             font-size $postBodyFontSize
             font-family $postBodyFontFamily
 
-            * {
+            .ql-editor > * {
+                font-size $postBodyFontSize
+                font-family $postBodyFontFamily
+
                 margin-top $postBodyMarginTop
                 margin-bottom $postBodyMarginBottom
             }
