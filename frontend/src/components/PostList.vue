@@ -30,16 +30,16 @@
     import BlogSpinner from './BlogSpinner.vue'
     import PostAddFab from './PostAddFab.vue'
     import Search from './Search.vue';
-    import {updateById, cutPost} from '../utils'
-
-    const Stomp = require("@stomp/stompjs/lib/stomp.js").Stomp; // https://github.com/jmesnil/stomp-websocket/issues/119 https://stomp-js.github.io/stomp-websocket/codo/extra/docs-src/Usage.md.html
+    import {updateById, cutPost, initStompClient, closeStompClient} from '../utils'
 
     // https://peachscript.github.io/vue-infinite-loading/#!/getting-started/with-filter
     const POSTS_PAGE_SIZE = 20;
     const MAX_PAGES = 10;
 
-    let stompClient;
-
+    let stompObj;
+    let subscriptionInsert;
+    let subscriptionUpdate;
+    let subscriptionDelete;
     export default {
         name: 'posts',
         data() {
@@ -98,22 +98,17 @@
             },
         },
         mounted(){
-            const url = ((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host + "/stomp";
-            stompClient = Stomp.client(url);
-            stompClient.reconnect_delay = 5000; // reconnect after 5 sec
-
-
-            stompClient.connect({ }, (frame) => {
+            stompObj = initStompClient((frame) => {
                 // allowed prefixes here http://www.rabbitmq.com/stomp.html#d
                 // subscribe
-                stompClient.subscribe("/topic/posts.insert", (data) => {
+                subscriptionInsert=stompObj.stompClient.subscribe("/topic/posts.insert", (data) => {
                     const message = data.body;
                     const obj = JSON.parse(message);
                     cutPost(obj);
                     // console.log(message);
                     this.posts.unshift(obj);
                 });
-                stompClient.subscribe("/topic/posts.update", (data) => {
+                subscriptionUpdate=stompObj.stompClient.subscribe("/topic/posts.update", (data) => {
                     const message = data.body;
                     const obj = JSON.parse(message);
                     cutPost(obj);
@@ -123,7 +118,7 @@
                         console.debug("found and updated");
                     }
                 });
-                stompClient.subscribe("/topic/posts.delete", (data) => {
+                subscriptionDelete=stompObj.stompClient.subscribe("/topic/posts.delete", (data) => {
                     const message = data.body;
                     const id = parseInt(message);
                     const foundPost = this.posts.find((element, index, array)=>{
@@ -139,10 +134,12 @@
             });
         },
         beforeDestroy() {
-            console.debug('closing stompClient');
-            if (stompClient) {
-                stompClient.disconnect();
-            }
+            try {
+                subscriptionInsert.unsubscribe();
+                subscriptionUpdate.unsubscribe();
+                subscriptionDelete.unsubscribe();
+            } catch (ignored){}
+            closeStompClient(stompObj);
         },
         metaInfo: {
             title: 'Posts',
