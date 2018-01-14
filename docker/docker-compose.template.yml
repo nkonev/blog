@@ -230,7 +230,7 @@ services:
       - traefik_backend
       - backend
   prometheus:
-    image: prom/prometheus
+    image: prom/prometheus:v2.0.0
     hostname: prometheus
     ports:
       - 9090:9090
@@ -257,11 +257,11 @@ services:
       - backend
 
   alertmanager:
-    image: prom/alertmanager
+    image: prom/alertmanager:v0.13.0
     hostname: alertmanager
     volumes:
       - ./alertmanager/alert.yml:/alert.yml
-    command: ["-config.file", "/alert.yml", "-web.external-url", "http://alertmanager.blog.test"]
+    command: ["--config.file", "/alert.yml", "--web.external-url", "http://alertmanager.blog.test"]
     deploy:
       placement:
         constraints: [node.role == manager]
