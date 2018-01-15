@@ -18,4 +18,7 @@ public class TestConstants {
     public static final String USER_ADMIN  = CommonTestConstants.USER_ADMIN;
     public static final String USER_BOB = CommonTestConstants.USER_BOB;
     public static final String USER_NIKITA = CommonTestConstants.USER_NIKITA;
+
+    public static final long CHAT_USER_ID = 1;
+    public static final long USER_1_CHATS = 1000;
 }

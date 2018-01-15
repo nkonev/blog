@@ -141,6 +141,20 @@ services:
         constraints: [node.labels.blog.server.role == db]
     networks:
       - backend
+  mongodb:
+    image: mongo:3.6.1-jessie
+    hostname: mongodb
+    volumes :
+      - mongodb_blog_prod_data_dir:/data/db
+    deploy:
+      placement:
+        constraints: [node.labels.blog.server.role == db]
+    networks:
+      - backend
+    logging:
+      driver: "json-file"
+      options:
+#        tag: rabbitmq
   prerender:
     image: nkonev/prerender-redis
     hostname: prerender
@@ -319,6 +333,7 @@ volumes:
   redis_prod_data_dir:
   rabbitmq_prod_data_dir:
   redis_prerender_prod_data_dir:
+  mongodb_blog_prod_data_dir:
   prometheus_data:
   grafana_data_prod_data_dir:
 

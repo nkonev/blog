@@ -1,25 +1,27 @@
-package com.github.nkonev.dto;
+package com.github.nkonev.entity.mongodb;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Collection;
 
-// TODO to api
-@Document(collection = "metainfo")
-public class ChatInfoDto {
+import static com.github.nkonev.entity.mongodb.ChatInfo.COLLECTION_NAME;
+
+@Document(collection = COLLECTION_NAME)
+public class ChatInfo {
+    public static final String COLLECTION_NAME = "metainfo";
     @Id
     private String id;
 
     private String title;
     private Collection<Long> participants;
 
-    public ChatInfoDto(String title, Collection<Long> participants) {
+    public ChatInfo(String title, Collection<Long> participants) {
         this.title = title;
         this.participants = participants;
     }
 
-    public ChatInfoDto() { }
+    public ChatInfo() { }
 
     public String getTitle() {
         return title;
