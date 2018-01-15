@@ -57,10 +57,27 @@ services:
       - RABBITMQ_DEFAULT_USER=blog
       - RABBITMQ_DEFAULT_PASS=blogPazZw0rd
     volumes :
-      - rabbitmq_data_dir:/var/lib/rabbitmq/mnesia
+      - rabbitmq_blog_dev_data_dir:/var/lib/rabbitmq/mnesia
     networks:
       blog-dev:
         ipv4_address: 172.22.0.4
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+
+  mongodb:
+    image: mongo:3.6.1-jessie
+    hostname: mongodb
+    container_name: mongodb-blog-dev
+    restart: unless-stopped
+    ports:
+      - 37017:27017
+    volumes :
+      - mongodb_blog_dev_data_dir:/data/db
+    networks:
+      blog-dev:
+        ipv4_address: 172.22.0.5
     logging:
       driver: "json-file"
       options:
@@ -70,7 +87,8 @@ volumes:
   #enviroment
   postgresql_blog_dev_data_dir:
   redis_blog_dev_data_dir:
-  rabbitmq_data_dir:
+  rabbitmq_blog_dev_data_dir:
+  mongodb_blog_dev_data_dir:
 
 networks:
   blog-dev:

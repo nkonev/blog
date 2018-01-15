@@ -110,6 +110,9 @@ spring.flyway:
   schemas: migrations, auth, posts, images
   out-of-order: true
 
+spring.data.mongodb:
+    uri: mongodb://172.22.0.5/chat
+
 spring.redis.url: redis://172.22.0.3:6379/0
 spring.data.redis.repositories.enabled: false
 # Also see index in bootstrap.sql
