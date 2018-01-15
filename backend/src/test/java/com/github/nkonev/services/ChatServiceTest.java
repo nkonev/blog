@@ -18,8 +18,7 @@ public class ChatServiceTest extends AbstractUtTestRunner {
     @Autowired
     private ChatService service;
 
-    @Value(CommonTestConstants.USER_ID)
-    private long userId;
+    private static final long userId = 1;
 
     @Test
     public void getChatInfos() throws Exception {
