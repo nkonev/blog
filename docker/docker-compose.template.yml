@@ -153,7 +153,7 @@ services:
       - backend
     logging:
       driver: "json-file"
-      options:
+#      options:
 #        tag: rabbitmq
   prerender:
     image: nkonev/prerender-redis
