@@ -21,6 +21,6 @@ public class ChatControllerTest extends AbstractUtTestRunner {
                .accept(MediaType.APPLICATION_JSON_UTF8)
                .exchange()
                .expectStatus().isOk()
-               .expectBody().jsonPath("$.size", USER_1_CHATS);
+               .expectBody().jsonPath("$.size()").isEqualTo(USER_1_CHATS);
     }
 }
