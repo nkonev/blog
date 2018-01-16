@@ -35,6 +35,7 @@ services:
       - CUSTOM_EMAIL_FROM=username@yandex.ru
       - SPRING_MAIL_USERNAME=username
       - SPRING_MAIL_PASSWORD=password
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb/chat
       - CUSTOM_BASE-URL=http://blog.test # also used for prerender's forwardedURLPrefix
       - MANAGEMENT_HEALTH_MAIL_ENABLED=false
     volumes :
