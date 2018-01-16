@@ -21,4 +21,7 @@ public class CommonTestConstants {
     public static final String HEADER_XSRF_TOKEN = "X-XSRF-TOKEN";
     public static final String HEADER_COOKIE = "Cookie";
     public static final String HEADER_SET_COOKIE = "Set-Cookie";
+
+    public static final long CHAT_USER_ID = 1;
+    public static final long USER_1_CHATS = 1000;
 }

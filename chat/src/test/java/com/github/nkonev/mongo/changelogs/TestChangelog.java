@@ -7,8 +7,7 @@ import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DB;
 import com.mongodb.DBObject;
 import java.util.*;
-
-import static com.github.nkonev.TestConstants.CHAT_USER_ID;
+import static com.github.nkonev.CommonTestConstants.CHAT_USER_ID;
 
 @ChangeLog
 public class TestChangelog {

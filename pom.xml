@@ -44,6 +44,7 @@
         <module>common-test</module>
         <module>frontend</module>
         <module>backend</module>
+        <module>chat</module>
         <module>webdriver-test</module>
         <module>deploy-test</module>
         <module>jacoco</module>

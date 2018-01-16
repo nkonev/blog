@@ -2,9 +2,7 @@ package com.github.nkonev.entity.mongodb;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
 import java.util.Collection;
-
 import static com.github.nkonev.entity.mongodb.ChatInfo.COLLECTION_NAME;
 
 @Document(collection = COLLECTION_NAME)

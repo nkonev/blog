@@ -13,11 +13,15 @@ println string
 
 def BACKEND_MAIN_YML_FILE = "${project.basedir}/../backend/src/main/resources/config/application.yml";
 def BACKEND_TEST_YML_FILE = "${project.basedir}/../backend/src/test/resources/config/application.yml";
+def CHAT_MAIN_YML_CONTENT_FILE = "${project.basedir}/../chat/src/main/resources/config/application.yml";
+def CHAT_TEST_YML_CONTENT_FILE = "${project.basedir}/../chat/src/test/resources/config/application.yml";
 def INTEGRATION_TEST_YML_FILE = "${project.basedir}/../webdriver-test/src/test/resources/config/application.yml";
 
 class ExportedConstants {
-    public static final def PROD_PORT = 8080
-    public static final def TEST_PORT = 9080
+    public static final def PROD_BLOG_PORT = 8080
+    public static final def PROD_CHAT_PORT = 8081
+    public static final def TEST_BLOG_PORT = 9080
+    public static final def TEST_CHAT_PORT = 9081
     public static final def TEST_SMTP_PORT = 3025 // this is greenmail requirement
     public static final def TEST_IMAP_PORT = 3143
     public static final def TEST_EMAIL_USERNAME = "testEmailUsername"
@@ -91,14 +95,16 @@ spring.flyway:
   schemas: migrations, auth, posts, images
   out-of-order: true
 
-spring.data.mongodb:
-    uri: mongodb://172.22.0.5/chat
-
 spring.redis.url: redis://172.22.0.3:6379/0
 spring.data.redis.repositories.enabled: false
 # Also see index in bootstrap.sql
 custom.postgres.fulltext.reg-config: "'russian'::regconfig"
 """};
+
+def MONGO_SNIPPET = """
+spring.data.mongodb:
+    uri: mongodb://172.22.0.5/chat
+"""
 
 def MANAGEMENT_SNIPPET = { boolean test ->
 
@@ -212,7 +218,7 @@ ${common(false)}
 ${custom(false)}
 server.tomcat.accesslog.enabled: false
 server.tomcat.accesslog.pattern: '%t %a "%r" %s (%D ms)'
-server.port: ${ExportedConstants.PROD_PORT}
+server.port: ${ExportedConstants.PROD_BLOG_PORT}
 server.session.persistent: true
 ${WEBSERVER_SNIPPET}
 
@@ -244,7 +250,7 @@ logging.level.: INFO
 logging.level.org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: WARN
 ${common(true)}
 ${custom(true)}
-server.port: ${ExportedConstants.TEST_PORT}
+server.port: ${ExportedConstants.TEST_BLOG_PORT}
 ${WEBSERVER_SNIPPET}
 ${TEST_USERS_SNIPPET}
 ${DATA_STORE_SNIPPET(true, 'validate')}
@@ -252,7 +258,26 @@ ${MANAGEMENT_SNIPPET(true)}
 ${FRONT_CONFIGURATION_SNIPPET}
 """;
 writeAndLog(BACKEND_TEST_YML_FILE, BACKEND_TEST_YML_CONTENT);
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+def CHAT_MAIN_YML_CONTENT =
+"""${AUTOGENERATE_SNIPPET}
+logging.level.: INFO
+server.port: ${ExportedConstants.PROD_CHAT_PORT}
+${MONGO_SNIPPET}
+"""
+writeAndLog(CHAT_MAIN_YML_CONTENT_FILE, CHAT_MAIN_YML_CONTENT);
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+def CHAT_TEST_YML_CONTENT =
+"""${AUTOGENERATE_SNIPPET}
+logging.level.: INFO
+server.port: ${ExportedConstants.TEST_CHAT_PORT}
+${MONGO_SNIPPET}
+"""
+writeAndLog(CHAT_TEST_YML_CONTENT_FILE, CHAT_TEST_YML_CONTENT);
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 def WEBDRIVER_TEST_YML_CONTENT =
 """${AUTOGENERATE_SNIPPET}
@@ -260,7 +285,7 @@ logging.level.: INFO
 logging.level.org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: WARN
 ${common(true)}
 ${custom(true)}
-server.port: ${ExportedConstants.TEST_PORT}
+server.port: ${ExportedConstants.TEST_BLOG_PORT}
 ${WEBSERVER_SNIPPET}
 # this is URL
 spring.mvc.static-path-pattern: /**
