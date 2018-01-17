@@ -20,14 +20,17 @@ public class ChatServiceTest extends AbstractChatUtTestRunner {
 
     @Test
     public void getChatInfos() throws Exception {
-        Collection<ChatInfo> ch = service.getChats(CHAT_USER_ID).collectList().block();
-        Assert.assertEquals(ch.size(), USER_1_CHATS);
+        Collection<ChatInfo> ch = service.getChats(CHAT_USER_ID, 0, 1000).collectList().block();
+        Assert.assertEquals(20, ch.size());
     }
 
 
     @Test
     public void getChatInfos2() throws Exception {
-        StepVerifier.create(service.getChats(CHAT_USER_ID)).expectSubscription().expectNextCount(USER_1_CHATS);
+        StepVerifier
+                .create(service.getChats(CHAT_USER_ID, 0, 1000))
+                .expectSubscription()
+                .expectNextCount(20);
     }
 
 }
