@@ -15,7 +15,7 @@
                         :initial-image="model.avatar"
                         :placeholder-font-size="20"
                         :disabled="false"
-                        :prevent-white-space="true"
+                        :prevent-white-space="false"
                         :show-remove-button="true"
                         accept="image/*"
                         @file-size-exceed="handleCroppaFileSizeExceed"

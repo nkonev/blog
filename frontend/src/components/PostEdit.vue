@@ -20,7 +20,7 @@
                     :initial-image="editPostDTO.titleImg"
                     :placeholder-font-size="32"
                     :disabled="false"
-                    :prevent-white-space="true"
+                    :prevent-white-space="false"
                     :show-remove-button="true"
                     accept="image/*"
                     @file-choose="handleCroppaFileChoose"
