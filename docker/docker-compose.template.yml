@@ -215,7 +215,7 @@ services:
     networks:
       - backend
   blackbox_exporter:
-    image: prom/blackbox-exporter
+    image: prom/blackbox-exporter:v0.11.0
     hostname: 'blackbox_exporter'
     ports:
       - '9115:9115'
