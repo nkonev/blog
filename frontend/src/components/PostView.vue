@@ -272,13 +272,6 @@
             flex-wrap wrap
             //align-items: baseline
 
-            h2 {
-                font-size $postTitleFontSize
-                font-weight $postTitleFontWeight
-                font-family $postTitleFontFamily
-                color $postTitleColor
-            }
-
             img.edit-container-pen {
                 height 32px;
                 cursor pointer
@@ -350,12 +343,12 @@
             }
 
             h1 {
-                color: white;
                 position: absolute;
                 bottom: 20px;
                 left: 0;
                 width: 100%;
-                background: rgba(0, 0, 0, 0.7);
+                color $titleColor
+                background $titleBackground
             }
         }
     }

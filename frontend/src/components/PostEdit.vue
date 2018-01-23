@@ -20,7 +20,7 @@
                     :initial-image="editPostDTO.titleImg"
                     :placeholder-font-size="32"
                     :disabled="false"
-                    :prevent-white-space="true"
+                    :prevent-white-space="false"
                     :show-remove-button="true"
                     accept="image/*"
                     @file-choose="handleCroppaFileChoose"
@@ -267,10 +267,12 @@
             border-style hidden
             border-width 0px
             box-sizing: border-box;
-            font-size $postTitleFontSize
+
+            font-size 2em
             font-weight $postTitleFontWeight
             font-family $postTitleFontFamily
-            color $postTitleColor
+            color $titleColor
+            background $titleBackground
         }
         div.quill-editor {
             margin-top: 0.3em
