@@ -178,7 +178,7 @@ In `docker-compose.template.yml` or `docker-compose.stack.yml`:
 
 a) Change tag in service blog `image: nkonev/blog:current-test` -> `image: nkonev/blog:latest`
 
-Also uoy can remove demo profile
+Also you can remove demo profile
 
 b) Change next properties:
 
@@ -277,7 +277,7 @@ docker rm $(docker ps -aq -f name=BLOGSTACK_blog -f status=exited)
 
 
 
-# Test on locla machine
+# Test on local machine
 
 ## curl
 ```bash
