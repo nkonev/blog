@@ -32,7 +32,7 @@ public class SeleniumFactory implements FactoryBean<WebDriver> {
 
 
     public static final String FIREFOX_DRIVER_VERSION = "0.19.1"; // https://github.com/mozilla/geckodriver/releases
-    public static final String CHROME_DRIVER_VERSION = "2.33"; // https://sites.google.com/a/chromium.org/chromedriver/
+    public static final String CHROME_DRIVER_VERSION = "2.35"; // https://sites.google.com/a/chromium.org/chromedriver/
     public static final String PHANTOM_JS_DRIVER_VERSION = "2.1.1"; // https://npm.taobao.org/mirrors/phantomjs
 
     private WebDriver driver;
@@ -100,7 +100,7 @@ public class SeleniumFactory implements FactoryBean<WebDriver> {
                     firefoxOptions.addArguments("-headless");
                 }
                 driver = new FirefoxDriver(firefoxOptions);
-                Configuration.browser = WebDriverRunner.MARIONETTE;
+                Configuration.browser = WebDriverRunner.FIREFOX;
             }
             break;
             case CHROME:
