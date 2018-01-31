@@ -115,7 +115,7 @@ management:
 def WEBSERVER_SNIPPET =
 """
 server.tomcat.basedir: \${java.io.tmpdir}/com.github.nkonev.tomcat
-server.session.store-dir: \${server.tomcat.basedir}/sessions
+server.servlet.session.store-dir: \${server.tomcat.basedir}/sessions
 """;
 
 def TEST_USERS_SNIPPET=
@@ -193,7 +193,7 @@ custom:
 
 def BACKEND_MAIN_YML_CONTENT =
 """${AUTOGENERATE_SNIPPET}
-logging.level.: INFO
+logging.level.root: INFO
 #logging.level.org.springframework.core.env.PropertySourcesPropertyResolver: DEBUG
 logging.level.org.springframework.web.socket: WARN
 logging.level.org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: WARN
@@ -210,7 +210,7 @@ ${custom(false)}
 server.tomcat.accesslog.enabled: false
 server.tomcat.accesslog.pattern: '%t %a "%r" %s (%D ms)'
 server.port: ${ExportedConstants.PROD_PORT}
-server.session.persistent: true
+server.servlet.session.persistent: true
 ${WEBSERVER_SNIPPET}
 
 # this is URL
@@ -237,7 +237,7 @@ writeAndLog(BACKEND_MAIN_YML_FILE, BACKEND_MAIN_YML_CONTENT);
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 def BACKEND_TEST_YML_CONTENT =
 """${AUTOGENERATE_SNIPPET}
-logging.level.: INFO
+logging.level.root: INFO
 logging.level.org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: WARN
 ${common(true)}
 ${custom(true)}
@@ -253,7 +253,7 @@ writeAndLog(BACKEND_TEST_YML_FILE, BACKEND_TEST_YML_CONTENT);
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 def WEBDRIVER_TEST_YML_CONTENT =
 """${AUTOGENERATE_SNIPPET}
-logging.level.: INFO
+logging.level.root: INFO
 logging.level.org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: WARN
 ${common(true)}
 ${custom(true)}
