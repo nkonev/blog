@@ -26,7 +26,7 @@ services:
         max-file: "1"
 
   redis:
-    image: redis:4.0.6
+    image: redis:4.0.7
     hostname: redis
     container_name: redis-blog-dev
     restart: unless-stopped

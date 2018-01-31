@@ -110,7 +110,7 @@ services:
     networks:
       - backend
   redis:
-    image: redis:4.0.6
+    image: redis:4.0.7
     hostname: redis
     volumes :
       - redis_prod_data_dir:/data
