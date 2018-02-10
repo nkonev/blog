@@ -124,7 +124,7 @@ services:
     networks:
       - backend
   rabbitmq:
-    image: nkonev/rabbitmq-web-stomp:3.7.2
+    image: nkonev/rabbitmq-web-stomp:3.7.3
     hostname: rabbitmq
     environment:
       - RABBITMQ_DEFAULT_USER=blog
@@ -281,7 +281,7 @@ services:
       - traefik_backend
 
   grafana:
-    image: grafana/grafana:3.1.1
+    image: grafana/grafana:5.0.0-beta1
     hostname: grafana
     environment:
       - GF_AUTH_BASIC_ENABLED=false
@@ -289,13 +289,11 @@ services:
       - GF_SERVER_ROOT_URL=http://grafana
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
-      - PROMETHEUS_URL=http://prometheus:9090
     ports:
       - "3000:3000"
     volumes:
       - grafana_data_prod_data_dir:/var/lib/grafana
-      - ./grafana/entrypoint.sh:/custom-entrypoint.sh
-    entrypoint: ["/custom-entrypoint.sh"]
+      - ./grafana/datasources:/etc/grafana/provisioning/datasources
     deploy:
       placement:
         constraints: [node.role == manager]
