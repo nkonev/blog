@@ -8,12 +8,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.github.nkonev</groupId>
+            <groupId>com.github.nkonev.blog</groupId>
             <artifactId>backend</artifactId>
             <version>1.0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.github.nkonev</groupId>
+            <groupId>com.github.nkonev.blog</groupId>
             <artifactId>webdriver-test</artifactId>
             <version>1.0.3-SNAPSHOT</version>
         </dependency>
@@ -21,7 +21,7 @@
 
     <parent>
         <artifactId>blog.parent</artifactId>
-        <groupId>com.github.nkonev</groupId>
+        <groupId>com.github.nkonev.blog</groupId>
         <version>1.0.3-SNAPSHOT</version>
     </parent>
 
