@@ -9,7 +9,7 @@
     <parameter name="hostHeader" value="blog.test"/>
     <test name="Deploy" >
         <packages>
-            <package name="com.github.nkonev.test.deploy" />
+            <package name="com.github.nkonev.blog.test.deploy" />
         </packages>
     </test>
 
