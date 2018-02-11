@@ -350,7 +350,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.nkonev.blog</groupId>
+            <groupId>com.github.nkonev</groupId>
             <artifactId>prerender-java</artifactId>
             <version>1.6.9</version>
         </dependency>
