@@ -48,7 +48,7 @@
 
 <script>
     import Vue from 'vue'
-    import 'quill/dist/quill.bubble.css'
+    // import 'quill/dist/quill.bubble.css'
     import 'highlight.js/styles/monokai.css'
     import {API_POST} from '../constants'
     import bus, {LOGIN, LOGOUT, POST_SWITCHED} from '../bus'
@@ -315,17 +315,16 @@
             blockquote p {
                 display: inline
             }
+        }
+
+        .ql-editor {
             font-size $postBodyFontSize
             font-family $postBodyFontFamily
 
-            .ql-editor > * {
-                font-size $postBodyFontSize
-                font-family $postBodyFontFamily
-
-                margin-top $postBodyMarginTop
-                margin-bottom $postBodyMarginBottom
-            }
+            margin-top $postBodyMarginTop
+            margin-bottom $postBodyMarginBottom
         }
+
         &-error {
             font-size 4em
         }
@@ -352,4 +351,8 @@
             }
         }
     }
+</style>
+
+<style lang="stylus">
+    @import "~quill/dist/quill.bubble.css"
 </style>

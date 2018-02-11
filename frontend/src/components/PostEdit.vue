@@ -50,7 +50,6 @@
 </template>
 
 <script>
-    import 'quill/dist/quill.bubble.css'
     import { VueEditor } from 'vue2-editor'
     import 'vue-croppa/dist/vue-croppa.css'
     import Vue from 'vue'
@@ -251,9 +250,9 @@
     }
 </script>
 
+
 <style lang="stylus" scoped>
     @import "../constants.styl"
-
     .post-edit {
         &-cropper {
             text-align center
@@ -289,11 +288,17 @@
 
 <style lang="stylus">
     @import "../constants.styl"
-    .ql-editor > * {
+
+    .ql-editor {
         font-size $postBodyFontSize
         font-family $postBodyFontFamily
 
         margin-top $postBodyMarginTop
         margin-bottom $postBodyMarginBottom
     }
+</style>
+
+
+<style lang="stylus" scoped>
+    @import "~quill/dist/quill.bubble.css"
 </style>
