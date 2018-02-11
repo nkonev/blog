@@ -142,7 +142,7 @@ public class PostController {
 
     // ================================================= secured
 
-    @PreAuthorize("@blogSecurityService.hasPostPermission(#userAccount, T(com.github.nkonev.security.permissions.PostPermissions).READ_MY)")
+    @PreAuthorize("@blogSecurityService.hasPostPermission(#userAccount, T(com.github.nkonev.blog.security.permissions.PostPermissions).READ_MY)")
     @GetMapping(Constants.Uls.API + Constants.Uls.POST + Constants.Uls.MY)
     public List<PostDTO> getMyPosts(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount,
@@ -161,7 +161,7 @@ public class PostController {
     }
 
     // https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#el-common-built-in
-    @PreAuthorize("@blogSecurityService.hasPostPermission(#userAccount, T(com.github.nkonev.security.permissions.PostPermissions).CREATE)")
+    @PreAuthorize("@blogSecurityService.hasPostPermission(#userAccount, T(com.github.nkonev.blog.security.permissions.PostPermissions).CREATE)")
     @PostMapping(Constants.Uls.API + Constants.Uls.POST)
     public PostDTOWithAuthorization addPost(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // null if not authenticated
@@ -178,7 +178,7 @@ public class PostController {
         return postConverter.convertToDto(saved, userAccount);
     }
 
-    @PreAuthorize("@blogSecurityService.hasPostPermission(#postDTO, #userAccount, T(com.github.nkonev.security.permissions.PostPermissions).EDIT)")
+    @PreAuthorize("@blogSecurityService.hasPostPermission(#postDTO, #userAccount, T(com.github.nkonev.blog.security.permissions.PostPermissions).EDIT)")
     @PutMapping(Constants.Uls.API + Constants.Uls.POST)
     public PostDTOWithAuthorization updatePost(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // null if not authenticated
@@ -191,7 +191,7 @@ public class PostController {
         return postConverter.convertToDto(saved, userAccount);
     }
 
-    @PreAuthorize("@blogSecurityService.hasPostPermission(#postId, #userAccount, T(com.github.nkonev.security.permissions.PostPermissions).DELETE)")
+    @PreAuthorize("@blogSecurityService.hasPostPermission(#postId, #userAccount, T(com.github.nkonev.blog.security.permissions.PostPermissions).DELETE)")
     @DeleteMapping(Constants.Uls.API + Constants.Uls.POST + Constants.Uls.POST_ID)
     public void deletePost(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // null if not authenticated
