@@ -332,3 +332,4 @@ cat /tmp/blog.sql | docker exec -i $(docker ps --filter label=com.docker.swarm.s
 ```bash
 docker exec -t $(docker ps --filter label=com.docker.swarm.service.name=BLOGSTACK_prerender -q) redis-cli flushdb
 ```
+
