@@ -100,8 +100,8 @@ custom.postgres.fulltext.reg-config: "'russian'::regconfig"
 def MANAGEMENT_SNIPPET = { boolean test ->
 
 """
-spring.metrics.export.prometheus.enabled: true
-management.endpoint.health.show-details: true
+management.metrics.export.prometheus.enabled: false
+management.endpoint.health.show-details: always
 management.endpoints.web.expose: "*"
 management:
   server:

@@ -116,8 +116,8 @@ spring.data.redis.repositories.enabled: false
 custom.postgres.fulltext.reg-config: "'russian'::regconfig"
 
 
-spring.metrics.export.prometheus.enabled: true
-management.endpoint.health.show-details: true
+management.metrics.export.prometheus.enabled: false
+management.endpoint.health.show-details: always
 management.endpoints.web.expose: "*"
 management:
   server:
