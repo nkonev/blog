@@ -100,9 +100,8 @@ custom.postgres.fulltext.reg-config: "'russian'::regconfig"
 def MANAGEMENT_SNIPPET = { boolean test ->
 
 """
-management.metrics.export.prometheus.enabled: false
+management.endpoints.web.exposure.include: '*'
 management.endpoint.health.show-details: always
-management.endpoints.web.expose: "*"
 management:
   server:
     port: ${test?'3011':'3010'}
