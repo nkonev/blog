@@ -32,7 +32,6 @@
         <swagger-annotations.version>1.5.17</swagger-annotations.version>
         <!-- /swagger stuff -->
         <hibernate-types.version>1.2.0</hibernate-types.version>
-        <prometheus.version>0.1.0</prometheus.version>
 
         <git-template-json>git.template.json</git-template-json>
         <git-json>git.json</git-json>
@@ -445,11 +444,6 @@
         </dependency>
 
         <!-- The client -->
-        <dependency>
-            <groupId>io.prometheus</groupId>
-            <artifactId>simpleclient</artifactId>
-            <version>${prometheus.version}</version>
-        </dependency>
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
