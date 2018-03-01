@@ -32,8 +32,8 @@
         <phantomjsdriver.version>1.4.4</phantomjsdriver.version>
         <webdrivermanager.version>2.1.0</webdrivermanager.version>
 
-        <postgresql.version>42.2.0</postgresql.version>
-        <greenmail.version>1.5.6</greenmail.version>
+        <postgresql.version>42.2.1</postgresql.version>
+        <greenmail.version>1.5.7</greenmail.version>
         <maven.install.plugin.version>2.5.2</maven.install.plugin.version>
         <jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
     </properties>
@@ -239,7 +239,7 @@
             <dependency>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-core</artifactId>
-                <version>5.0.6</version>
+                <version>5.0.7</version>
             </dependency>
 
             <!-- https://docs.spring.io/spring-boot/docs/2.0.0.M7/reference/htmlsingle/#using-boot-maven-without-a-parent -->
