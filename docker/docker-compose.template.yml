@@ -93,7 +93,7 @@ services:
       - traefik_backend
 
   postgresql:
-    image: postgres:10.2
+    image: postgres:10.3
     hostname: postgresql
     environment:
       - POSTGRES_PASSWORD=postgresqlPassword
