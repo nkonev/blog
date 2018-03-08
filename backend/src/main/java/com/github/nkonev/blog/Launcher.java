@@ -15,6 +15,7 @@ import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfigurati
 )
 public class Launcher {
 
+
     public static void main(String[] args) throws Exception {
         SpringApplication.run(Launcher.class, args);
     }
