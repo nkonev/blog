@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Search @SEARCH_EVENT="onChangeSearchString" placeholder="Fulltext search by posts"></Search>
+        <Search @SEARCH_EVENT="onChangeSearchString" placeholder="Fulltext search by posts" v-sticky="{stickyTop: stickyTop, zIndex: 2}"></Search>
 
         <div class="post-list">
             <div v-if="posts.length>0">
@@ -30,7 +30,8 @@
     import BlogSpinner from './BlogSpinner.vue'
     import PostAddFab from './PostAddFab.vue'
     import Search from './Search.vue';
-    import {updateById, cutPost, initStompClient, closeStompClient} from '../utils'
+    import {updateById, cutPost, initStompClient, closeStompClient, getHeaderNavHeight} from '../utils'
+    import VueSticky from 'vue-sticky'
 
     // https://peachscript.github.io/vue-infinite-loading/#!/getting-started/with-filter
     const POSTS_PAGE_SIZE = 20;
@@ -55,6 +56,9 @@
             BlogSpinner,
             PostAddFab,
             Search
+        },
+        directives: {
+            'sticky': VueSticky,
         },
         methods: {
             infiniteHandler($state) {
@@ -140,6 +144,11 @@
                 subscriptionDelete.unsubscribe();
             } catch (ignored){}
             closeStompClient(stompObj);
+        },
+        computed:{
+            stickyTop(){
+                return getHeaderNavHeight();
+            }
         },
         metaInfo: {
             title: 'Posts',

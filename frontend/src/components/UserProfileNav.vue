@@ -123,12 +123,7 @@
         /* Show the dropdown menu on hover */
         &:hover .dropdown-content {
             display: block;
-        }
-
-        /* Change the background color of the dropdown button when the dropdown content is shown */
-        &:hover .dropobj {
-            // background-color: #65f769;
-            //box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.8);
+            z-index: 20000;
         }
     }
 

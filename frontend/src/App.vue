@@ -5,7 +5,7 @@
             <auto-progress :excludedUrls="['/api/profile', '/api/post/\\d+/comment.*', '/api/config']"/>
 
             <h1 class="logo">{{config.header}}</h1>
-            <nav>
+            <nav v-sticky="{stickyTop: 0, zIndex: 3}" id="header-nav">
                 <router-link class="router-link" to="/" exact>Posts</router-link>
                 <router-link class="router-link" to="/users">Users</router-link>
                 <a class="router-link" id="a-doc" href="/docs/index.html">API</a>
@@ -28,6 +28,8 @@
     import {mapGetters} from 'vuex'
     import VmBackTop from 'vue-multiple-back-top'
     import {API_CONFIG} from './constants'
+    import VueSticky from 'vue-sticky'
+    import {setHeaderNavHeight} from "./utils"
 
     Vue.use(vmodal);
     Vue.component(VmBackTop.name, VmBackTop);
@@ -43,7 +45,11 @@
             'auto-progress':autoProgress,
             userProfileNav
         },
+        directives: {
+            'sticky': VueSticky,
+        },
         mounted() {
+            setHeaderNavHeight();
             // attempt to initialize LoginModal
             store.dispatch(FETCH_USER_PROFILE);
             this.$http.get(API_CONFIG).then((response) => {
@@ -105,6 +111,7 @@
         }
 
         nav {
+            background white
             a.router-link,
             span.router-link {
                 text-decoration none

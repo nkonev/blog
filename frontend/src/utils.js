@@ -52,3 +52,11 @@ export const closeStompClient = obj => {
     } catch (ignored){}
     obj.stompClient.disconnect();
 };
+
+export const getHeaderNavHeight = () => {
+    return "68";
+};
+
+export const setHeaderNavHeight = () => {
+    document.getElementById("header-nav").style.height = getHeaderNavHeight() + "px";
+};
