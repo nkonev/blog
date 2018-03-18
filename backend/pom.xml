@@ -39,16 +39,6 @@
         <docker.repository>nkonev/blog</docker.repository>
     </properties>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <id>jcenter-releases</id>
-            <name>jcenter</name>
-            <url>http://jcenter.bintray.com</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
 
     <repositories>
         <repository>
@@ -176,6 +166,11 @@
             </plugin>
 
             <!-- put surefire here in case troubles - doc generation must be after surefire -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven.surefire.plugin.version}</version>
+            </plugin>
 
             <!-- documentation generation -->
             <plugin>

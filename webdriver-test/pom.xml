@@ -131,7 +131,6 @@ https://github.com/bonigarcia/webdrivermanager
                             <include>**/*IT.java</include>
                         </includes>
                         <skip>false</skip>
-                        <argLine>--add-modules java.xml.bind</argLine>
                         <systemProperties>
                             <custom.selenium.browser>${custom.selenium.browser}</custom.selenium.browser>
                         </systemProperties>

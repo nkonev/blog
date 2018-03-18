@@ -18,8 +18,8 @@
         <maven.compiler.plugin.version>3.7.0</maven.compiler.plugin.version>
         <git.commit.id.plugin.version>2.2.3</git.commit.id.plugin.version>
         <maven.project.info.reports.plugin.version>2.9</maven.project.info.reports.plugin.version>
-        <maven.surefire.report.plugin.version>2.20.1</maven.surefire.report.plugin.version>
-        <maven.surefire.plugin.version>2.20.1</maven.surefire.plugin.version>
+        <maven.surefire.report.plugin.version>2.21.0</maven.surefire.report.plugin.version>
+        <maven.surefire.plugin.version>2.21.0</maven.surefire.plugin.version>
         <maven.jxr.report.plugin.version>2.5</maven.jxr.report.plugin.version>
         <maven.clean.plugin.version>3.0.0</maven.clean.plugin.version>
         <java.version>1.9</java.version>
@@ -74,6 +74,14 @@
         <pluginRepository>
             <id>spring-milestones</id>
             <url>http://repo.spring.io/milestone</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>jcenter-releases</id>
+            <name>jcenter</name>
+            <url>http://jcenter.bintray.com</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </pluginRepository>
     </pluginRepositories>
 
