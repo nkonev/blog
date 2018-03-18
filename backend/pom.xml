@@ -345,8 +345,8 @@
 
         <dependency>
             <groupId>com.github.nkonev</groupId>
-            <artifactId>prerender-java</artifactId>
-            <version>1.6.9</version>
+            <artifactId>rendertron-java</artifactId>
+            <version>1.0.0</version>
         </dependency>
 
         <dependency>

@@ -18,8 +18,8 @@
         <frontend.maven.plugin.version>1.6</frontend.maven.plugin.version>
         <npm.production.env>production</npm.production.env>
         <karma.browsers>PhantomJS</karma.browsers>
-        <node.js.version>v8.2.1</node.js.version>
-        <npm.version>5.5.1</npm.version>
+        <node.js.version>v8.10.0</node.js.version>
+        <npm.version>5.6.0</npm.version>
     </properties>
 
     <pluginRepositories>
@@ -99,20 +99,13 @@
                         </execution>
 
                         <execution>
-                            <id>webpack build</id>
+                            <id>npm run prod</id>
                             <goals>
-                                <goal>webpack</goal>
+                                <goal>npm</goal>
                             </goals>
-
-                            <!-- optional: the default phase is "generate-resources" -->
                             <phase>generate-resources</phase>
-
                             <configuration>
-                                <!-- when using new UglifyJsPlugin and -p you are adding the UglifyJsPlugin twice. https://github.com/webpack/webpack/issues/4713#issuecomment-297856632 -->
-                                <arguments>-p</arguments>
-                                <environmentVariables>
-                                    <NODE_ENV>${npm.production.env}</NODE_ENV>
-                                </environmentVariables>
+                                <arguments>run prod</arguments>
                             </configuration>
                         </execution>
                     </executions>

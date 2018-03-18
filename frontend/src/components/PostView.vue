@@ -59,7 +59,6 @@
     import CommentList from './CommentList.vue'
     import Owner from './Owner.vue'
     import {getPostId, getTimestampFromUtc} from '../utils'
-
     // Lazy load heavy component https://router.vuejs.org/en/advanced/lazy-loading.html. see also in .babelrc
     const PostEdit = () => import('./PostEdit.vue');
 

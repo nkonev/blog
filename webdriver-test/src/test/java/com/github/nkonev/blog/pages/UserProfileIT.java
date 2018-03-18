@@ -187,8 +187,11 @@ public class UserProfileIT extends AbstractItTestRunner {
         userProfilePage.assertLogin(anotherUserLogin);
         String anotherUserAvatarUrl = userProfilePage.getAvatarUrl();
 
-        UserNav.open();
-        UserNav.profile();
+        FailoverUtils.retry(2, () -> {
+            UserNav.open();
+            UserNav.profile();
+            return null;
+        });
 
         final long myUserId = 1;
         final String myLogin = user;

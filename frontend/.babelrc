@@ -13,5 +13,5 @@
       ]
     }
   },
-  "plugins": ["syntax-dynamic-import"]
+  "plugins": ["syntax-dynamic-import", "dynamic-import-node"]
 }

@@ -1,7 +1,7 @@
 package com.github.nkonev.blog.config;
 
-import com.github.greengerong.PreRenderConstants;
-import com.github.greengerong.PreRenderSEOFilter;
+import com.github.nkonev.rendertron.Constants;
+import com.github.nkonev.rendertron.SeoFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -18,9 +18,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
 import javax.annotation.PostConstruct;
-import java.util.Map;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer, ApplicationContextAware {
@@ -67,19 +65,19 @@ public class WebConfig implements WebMvcConfigurer, ApplicationContextAware {
     @Bean
     public FilterRegistrationBean prerenderFilterRegistration(PrerenderConfig prerenderConfig) {
         FilterRegistrationBean registration = new FilterRegistrationBean();
-        registration.setFilter(new PreRenderSEOFilter());
+        registration.setFilter(new SeoFilter());
         registration.addUrlPatterns("/*");
         final String baseUrl = customConfig.getBaseUrl();
         if (!StringUtils.isEmpty(baseUrl)) {
-            registration.addInitParameter(PreRenderConstants.InitFilterParams.FORWARDED_URL_PREFIX, baseUrl);
+            registration.addInitParameter(Constants.InitFilterParams.FORWARDED_URL_PREFIX, baseUrl);
         }
         LOGGER.info("Prerender configuration: {}", prerenderConfig);
 
         if (!StringUtils.isEmpty(prerenderConfig.getForwardedURLPrefix())){
-            registration.addInitParameter(PreRenderConstants.InitFilterParams.FORWARDED_URL_PREFIX, prerenderConfig.getForwardedURLPrefix());
+            registration.addInitParameter(Constants.InitFilterParams.FORWARDED_URL_PREFIX, prerenderConfig.getForwardedURLPrefix());
         }
-        registration.addInitParameter(PreRenderConstants.InitFilterParams.CRAWLER_USER_AGENTS, prerenderConfig.getCrawlerUserAgents());
-        registration.addInitParameter(PreRenderConstants.InitFilterParams.PRERENDER_SERVICE_URL, prerenderConfig.getPrerenderServiceUrl());
+        registration.addInitParameter(Constants.InitFilterParams.CRAWLER_USER_AGENTS, prerenderConfig.getCrawlerUserAgents());
+        registration.addInitParameter(Constants.InitFilterParams.RENDERTRON_SERVICE_URL, prerenderConfig.getPrerenderServiceUrl());
 
         registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return registration;

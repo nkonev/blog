@@ -99,6 +99,12 @@ public class UserListIT extends AbstractItTestRunner {
         });
 
         FailoverUtils.retry(2, () -> {
+            usersPage.goNthPaginatorPage(4);
+            $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("generated_user_34"));
+            return null;
+        });
+
+        FailoverUtils.retry(2, () -> {
             usersPage.goNthPaginatorPage(5);
             $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("generated_user_40"));
             return null;

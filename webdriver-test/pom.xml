@@ -136,12 +136,6 @@ https://github.com/bonigarcia/webdrivermanager
                         </systemProperties>
                     </configuration>
                     <executions>
-                        <execution>
-                            <id>default-phantom</id>
-                            <goals>
-                                <goal>test</goal>
-                            </goals>
-                        </execution>
                     </executions>
                 </plugin>
             </plugins>
@@ -181,7 +175,8 @@ https://github.com/bonigarcia/webdrivermanager
                         </configuration>
                         <executions>
                             <execution>
-                                <id>phantom-default</id>
+                                <id>default-test</id>
+                                <phase>none</phase>
                                 <goals>
                                     <goal>test</goal>
                                 </goals>

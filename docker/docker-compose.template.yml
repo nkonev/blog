@@ -27,7 +27,7 @@ services:
       - SPRING_REDIS_URL=redis://redis:6379/0
       - SPRING_RESOURCES_STATIC-LOCATIONS=file:/opt/blog/www/, classpath:/static/
       - CUSTOM_PRERENDER_ENABLE=true
-      - CUSTOM_PRERENDER_PRERENDER-SERVICE-URL=http://prerender:3000/
+      - CUSTOM_PRERENDER_PRERENDER-SERVICE-URL=http://rendertron:3000/render/
       - CUSTOM_PRERENDER_CRAWLER-USER-AGENTS=googlebot,prometheus
       - CUSTOM_PRERENDER_FORWARDED-URL-PREFIX=http://blog:8098
 #      - LOGGING_LEVEL_COM_GITHUB_GREENGERONG_PRERENDER-SEO-SERVICE=TRACE
@@ -141,15 +141,13 @@ services:
         constraints: [node.labels.blog.server.role == db]
     networks:
       - backend
-  prerender:
-    image: nkonev/prerender-redis
-    hostname: prerender
-    volumes:
-      - redis_prerender_prod_data_dir:/var/lib/redis
+  rendertron:
+    image: nkonev/rendertron-docker
+    hostname: rendertron
     logging:
       driver: "json-file"
 #      options:
-#        tag: prerender
+#        tag: rendertron
     deploy:
       placement:
         constraints: [node.labels.blog.server.role == db]
@@ -316,7 +314,6 @@ volumes:
   postgresql_prod_data_dir:
   redis_prod_data_dir:
   rabbitmq_prod_data_dir:
-  redis_prerender_prod_data_dir:
   prometheus_data:
   grafana_data_prod_data_dir:
 

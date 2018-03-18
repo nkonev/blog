@@ -3,7 +3,6 @@
 const path = require('path');
 const srcDir = path.join(__dirname, 'src');
 const buildDir = path.join(__dirname, '../backend/src/main/resources/static/build');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const DEVELOPMENT_ENV = 'development';
 const NODE_ENV = process.env.NODE_ENV || DEVELOPMENT_ENV;
@@ -32,6 +31,19 @@ module.exports = {
         library: "[name]"
     },
 
+    optimization: {
+        splitChunks: {
+            cacheGroups: {
+                default: false,
+                commons: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: "vendor",
+                    chunks: "all",
+                }
+            }
+        }
+    },
+
     watch: NODE_ENV == DEVELOPMENT_ENV,
     watchOptions: {
         aggregateTimeout: 100,
@@ -42,23 +54,11 @@ module.exports = {
 
     plugins: [
         new webpack.NoEmitOnErrorsPlugin(),
-        new webpack.DefinePlugin({
-            'process.env': {
-                NODE_ENV:  JSON.stringify(NODE_ENV) // must be 'production' (with single quotes) for disable Vue warnings, which you can see it if drop_console: false
-            }
-        }),
         new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /^$/),
-        new webpack.optimize.CommonsChunkPlugin({
-            names: ['vendor'], // (choose the chunks, or omit for all chunks) https://webpack.js.org/plugins/commons-chunk-plugin/#move-common-modules-into-the-parent-chunk
-            // children: true,
-        }),
         new CleanWebpackPlugin([buildDir], {
             verbose: false,
             dry: false
         }),
-        new CopyWebpackPlugin([
-                { from: path.join(__dirname, 'node_modules/babel-polyfill/dist/polyfill.min.js') },
-        ]),
         new WebpackOnBuildPlugin(function (stats) {
             var currentdate = new Date();
             console.log("Built with environment:", NODE_ENV, "at", currentdate.toLocaleString());
@@ -71,9 +71,6 @@ module.exports = {
             // "jQuery":"jquery",
             // "window.jQuery":"jquery"
             "window.hljs": "highlight.js"
-        }),
-        new webpack.LoaderOptionsPlugin({
-            debug: NODE_ENV == DEVELOPMENT_ENV
         }),
     ],
 
