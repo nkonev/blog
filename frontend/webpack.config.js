@@ -20,7 +20,7 @@ module.exports = {
     context: srcDir,
 
     entry: {
-        vendor: ["vue", 'highlight.js'],
+        vendor: ["vue"],
         main: "./main.js", // vue.js
     },
 
@@ -70,7 +70,6 @@ module.exports = {
             // "$":"jquery",
             // "jQuery":"jquery",
             // "window.jQuery":"jquery"
-            "window.hljs": "highlight.js"
         }),
     ],
 

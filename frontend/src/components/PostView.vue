@@ -49,7 +49,6 @@
 <script>
     import Vue from 'vue'
     // import 'quill/dist/quill.bubble.css'
-    import 'highlight.js/styles/monokai.css'
     import {API_POST} from '../constants'
     import bus, {LOGIN, LOGOUT, POST_SWITCHED} from '../bus'
     import {root, post} from '../routes'
@@ -171,17 +170,6 @@
                     this.isLoading = false;
                 });
             }
-        },
-        updated(){
-            Vue.nextTick(()=>{
-                if (!this.isEditing) {
-                    console.log('Performing highlighting in nextTick');
-                    const arr = document.body.querySelectorAll('pre.ql-syntax');
-                    [].forEach.call(arr, function (block) {
-                        window.hljs.highlightBlock(block);
-                    });
-                }
-            })
         },
         watch: {
             'postDTO': {

@@ -98,7 +98,7 @@
                 editorOptions: {
                     theme: 'bubble',
                     modules: {
-                        syntax: true,
+                        syntax: false,
                         toolbar: toolbarOptions,
                     }
                 },

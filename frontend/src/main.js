@@ -15,10 +15,6 @@ import Meta from 'vue-meta'
 Vue.use(VueResource);
 Vue.use(Meta);
 
-window.hljs.configure({
-        languages: ['java', 'bash', 'javascript', 'sql']
-});
-
 // Vue.config.devtools = false;
 
 function getCookie(name) {
