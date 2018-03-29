@@ -24,7 +24,7 @@
         <maven.clean.plugin.version>3.0.0</maven.clean.plugin.version>
         <java.version>1.9</java.version>
         <spring.boot.version>2.0.0.RELEASE</spring.boot.version>
-	    <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
+	<maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
         <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
 
         <selenium.override.version>3.8.1</selenium.override.version>
@@ -32,7 +32,7 @@
         <phantomjsdriver.version>1.4.4</phantomjsdriver.version>
         <webdrivermanager.version>2.1.0</webdrivermanager.version>
 
-        <postgresql.version>42.2.1</postgresql.version>
+        <postgresql.version>42.2.2</postgresql.version>
         <greenmail.version>1.5.7</greenmail.version>
         <maven.install.plugin.version>2.5.2</maven.install.plugin.version>
         <jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>

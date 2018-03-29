@@ -31,7 +31,7 @@
         <swagger.input>${swagger.output.dir}/swagger.json</swagger.input>
         <swagger-annotations.version>1.5.17</swagger-annotations.version>
         <!-- /swagger stuff -->
-        <hibernate-types.version>2.0.0</hibernate-types.version>
+        <hibernate-types.version>2.2.0</hibernate-types.version>
 
         <git-template-json>git.template.json</git-template-json>
         <git-json>git.json</git-json>
