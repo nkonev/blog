@@ -223,11 +223,11 @@ public class DeployIT {
     private void clearPrerenderRedisCache(String testStack) throws InterruptedException, IOException {
         LOGGER.info("Cleaning prerender redis cache");
         // clean redis cache
-        launch("docker exec "+getPrerenderRedisContainerId(getPrerenderRedisTaskId(testStack))+" redis-cli flushdb", processBuilder -> {}).waitFor();
+        launch("docker exec "+getPrerenderRedisContainerId(getRedisTaskId(testStack))+" redis-cli flushdb", processBuilder -> {}).waitFor();
     }
 
-    private String getPrerenderRedisTaskId(String testStack) throws IOException, InterruptedException {
-        String[] lines = get(launch("docker service ps "+testStack+"_prerender -q", c -> {}, false)).stdout.split("\\r?\\n");
+    private String getRedisTaskId(String testStack) throws IOException, InterruptedException {
+        String[] lines = get(launch("docker service ps "+testStack+"_redis -q", c -> {}, false)).stdout.split("\\r?\\n");
         Assert.assertEquals(lines.length, 1, "Expected one task for prerender");
         return lines[0];
     }
