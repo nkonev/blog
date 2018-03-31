@@ -72,7 +72,7 @@ public class RendertronInterceptor implements HandlerInterceptor {
 
 
     private boolean isInSearchUserAgent(final String userAgent) {
-
+        if (userAgent == null){ return false;}
         for(String item: getCrawlerUserAgents()){
             if (userAgent.toLowerCase().contains(item.toLowerCase())){
                 return true;
