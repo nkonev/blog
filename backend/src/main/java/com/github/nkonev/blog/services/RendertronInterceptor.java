@@ -2,6 +2,8 @@ package com.github.nkonev.blog.services;
 
 import com.github.nkonev.blog.config.CustomConfig;
 import com.github.nkonev.blog.config.PrerenderConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -34,6 +36,8 @@ public class RendertronInterceptor implements HandlerInterceptor {
     private CustomConfig customConfig;
 
     private RestTemplate restTemplate;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RendertronInterceptor.class);
 
     @PostConstruct
     public void pc() {
@@ -119,6 +123,7 @@ public class RendertronInterceptor implements HandlerInterceptor {
                 final String rendertronUrl = prerenderConfig.getPrerenderServiceUrl()
                         + customConfig.getBaseUrl() + performReplacements(request.getRequestURI()) + getQuery(request);
 
+                LOGGER.info("Requesting {} from rendertron", rendertronUrl);
                 final ResponseEntity<String> re = restTemplate.getForEntity(rendertronUrl, String.class);
                 value = re.getBody();
 
