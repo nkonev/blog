@@ -129,7 +129,7 @@ public class DeployIT {
 
         final Response response = client.newCall(request).execute();
         final String html = response.body().string();
-        LOGGER.info("docs html response: {}", html);
+        LOGGER.debug("docs html response: {}", html);
         Assert.assertTrue(html.contains("Blog API Reference"));
     }
 
