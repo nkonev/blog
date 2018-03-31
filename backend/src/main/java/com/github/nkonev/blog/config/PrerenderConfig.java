@@ -9,7 +9,6 @@ import java.util.concurrent.TimeUnit;
 @ConfigurationProperties("custom.prerender")
 public class PrerenderConfig {
     private String crawlerUserAgents;
-    private String forwardedURLPrefix;
     private String prerenderServiceUrl;
     private String ignoreExtensions;
     private TimeUnit cacheExpireTimeUnit = TimeUnit.MINUTES;
@@ -25,13 +24,6 @@ public class PrerenderConfig {
         this.crawlerUserAgents = crawlerUserAgents;
     }
 
-    public String getForwardedURLPrefix() {
-        return forwardedURLPrefix;
-    }
-
-    public void setForwardedURLPrefix(String forwardedURLPrefix) {
-        this.forwardedURLPrefix = forwardedURLPrefix;
-    }
 
     public String getPrerenderServiceUrl() {
         return prerenderServiceUrl;
@@ -39,15 +31,6 @@ public class PrerenderConfig {
 
     public void setPrerenderServiceUrl(String prerenderServiceUrl) {
         this.prerenderServiceUrl = prerenderServiceUrl;
-    }
-
-    @Override
-    public String toString() {
-        return "PrerenderConfig{" +
-                "crawlerUserAgents='" + crawlerUserAgents + '\'' +
-                ", forwardedURLPrefix='" + forwardedURLPrefix + '\'' +
-                ", prerenderServiceUrl='" + prerenderServiceUrl + '\'' +
-                '}';
     }
 
     public String getIgnoreExtensions() {
@@ -72,5 +55,16 @@ public class PrerenderConfig {
 
     public void setCacheExpire(long cacheExpire) {
         this.cacheExpire = cacheExpire;
+    }
+
+    @Override
+    public String toString() {
+        return "PrerenderConfig{" +
+                "crawlerUserAgents='" + crawlerUserAgents + '\'' +
+                ", prerenderServiceUrl='" + prerenderServiceUrl + '\'' +
+                ", ignoreExtensions='" + ignoreExtensions + '\'' +
+                ", cacheExpireTimeUnit=" + cacheExpireTimeUnit +
+                ", cacheExpire=" + cacheExpire +
+                '}';
     }
 }
