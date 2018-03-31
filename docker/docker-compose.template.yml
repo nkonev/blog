@@ -29,13 +29,12 @@ services:
       - CUSTOM_PRERENDER_ENABLE=true
       - CUSTOM_PRERENDER_PRERENDER-SERVICE-URL=http://rendertron:3000/render/
       - CUSTOM_PRERENDER_CRAWLER-USER-AGENTS=googlebot,prometheus
-      - CUSTOM_PRERENDER_FORWARDED-URL-PREFIX=http://blog:8098
 #      - LOGGING_LEVEL_COM_GITHUB_GREENGERONG_PRERENDER-SEO-SERVICE=TRACE
       - SPRING_MAIL_HOST=smtp.yandex.ru
       - CUSTOM_EMAIL_FROM=username@yandex.ru
       - SPRING_MAIL_USERNAME=username
       - SPRING_MAIL_PASSWORD=password
-      - CUSTOM_BASE-URL=http://blog.test # also used for prerender's forwardedURLPrefix
+      - CUSTOM_BASE-URL=http://blog:8098 # also used for prerender's forwardedURLPrefix
       - MANAGEMENT_HEALTH_MAIL_ENABLED=false
     volumes :
       - ./www:/opt/blog/www
