@@ -6,6 +6,8 @@ package com.github.nkonev.blog;
  */
 public class Constants {
 
+    public static final String CUSTOM_PRERENDER_ENABLE = "custom.prerender.enable";
+
     public static class Uls {
         public static final String ROOT = "/";
         public static final String API = "/api";

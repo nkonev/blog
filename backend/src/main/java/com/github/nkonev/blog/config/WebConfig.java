@@ -1,33 +1,19 @@
 package com.github.nkonev.blog.config;
 
-import com.github.nkonev.rendertron.Constants;
-import com.github.nkonev.rendertron.EventHandler;
-import com.github.nkonev.rendertron.SeoFilter;
-import org.apache.http.HttpResponse;
+import com.github.nkonev.blog.services.RendertronInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
-import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import java.util.concurrent.TimeUnit;
-
-import static com.github.nkonev.blog.services.ApplicationContextProvider.getHtmlCache;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer, ApplicationContextAware {
@@ -44,9 +30,14 @@ public class WebConfig implements WebMvcConfigurer, ApplicationContextAware {
         this.applicationContext = applicationContext;
     }
 
+    @Autowired
+    private Environment environment;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-
+        if (environment.getProperty(com.github.nkonev.blog.Constants.CUSTOM_PRERENDER_ENABLE, Boolean.class, false)) {
+            registry.addInterceptor(applicationContext.getBean(RendertronInterceptor.class));
+        }
     }
 
     /**
@@ -69,64 +60,4 @@ public class WebConfig implements WebMvcConfigurer, ApplicationContextAware {
     public void log(){
         LOGGER.info("Base url: {}", customConfig.getBaseUrl());
     }
-
-    public static class CacheEventHandler implements EventHandler {
-
-        @Override
-        public String beforeRender(HttpServletRequest clientRequest) {
-            final String key = getKey(clientRequest);
-            return getRedisTemplate().opsForValue().get(key);
-        }
-
-        @Override
-        public String afterRender(HttpServletRequest clientRequest, HttpServletResponse clientResponse, HttpResponse renderServiceResponse, String responseHtml) {
-            final String key = getKey(clientRequest);
-            getRedisTemplate().opsForValue().set(key, responseHtml);
-            getRedisTemplate().expire(key, 2, TimeUnit.HOURS);
-            return responseHtml;
-        }
-
-        private RedisTemplate<String, String> getRedisTemplate() {
-            return getHtmlCache();
-        }
-
-        private String getKey(HttpServletRequest clientRequest) {
-            return "rendertron_" + clientRequest.getRequestURI() + nullToEmpty(clientRequest.getQueryString());
-        }
-
-        private String nullToEmpty(String s){
-            if (s == null) {
-                return "";
-            } else {
-                return s;
-            }
-        }
-
-        @Override
-        public void destroy() { }
-    }
-
-    @ConditionalOnProperty("custom.prerender.enable")
-    @Bean
-    public FilterRegistrationBean prerenderFilterRegistration(PrerenderConfig prerenderConfig) {
-        FilterRegistrationBean registration = new FilterRegistrationBean();
-        registration.setFilter(new SeoFilter());
-        registration.addUrlPatterns("/*");
-        final String baseUrl = customConfig.getBaseUrl();
-        if (!StringUtils.isEmpty(baseUrl)) {
-            registration.addInitParameter(Constants.InitFilterParams.FORWARDED_URL_PREFIX, baseUrl);
-        }
-        LOGGER.info("Prerender configuration: {}", prerenderConfig);
-
-        if (!StringUtils.isEmpty(prerenderConfig.getForwardedURLPrefix())){
-            registration.addInitParameter(Constants.InitFilterParams.FORWARDED_URL_PREFIX, prerenderConfig.getForwardedURLPrefix());
-        }
-        registration.addInitParameter(Constants.InitFilterParams.CRAWLER_USER_AGENTS, prerenderConfig.getCrawlerUserAgents());
-        registration.addInitParameter(Constants.InitFilterParams.RENDERTRON_SERVICE_URL, prerenderConfig.getPrerenderServiceUrl());
-        registration.addInitParameter(Constants.InitFilterParams.RENDERTRON_EVENT_HANDLER, CacheEventHandler.class.getName());
-
-        registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
-        return registration;
-    }
-
 }
