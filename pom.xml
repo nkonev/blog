@@ -63,11 +63,6 @@
             <id>spring-milestones</id>
             <url>https://repo.spring.io/libs-milestone</url>
         </repository>
-        <repository>
-            <id>spring-snapshots</id>
-            <url>https://repo.spring.io/libs-snapshot</url>
-            <snapshots><enabled>true</enabled></snapshots>
-        </repository>
     </repositories>
 
     <pluginRepositories>
