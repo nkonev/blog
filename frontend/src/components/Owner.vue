@@ -50,7 +50,7 @@
         .user-info {
             justify-content flex-start
             .prepend {
-                margin-left 0
+                margin-left 0.6em
                 margin-right 0
             }
 
