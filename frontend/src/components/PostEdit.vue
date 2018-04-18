@@ -222,7 +222,8 @@
 
                 this.$http.post('/api/image/post/content', formData)
                     .then((result) => {
-                        let url = result.data.url // Get url from response
+                        let url = result.data.relativeUrl; // Get url from response
+                        console.log("got url", url);
                         Editor.insertEmbed(cursorLocation, 'image', url);
                     })
                     .catch((err) => {
