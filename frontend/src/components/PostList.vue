@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Search @SEARCH_EVENT="onChangeSearchString" placeholder="Fulltext search by posts" v-sticky="{stickyTop: stickyTop, zIndex: 2}"></Search>
+        <Search @SEARCH_EVENT="onChangeSearchString" placeholder="Fulltext search by posts" v-sticky="{stickyTop: 0, zIndex: 2}"></Search>
 
         <div class="post-list">
             <div v-if="posts.length>0">
@@ -144,11 +144,6 @@
                 subscriptionDelete.unsubscribe();
             } catch (ignored){}
             closeStompClient(stompObj);
-        },
-        computed:{
-            stickyTop(){
-                return getHeaderNavHeight();
-            }
         },
         metaInfo: {
             title: 'Posts',
