@@ -19,14 +19,17 @@
 </script>
 
 <style lang="stylus" scoped>
+    @import "../constants.styl"
+
     .user-info {
         display flex
         flex-direction row
         align-items center
         flex-wrap wrap
+        color grey
 
         .prepend {
-            margin-left 2em
+            margin-left 1em
             margin-right 0.8em
             //display flex
             //align-items center
@@ -42,4 +45,16 @@
         }
     }
 
+
+    @media screen and (max-width: $contentWidth) {
+        .user-info {
+            justify-content flex-start
+            .prepend {
+                margin-left 0
+                margin-right 0
+            }
+
+        }
+
+    }
 </style>
