@@ -23,6 +23,7 @@
                     :prevent-white-space="false"
                     :show-remove-button="true"
                     accept="image/*"
+                    @init="handleCroppaInit"
                     @file-choose="handleCroppaFileChoose"
                     @image-remove="handleCroppaImageRemove"
                     @file-size-exceed="handleCroppaFileSizeExceed"
@@ -207,6 +208,9 @@
             handleCroppaFileChoose(e) {
                 console.debug('image chosen', e);
                 this.$data.chosenFile = e;
+            },
+            handleCroppaInit(e){
+                document.querySelector(".post-edit-cropper canvas").style.border="dashed"
             },
             handleCroppaImageRemove() {
                 console.debug('image removed');

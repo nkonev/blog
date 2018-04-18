@@ -18,6 +18,7 @@
                         :prevent-white-space="false"
                         :show-remove-button="true"
                         accept="image/*"
+                        @init="handleCroppaInit"
                         @file-size-exceed="handleCroppaFileSizeExceed"
                         @file-type-mismatch="handleCroppaFileTypeMismatch"
                 >
@@ -101,6 +102,9 @@
             }
         },
         methods:{
+            handleCroppaInit(e){
+                document.querySelector(".profile-edit-info-avatar-container canvas").style.border="dashed"
+            },
             handleCroppaFileTypeMismatch() {
                 alert('Image wrong type');
             },
