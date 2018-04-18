@@ -115,13 +115,14 @@ public class RendertronInterceptor implements HandlerInterceptor {
         final String userAgent = request.getHeader("User-Agent");
         final String url = request.getRequestURL().toString();
 
-        if (isInSearchUserAgent(userAgent) && !isInResources(url)) {
+        final String path = performReplacements(request.getRequestURI());
+        if (isInSearchUserAgent(userAgent) && !isInResources(url) && !isInBlackList(path)) {
             final String key = getRedisKeyHtml(request);
 
             String value = redisTemplate.opsForValue().get(key);
             if (value==null) {
                 final String rendertronUrl = prerenderConfig.getPrerenderServiceUrl()
-                        + customConfig.getBaseUrl() + performReplacements(request.getRequestURI()) + getQuery(request);
+                        + customConfig.getBaseUrl() + path + getQuery(request);
 
                 LOGGER.info("Requesting {} from rendertron", rendertronUrl);
                 final ResponseEntity<String> re = restTemplate.getForEntity(rendertronUrl, String.class);
@@ -136,6 +137,14 @@ public class RendertronInterceptor implements HandlerInterceptor {
         }
 
         return true;
+    }
+
+    private boolean isInBlackList(String path) {
+        if (prerenderConfig.getBlacklistPaths() == null) {
+            return false;
+        } else {
+            return prerenderConfig.getBlacklistPaths().contains(path);
+        }
     }
 
     private String getQuery(HttpServletRequest request) {

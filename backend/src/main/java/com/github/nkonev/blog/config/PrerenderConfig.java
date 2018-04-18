@@ -3,6 +3,9 @@ package com.github.nkonev.blog.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
@@ -11,6 +14,7 @@ public class PrerenderConfig {
     private String crawlerUserAgents;
     private String prerenderServiceUrl;
     private String ignoreExtensions;
+    private List<String> blacklistPaths = Collections.singletonList("/error");
     private TimeUnit cacheExpireTimeUnit = TimeUnit.MINUTES;
     private long cacheExpire = 30;
 
@@ -66,5 +70,13 @@ public class PrerenderConfig {
                 ", cacheExpireTimeUnit=" + cacheExpireTimeUnit +
                 ", cacheExpire=" + cacheExpire +
                 '}';
+    }
+
+    public List<String> getBlacklistPaths() {
+        return blacklistPaths;
+    }
+
+    public void setBlacklistPaths(List<String> blacklistPaths) {
+        this.blacklistPaths = blacklistPaths;
     }
 }
