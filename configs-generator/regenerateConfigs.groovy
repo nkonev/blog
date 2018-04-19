@@ -88,7 +88,7 @@ spring.datasource:
 spring.flyway:
   locations: ${dropFirst ? 'classpath:/db/migration, classpath:/db/demo': 'classpath:/db/migration'}
   drop-first: ${dropFirst}
-  schemas: migrations, auth, posts, images
+  schemas: migrations, auth, posts, images, locks
   out-of-order: true
 
 spring.redis.url: redis://172.22.0.3:6379/0
@@ -246,6 +246,7 @@ ${TEST_USERS_SNIPPET}
 ${DATA_STORE_SNIPPET(true, 'validate')}
 ${MANAGEMENT_SNIPPET(true)}
 ${FRONT_CONFIGURATION_SNIPPET}
+custom.tasks.enable: false
 """;
 writeAndLog(BACKEND_TEST_YML_FILE, BACKEND_TEST_YML_CONTENT);
 
@@ -277,5 +278,6 @@ ${TEST_USERS_SNIPPET}
 ${DATA_STORE_SNIPPET(true, 'none')}
 ${MANAGEMENT_SNIPPET(true)}
 ${FRONT_CONFIGURATION_SNIPPET}
+custom.tasks.enable: false
 """;
 writeAndLog(INTEGRATION_TEST_YML_FILE, WEBDRIVER_TEST_YML_CONTENT);

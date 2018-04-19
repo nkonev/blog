@@ -124,7 +124,7 @@ spring.datasource:
 spring.flyway:
   locations: classpath:/db/migration
   drop-first: false
-  schemas: migrations, auth, posts, images
+  schemas: migrations, auth, posts, images, locks
   out-of-order: true
 
 spring.redis.url: redis://172.22.0.3:6379/0
