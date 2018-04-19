@@ -386,6 +386,11 @@
             <version>1.0.3-SNAPSHOT</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+        </dependency>
+
         <!-- https://www.owasp.org/index.php/OWASP_Java_HTML_Sanitizer_Project -->
         <dependency>
             <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>

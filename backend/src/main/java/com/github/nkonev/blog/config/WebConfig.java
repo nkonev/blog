@@ -1,5 +1,6 @@
 package com.github.nkonev.blog.config;
 
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.github.nkonev.blog.services.RendertronInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,10 +11,16 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import javax.annotation.PostConstruct;
+import java.text.SimpleDateFormat;
+import java.util.List;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer, ApplicationContextAware {
@@ -54,6 +61,14 @@ public class WebConfig implements WebMvcConfigurer, ApplicationContextAware {
                 .favorPathExtension(false)
                 .defaultContentType(MediaType.APPLICATION_JSON)
         ;
+    }
+
+
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
+        converters.add(new MappingJackson2HttpMessageConverter(builder.build()));
+        converters.add(new MappingJackson2XmlHttpMessageConverter(builder.xml().build()));
     }
 
     @PostConstruct
