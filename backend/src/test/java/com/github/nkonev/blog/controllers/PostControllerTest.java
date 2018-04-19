@@ -35,6 +35,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.xpath;
 
 public class PostControllerTest extends AbstractUtTestRunner {
 
@@ -161,6 +162,19 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").value("data not found"))
                 .andExpect(jsonPath("$.message").value("Post 1005001 not found"))
+                .andReturn();
+    }
+
+
+    @Test
+    public void test404xml() throws Exception {
+        MvcResult getPostsRequest = mockMvc.perform(
+                get(Constants.Uls.API+Constants.Uls.POST+"/1005001")
+                        .accept(MediaType.APPLICATION_XML_VALUE)
+        )
+                .andExpect(status().isNotFound())
+                .andExpect(xpath("/BlogError/error").string("data not found"))
+                .andExpect(xpath("/BlogError/message").string("Post 1005001 not found"))
                 .andReturn();
     }
 
