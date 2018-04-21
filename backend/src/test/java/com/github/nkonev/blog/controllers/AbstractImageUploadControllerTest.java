@@ -2,11 +2,13 @@ package com.github.nkonev.blog.controllers;
 
 import com.github.nkonev.blog.AbstractUtTestRunner;
 import com.github.nkonev.blog.TestConstants;
+import com.github.nkonev.blog.services.DbCleaner;
 import com.google.common.net.HttpHeaders;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpSession;
@@ -25,6 +27,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public abstract class AbstractImageUploadControllerTest extends AbstractUtTestRunner {
+
+    @Autowired
+    protected DbCleaner dbCleaner;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractImageUploadControllerTest.class);
 
@@ -70,33 +75,12 @@ public abstract class AbstractImageUploadControllerTest extends AbstractUtTestRu
         String url1 = postImage(postTemplate(), mf1);
 
         Assert.assertNotEquals(url0, url1);
+
+        Assert.assertTrue(clearAbandonedImage() > 0);
     }
 
-    private static class SessionWrapper extends MockHttpSession{
-        private final HttpSession httpSession;
+    protected abstract int clearAbandonedImage();
 
-        public SessionWrapper(HttpSession httpSession){
-            this.httpSession = httpSession;
-        }
-
-        @Override
-        public Object getAttribute(String name) {
-            return this.httpSession.getAttribute(name);
-        }
-
-    }
-    private static final class SessionHolder{
-        private SessionWrapper session;
-
-
-        public SessionWrapper getSession() {
-            return session;
-        }
-
-        public void setSession(SessionWrapper session) {
-            this.session = session;
-        }
-    }
     @WithUserDetails(TestConstants.USER_NIKITA)
     @Test
     public void postImageAndTwiceGet() throws Exception {

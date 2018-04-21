@@ -182,6 +182,15 @@ custom:
       text-template: "Link __PASSWORD_RESET_LINK_PLACEHOLDER__ for reset your password for account __LOGIN__. If you didn't issue password reset -- you can ignore this mail."
     token:
       ttl-minutes: 5
+  tasks:
+    enable: ${!test}
+    poolSize: 10
+    defaultLockAtMostForSec: 20
+    defaultLockAtLeastForSec: 20
+    images.clean:
+      cron: "*/20 * * * * *"
+      lockAtMostFor: 20000
+      lockAtLeastFor: 20000
 """
     return str
 }
@@ -246,7 +255,6 @@ ${TEST_USERS_SNIPPET}
 ${DATA_STORE_SNIPPET(true, 'validate')}
 ${MANAGEMENT_SNIPPET(true)}
 ${FRONT_CONFIGURATION_SNIPPET}
-custom.tasks.enable: false
 """;
 writeAndLog(BACKEND_TEST_YML_FILE, BACKEND_TEST_YML_CONTENT);
 
@@ -278,6 +286,5 @@ ${TEST_USERS_SNIPPET}
 ${DATA_STORE_SNIPPET(true, 'none')}
 ${MANAGEMENT_SNIPPET(true)}
 ${FRONT_CONFIGURATION_SNIPPET}
-custom.tasks.enable: false
 """;
 writeAndLog(INTEGRATION_TEST_YML_FILE, WEBDRIVER_TEST_YML_CONTENT);

@@ -59,6 +59,15 @@ custom:
       text-template: "Link __PASSWORD_RESET_LINK_PLACEHOLDER__ for reset your password for account __LOGIN__. If you didn't issue password reset -- you can ignore this mail."
     token:
       ttl-minutes: 5
+  tasks:
+    enable: false
+    poolSize: 10
+    defaultLockAtMostForSec: 20
+    defaultLockAtLeastForSec: 20
+    images.clean:
+      cron: "*/20 * * * * *"
+      lockAtMostFor: 20000
+      lockAtLeastFor: 20000
 
 server.port: 9080
 
@@ -144,4 +153,3 @@ custom.frontend:
     titleTemplate: "%s | owner's blog"
     header: "Owner's blog"
 
-custom.tasks.enable: false

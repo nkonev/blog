@@ -32,4 +32,9 @@ public class ImageUserAvatarUploadControllerTest extends AbstractImageUploadCont
 	protected String postTemplate() {
 		return POST_TEMPLATE;
 	}
+
+	@Override
+	protected int clearAbandonedImage() {
+		return dbCleaner.clearAvatarImages();
+	}
 }
