@@ -88,7 +88,7 @@ spring.datasource:
 spring.flyway:
   locations: ${dropFirst ? 'classpath:/db/migration, classpath:/db/demo': 'classpath:/db/migration'}
   drop-first: ${dropFirst}
-  schemas: migrations, auth, posts, images
+  schemas: migrations, auth, posts, images, locks
   out-of-order: true
 
 spring.redis.url: redis://172.22.0.3:6379/0
@@ -182,6 +182,15 @@ custom:
       text-template: "Link __PASSWORD_RESET_LINK_PLACEHOLDER__ for reset your password for account __LOGIN__. If you didn't issue password reset -- you can ignore this mail."
     token:
       ttl-minutes: 5
+  tasks:
+    enable: ${!test}
+    poolSize: 10
+    defaultLockAtMostForSec: 20
+    defaultLockAtLeastForSec: 20
+    images.clean:
+      cron: "*/20 * * * * *"
+      lockAtMostFor: 20000
+      lockAtLeastFor: 20000
 """
     return str
 }

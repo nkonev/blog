@@ -1,9 +1,11 @@
 package com.github.nkonev.blog.controllers;
 
 import com.github.nkonev.blog.TestConstants;
+import com.github.nkonev.blog.services.DbCleaner;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MvcResult;
@@ -75,5 +77,10 @@ public class ImagePostContentUploadControllerTest extends AbstractImageUploadCon
 	@Override
 	protected String postTemplate() {
 		return POST_TEMPLATE;
+	}
+
+	@Override
+	protected int clearAbandonedImage() {
+		return dbCleaner.clearPostContentImages();
 	}
 }

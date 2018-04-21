@@ -33,4 +33,9 @@ public class ImagePostTitleUploadControllerTest extends AbstractImageUploadContr
 	protected String postTemplate() {
 		return POST_TEMPLATE;
 	}
+
+	@Override
+	protected int clearAbandonedImage() {
+		return dbCleaner.clearPostTitleImages();
+	}
 }
