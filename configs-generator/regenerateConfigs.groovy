@@ -188,9 +188,7 @@ custom:
     defaultLockAtMostForSec: 20
     defaultLockAtLeastForSec: 20
     images.clean:
-      cron: "*/20 * * * * *"
-      lockAtMostFor: 20000
-      lockAtLeastFor: 20000
+      cron: "0 * * * * *"
 """
     return str
 }
