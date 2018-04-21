@@ -1,11 +1,9 @@
 package com.github.nkonev.blog.services;
 
-import net.javacrumbs.shedlock.core.SchedulerLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,12 +13,6 @@ public class DbCleaner {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
-    @Scheduled(cron = "${custom.tasks.images.clean.cron}")
-    @SchedulerLock(name = "imagesCleanTask")
-    public void cleanScheduled(){
-        clean();
-    }
 
     public void clean() {
         final int deletedPostContent = clearPostContentImages();
