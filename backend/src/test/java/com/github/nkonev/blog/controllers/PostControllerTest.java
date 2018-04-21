@@ -9,12 +9,14 @@ import com.github.nkonev.blog.dto.PostDTO;
 import com.github.nkonev.blog.dto.UserAccountDTO;
 import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
 import com.github.nkonev.blog.repo.jpa.PostRepository;
+import com.github.nkonev.blog.services.SeoCacheService;
 import com.github.nkonev.blog.utils.PageUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -49,6 +51,12 @@ public class PostControllerTest extends AbstractUtTestRunner {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
+
+    @Autowired
+    private SeoCacheService seoCacheService;
 
     public static class PostDtoBuilder {
         public static class Instance {
@@ -196,6 +204,9 @@ public class PostControllerTest extends AbstractUtTestRunner {
     @WithUserDetails(TestConstants.USER_ALICE)
     @Test
     public void testUserCanAddAndUpdateAndCannotDeletePost() throws Exception {
+        final String oldDataIndex = "<html>bad old index data</html>";
+        redisTemplate.opsForValue().set(SeoCacheService.getRedisKeyForIndex(), oldDataIndex);
+
         MvcResult addPostRequest = mockMvc.perform(
                 post(Constants.Uls.API+Constants.Uls.POST)
                         .content(objectMapper.writeValueAsString(PostDtoBuilder.startBuilding().build()))
@@ -207,6 +218,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andExpect(jsonPath("$.canEdit").value(true))
                 .andExpect(jsonPath("$.canDelete").value(false))
                 .andReturn();
+        Assert.assertFalse(oldDataIndex.equals(redisTemplate.opsForValue().get(SeoCacheService.getRedisKeyForIndex())));
         String addStr = addPostRequest.getResponse().getContentAsString();
         LOGGER.info(addStr);
         PostDTO added = objectMapper.readValue(addStr, PostDTO.class);
@@ -230,7 +242,9 @@ public class PostControllerTest extends AbstractUtTestRunner {
 
         // check Alice can update her post
         final String updatedTitle = "updated title";
+        final String oldCachedPost = "<html>old post data</html>";
         added.setTitle(updatedTitle);
+        redisTemplate.opsForValue().set(SeoCacheService.getRedisKeyHtmlForPost(added.getId()), oldCachedPost);
         MvcResult updatePostRequest = mockMvc.perform(
                 put(Constants.Uls.API+Constants.Uls.POST)
                         .content(objectMapper.writeValueAsString(added))
@@ -244,7 +258,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andExpect(jsonPath("$.canDelete").value(false))
                 .andReturn();
         LOGGER.info(updatePostRequest.getResponse().getContentAsString());
-
+        Assert.assertFalse(oldCachedPost.equals(redisTemplate.opsForValue().get(SeoCacheService.getRedisKeyHtmlForPost(added.getId()))));
 
         MvcResult deleteResult = mockMvc.perform(
                 delete(Constants.Uls.API+Constants.Uls.POST+"/"+added.getId()).with(csrf())

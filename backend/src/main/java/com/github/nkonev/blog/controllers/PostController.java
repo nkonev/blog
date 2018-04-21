@@ -192,7 +192,7 @@ public class PostController {
         Assert.notNull(userAccount, "UserAccountDetailsDTO can't be null");
         Post found = postRepository.findById(postDTO.getId()).orElseThrow(()->new IllegalArgumentException("Post with id " + postDTO.getId() + " not found"));
         Post updatedEntity = postConverter.convertToPost(postDTO, found);
-        Post saved = postRepository.save(updatedEntity);
+        Post saved = postRepository.saveAndFlush(updatedEntity);
         return postConverter.convertToDto(saved, userAccount);
     }
 
