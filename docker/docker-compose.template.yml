@@ -76,7 +76,7 @@ services:
       - backend
 
   postgresql:
-    image: postgres:10.2
+    image: postgres:10.3
     hostname: postgresql
     environment:
       - POSTGRES_PASSWORD=postgresqlPassword
@@ -93,7 +93,7 @@ services:
     networks:
       - backend
   redis:
-    image: redis:4.0.8
+    image: redis:4.0.9
     hostname: redis
     volumes :
       - redis_prod_data_dir:/data
