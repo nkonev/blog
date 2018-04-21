@@ -71,7 +71,7 @@ https://stackoverflow.com/questions/1709625/maven-command-to-list-lifecycle-phas
 # Restore dump
 ```bash
 echo 'drop database blog;' | docker exec -i postgresql-blog-dev psql -U postgres
-cat ~/blog/backup/blog.sql | docker exec -i postgresql-blog-dev psql -U postgres
+cat ~/blog/$(ls ~/blog | grep backup- | sort | tail -n 1)/blog.sql | docker exec -i postgresql-blog-dev psql -U postgres
 ```
 
 # Install
