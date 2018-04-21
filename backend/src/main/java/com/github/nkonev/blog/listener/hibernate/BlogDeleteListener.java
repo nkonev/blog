@@ -1,6 +1,7 @@
 package com.github.nkonev.blog.listener.hibernate;
 
 import com.github.nkonev.blog.entity.jpa.Post;
+import com.github.nkonev.blog.services.SeoCacheService;
 import com.github.nkonev.blog.services.WebSocketService;
 import org.hibernate.event.spi.PostDeleteEvent;
 import org.hibernate.event.spi.PostDeleteEventListener;
@@ -19,11 +20,15 @@ public class BlogDeleteListener implements PostDeleteEventListener {
     @Autowired
     private WebSocketService webSocketService;
 
+    @Autowired
+    private SeoCacheService seoCacheService;
+
     @Override
     public void onPostDelete(PostDeleteEvent event) {
         if (event.getEntity() instanceof Post) {
             Post post = (Post) event.getEntity();
             webSocketService.sendDeletePostEvent(post.getId());
+            seoCacheService.removeCachesForPost(post.getId());
             LOGGER.debug("sql delete: {}", post);
         }
 

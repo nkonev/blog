@@ -3,6 +3,7 @@ package com.github.nkonev.blog.listener.hibernate;
 import com.github.nkonev.blog.converter.PostConverter;
 import com.github.nkonev.blog.dto.PostDTO;
 import com.github.nkonev.blog.entity.jpa.Post;
+import com.github.nkonev.blog.services.SeoCacheService;
 import com.github.nkonev.blog.services.WebSocketService;
 import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PostUpdateEventListener;
@@ -24,12 +25,16 @@ public class BlogUpdateListener implements PostUpdateEventListener {
     @Autowired
     private PostConverter postConverter;
 
+    @Autowired
+    private SeoCacheService seoCacheService;
+
     @Override
     public void onPostUpdate(PostUpdateEvent event) {
         if (event.getEntity() instanceof Post) {
             Post post = (Post) event.getEntity();
             PostDTO postDTO = postConverter.convertToPostDTOWithCleanTags(post);
             webSocketService.sendUpdatePostEvent(postDTO);
+            seoCacheService.removeCachesForPost(post.getId());
             LOGGER.debug("sql update: {}", post);
         }
     }

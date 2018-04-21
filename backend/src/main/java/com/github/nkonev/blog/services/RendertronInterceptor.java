@@ -6,20 +6,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
+
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+
+import static com.github.nkonev.blog.services.SeoCacheService.getRedisKeyHtml;
+import static com.github.nkonev.blog.utils.ServletUtils.getQuery;
+import static com.github.nkonev.blog.utils.ServletUtils.nullToEmpty;
+import static com.github.nkonev.blog.utils.ServletUtils.performUriReplacements;
 import static org.springframework.util.StringUtils.isEmpty;
 
 @Component
@@ -30,10 +32,10 @@ public class RendertronInterceptor implements HandlerInterceptor {
     private PrerenderConfig prerenderConfig;
 
     @Autowired
-    private RedisTemplate<String, String> redisTemplate;
+    private CustomConfig customConfig;
 
     @Autowired
-    private CustomConfig customConfig;
+    private SeoCacheService seoCacheService;
 
     private RestTemplate restTemplate;
 
@@ -96,18 +98,6 @@ public class RendertronInterceptor implements HandlerInterceptor {
         return false;
     }
 
-    private String getRedisKeyHtml(HttpServletRequest clientRequest) {
-        return "rendertron_html_" + performReplacements(clientRequest.getRequestURI()) + nullToEmpty(clientRequest.getQueryString());
-    }
-
-    private String nullToEmpty(String s){
-        if (s == null) {
-            return "";
-        } else {
-            return s;
-        }
-    }
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
@@ -115,21 +105,18 @@ public class RendertronInterceptor implements HandlerInterceptor {
         final String userAgent = request.getHeader("User-Agent");
         final String url = request.getRequestURL().toString();
 
-        final String path = performReplacements(request.getRequestURI());
+        final String path = performUriReplacements(request.getRequestURI());
         if (isInSearchUserAgent(userAgent) && !isInResources(url) && !isInBlackList(path)) {
             final String key = getRedisKeyHtml(request);
+            String value = seoCacheService.getHtmlFromCache(key);
 
-            String value = redisTemplate.opsForValue().get(key);
             if (value==null) {
                 final String rendertronUrl = prerenderConfig.getPrerenderServiceUrl()
                         + customConfig.getBaseUrl() + path + getQuery(request);
-
                 LOGGER.info("Requesting {} from rendertron", rendertronUrl);
                 final ResponseEntity<String> re = restTemplate.getForEntity(rendertronUrl, String.class);
                 value = re.getBody();
-
-                redisTemplate.opsForValue().set(key, value);
-                redisTemplate.expire(key, prerenderConfig.getCacheExpire(), prerenderConfig.getCacheExpireTimeUnit());
+                seoCacheService.setHtml(key, value);
             }
             response.setHeader("Content-Type", "text/html; charset=utf-8");
             response.getWriter().print(value);
@@ -147,15 +134,4 @@ public class RendertronInterceptor implements HandlerInterceptor {
         }
     }
 
-    private String getQuery(HttpServletRequest request) {
-        if (request.getQueryString() == null) {
-            return "";
-        } else {
-            return "?" + request.getQueryString();
-        }
-    }
-
-    private String performReplacements(String s) {
-        return s.replaceFirst("/index.html", "/");
-    }
 }
