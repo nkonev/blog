@@ -114,8 +114,13 @@ public class PostController {
                             "from (\n" +
                             "  select id, title, text_no_tags, title_img, create_date_time, owner_id \n" +
                             "  from posts.post \n" +
-                            "  where to_tsvector("+regConfig+", title || ' ' || text_no_tags) @@ (select * from tsq) order by id desc " +
-                            "  limit :limit offset :offset\n" +
+                            "  where to_tsvector("+regConfig+", title || ' ' || text_no_tags) @@ (select * from tsq) " +
+                            " union " +
+                            "  select id, title, text_no_tags, title_img, create_date_time, owner_id \n" +
+                            "  from posts.post \n" +
+                            "  where (title || ' ' || text_no_tags) LIKE '%' || :search_string || '%' " +
+                            " order by id desc " +
+                            " limit :limit offset :offset\n" +
                             ") as fulltext_result " +
                             "join auth.users u on fulltext_result.owner_id = u.id " +
                             "order by id desc" +
