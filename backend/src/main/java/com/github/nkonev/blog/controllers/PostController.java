@@ -118,7 +118,7 @@ public class PostController {
                             " union " +
                             "  select id, title, text_no_tags, title_img, create_date_time, owner_id \n" +
                             "  from posts.post \n" +
-                            "  where (title || ' ' || text_no_tags) LIKE '%' || :search_string || '%' " +
+                            "  where lower(title || ' ' || text_no_tags) LIKE '%' || lower(:search_string) || '%' " +
                             " order by id desc " +
                             " limit :limit offset :offset\n" +
                             ") as fulltext_result " +
