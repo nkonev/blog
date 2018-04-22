@@ -196,7 +196,7 @@ services:
     networks:
       - backend
   blackbox_exporter:
-    image: prom/blackbox-exporter:v0.11.0
+    image: prom/blackbox-exporter:v0.12.0
     hostname: 'blackbox_exporter'
     ports:
       - '9115:9115'
@@ -211,7 +211,7 @@ services:
       - traefik_backend
       - backend
   prometheus:
-    image: prom/prometheus:v2.0.0
+    image: prom/prometheus:v2.2.1
     hostname: prometheus
     ports:
       - 9090:9090
@@ -238,7 +238,7 @@ services:
       - backend
 
   alertmanager:
-    image: prom/alertmanager:v0.13.0
+    image: prom/alertmanager:v0.14.0
     hostname: alertmanager
     volumes:
       - ./alertmanager/alert.yml:/alert.yml
@@ -262,7 +262,7 @@ services:
       - traefik_backend
 
   grafana:
-    image: grafana/grafana:5.0.0-beta1
+    image: grafana/grafana:5.0.4
     hostname: grafana
     environment:
       - GF_AUTH_BASIC_ENABLED=false
