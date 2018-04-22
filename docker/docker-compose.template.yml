@@ -125,7 +125,7 @@ services:
     networks:
       - backend
   rendertron:
-    image: nkonev/rendertron-docker
+    image: nkonev/rendertron-docker:0.0.2
     hostname: rendertron
     logging:
       driver: "json-file"
@@ -138,7 +138,7 @@ services:
       - traefik_backend
       - backend
   rabbitmq_exporter:
-    image: kbudde/rabbitmq-exporter
+    image: kbudde/rabbitmq-exporter:v0.27.1
     hostname: rabbitmq_exporter
     ports:
       - 9191:9191
@@ -154,7 +154,7 @@ services:
     networks:
       - backend
   postgresql_exporter:
-    image: wrouesnel/postgres_exporter
+    image: wrouesnel/postgres_exporter:v0.4.6
     hostname: postgresql_exporter
     ports:
       - 9187:9187
