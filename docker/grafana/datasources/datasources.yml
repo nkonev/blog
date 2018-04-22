@@ -1,5 +1,5 @@
 datasources:
-        - name: prometheus
+        - name: blog_ds
           type: prometheus
           access: proxy
           url: http://prometheus:9090
