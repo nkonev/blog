@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/nkonev/blog.svg?branch=master)](https://travis-ci.org/nkonev/blog)
 [![codecov](https://codecov.io/gh/nkonev/blog/branch/master/graph/badge.svg)](https://codecov.io/gh/nkonev/blog)
+[![](https://images.microbadger.com/badges/image/nkonev/blog.svg)](https://microbadger.com/images/nkonev/blog "Get your own image badge on microbadger.com")
+[![](https://images.microbadger.com/badges/version/nkonev/blog.svg)](https://microbadger.com/images/nkonev/blog "Get your own version badge on microbadger.com")
 
 # Requirements
 
