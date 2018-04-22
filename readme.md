@@ -9,11 +9,6 @@
 * Docker 17.09.1-ce +
 * docker-compose 1.16.1 +
 
-# Start test environment
-
-```bash
-(cd docker; docker-compose up -d)
-```
 
 # FAQ
 

@@ -1,3 +1,10 @@
+# Start develop environment
+
+```bash
+(cd docker; docker-compose up -d)
+```
+
+
 # Install maven wrapper
 
 ```bash
