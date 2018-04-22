@@ -184,7 +184,7 @@ services:
     networks:
       - backend
   node_exporter:
-    image: prom/node-exporter:v0.16.0-rc.2
+    image: prom/node-exporter:v0.15.2
     hostname: 'node_exporter'
     ports:
       - '9100:9100'
