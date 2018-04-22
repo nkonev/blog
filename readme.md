@@ -15,90 +15,13 @@
 (cd docker; docker-compose up -d)
 ```
 
-# Building with frontend and build docker image
+# FAQ
 
-There is highly recommends to shut down your application on 8080, although tests uses 9080, some of
-them can fails, with websocket for example.
-```bash
-./mvnw -P frontend -P docker clean package
-```
+Q: Can I run it without docker ?
 
-As you can see, there is switches via maven profiles.
+A: Yes, you can bu nanually install PostgreSQL, RabbitMQ, Redis and configure it's connections in config or by commandline. 
 
-This will run tests on PhantomJS.
-See `.travis.yml` for Firefox and Chrome test examples
 
-## Building without frontend and without webdriver tests
-```bash
-./mvnw clean package
-```
-
-## Build and start docker image for development
-```bash
-cd docker
-docker-compose -f docker-compose.yml -f docker-compose.nginx.yml -f docker-compose.dev.yml up -d --build
-```
-
-# Run
-```bash
-# By default
-java -jar frontend/target/frontend-1.0.3-SNAPSHOT-exec.jar
-# .. or with pre-generated content
-java -jar frontend/target/frontend-1.0.3-SNAPSHOT-exec.jar --spring.profiles.active=demo
-```
-
-Test user credentials can be found in `backend/src/main/resources/db/demo/V32767__demo.sql`:4
-
-# Development
-## Changing version
-```bash
-./mvnw -DnewVersion=1.0.0 versions:set versions:commit
-```
-
-## Check for update maven dependency versions
-```bash
-./mvnw -DlogOutput=false -DprocessDependencyManagement=false versions:display-dependency-updates | less
-./mvnw -DlogOutput=false versions:display-property-updates | less
-
-./mvnw -DlogOutput=false versions:display-plugin-updates | less
-
-```
-
-# Run `boot-run`
-```bash
-./mvnw clean spring-boot:run
-```
-
-## Frontend development
-
-### Run webpack
-```
-cd frontend
-npm run dev
-```
-
-### Run Jest
-```
-cd frontend
-npm run test
-```
-
-#### clean Jest cache
-```bash
-# where is it
-npm run test -- --showConfig | grep cache
-rm -rf /var/tmp/jest_rs
-```
-
-### Update js dependencies
-
-https://www.npmjs.com/package/npm-check-updates
-
-```
-ncu -u
-rm package-lock.json
-npm install
-```
 
 ## Embedded documentation
 
@@ -134,19 +57,11 @@ Next you should use localhost IP addresses and disable asciidoctor:
 mvnw -P local -Dasciidoctor.skip=true clean test
 ```
 
-# FAQ
-
-Q: I suddenly get http 403 error in JUnit mockMvc tests.
-
-A: Add `.with(csrf())` to MockMvcRequestBuilder chain
-
-
-
-
 
 # Demo Run / Installation
 
 ```bash
+cd docker
 ./swarm-init.sh
 ```
 
@@ -240,7 +155,7 @@ echo "Successful inserted docker_gwbridge rule"
 ```
 
 
-## Playing with docker
+## Starting with docker
 
 Next you can 
 ```bash
@@ -327,11 +242,5 @@ docker exec -it $(docker ps --filter label=com.docker.swarm.service.name=BLOGSTA
 
 ```bash
 cat /tmp/blog.sql | docker exec -i $(docker ps --filter label=com.docker.swarm.service.name=BLOGSTACK_postgresql -q) psql -U postgres
-```
-
-## clean prerender cache
-
-```bash
-docker exec -t $(docker ps --filter label=com.docker.swarm.service.name=BLOGSTACK_prerender -q) redis-cli flushdb
 ```
 
