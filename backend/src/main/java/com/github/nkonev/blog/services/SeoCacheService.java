@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import static com.github.nkonev.blog.Constants.Uls.POST;
 import static com.github.nkonev.blog.utils.ServletUtils.nullToEmpty;
-import static com.github.nkonev.blog.utils.ServletUtils.performUriReplacements;
 
 @Service
 public class SeoCacheService {
@@ -42,7 +41,7 @@ public class SeoCacheService {
 
 
     public static String getRedisKeyHtml(HttpServletRequest clientRequest) {
-        return RENDERTRON_HTML + performUriReplacements(clientRequest.getRequestURI()) + nullToEmpty(clientRequest.getQueryString());
+        return RENDERTRON_HTML + clientRequest.getRequestURI() + nullToEmpty(clientRequest.getQueryString());
     }
 
     public static String getRedisKeyHtmlForPost(Long postId) {

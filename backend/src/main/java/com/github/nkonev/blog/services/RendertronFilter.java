@@ -6,27 +6,32 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.web.servlet.HandlerInterceptor;
-
 import javax.annotation.PostConstruct;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import static com.github.nkonev.blog.services.SeoCacheService.getRedisKeyHtml;
 import static com.github.nkonev.blog.utils.ServletUtils.getQuery;
-import static com.github.nkonev.blog.utils.ServletUtils.nullToEmpty;
-import static com.github.nkonev.blog.utils.ServletUtils.performUriReplacements;
 import static org.springframework.util.StringUtils.isEmpty;
 
 @Component
+@Order(Ordered.HIGHEST_PRECEDENCE)
 @ConditionalOnProperty(com.github.nkonev.blog.Constants.CUSTOM_PRERENDER_ENABLE)
-public class RendertronInterceptor implements HandlerInterceptor {
+public class RendertronFilter extends GenericFilterBean {
 
     @Autowired
     private PrerenderConfig prerenderConfig;
@@ -39,7 +44,7 @@ public class RendertronInterceptor implements HandlerInterceptor {
 
     private RestTemplate restTemplate;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RendertronInterceptor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RendertronFilter.class);
 
     @PostConstruct
     public void pc() {
@@ -98,14 +103,23 @@ public class RendertronInterceptor implements HandlerInterceptor {
         return false;
     }
 
+    private boolean isInBlackList(String path) {
+        if (prerenderConfig.getBlacklistPaths() == null) {
+            return false;
+        } else {
+            return prerenderConfig.getBlacklistPaths().contains(path);
+        }
+    }
+
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-            throws Exception {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        final HttpServletRequest request = (HttpServletRequest) servletRequest;
+        final HttpServletResponse response = (HttpServletResponse) servletResponse;
 
         final String userAgent = request.getHeader("User-Agent");
         final String url = request.getRequestURL().toString();
 
-        final String path = performUriReplacements(request.getRequestURI());
+        final String path = request.getRequestURI();
         if (isInSearchUserAgent(userAgent) && !isInResources(url) && !isInBlackList(path)) {
             final String key = getRedisKeyHtml(request);
             String value = seoCacheService.getHtmlFromCache(key);
@@ -120,18 +134,8 @@ public class RendertronInterceptor implements HandlerInterceptor {
             }
             response.setHeader("Content-Type", "text/html; charset=utf-8");
             response.getWriter().print(value);
-            return false;
         }
 
-        return true;
+        filterChain.doFilter(servletRequest, servletResponse);
     }
-
-    private boolean isInBlackList(String path) {
-        if (prerenderConfig.getBlacklistPaths() == null) {
-            return false;
-        } else {
-            return prerenderConfig.getBlacklistPaths().contains(path);
-        }
-    }
-
 }

@@ -1,6 +1,5 @@
 package com.github.nkonev.blog.config;
 
-import com.github.nkonev.blog.services.RendertronInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -36,9 +35,7 @@ public class WebConfig implements WebMvcConfigurer, ApplicationContextAware {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        if (environment.getProperty(com.github.nkonev.blog.Constants.CUSTOM_PRERENDER_ENABLE, Boolean.class, false)) {
-            registry.addInterceptor(applicationContext.getBean(RendertronInterceptor.class));
-        }
+
     }
 
     /**

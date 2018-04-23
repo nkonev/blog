@@ -18,8 +18,4 @@ public class ServletUtils {
             return "?" + request.getQueryString();
         }
     }
-
-    public static String performUriReplacements(String s) {
-        return s.replaceFirst("/index.html", "/");
-    }
 }
