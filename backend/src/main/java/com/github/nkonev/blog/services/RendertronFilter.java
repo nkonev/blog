@@ -134,6 +134,7 @@ public class RendertronFilter extends GenericFilterBean {
             }
             response.setHeader("Content-Type", "text/html; charset=utf-8");
             response.getWriter().print(value);
+            return;
         }
 
         filterChain.doFilter(servletRequest, servletResponse);
