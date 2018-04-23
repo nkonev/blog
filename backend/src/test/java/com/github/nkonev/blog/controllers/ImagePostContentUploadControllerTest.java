@@ -2,6 +2,7 @@ package com.github.nkonev.blog.controllers;
 
 import com.github.nkonev.blog.TestConstants;
 import com.github.nkonev.blog.services.DbCleaner;
+import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,5 +83,10 @@ public class ImagePostContentUploadControllerTest extends AbstractImageUploadCon
 	@Override
 	protected int clearAbandonedImage() {
 		return dbCleaner.clearPostContentImages();
+	}
+
+	@Override
+	protected void assertDeletedCount() {
+		Assert.assertTrue(clearAbandonedImage() == 0);
 	}
 }

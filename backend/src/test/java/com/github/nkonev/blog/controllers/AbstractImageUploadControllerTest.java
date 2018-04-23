@@ -76,8 +76,10 @@ public abstract class AbstractImageUploadControllerTest extends AbstractUtTestRu
 
         Assert.assertNotEquals(url0, url1);
 
-        Assert.assertTrue(clearAbandonedImage() > 0);
+        assertDeletedCount();
     }
+
+    protected abstract void assertDeletedCount();
 
     protected abstract int clearAbandonedImage();
 

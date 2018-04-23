@@ -1,5 +1,6 @@
 package com.github.nkonev.blog.controllers;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,5 +37,10 @@ public class ImageUserAvatarUploadControllerTest extends AbstractImageUploadCont
 	@Override
 	protected int clearAbandonedImage() {
 		return dbCleaner.clearAvatarImages();
+	}
+
+	@Override
+	protected void assertDeletedCount() {
+		Assert.assertTrue(clearAbandonedImage() > 0);
 	}
 }
