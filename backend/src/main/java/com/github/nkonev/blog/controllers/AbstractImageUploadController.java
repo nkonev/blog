@@ -7,6 +7,7 @@ import com.github.nkonev.blog.exception.UnsupportedMessageTypeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.util.Assert;
@@ -31,6 +32,9 @@ public abstract class AbstractImageUploadController {
 
     @Autowired
     private DataSource dataSource;
+
+    @Value("${custom.image.emulateCache:true}")
+    private boolean emulateCache;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractImageUploadController.class);
 
@@ -137,9 +141,9 @@ public abstract class AbstractImageUploadController {
         response.setHeader(HttpHeaders.ETAG, convertToEtag(id, imageType));
     }
 
-    protected boolean set304(UUID id, HttpServletRequest request, HttpServletResponse response, String imageType) {
+    protected boolean shouldReturnLikeCache(UUID id, HttpServletRequest request, HttpServletResponse response, String imageType) {
         final String headerValue = request.getHeader(HttpHeaders.IF_NONE_MATCH);
-        if (headerValue!=null && headerValue.equals(convertToEtag(id, imageType))) {
+        if (emulateCache && headerValue!=null && headerValue.equals(convertToEtag(id, imageType))) {
             response.setStatus(304);
             return true;
         } else {

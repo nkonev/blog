@@ -67,7 +67,7 @@ public class ImagePostContentUploadController extends AbstractImageUploadControl
             HttpServletResponse response,
             HttpServletRequest request
     ) throws SQLException, IOException {
-        if(!set304(id, request, response, imageType)) {
+        if(!shouldReturnLikeCache(id, request, response, imageType)) {
             super.getImage(
                 (Connection conn) -> {
                     try (PreparedStatement ps = conn.prepareStatement("SELECT img, length(img) as content_length, content_type, create_date_time FROM images.post_content_image WHERE id = ?");) {

@@ -9,7 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
@@ -68,7 +67,7 @@ public class ImageUserAvatarUploadController extends AbstractImageUploadControll
             HttpServletResponse response,
             HttpServletRequest request
     ) throws SQLException, IOException {
-        if(!set304(id, request, response, imageType)) {
+        if(!shouldReturnLikeCache(id, request, response, imageType)) {
             super.getImage(
                 (Connection conn) -> {
                     try (PreparedStatement ps = conn.prepareStatement("SELECT img, length(img) as content_length, content_type, create_date_time FROM images.user_avatar_image WHERE id = ?");) {
