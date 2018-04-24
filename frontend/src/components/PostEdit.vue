@@ -53,11 +53,36 @@
 
 <script>
     import { VueEditor } from 'vue2-editor'
+    import Parchment from 'parchment';
+    import Quill from 'quill'
     import 'vue-croppa/dist/vue-croppa.css'
     import Vue from 'vue'
     import BlogSpinner from './BlogSpinner.vue'
     import {API_POST} from '../constants'
     import Croppa from 'vue-croppa'
+    let BlockEmbed = Quill.import('blots/block/embed');
+
+    // https://quilljs.com/guides/cloning-medium-with-parchment/
+    class ImageBlot extends BlockEmbed {
+        static create(value) {
+            let node = super.create();
+            node.setAttribute('alt', value.alt);
+            node.setAttribute('src', value.url);
+            node.setAttribute('in-post-id', value.inPostId);
+            return node;
+        }
+
+        static value(node) {
+            return {
+                alt: node.getAttribute('alt'),
+                url: node.getAttribute('src'),
+                inPostId: node.getAttribute('in-post-id')
+            };
+        }
+    }
+    ImageBlot.blotName = 'image';
+    ImageBlot.tagName = 'img';
+    Quill.register(ImageBlot);
 
     const MIN_LENGTH = 10;
 
@@ -107,6 +132,8 @@
                 editPostDTO: {}, // will be overriden below in created()
                 myCroppa: {},
                 chosenFile: null,
+                postImagesQueue: [],
+                inPostIdCounter: 0
             }
         },
         mounted() {
@@ -135,8 +162,36 @@
             finishSending() {
                 this.submitting = false;
             },
+            replaceImgInEditor(inPostId, serverUrl){
+                let node = document.querySelectorAll(`[in-post-id="${inPostId}"]`);
+                let blot = Parchment.find(node);
+                let image = {src: serverUrl};
+                blot.replaceWith('image', image);
+            },
             onBtnSave() {
                 this.startSending();
+
+                if (this.postImagesQueue){
+                    // An example of using FormData
+                    // NOTE: Your key could be different such as:
+                    // formData.append('file', file)
+
+                    for (const obj of this.postImagesQueue) {
+                        var file = obj.file;
+                        var formData = new FormData();
+                        formData.append('image', file);
+                        // todo to stream or wait
+                        this.$http.post('/api/image/post/content', formData)
+                            .then((result) => {
+                                let url = result.data.relativeUrl; // Get url from response
+                                console.log("posted post content image with url", url);
+                                replaceImgInEditor(obj.inPostId, url);
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                            })
+                    }
+                }
 
                 const sendPost = url => {
                     if (this.editPostDTO.id) {
@@ -221,22 +276,16 @@
                 return screen.width > 969 ? "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi." : "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."
             },
             handleImageAdded: function(file, Editor, cursorLocation) {
-                // An example of using FormData
-                // NOTE: Your key could be different such as:
-                // formData.append('file', file)
-
-                var formData = new FormData();
-                formData.append('image', file)
-
-                this.$http.post('/api/image/post/content', formData)
-                    .then((result) => {
-                        let url = result.data.relativeUrl; // Get url from response
-                        console.log("got url", url);
-                        Editor.insertEmbed(cursorLocation, 'image', url);
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                    })
+                var reader  = new FileReader();
+                const that = this;
+                reader.onloadend = function () {
+                    var dataUrl = reader.result;
+                    // that asynchronity may be source of bugs
+                    var idInPost = that.inPostIdCounter++;
+                    Editor.insertEmbed(cursorLocation, 'image', {src: dataUrl, inPostId: idInPost});
+                    that.postImagesQueue.push({id: cursorLocation, file, inPostId: idInPost});
+                };
+                reader.readAsDataURL(file);
             }
 
         },
