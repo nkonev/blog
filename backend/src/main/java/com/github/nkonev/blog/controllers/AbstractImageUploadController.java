@@ -2,6 +2,7 @@ package com.github.nkonev.blog.controllers;
 
 import com.github.nkonev.blog.config.CustomConfig;
 import com.github.nkonev.blog.config.ImageConfig;
+import com.github.nkonev.blog.exception.DataNotFoundException;
 import com.github.nkonev.blog.exception.PayloadTooLargeException;
 import com.github.nkonev.blog.exception.UnsupportedMessageTypeException;
 import org.slf4j.Logger;
@@ -12,6 +13,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponentsBuilder;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
@@ -19,14 +22,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 public abstract class AbstractImageUploadController {
 
@@ -35,6 +37,9 @@ public abstract class AbstractImageUploadController {
 
     @Value("${custom.image.emulateCache:true}")
     private boolean emulateCache;
+
+    @Value("${custom.image.chunkSize:4096}") // bytes
+    private int chunkSize;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractImageUploadController.class);
 
@@ -45,11 +50,6 @@ public abstract class AbstractImageUploadController {
     protected ImageConfig imageConfig;
 
     public static final String IMAGE_PART = "image";
-
-    @FunctionalInterface
-    public interface UpdateImage {
-        UUID updateImage(Connection conn, long contentLength, String contentType);
-    }
 
     public static class ImageResponse {
         private String relativeUrl;
@@ -80,16 +80,36 @@ public abstract class AbstractImageUploadController {
     }
 
     protected ImageResponse postImage(
-            MultipartFile imagePart,
-            UpdateImage updateImage,
-            Function<UUID, ImageResponse> produceUrl
-	) throws SQLException, IOException {
+            String sql,
+            String urlTemplate,
+            MultipartFile imagePart
+	) throws SQLException {
 		long contentLength = getCorrectContentLength(imagePart.getSize());
         String contentType = getCorrectContentType(imagePart.getContentType());
 
         try(Connection conn = dataSource.getConnection();) {
-            return produceUrl.apply(updateImage.updateImage(conn, contentLength, contentType));
+            try (PreparedStatement ps = conn.prepareStatement(sql)){
+                ps.setString(2, contentType);
+                ps.setBinaryStream(1, imagePart.getInputStream(), (int) contentLength);
+                try(ResultSet resp = ps.executeQuery()) {
+                    if(!resp.next()) {
+                        throw new RuntimeException("Expected result");
+                    }
+                    return getResponse(urlTemplate, resp.getObject("id", UUID.class), imagePart);
+                }
+
+            } catch (SQLException | IOException e) {
+                throw new RuntimeException(e);
+            }
+
         }
+    }
+
+    protected ImageResponse getResponse(String template, UUID uuid, MultipartFile imagePart) {
+        String relativeUrl = UriComponentsBuilder.fromUriString(template)
+                .buildAndExpand(uuid, getExtension(imagePart.getContentType()))
+                .toUriString();
+        return new ImageResponse(relativeUrl, customConfig.getBaseUrl() + relativeUrl);
     }
 
     private String getCorrectContentType(String contentType) {
@@ -116,16 +136,34 @@ public abstract class AbstractImageUploadController {
         return mt.getSubtype();
     }
 
-    protected void getImage(
-            Consumer<Connection> buildResponse
-    ) throws SQLException, IOException {
-        try(Connection conn = dataSource.getConnection();) {
-            buildResponse.accept(conn);
+    protected void getImage(String sql, UUID id, HttpServletRequest request, HttpServletResponse response, String imageType, String errorNotFoundMessage) {
+        if(!shouldReturnLikeCache(id, request, response, imageType)){
+            try(Connection conn = dataSource.getConnection();) {
+                try (PreparedStatement ps = conn.prepareStatement(sql);) {
+                    ps.setObject(1, id);
+                    try (ResultSet rs = ps.executeQuery();) {
+                        if (rs.next()) {
+                            response.setContentType(rs.getString("content_type"));
+                            response.setContentLength(rs.getInt("content_length"));
+                            addCacheHeaders(id, "create_date_time", rs, response, imageType);
+                            try (InputStream imgStream = rs.getBinaryStream("img");) {
+                                copyStream(imgStream, response.getOutputStream());
+                            } catch (SQLException | IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        } else {
+                            throw new DataNotFoundException(errorNotFoundMessage);
+                        }
+                    }
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
-    }
+    };
 
     protected void copyStream(InputStream from, OutputStream to) throws IOException {
-		byte[] buffer = new byte[4 * 1024];
+		byte[] buffer = new byte[chunkSize];
 		int len;
 		while ((len = from.read(buffer)) != -1) {
 			to.write(buffer, 0, len);
