@@ -1,7 +1,6 @@
 package com.github.nkonev.blog.controllers;
 
 import com.github.nkonev.blog.TestConstants;
-import com.github.nkonev.blog.services.DbCleaner;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -22,6 +21,9 @@ public class ImagePostContentUploadControllerTest extends AbstractImageUploadCon
 
 	private static final String POST_TEMPLATE = ImagePostContentUploadController.POST_TEMPLATE;
 	private static final String GET_TEMPLATE = ImagePostContentUploadController.GET_TEMPLATE;
+
+	@Autowired
+	private ImagePostContentUploadController imagePostContentUploadController;
 
 	@WithUserDetails(TestConstants.USER_NIKITA)
 	@Test
@@ -82,7 +84,7 @@ public class ImagePostContentUploadControllerTest extends AbstractImageUploadCon
 
 	@Override
 	protected int clearAbandonedImage() {
-		return dbCleaner.clearPostContentImages();
+		return imagePostContentUploadController.clearPostContentImages();
 	}
 
 	@Override

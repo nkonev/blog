@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -34,6 +35,9 @@ public abstract class AbstractImageUploadController {
 
     @Autowired
     private DataSource dataSource;
+
+    @Autowired
+    protected JdbcTemplate jdbcTemplate;
 
     @Value("${custom.image.emulateCache:true}")
     private boolean emulateCache;
@@ -105,7 +109,7 @@ public abstract class AbstractImageUploadController {
         }
     }
 
-    protected ImageResponse getResponse(String template, UUID uuid, MultipartFile imagePart) {
+    private ImageResponse getResponse(String template, UUID uuid, MultipartFile imagePart) {
         String relativeUrl = UriComponentsBuilder.fromUriString(template)
                 .buildAndExpand(uuid, getExtension(imagePart.getContentType()))
                 .toUriString();
@@ -130,7 +134,7 @@ public abstract class AbstractImageUploadController {
         return contentLength;
     }
 
-    protected String getExtension(String contentType) {
+    private String getExtension(String contentType) {
         Assert.notNull(contentType, "cannot be null");
         MediaType mt = MediaType.valueOf(contentType);
         return mt.getSubtype();
@@ -162,7 +166,7 @@ public abstract class AbstractImageUploadController {
         }
     };
 
-    protected void copyStream(InputStream from, OutputStream to) throws IOException {
+    private void copyStream(InputStream from, OutputStream to) throws IOException {
 		byte[] buffer = new byte[chunkSize];
 		int len;
 		while ((len = from.read(buffer)) != -1) {
@@ -170,7 +174,7 @@ public abstract class AbstractImageUploadController {
 		}
 	}
 
-    protected void addCacheHeaders(UUID id, String dateTimeColumnName, ResultSet resultSet, HttpServletResponse response, String imageType) throws SQLException {
+    private void addCacheHeaders(UUID id, String dateTimeColumnName, ResultSet resultSet, HttpServletResponse response, String imageType) throws SQLException {
         response.setHeader(HttpHeaders.CACHE_CONTROL, "public");
         response.addHeader(HttpHeaders.CACHE_CONTROL, "max-age="+imageConfig.getMaxAge());
         LocalDateTime ldt = resultSet.getObject(dateTimeColumnName, LocalDateTime.class);
@@ -179,7 +183,7 @@ public abstract class AbstractImageUploadController {
         response.setHeader(HttpHeaders.ETAG, convertToEtag(id, imageType));
     }
 
-    protected boolean shouldReturnLikeCache(UUID id, HttpServletRequest request, HttpServletResponse response, String imageType) {
+    private boolean shouldReturnLikeCache(UUID id, HttpServletRequest request, HttpServletResponse response, String imageType) {
         final String headerValue = request.getHeader(HttpHeaders.IF_NONE_MATCH);
         if (emulateCache && headerValue!=null && headerValue.equals(convertToEtag(id, imageType))) {
             response.setStatus(304);

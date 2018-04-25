@@ -2,7 +2,6 @@ package com.github.nkonev.blog.controllers;
 
 import com.github.nkonev.blog.AbstractUtTestRunner;
 import com.github.nkonev.blog.TestConstants;
-import com.github.nkonev.blog.services.DbCleaner;
 import com.google.common.net.HttpHeaders;
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,9 +26,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public abstract class AbstractImageUploadControllerTest extends AbstractUtTestRunner {
-
-    @Autowired
-    protected DbCleaner dbCleaner;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractImageUploadControllerTest.class);
 

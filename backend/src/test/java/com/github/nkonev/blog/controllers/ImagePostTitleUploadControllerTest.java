@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -17,6 +18,8 @@ public class ImagePostTitleUploadControllerTest extends AbstractImageUploadContr
 	private static final String POST_TEMPLATE = ImagePostTitleUploadController.POST_TEMPLATE;
 	private static final String GET_TEMPLATE = ImagePostTitleUploadController.GET_TEMPLATE;
 
+	@Autowired
+	private ImagePostTitleUploadController imagePostTitleUploadController;
 
 	@Test
 	public void getUnexistingImage() throws Exception {
@@ -37,7 +40,7 @@ public class ImagePostTitleUploadControllerTest extends AbstractImageUploadContr
 
 	@Override
 	protected int clearAbandonedImage() {
-		return dbCleaner.clearPostTitleImages();
+		return imagePostTitleUploadController.clearPostTitleImages();
 	}
 
 	@Override
