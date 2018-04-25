@@ -52,6 +52,10 @@ public class ImageUserAvatarUploadController extends AbstractImageUploadControll
     }
 
     public int clearAvatarImages(){
-        return jdbcTemplate.update("delete from images.user_avatar_image where id in (select i.id from images.user_avatar_image i left join auth.users u on u.avatar like '%' || '/api/image/user/avatar/' || i.id || '%' where u.id is null);");
+        return jdbcTemplate.update("delete from images.user_avatar_image where id in (" +
+                "select i.id from images.user_avatar_image i " +
+                "left join auth.users u on u.avatar like '%' || '/api/image/user/avatar/' || i.id || '%' " +
+                "where u.id is null" +
+        ");");
     }
 }

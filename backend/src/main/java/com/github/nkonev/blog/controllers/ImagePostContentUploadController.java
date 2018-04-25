@@ -53,6 +53,11 @@ public class ImagePostContentUploadController extends AbstractImageUploadControl
     }
 
     public int clearPostContentImages() {
-        return jdbcTemplate.update("delete from images.post_content_image where id in (select i.id from images.post_content_image i left join posts.post p on p.text like '%' || '/api/image/post/content/' || i.id || '%' where p.id is null and (i.create_date_time + interval '1 day') < localtimestamp);");
+        return jdbcTemplate.update(
+                "delete from images.post_content_image where id in (" +
+                        "select i.id from images.post_content_image i " +
+                        "left join posts.post p on p.text like '%' || '/api/image/post/content/' || i.id || '%' " +
+                        "where p.id is null and (i.create_date_time + interval '1 day') < localtimestamp" +
+                ");");
     }
 }

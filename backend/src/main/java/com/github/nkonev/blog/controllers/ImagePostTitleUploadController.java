@@ -52,7 +52,11 @@ public class ImagePostTitleUploadController extends AbstractImageUploadControlle
     }
 
     public int clearPostTitleImages(){
-        return jdbcTemplate.update("delete from images.post_title_image where id in (select i.id from images.post_title_image i left join posts.post p on p.title_img like '%' || '/api/image/post/title/' || i.id || '%' where p.id is null);");
+        return jdbcTemplate.update("delete from images.post_title_image where id in (" +
+                "select i.id from images.post_title_image i " +
+                "left join posts.post p on p.title_img like '%' || '/api/image/post/title/' || i.id || '%' " +
+                "where p.id is null" +
+        ");");
     }
 }
  
