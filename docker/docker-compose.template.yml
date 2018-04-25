@@ -147,6 +147,7 @@ services:
       - RABBIT_USER=blog
       - RABBIT_PASSWORD=blogPazZw0rd
       - PUBLISH_PORT=9191
+      - LOG_LEVEL=warning
     logging:
       driver: "json-file"
 #      options:
