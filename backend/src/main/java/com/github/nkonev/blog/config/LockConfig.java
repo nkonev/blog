@@ -63,6 +63,6 @@ public class LockConfig {
         final int deletedPostTitles  = imagePostTitleUploadController.clearPostTitleImages();
         final int deletedAvatarImages = imageUserAvatarUploadController.clearAvatarImages();
 
-        LOGGER.info("Cleared {} post content images; {} post title images; {} user avatar images", deletedPostContent, deletedPostTitles, deletedAvatarImages);
+        LOGGER.info("Cleared {} post content images(created before 1 day ago); {} post title images; {} user avatar images", deletedPostContent, deletedPostTitles, deletedAvatarImages);
     }
 }
