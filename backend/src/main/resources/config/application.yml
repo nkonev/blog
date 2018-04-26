@@ -76,6 +76,8 @@ custom:
     defaultLockAtLeastForSec: 20
     images.clean:
       cron: "0 * * * * *"
+    rendered.cache.refresh:
+      cron: "*/5 * * * * *"
 
 server.tomcat.accesslog.enabled: false
 server.tomcat.accesslog.pattern: '%t %a "%r" %s (%D ms)'

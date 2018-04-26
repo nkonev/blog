@@ -42,14 +42,7 @@ public class RendertronFilter extends GenericFilterBean {
     @Autowired
     private SeoCacheService seoCacheService;
 
-    private RestTemplate restTemplate;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(RendertronFilter.class);
-
-    @PostConstruct
-    public void pc() {
-        restTemplate = new RestTemplate();
-    }
 
 
     private List<String> getCrawlerUserAgents() {
@@ -125,11 +118,7 @@ public class RendertronFilter extends GenericFilterBean {
             String value = seoCacheService.getHtmlFromCache(key);
 
             if (value==null) {
-                final String rendertronUrl = prerenderConfig.getPrerenderServiceUrl()
-                        + customConfig.getBaseUrl() + path + getQuery(request);
-                LOGGER.info("Requesting {} from rendertron", rendertronUrl);
-                final ResponseEntity<String> re = restTemplate.getForEntity(rendertronUrl, String.class);
-                value = re.getBody();
+                value = seoCacheService.getRendrered(path, getQuery(request));
                 seoCacheService.setHtml(key, value);
             }
             response.setHeader("Content-Type", "text/html; charset=utf-8");

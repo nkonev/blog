@@ -85,7 +85,7 @@ public abstract class AbstractUtTestRunner {
 
     public PostDTO getPost(long postId) throws Exception {
         MvcResult getPostRequest = mockMvc.perform(
-                get(Constants.Uls.API+Constants.Uls.POST+"/"+postId)
+                get(Constants.Urls.API+ Constants.Urls.POST+"/"+postId)
         )
                 .andExpect(status().isOk())
                 .andReturn();

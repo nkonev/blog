@@ -71,7 +71,7 @@ public class BlogErrorController extends AbstractErrorController {
             // this is not found fallback which works when Accept text/html
             // NotFoundFallback for History API routing, e. g. for url http://127.0.0.1:8080/user/3
             response.setStatus(HttpServletResponse.SC_OK);
-            return new ModelAndView(Constants.Uls.ROOT);
+            return new ModelAndView(Constants.Urls.ROOT);
         }
         Map<String, Object> model = Collections.unmodifiableMap(getErrorAttributes(request, debug));
         response.setStatus(status.value());

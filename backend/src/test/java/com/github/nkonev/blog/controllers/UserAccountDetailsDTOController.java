@@ -10,7 +10,7 @@ import springfox.documentation.annotations.ApiIgnore;
 @ApiIgnore
 @RestController
 public class UserAccountDetailsDTOController {
-    @GetMapping(Constants.Uls.API + TestConstants.USER_DETAILS)
+    @GetMapping(Constants.Urls.API + TestConstants.USER_DETAILS)
     public UserAccountDetailsDTO getUserDetails() {
         return new UserAccountDetailsDTO();
     }

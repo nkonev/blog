@@ -70,9 +70,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/favicon.ico", "/static/**", Constants.Uls.API+"/**").permitAll();
+                .antMatchers("/favicon.ico", "/static/**", Constants.Urls.API+"/**").permitAll();
         http.authorizeRequests()
-                .antMatchers(Constants.Uls.API+Constants.Uls.ADMIN+"/**").hasAuthority(UserRole.ROLE_ADMIN.name());
+                .antMatchers(Constants.Urls.API+ Constants.Urls.ADMIN+"/**").hasAuthority(UserRole.ROLE_ADMIN.name());
 
         http.csrf()
                 .csrfTokenRepository(csrfTokenRepository());

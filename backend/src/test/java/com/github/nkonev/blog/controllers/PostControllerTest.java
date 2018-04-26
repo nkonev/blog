@@ -23,13 +23,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.transaction.annotation.Transactional;
-import javax.persistence.EntityManager;
-import java.net.MalformedURLException;
-import java.net.URL;
+
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.core.Is.is;
@@ -97,7 +93,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
     @Test
     public void testAnonymousCanGetPostsAndItsLimiting() throws Exception {
         MvcResult getPostsRequest = mockMvc.perform(
-                MockMvcRequestBuilders.get(Constants.Uls.API+Constants.Uls.POST)
+                MockMvcRequestBuilders.get(Constants.Urls.API+ Constants.Urls.POST)
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
         )
                 .andExpect(status().isOk())
@@ -108,7 +104,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
     @Test
     public void testTrimmed() throws Exception {
         MvcResult getPostsRequest = mockMvc.perform(
-                get(Constants.Uls.API+Constants.Uls.POST+"?searchString= ")
+                get(Constants.Urls.API+ Constants.Urls.POST+"?searchString= ")
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
         )
                 .andExpect(status().isOk())
@@ -119,7 +115,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
     @Test
     public void testFulltextSearch() throws Exception {
         MvcResult getPostsRequest = mockMvc.perform(
-                get(Constants.Uls.API+Constants.Uls.POST+"?searchString=частый рыбами posted")
+                get(Constants.Urls.API+ Constants.Urls.POST+"?searchString=частый рыбами posted")
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
         )
                 .andExpect(status().isOk())
@@ -132,7 +128,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
     @Test
     public void testPrefixSearch() throws Exception {
         MvcResult getPostsRequest = mockMvc.perform(
-                get(Constants.Uls.API+Constants.Uls.POST+"?searchString=исп")
+                get(Constants.Urls.API+ Constants.Urls.POST+"?searchString=исп")
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
         )
                 .andExpect(status().isOk())
@@ -145,7 +141,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
     @Test
     public void testContainsSearch() throws Exception {
         MvcResult getPostsRequest = mockMvc.perform(
-                get(Constants.Uls.API+Constants.Uls.POST+"?searchString=psum")
+                get(Constants.Urls.API+ Constants.Urls.POST+"?searchString=psum")
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
         )
                 .andExpect(status().isOk())
@@ -164,7 +160,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
         postRepository.flush();
 
         MvcResult getPostsRequest = mockMvc.perform(
-                get(Constants.Uls.API+Constants.Uls.POST+"?searchString=www.google.com:80")
+                get(Constants.Urls.API+ Constants.Urls.POST+"?searchString=www.google.com:80")
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
         )
                 .andExpect(status().isOk())
@@ -178,7 +174,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
     @Test
     public void test404() throws Exception {
         MvcResult getPostsRequest = mockMvc.perform(
-                get(Constants.Uls.API+Constants.Uls.POST+"/1005001")
+                get(Constants.Urls.API+ Constants.Urls.POST+"/1005001")
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
         )
                 .andExpect(status().isNotFound())
@@ -191,7 +187,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
     @Test
     public void test404xml() throws Exception {
         MvcResult getPostsRequest = mockMvc.perform(
-                get(Constants.Uls.API+Constants.Uls.POST+"/1005001")
+                get(Constants.Urls.API+ Constants.Urls.POST+"/1005001")
                         .accept(MediaType.APPLICATION_XML_VALUE)
         )
                 .andExpect(status().isNotFound())
@@ -208,7 +204,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
         redisTemplate.opsForValue().set(SeoCacheService.getRedisKeyForIndex(), oldDataIndex);
 
         MvcResult addPostRequest = mockMvc.perform(
-                post(Constants.Uls.API+Constants.Uls.POST)
+                post(Constants.Urls.API+ Constants.Urls.POST)
                         .content(objectMapper.writeValueAsString(PostDtoBuilder.startBuilding().build()))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())
@@ -225,7 +221,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
 
         // check post present in my posts
         MvcResult getMyPostsRequest = mockMvc.perform(
-                get(Constants.Uls.API+Constants.Uls.POST+Constants.Uls.MY)
+                get(Constants.Urls.API+ Constants.Urls.POST+ Constants.Urls.MY)
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
         )
                 .andExpect(status().isOk())
@@ -246,7 +242,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
         added.setTitle(updatedTitle);
         redisTemplate.opsForValue().set(SeoCacheService.getRedisKeyHtmlForPost(added.getId()), oldCachedPost);
         MvcResult updatePostRequest = mockMvc.perform(
-                put(Constants.Uls.API+Constants.Uls.POST)
+                put(Constants.Urls.API+ Constants.Urls.POST)
                         .content(objectMapper.writeValueAsString(added))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())
@@ -261,7 +257,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
         Assert.assertFalse(oldCachedPost.equals(redisTemplate.opsForValue().get(SeoCacheService.getRedisKeyHtmlForPost(added.getId()))));
 
         MvcResult deleteResult = mockMvc.perform(
-                delete(Constants.Uls.API+Constants.Uls.POST+"/"+added.getId()).with(csrf())
+                delete(Constants.Urls.API+ Constants.Urls.POST+"/"+added.getId()).with(csrf())
         )
                 .andExpect(status().isForbidden())
                 .andReturn();
@@ -275,7 +271,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
     @Test
     public void testAnonymousCannotAddPost() throws Exception {
         MvcResult addPostRequest = mockMvc.perform(
-                post(Constants.Uls.API+Constants.Uls.POST)
+                post(Constants.Urls.API+ Constants.Urls.POST)
                         .content(objectMapper.writeValueAsString(PostDtoBuilder.startBuilding().build()))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())
@@ -291,7 +287,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
         PostDTO postDTO = PostDtoBuilder.startBuilding().id(foreignPostId).build();
 
         MvcResult addPostRequest = mockMvc.perform(
-                put(Constants.Uls.API+Constants.Uls.POST)
+                put(Constants.Urls.API+ Constants.Urls.POST)
                         .content(objectMapper.writeValueAsString(postDTO))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())
@@ -307,7 +303,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
         PostDTO postDTO = PostDtoBuilder.startBuilding().id(foreignPostId).build();
 
         MvcResult addPostRequest = mockMvc.perform(
-                delete(Constants.Uls.API+Constants.Uls.POST+"/"+foreignPostId).with(csrf())
+                delete(Constants.Urls.API+ Constants.Urls.POST+"/"+foreignPostId).with(csrf())
                         .content(objectMapper.writeValueAsString(postDTO))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())
@@ -325,7 +321,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
         final long foreignPostId = FOREIGN_POST;
 
         MvcResult getPostRequest = mockMvc.perform(
-                get(Constants.Uls.API+Constants.Uls.POST+"/"+foreignPostId)
+                get(Constants.Urls.API+ Constants.Urls.POST+"/"+foreignPostId)
         )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.canEdit").value(false))
@@ -337,7 +333,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
 
 
         MvcResult addPostRequest = mockMvc.perform(
-                put(Constants.Uls.API+Constants.Uls.POST)
+                put(Constants.Urls.API+ Constants.Urls.POST)
                         .content(objectMapper.writeValueAsString(foreign))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())
@@ -356,7 +352,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
         PostDTO postDTO = PostDtoBuilder.startBuilding().id(foreignPostId).build();
 
         MvcResult addPostRequest = mockMvc.perform(
-                delete(Constants.Uls.API+Constants.Uls.POST+"/"+foreignPostId).with(csrf())
+                delete(Constants.Urls.API+ Constants.Urls.POST+"/"+foreignPostId).with(csrf())
                         .content(objectMapper.writeValueAsString(postDTO))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())
@@ -374,7 +370,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
 
         PostDTO postDTO = PostDtoBuilder.startBuilding().id(foreignPostId).build();
         MvcResult addPostRequest = mockMvc.perform(
-                post(Constants.Uls.API+Constants.Uls.POST)
+                post(Constants.Urls.API+ Constants.Urls.POST)
                         .content(objectMapper.writeValueAsString(postDTO))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())
@@ -391,7 +387,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
         final long foreignPostId = FOREIGN_POST;
 
         MvcResult getPostRequest = mockMvc.perform(
-                get(Constants.Uls.API+Constants.Uls.POST+"/"+foreignPostId)
+                get(Constants.Urls.API+ Constants.Urls.POST+"/"+foreignPostId)
         )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.canEdit").value(true))
@@ -404,7 +400,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
         final String title = "title updated by admin";
         foreign.setTitle(title);
         MvcResult updatePostRequest = mockMvc.perform(
-                put(Constants.Uls.API+Constants.Uls.POST)
+                put(Constants.Urls.API+ Constants.Urls.POST)
                         .content(objectMapper.writeValueAsString(foreign))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())
@@ -425,7 +421,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
         // add some comments
         {
             MvcResult addCommentRequest = mockMvc.perform(
-                    post(Constants.Uls.API+Constants.Uls.POST+"/"+foreignPostId+"/"+Constants.Uls.COMMENT)
+                    post(Constants.Urls.API+ Constants.Urls.POST+"/"+foreignPostId+"/"+ Constants.Urls.COMMENT)
                             .content(objectMapper.writeValueAsString(CommentControllerTest.CommentDtoBuilder.startBuilding().build()))
                             .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                             .with(csrf())
@@ -439,7 +435,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
 
 
         MvcResult deletePostRequest = mockMvc.perform(
-                delete(Constants.Uls.API+Constants.Uls.POST+"/"+foreignPostId).with(csrf())
+                delete(Constants.Urls.API+ Constants.Urls.POST+"/"+foreignPostId).with(csrf())
                         .with(csrf())
         )
                 .andExpect(status().isOk())
@@ -453,7 +449,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
     @Test
     public void xssText() throws Exception {
         MvcResult addPostRequest = mockMvc.perform(
-                post(Constants.Uls.API+Constants.Uls.POST)
+                post(Constants.Urls.API+ Constants.Urls.POST)
                         .content(objectMapper.writeValueAsString(PostDtoBuilder.startBuilding().text("Harmless <script>alert('XSS')</script>text").build()))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())

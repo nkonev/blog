@@ -11,7 +11,7 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 public class SqlErrorController {
 
-    @GetMapping(Constants.Uls.API + TestConstants.SQL_URL)
+    @GetMapping(Constants.Urls.API + TestConstants.SQL_URL)
     public void getSql() {
         throw new DataIntegrityViolationException(TestConstants.SQL_QUERY);
     }

@@ -3,6 +3,7 @@ package com.github.nkonev.blog.config;
 import com.github.nkonev.blog.controllers.ImagePostContentUploadController;
 import com.github.nkonev.blog.controllers.ImagePostTitleUploadController;
 import com.github.nkonev.blog.controllers.ImageUserAvatarUploadController;
+import com.github.nkonev.blog.services.SeoCacheService;
 import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.core.SchedulerLock;
 import net.javacrumbs.shedlock.provider.jdbc.JdbcLockProvider;
@@ -22,7 +23,7 @@ import java.time.Duration;
 
 @ConditionalOnProperty(value = "custom.tasks.enable", matchIfMissing = true)
 @Configuration
-public class LockConfig {
+public class TaskConfig {
 
     @Autowired
     private ImagePostContentUploadController imagePostContentUploadController;
@@ -33,8 +34,14 @@ public class LockConfig {
     @Autowired
     private ImageUserAvatarUploadController imageUserAvatarUploadController;
 
+    @Autowired
+    private SeoCacheService seoCacheService;
+
     private static final String IMAGES_CLEAN_TASK = "imagesCleanTask";
-    public static final Logger LOGGER = LoggerFactory.getLogger(IMAGES_CLEAN_TASK);
+    private static final String REFRESH_CACHE_CLEAN_TASK = "refreshCacheTask";
+
+    public static final Logger LOGGER_IMAGE_CLEAN_TASK = LoggerFactory.getLogger(IMAGES_CLEAN_TASK);
+    public static final Logger LOGGER_REFRESH_CACHE_CLEAN_TASK = LoggerFactory.getLogger(REFRESH_CACHE_CLEAN_TASK);
 
     @Bean
     public LockProvider lockProvider(DataSource dataSource) {
@@ -58,11 +65,18 @@ public class LockConfig {
 
     @Scheduled(cron = "${custom.tasks.images.clean.cron}")
     @SchedulerLock(name = IMAGES_CLEAN_TASK)
-    public void cleanScheduled(){
+    public void cleanImages(){
         final int deletedPostContent = imagePostContentUploadController.clearPostContentImages();
         final int deletedPostTitles  = imagePostTitleUploadController.clearPostTitleImages();
         final int deletedAvatarImages = imageUserAvatarUploadController.clearAvatarImages();
 
-        LOGGER.info("Cleared {} post content images(created before 1 day ago); {} post title images; {} user avatar images", deletedPostContent, deletedPostTitles, deletedAvatarImages);
+        LOGGER_IMAGE_CLEAN_TASK.info("Cleared {} post content images(created before 1 day ago); {} post title images; {} user avatar images", deletedPostContent, deletedPostTitles, deletedAvatarImages);
     }
+
+    @Scheduled(cron = "${custom.tasks.rendered.cache.refresh.cron}")
+    @SchedulerLock(name = REFRESH_CACHE_CLEAN_TASK)
+    public void refreshCache(){
+        seoCacheService.refreshPageCache();
+    }
+
 }

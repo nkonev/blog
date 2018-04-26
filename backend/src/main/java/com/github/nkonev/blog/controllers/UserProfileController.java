@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 /**
  * Created by nik on 08.06.17.
  */
-@RequestMapping(Constants.Uls.API)
+@RequestMapping(Constants.Urls.API)
 @RestController
 @PreAuthorize("isAuthenticated()")
 @Transactional
@@ -51,12 +51,12 @@ public class UserProfileController {
      * @param userAccount
      * @return current logged in profile
      */
-    @GetMapping(value = Constants.Uls.PROFILE)
+    @GetMapping(value = Constants.Urls.PROFILE)
     public UserAccountDTO checkAuthenticated(@AuthenticationPrincipal UserAccountDetailsDTO userAccount) throws MalformedURLException {
         return UserAccountConverter.convertToUserAccountDTO(userAccount);
     }
 
-    @GetMapping(value = Constants.Uls.USER)
+    @GetMapping(value = Constants.Urls.USER)
     public UserListWrapper getUsersGet(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount,
             @RequestParam(value = "page", required=false, defaultValue = "0") int page,
@@ -82,7 +82,7 @@ public class UserProfileController {
         }
     }
 
-    @GetMapping(value = Constants.Uls.USER+Constants.Uls.USER_ID)
+    @GetMapping(value = Constants.Urls.USER+ Constants.Urls.USER_ID)
     public UserAccountDTO getUser(
             @PathVariable(Constants.PathVariables.USER_ID) Long userId,
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount
@@ -95,7 +95,7 @@ public class UserProfileController {
         }
     }
 
-    @PostMapping(Constants.Uls.PROFILE)
+    @PostMapping(Constants.Urls.PROFILE)
     public EditUserDTO editProfile(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount,
             @RequestBody @Valid EditUserDTO userAccountDTO
@@ -126,25 +126,25 @@ public class UserProfileController {
 
     // TODO delete user with delete avatar
 
-    @GetMapping(Constants.Uls.SESSIONS+"/my")
+    @GetMapping(Constants.Urls.SESSIONS+"/my")
     public Map<String, Session> mySessions(@AuthenticationPrincipal UserAccountDetailsDTO userDetails){
         return blogUserDetailsService.getMySessions(userDetails);
     }
 
     @PreAuthorize("@blogSecurityService.hasSessionManagementPermission(#userAccount)")
-    @GetMapping(Constants.Uls.SESSIONS)
+    @GetMapping(Constants.Urls.SESSIONS)
     public Map<String, Session> sessions(@AuthenticationPrincipal UserAccountDetailsDTO userAccount, @RequestParam("userId") long userId){
         return blogUserDetailsService.getSessions(userId);
     }
 
     @PreAuthorize("@blogSecurityService.hasSessionManagementPermission(#userAccount)")
-    @DeleteMapping(Constants.Uls.SESSIONS)
+    @DeleteMapping(Constants.Urls.SESSIONS)
     public void killSessions(@AuthenticationPrincipal UserAccountDetailsDTO userAccount, @RequestParam("userId") long userId){
         blogUserDetailsService.killSessions(userId);
     }
 
     @PreAuthorize("@blogSecurityService.canLock(#userAccountDetailsDTO)")
-    @PostMapping(Constants.Uls.USER + Constants.Uls.LOCK)
+    @PostMapping(Constants.Urls.USER + Constants.Urls.LOCK)
     public UserAccountDTOExtended setLocked(@AuthenticationPrincipal UserAccountDetailsDTO userAccountDetailsDTO, @RequestBody LockDTO locked){
         UserAccount userAccount = blogUserDetailsService.getUserAccount(locked.getUserId());
         if (locked.isLock()){

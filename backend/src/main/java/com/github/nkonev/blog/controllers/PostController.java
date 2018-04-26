@@ -24,7 +24,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +64,7 @@ public class PostController {
             )
     );
 
-    @GetMapping(Constants.Uls.API + Constants.Uls.POST)
+    @GetMapping(Constants.Urls.API + Constants.Urls.POST)
     public List<PostDTO> getPosts(
             @RequestParam(value = "page", required = false, defaultValue = "0") int page,
             @RequestParam(value = "size", required = false, defaultValue = "0") int size,
@@ -133,7 +132,7 @@ public class PostController {
         return posts;
     }
 
-    @GetMapping(Constants.Uls.API + Constants.Uls.POST + Constants.Uls.POST_ID)
+    @GetMapping(Constants.Urls.API + Constants.Urls.POST + Constants.Urls.POST_ID)
     public PostDTOExtended getPost(
             @PathVariable(Constants.PathVariables.POST_ID) long id,
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount // null if not authenticated
@@ -148,7 +147,7 @@ public class PostController {
     // ================================================= secured
 
     @PreAuthorize("@blogSecurityService.hasPostPermission(#userAccount, T(com.github.nkonev.blog.security.permissions.PostPermissions).READ_MY)")
-    @GetMapping(Constants.Uls.API + Constants.Uls.POST + Constants.Uls.MY)
+    @GetMapping(Constants.Urls.API + Constants.Urls.POST + Constants.Urls.MY)
     public List<PostDTO> getMyPosts(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount,
             @RequestParam(value = "page", required = false, defaultValue = "0") int page,
@@ -167,7 +166,7 @@ public class PostController {
 
     // https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#el-common-built-in
     @PreAuthorize("@blogSecurityService.hasPostPermission(#userAccount, T(com.github.nkonev.blog.security.permissions.PostPermissions).CREATE)")
-    @PostMapping(Constants.Uls.API + Constants.Uls.POST)
+    @PostMapping(Constants.Urls.API + Constants.Urls.POST)
     public PostDTOWithAuthorization addPost(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // null if not authenticated
             @RequestBody @NotNull PostDTO postDTO
@@ -184,7 +183,7 @@ public class PostController {
     }
 
     @PreAuthorize("@blogSecurityService.hasPostPermission(#postDTO, #userAccount, T(com.github.nkonev.blog.security.permissions.PostPermissions).EDIT)")
-    @PutMapping(Constants.Uls.API + Constants.Uls.POST)
+    @PutMapping(Constants.Urls.API + Constants.Urls.POST)
     public PostDTOWithAuthorization updatePost(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // null if not authenticated
             @RequestBody @NotNull PostDTO postDTO
@@ -197,7 +196,7 @@ public class PostController {
     }
 
     @PreAuthorize("@blogSecurityService.hasPostPermission(#postId, #userAccount, T(com.github.nkonev.blog.security.permissions.PostPermissions).DELETE)")
-    @DeleteMapping(Constants.Uls.API + Constants.Uls.POST + Constants.Uls.POST_ID)
+    @DeleteMapping(Constants.Urls.API + Constants.Urls.POST + Constants.Urls.POST_ID)
     public void deletePost(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // null if not authenticated
             @PathVariable(Constants.PathVariables.POST_ID) long postId

@@ -78,7 +78,7 @@ public class CommentControllerTest extends AbstractUtTestRunner {
     @Test
     public void testAnonymousCanGetCommentsAndItsLimiting() throws Exception {
         MvcResult getCommentsRequest = mockMvc.perform(
-                MockMvcRequestBuilders.get(Constants.Uls.API+Constants.Uls.POST+"/"+POST_WITH_COMMENTS+"/"+Constants.Uls.COMMENT)
+                MockMvcRequestBuilders.get(Constants.Urls.API+ Constants.Urls.POST+"/"+POST_WITH_COMMENTS+"/"+ Constants.Urls.COMMENT)
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
         )
                 .andExpect(status().isOk())
@@ -94,7 +94,7 @@ public class CommentControllerTest extends AbstractUtTestRunner {
     @Test
     public void testUserCanAddAndUpdateAndCanDeleteComment() throws Exception {
         MvcResult addCommentRequest = mockMvc.perform(
-                post(Constants.Uls.API+Constants.Uls.POST+"/"+POST_UNDER_TEST+"/"+Constants.Uls.COMMENT)
+                post(Constants.Urls.API+ Constants.Urls.POST+"/"+POST_UNDER_TEST+"/"+ Constants.Urls.COMMENT)
                         .content(objectMapper.writeValueAsString(CommentDtoBuilder.startBuilding().build()))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())
@@ -112,7 +112,7 @@ public class CommentControllerTest extends AbstractUtTestRunner {
         final String updatedText = "updated text";
         added.setText(updatedText);
         MvcResult updateCommentRequest = mockMvc.perform(
-                put(Constants.Uls.API+Constants.Uls.POST+"/"+POST_UNDER_TEST+"/"+Constants.Uls.COMMENT)
+                put(Constants.Urls.API+ Constants.Urls.POST+"/"+POST_UNDER_TEST+"/"+ Constants.Urls.COMMENT)
                         .content(objectMapper.writeValueAsString(added))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())
@@ -127,7 +127,7 @@ public class CommentControllerTest extends AbstractUtTestRunner {
 
 
         MvcResult deleteResult = mockMvc.perform(
-                delete(Constants.Uls.API+Constants.Uls.POST+"/"+POST_UNDER_TEST+"/"+Constants.Uls.COMMENT+"/"+added.getId()).with(csrf())
+                delete(Constants.Urls.API+ Constants.Urls.POST+"/"+POST_UNDER_TEST+"/"+ Constants.Urls.COMMENT+"/"+added.getId()).with(csrf())
         )
                 .andExpect(status().isOk())
                 .andReturn();
@@ -136,7 +136,7 @@ public class CommentControllerTest extends AbstractUtTestRunner {
     @Test
     public void testAnonymousCannotAddComment() throws Exception {
         MvcResult addCommentRequest = mockMvc.perform(
-                post(Constants.Uls.API+Constants.Uls.POST+"/"+POST_UNDER_TEST+"/"+Constants.Uls.COMMENT)
+                post(Constants.Urls.API+ Constants.Urls.POST+"/"+POST_UNDER_TEST+"/"+ Constants.Urls.COMMENT)
                         .content(objectMapper.writeValueAsString(CommentDtoBuilder.startBuilding().build()))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())
@@ -151,7 +151,7 @@ public class CommentControllerTest extends AbstractUtTestRunner {
         CommentDTO commentDTO = CommentDtoBuilder.startBuilding().id(FOREIGN_COMMENT_ID).build();
 
         MvcResult addCommentRequest = mockMvc.perform(
-                put(Constants.Uls.API+Constants.Uls.POST+"/"+POST_UNDER_TEST+"/"+Constants.Uls.COMMENT)
+                put(Constants.Urls.API+ Constants.Urls.POST+"/"+POST_UNDER_TEST+"/"+ Constants.Urls.COMMENT)
                         .content(objectMapper.writeValueAsString(commentDTO))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())
@@ -166,7 +166,7 @@ public class CommentControllerTest extends AbstractUtTestRunner {
         CommentDTO commentDTO = CommentDtoBuilder.startBuilding().id(FOREIGN_COMMENT_ID).build();
 
         MvcResult addCommentRequest = mockMvc.perform(
-                delete(Constants.Uls.API+Constants.Uls.POST+"/"+POST_UNDER_TEST+"/"+Constants.Uls.COMMENT+"/"+FOREIGN_COMMENT_ID).with(csrf())
+                delete(Constants.Urls.API+ Constants.Urls.POST+"/"+POST_UNDER_TEST+"/"+ Constants.Urls.COMMENT+"/"+FOREIGN_COMMENT_ID).with(csrf())
                         .content(objectMapper.writeValueAsString(commentDTO))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())
@@ -186,7 +186,7 @@ public class CommentControllerTest extends AbstractUtTestRunner {
     public void testUserCannotUpdateForeignComment() throws Exception {
 
         MvcResult addCommentRequest = mockMvc.perform(
-                put(Constants.Uls.API+Constants.Uls.POST+"/"+POST_UNDER_TEST+"/"+Constants.Uls.COMMENT)
+                put(Constants.Urls.API+ Constants.Urls.POST+"/"+POST_UNDER_TEST+"/"+ Constants.Urls.COMMENT)
                         .content(objectMapper.writeValueAsString(getForeignComment(FOREIGN_COMMENT_ID)))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())
@@ -204,7 +204,7 @@ public class CommentControllerTest extends AbstractUtTestRunner {
         CommentDTO commentDTO = CommentDtoBuilder.startBuilding().id(FOREIGN_COMMENT_ID).build();
 
         MvcResult addCommentRequest = mockMvc.perform(
-                delete(Constants.Uls.API+Constants.Uls.POST+"/"+POST_UNDER_TEST+"/"+Constants.Uls.COMMENT+"/"+FOREIGN_COMMENT_ID).with(csrf())
+                delete(Constants.Urls.API+ Constants.Urls.POST+"/"+POST_UNDER_TEST+"/"+ Constants.Urls.COMMENT+"/"+FOREIGN_COMMENT_ID).with(csrf())
                         .content(objectMapper.writeValueAsString(commentDTO))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())
@@ -221,7 +221,7 @@ public class CommentControllerTest extends AbstractUtTestRunner {
 
         CommentDTO commentDTO = CommentDtoBuilder.startBuilding().id(FOREIGN_COMMENT_ID).build();
         MvcResult addCommentRequest = mockMvc.perform(
-                post(Constants.Uls.API+Constants.Uls.POST+"/"+POST_UNDER_TEST+"/"+Constants.Uls.COMMENT)
+                post(Constants.Urls.API+ Constants.Urls.POST+"/"+POST_UNDER_TEST+"/"+ Constants.Urls.COMMENT)
                         .content(objectMapper.writeValueAsString(commentDTO))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())
@@ -240,7 +240,7 @@ public class CommentControllerTest extends AbstractUtTestRunner {
         final String title = "text updated by admin";
         foreign.setText(title);
         MvcResult updateCommentRequest = mockMvc.perform(
-                put(Constants.Uls.API+Constants.Uls.POST+"/"+POST_UNDER_TEST+"/"+Constants.Uls.COMMENT)
+                put(Constants.Urls.API+ Constants.Urls.POST+"/"+POST_UNDER_TEST+"/"+ Constants.Urls.COMMENT)
                         .content(objectMapper.writeValueAsString(foreign))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())
@@ -258,7 +258,7 @@ public class CommentControllerTest extends AbstractUtTestRunner {
     public void testAdminCanDeleteForeignComment() throws Exception {
 
         MvcResult deleteCommentRequest = mockMvc.perform(
-                delete(Constants.Uls.API+Constants.Uls.POST+"/"+POST_UNDER_TEST+"/"+Constants.Uls.COMMENT+"/"+FOREIGN_COMMENT_ID).with(csrf())
+                delete(Constants.Urls.API+ Constants.Urls.POST+"/"+POST_UNDER_TEST+"/"+ Constants.Urls.COMMENT+"/"+FOREIGN_COMMENT_ID).with(csrf())
                         .with(csrf())
         )
                 .andExpect(status().isOk())

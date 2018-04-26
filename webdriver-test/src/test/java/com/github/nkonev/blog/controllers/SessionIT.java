@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 import static com.github.nkonev.blog.CommonTestConstants.COOKIE_XSRF;
 import static com.github.nkonev.blog.CommonTestConstants.HEADER_SET_COOKIE;
 import static com.github.nkonev.blog.CommonTestConstants.HEADER_XSRF_TOKEN;
-import static com.github.nkonev.blog.Constants.Uls.*;
+import static com.github.nkonev.blog.Constants.Urls.*;
 import static com.github.nkonev.blog.security.SecurityConfig.*;
 import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.HttpHeaders.COOKIE;
@@ -78,7 +78,7 @@ public class SessionIT extends AbstractItTestRunner {
         SessionHolder userAliceSession = login(CommonTestConstants.USER_LOCKED, CommonTestConstants.COMMON_PASSWORD);
 
         RequestEntity myPostsRequest1 = RequestEntity
-                .get(new URI(urlWithContextPath()+ API + Constants.Uls.POST + Constants.Uls.MY))
+                .get(new URI(urlWithContextPath()+ API + Constants.Urls.POST + Constants.Urls.MY))
                 .header(HEADER_XSRF_TOKEN, userAliceSession.newXsrf)
                 .header(COOKIE, userAliceSession.getCookiesArray())
                 .build();
@@ -88,7 +88,7 @@ public class SessionIT extends AbstractItTestRunner {
         //userAliceSession.updateXsrf(myPostsResponse1);
 
         RequestEntity myPostsRequest2 = RequestEntity
-                .get(new URI(urlWithContextPath()+ API + Constants.Uls.POST + Constants.Uls.MY))
+                .get(new URI(urlWithContextPath()+ API + Constants.Urls.POST + Constants.Urls.MY))
                 .header(HEADER_XSRF_TOKEN, userAliceSession.newXsrf)
                 .header(COOKIE, userAliceSession.getCookiesArray())
                 .build();
@@ -100,7 +100,7 @@ public class SessionIT extends AbstractItTestRunner {
         SessionHolder userAdminSession = login(user, password);
         LockDTO lockDTO = new LockDTO(userAliceSession.userId, true);
         RequestEntity lockRequest = RequestEntity
-                .post(new URI(urlWithContextPath()+API+ Constants.Uls.USER+LOCK))
+                .post(new URI(urlWithContextPath()+API+ Constants.Urls.USER+LOCK))
                 .header(HEADER_XSRF_TOKEN, userAdminSession.newXsrf)
                 .header(COOKIE, userAdminSession.getCookiesArray())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -111,7 +111,7 @@ public class SessionIT extends AbstractItTestRunner {
 
 
         RequestEntity myPostsRequest3 = RequestEntity
-                .get(new URI(urlWithContextPath()+ API + Constants.Uls.POST + Constants.Uls.MY))
+                .get(new URI(urlWithContextPath()+ API + Constants.Urls.POST + Constants.Urls.MY))
                 .header(HEADER_XSRF_TOKEN, userAliceSession.newXsrf)
                 .header(COOKIE, userAliceSession.getCookiesArray())
                 .build();

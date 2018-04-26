@@ -48,7 +48,7 @@ public class BlogErrorControllerTest extends AbstractUtTestRunner {
      */
     @Test
     public void testNotAuthorized() throws Exception {
-        ResponseEntity<String> responseEntity = restTemplate.getForEntity(urlWithContextPath()+ Constants.Uls.API+Constants.Uls.PROFILE, String.class);
+        ResponseEntity<String> responseEntity = restTemplate.getForEntity(urlWithContextPath()+ Constants.Urls.API+ Constants.Urls.PROFILE, String.class);
         String str = responseEntity.getBody();
         Assert.assertEquals(401, responseEntity.getStatusCodeValue());
 
@@ -95,7 +95,7 @@ public class BlogErrorControllerTest extends AbstractUtTestRunner {
 
     @Test
     public void testSqlExceptionIsHidden() throws Exception {
-        ResponseEntity<String> responseEntity = restTemplate.getForEntity(urlWithContextPath()+Constants.Uls.API+ TestConstants.SQL_URL, String.class);
+        ResponseEntity<String> responseEntity = restTemplate.getForEntity(urlWithContextPath()+ Constants.Urls.API+ TestConstants.SQL_URL, String.class);
         String str = responseEntity.getBody();
         Assert.assertEquals(500, responseEntity.getStatusCodeValue());
 
@@ -112,7 +112,7 @@ public class BlogErrorControllerTest extends AbstractUtTestRunner {
 
     @Test
     public void testUserDetailsWithPasswordIsNotSerialized() throws Exception {
-        ResponseEntity<String> responseEntity = restTemplate.getForEntity(urlWithContextPath()+Constants.Uls.API+TestConstants.USER_DETAILS, String.class);
+        ResponseEntity<String> responseEntity = restTemplate.getForEntity(urlWithContextPath()+ Constants.Urls.API+TestConstants.USER_DETAILS, String.class);
         String str = responseEntity.getBody();
         Assert.assertEquals(500, responseEntity.getStatusCodeValue());
 

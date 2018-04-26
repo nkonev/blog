@@ -1,7 +1,6 @@
 package com.github.nkonev.blog.pages;
 
 import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.Configuration;
 import com.github.nkonev.blog.CommonTestConstants;
 import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.integration.AbstractItTestRunner;
@@ -18,19 +17,15 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.mail.Message;
 import java.net.URI;
-import java.util.concurrent.TimeUnit;
 
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class RegistrationIT extends AbstractItTestRunner {
 
@@ -80,7 +75,7 @@ public class RegistrationIT extends AbstractItTestRunner {
 
             String parsedUrl = UrlParser.parseUrlFromMessage(content);
 
-            String tokenUuidString = UriComponentsBuilder.fromUri(new URI(parsedUrl)).build().getQueryParams().get(Constants.Uls.UUID).get(0);
+            String tokenUuidString = UriComponentsBuilder.fromUri(new URI(parsedUrl)).build().getQueryParams().get(Constants.Urls.UUID).get(0);
             Assert.assertTrue(userConfirmationTokenRepository.existsById(tokenUuidString));
 
             // perform confirm

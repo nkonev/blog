@@ -28,7 +28,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.mail.Message;
 import java.net.URI;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
+
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -59,7 +59,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
 
         // register
         MvcResult createAccountRequest = mockMvc.perform(
-                MockMvcRequestBuilders.post(Constants.Uls.API+Constants.Uls.REGISTER)
+                MockMvcRequestBuilders.post(Constants.Urls.API+ Constants.Urls.REGISTER)
                         .content(objectMapper.writeValueAsString(createUserDTO))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())
@@ -83,7 +83,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
         {
             long tokenCountBeforeResend = userConfirmationTokenRepository.count();
             mockMvc.perform(
-                    post(Constants.Uls.API + Constants.Uls.RESEND_CONFIRMATION_EMAIL + "?email=" + email)
+                    post(Constants.Urls.API + Constants.Urls.RESEND_CONFIRMATION_EMAIL + "?email=" + email)
                             .with(csrf())
             )
                     .andExpect(status().isOk());
@@ -100,7 +100,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
 
             String parsedUrl = UrlParser.parseUrlFromMessage(content);
 
-            String tokenUuidString = UriComponentsBuilder.fromUri(new URI(parsedUrl)).build().getQueryParams().get(Constants.Uls.UUID).get(0);
+            String tokenUuidString = UriComponentsBuilder.fromUri(new URI(parsedUrl)).build().getQueryParams().get(Constants.Urls.UUID).get(0);
             Assert.assertTrue(userConfirmationTokenRepository.existsById(tokenUuidString));
 
             // perform confirm
@@ -122,7 +122,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
         {
             long tokenCountBeforeResend = userConfirmationTokenRepository.count();
             mockMvc.perform(
-                    post(Constants.Uls.API + Constants.Uls.RESEND_CONFIRMATION_EMAIL + "?email=" + email)
+                    post(Constants.Urls.API + Constants.Urls.RESEND_CONFIRMATION_EMAIL + "?email=" + email)
                             .with(csrf())
             )
                     .andExpect(status().isOk());
@@ -139,7 +139,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
 
         // register
         MvcResult createAccountResult = mockMvc.perform(
-                post(Constants.Uls.API+Constants.Uls.REGISTER)
+                post(Constants.Urls.API+ Constants.Urls.REGISTER)
                         .content(objectMapper.writeValueAsString(createUserDTO))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())
@@ -162,7 +162,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
 
         // register
         MvcResult createAccountResult = mockMvc.perform(
-                post(Constants.Uls.API+Constants.Uls.REGISTER)
+                post(Constants.Urls.API+ Constants.Urls.REGISTER)
                         .content(objectMapper.writeValueAsString(createUserDTO))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())
@@ -185,7 +185,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
 
         // register
         MvcResult createAccountResult = mockMvc.perform(
-                post(Constants.Uls.API+Constants.Uls.REGISTER)
+                post(Constants.Urls.API+ Constants.Urls.REGISTER)
                         .content(objectMapper.writeValueAsString(createUserDTO))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())
@@ -210,7 +210,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
 
         // register
         MvcResult createAccountResult = mockMvc.perform(
-                post(Constants.Uls.API+Constants.Uls.REGISTER)
+                post(Constants.Urls.API+ Constants.Urls.REGISTER)
                         .content(objectMapper.writeValueAsString(createUserDTO))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())
@@ -238,7 +238,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
         userConfirmationTokenRepository.deleteById(token); // if random token exists we delete it
 
         // create /confirm?uuid=<uuid>
-        String uri = UriComponentsBuilder.fromUriString(Constants.Uls.CONFIRM).queryParam(Constants.Uls.UUID, token).build().toUriString();
+        String uri = UriComponentsBuilder.fromUriString(Constants.Urls.CONFIRM).queryParam(Constants.Urls.UUID, token).build().toUriString();
 
         mockMvc.perform(get(uri))
                 .andExpect(status().is3xxRedirection())
@@ -253,7 +253,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
         userConfirmationTokenRepository.save(token1); // save it
 
         // create /confirm?uuid=<uuid>
-        String uri = UriComponentsBuilder.fromUriString(Constants.Uls.CONFIRM).queryParam(Constants.Uls.UUID, tokenUuid).build().toUriString();
+        String uri = UriComponentsBuilder.fromUriString(Constants.Urls.CONFIRM).queryParam(Constants.Urls.UUID, tokenUuid).build().toUriString();
 
         mockMvc.perform(get(uri))
                 .andExpect(status().is3xxRedirection())
@@ -273,7 +273,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
         // attacker
         long tokenCountBeforeResend = userConfirmationTokenRepository.count();
         mockMvc.perform(
-                post(Constants.Uls.API+Constants.Uls.RESEND_CONFIRMATION_EMAIL+"?email="+bobEmail)
+                post(Constants.Urls.API+ Constants.Urls.RESEND_CONFIRMATION_EMAIL+"?email="+bobEmail)
                     .with(csrf())
         )
                 .andExpect(status().isOk());
@@ -289,7 +289,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
 
         // invoke resend, this sends url /password-reset?uuid=<uuid> and confirm code to email
         mockMvc.perform(
-                post(Constants.Uls.API+Constants.Uls.REQUEST_PASSWORD_RESET+"?email="+email)
+                post(Constants.Urls.API+ Constants.Urls.REQUEST_PASSWORD_RESET+"?email="+email)
                         .with(csrf())
         )
                 .andExpect(status().isOk());
@@ -304,7 +304,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
 
             String parsedUrl = UrlParser.parseUrlFromMessage(content);
 
-            passwordResetTokenUuidString = UriComponentsBuilder.fromUri(new URI(parsedUrl)).build().getQueryParams().get(Constants.Uls.UUID).get(0);
+            passwordResetTokenUuidString = UriComponentsBuilder.fromUri(new URI(parsedUrl)).build().getQueryParams().get(Constants.Urls.UUID).get(0);
         }
 
         // after open link user see "input new password dialog"
@@ -313,7 +313,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
 
         // user click "set new password" button in modal
         mockMvc.perform(
-                post(Constants.Uls.API+Constants.Uls.PASSWORD_RESET_SET_NEW)
+                post(Constants.Urls.API+ Constants.Urls.PASSWORD_RESET_SET_NEW)
                         .content(objectMapper.writeValueAsString(passwordResetDto))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())
@@ -344,7 +344,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
         PasswordResetController.PasswordResetDto passwordResetDto = new PasswordResetController.PasswordResetDto(tokenUuid, "qwqwqwqwqwqwqwqw");
 
         mockMvc.perform(
-                post(Constants.Uls.API+Constants.Uls.PASSWORD_RESET_SET_NEW)
+                post(Constants.Urls.API+ Constants.Urls.PASSWORD_RESET_SET_NEW)
                         .content(objectMapper.writeValueAsString(passwordResetDto))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())
@@ -365,7 +365,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
         PasswordResetController.PasswordResetDto passwordResetDto = new PasswordResetController.PasswordResetDto(tokenUuid, "qwqwqwqwqwqwqwqw");
 
         mockMvc.perform(
-                post(Constants.Uls.API+Constants.Uls.PASSWORD_RESET_SET_NEW)
+                post(Constants.Urls.API+ Constants.Urls.PASSWORD_RESET_SET_NEW)
                         .content(objectMapper.writeValueAsString(passwordResetDto))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())
@@ -382,7 +382,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
         PasswordResetController.PasswordResetDto passwordResetDto = new PasswordResetController.PasswordResetDto(UUID.randomUUID(), emptyPassword);
 
         mockMvc.perform(
-                post(Constants.Uls.API+Constants.Uls.PASSWORD_RESET_SET_NEW)
+                post(Constants.Urls.API+ Constants.Urls.PASSWORD_RESET_SET_NEW)
                         .content(objectMapper.writeValueAsString(passwordResetDto))
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .with(csrf())

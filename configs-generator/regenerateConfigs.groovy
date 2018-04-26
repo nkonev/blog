@@ -189,6 +189,8 @@ custom:
     defaultLockAtLeastForSec: 20
     images.clean:
       cron: "0 * * * * *"
+    rendered.cache.refresh:
+      cron: "*/5 * * * * *"
 """
     return str
 }

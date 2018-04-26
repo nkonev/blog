@@ -54,7 +54,7 @@ public class RegistrationController {
         return userConfirmationTokenRepository.save(userConfirmationToken);
     }
 
-    @PostMapping(value = Constants.Uls.API+Constants.Uls.REGISTER)
+    @PostMapping(value = Constants.Urls.API+ Constants.Urls.REGISTER)
     @ResponseBody
     public void register(@RequestBody @Valid EditUserDTO userAccountDTO) {
         if(userAccountRepository.findByUsername(userAccountDTO.getLogin()).isPresent()){
@@ -81,8 +81,8 @@ public class RegistrationController {
      * @param uuid
      * @return
      */
-    @GetMapping(value = Constants.Uls.CONFIRM)
-    public String confirm(@RequestParam(Constants.Uls.UUID) UUID uuid) {
+    @GetMapping(value = Constants.Urls.CONFIRM)
+    public String confirm(@RequestParam(Constants.Urls.UUID) UUID uuid) {
         String stringUuid = uuid.toString();
         Optional<UserConfirmationToken> userConfirmationTokenOptional = userConfirmationTokenRepository.findById(stringUuid);
         if (!userConfirmationTokenOptional.isPresent()) {
@@ -96,17 +96,17 @@ public class RegistrationController {
         UserAccount userAccount = userAccountOptional.get();
         if (userAccount.isEnabled()) {
             LOGGER.warn("Somebody attempts secondary confirm already confirmed user account with email='{}'", userAccount);
-            return Constants.Uls.ROOT;  // respond static
+            return Constants.Urls.ROOT;  // respond static
         }
 
         userAccount.setEnabled(true);
 
         userConfirmationTokenRepository.deleteById(stringUuid);
 
-        return Constants.Uls.ROOT; // respond static
+        return Constants.Urls.ROOT; // respond static
     }
 
-    @PostMapping(value = Constants.Uls.API+Constants.Uls.RESEND_CONFIRMATION_EMAIL)
+    @PostMapping(value = Constants.Urls.API+ Constants.Urls.RESEND_CONFIRMATION_EMAIL)
     @ResponseBody
     public void resendConfirmationToken(@RequestParam(value = "email") String email) {
         Optional<UserAccount> userAccountOptional = userAccountRepository.findByEmail(email);

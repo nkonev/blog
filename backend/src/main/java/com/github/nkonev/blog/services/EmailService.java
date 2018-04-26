@@ -52,7 +52,7 @@ public class EmailService {
         msg.setTo(email);
 
         String text = registrationTextTemplate
-                .replace(REG_LINK_PLACEHOLDER, customConfig.getBaseUrl() + Constants.Uls.CONFIRM+ "?"+Constants.Uls.UUID +"=" + userConfirmationToken.getUuid() + "&login=" + login)
+                .replace(REG_LINK_PLACEHOLDER, customConfig.getBaseUrl() + Constants.Urls.CONFIRM+ "?"+ Constants.Urls.UUID +"=" + userConfirmationToken.getUuid() + "&login=" + login)
                 .replace(LOGIN_PLACEHOLDER, login)
                 ;
         msg.setText(text);
@@ -67,7 +67,7 @@ public class EmailService {
         msg.setTo(email);
 
         String text = passwordResetTextTemplate
-                .replace(PASSWORD_RESET_LINK_PLACEHOLDER, customConfig.getBaseUrl() + Constants.Uls.PASSWORD_RESET+ "?"+Constants.Uls.UUID +"=" + passwordResetToken.getUuid() + "&login=" + login)
+                .replace(PASSWORD_RESET_LINK_PLACEHOLDER, customConfig.getBaseUrl() + Constants.Urls.PASSWORD_RESET+ "?"+ Constants.Urls.UUID +"=" + passwordResetToken.getUuid() + "&login=" + login)
                 .replace(LOGIN_PLACEHOLDER, login);
         msg.setText(text);
 

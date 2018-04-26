@@ -54,7 +54,7 @@ public class PasswordResetController {
      * Yes, if your email is stolen you can lost your account
      * @param email
      */
-    @PostMapping(value = Constants.Uls.API+Constants.Uls.REQUEST_PASSWORD_RESET)
+    @PostMapping(value = Constants.Urls.API+ Constants.Urls.REQUEST_PASSWORD_RESET)
     public void requestPasswordReset(String email) {
         String uuid = UUID.randomUUID().toString();
 
@@ -108,7 +108,7 @@ public class PasswordResetController {
         }
     }
 
-    @PostMapping(value = Constants.Uls.API + Constants.Uls.PASSWORD_RESET_SET_NEW)
+    @PostMapping(value = Constants.Urls.API + Constants.Urls.PASSWORD_RESET_SET_NEW)
     public void resetPassword(@RequestBody @Valid PasswordResetDto passwordResetDto) {
 
         // webpage parses token uuid from URL

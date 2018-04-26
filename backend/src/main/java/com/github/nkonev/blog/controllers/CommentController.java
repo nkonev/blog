@@ -40,7 +40,7 @@ public class CommentController {
      * @param postId
      * @return
      */
-    @GetMapping(Constants.Uls.API+Constants.Uls.POST+Constants.Uls.POST_ID +Constants.Uls.COMMENT)
+    @GetMapping(Constants.Urls.API+ Constants.Urls.POST+ Constants.Urls.POST_ID + Constants.Urls.COMMENT)
     public Wrapper<CommentDTOWithAuthorization> getPostComments(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // nullable
             @PathVariable(Constants.PathVariables.POST_ID) long postId,
@@ -62,7 +62,7 @@ public class CommentController {
     }
 
     @PreAuthorize("@blogSecurityService.hasCommentPermission(#userAccount, T(com.github.nkonev.blog.security.permissions.CommentPermissions).CREATE)")
-    @PostMapping(Constants.Uls.API+Constants.Uls.POST+Constants.Uls.POST_ID +Constants.Uls.COMMENT)
+    @PostMapping(Constants.Urls.API+ Constants.Urls.POST+ Constants.Urls.POST_ID + Constants.Urls.COMMENT)
     public CommentDTOExtended addComment(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // nullable
             @PathVariable(Constants.PathVariables.POST_ID) long postId,
@@ -84,7 +84,7 @@ public class CommentController {
     }
 
     @PreAuthorize("@blogSecurityService.hasCommentPermission(#commentDTO, #userAccount, T(com.github.nkonev.blog.security.permissions.CommentPermissions).EDIT)")
-    @PutMapping(Constants.Uls.API+Constants.Uls.POST+Constants.Uls.POST_ID +Constants.Uls.COMMENT)
+    @PutMapping(Constants.Urls.API+ Constants.Urls.POST+ Constants.Urls.POST_ID + Constants.Urls.COMMENT)
     public CommentDTOExtended updateComment (
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // nullable
             @PathVariable(Constants.PathVariables.POST_ID) long postId,
@@ -103,7 +103,7 @@ public class CommentController {
     }
 
     @PreAuthorize("@blogSecurityService.hasCommentPermission(#commentId, #userAccount, T(com.github.nkonev.blog.security.permissions.CommentPermissions).DELETE)")
-    @DeleteMapping(Constants.Uls.API+Constants.Uls.POST+Constants.Uls.POST_ID +Constants.Uls.COMMENT+Constants.Uls.COMMENT_ID)
+    @DeleteMapping(Constants.Urls.API+ Constants.Urls.POST+ Constants.Urls.POST_ID + Constants.Urls.COMMENT+ Constants.Urls.COMMENT_ID)
     public long deleteComment(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // null if not authenticated
             @PathVariable(Constants.PathVariables.POST_ID) long postId,
