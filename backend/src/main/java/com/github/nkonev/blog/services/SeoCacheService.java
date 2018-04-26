@@ -78,7 +78,7 @@ public class SeoCacheService {
 
     /**
      *
-     * @param path "/", "/poat/3"
+     * @param path "/", "/post/3"
      * @param query "", "?a=b&c=d"
      * @return
      */
