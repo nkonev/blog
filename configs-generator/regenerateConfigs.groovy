@@ -190,7 +190,7 @@ custom:
     images.clean:
       cron: "0 * * * * *"
     rendered.cache.refresh:
-      cron: "*/5 * * * * *"
+      cron: "0 */5 * * * *"
 """
     return str
 }
