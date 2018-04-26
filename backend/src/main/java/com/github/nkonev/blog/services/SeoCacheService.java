@@ -95,7 +95,7 @@ public class SeoCacheService {
         setHtml(getRedisKeyForIndex(), getRendrered(Constants.Urls.ROOT, ""));
 
         postRepository.findAll().forEach(post -> {
-            setHtml(getRedisKeyHtmlForPost(post.getId()), getRendrered(Constants.Urls.API + Constants.Urls.POST + "/"+post.getId(), ""));
+            setHtml(getRedisKeyHtmlForPost(post.getId()), getRendrered(Constants.Urls.POST + "/"+post.getId(), ""));
         });
         LOGGER.info("Finished refreshing page cache");
     }
