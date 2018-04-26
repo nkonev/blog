@@ -112,21 +112,24 @@ public class PostIT extends AbstractItTestRunner {
         private static final String COMMENT_EDIT_TEXTAREA_SELECTOR = ".comment-edit textarea";
 
         public void addComment(String text) {
-            final int waitSec = 10;
-            $(COMMENT_EDIT_TEXTAREA_SELECTOR)
-                    .waitUntil(Condition.exist, waitSec * 1000)
-                    .waitUntil(Condition.visible, waitSec * 1000)
-                    .waitUntil(Condition.enabled, waitSec * 1000)
-                    .scrollTo()
-                    .setValue(text);
-            $(".comment-command-buttons .ok-btn")
-                    .waitUntil(Condition.exist, waitSec * 1000)
-                    .waitUntil(Condition.visible, waitSec * 1000)
-                    .waitUntil(Condition.enabled, waitSec * 1000)
-                    .scrollTo()
-                    .click();
+            FailoverUtils.retry(2, () -> {
+                final int waitSec = 10;
+                $(COMMENT_EDIT_TEXTAREA_SELECTOR)
+                        .waitUntil(Condition.exist, waitSec * 1000)
+                        .waitUntil(Condition.visible, waitSec * 1000)
+                        .waitUntil(Condition.enabled, waitSec * 1000)
+                        .scrollTo()
+                        .setValue(text);
+                $(".comment-command-buttons .ok-btn")
+                        .waitUntil(Condition.exist, waitSec * 1000)
+                        .waitUntil(Condition.visible, waitSec * 1000)
+                        .waitUntil(Condition.enabled, waitSec * 1000)
+                        .scrollTo()
+                        .click();
 
-            $(COMMENT_LIST_SELECTOR).shouldHave(Condition.text(text));
+                $(COMMENT_LIST_SELECTOR).shouldHave(Condition.text(text));
+                return null;
+            });
         }
 
         public void checkPaginator(int expected){
