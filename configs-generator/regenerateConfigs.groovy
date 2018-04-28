@@ -257,6 +257,7 @@ ${TEST_USERS_SNIPPET}
 ${DATA_STORE_SNIPPET(true, 'validate')}
 ${MANAGEMENT_SNIPPET(true)}
 ${FRONT_CONFIGURATION_SNIPPET}
+custom.prerender.enable: true
 """;
 writeAndLog(BACKEND_TEST_YML_FILE, BACKEND_TEST_YML_CONTENT);
 

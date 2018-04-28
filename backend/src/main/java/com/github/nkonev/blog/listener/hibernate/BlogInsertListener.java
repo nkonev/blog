@@ -10,7 +10,10 @@ import org.hibernate.persister.entity.EntityPersister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+
+import static com.github.nkonev.blog.Constants.CUSTOM_PRERENDER_ENABLE;
 
 @Component
 public class BlogInsertListener implements PostInsertEventListener {
@@ -28,6 +31,9 @@ public class BlogInsertListener implements PostInsertEventListener {
     @Autowired
     private SeoCacheService seoCacheService;
 
+    @Autowired
+    private Environment environment;
+
     @Override
     public void onPostInsert(PostInsertEvent event) {
         LOGGER.trace("object: {}", event.getEntity());
@@ -35,8 +41,10 @@ public class BlogInsertListener implements PostInsertEventListener {
             Post post = (Post) event.getEntity();
             PostDTO postDTO = postConverter.convertToPostDTOWithCleanTags(post);
             webSocketService.sendInsertPostEvent(postDTO);
-            seoCacheService.rewriteCachedPost(post.getId());
-            seoCacheService.rewriteCachedIndex();
+            if (environment.getProperty(CUSTOM_PRERENDER_ENABLE, boolean.class, false)) {
+                seoCacheService.rewriteCachedPost(post.getId());
+                seoCacheService.rewriteCachedIndex();
+            }
             LOGGER.debug("sql insert: {}", post);
         }
     }

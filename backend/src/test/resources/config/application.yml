@@ -140,3 +140,4 @@ custom.frontend:
     titleTemplate: "%s | owner's blog"
     header: "Owner's blog"
 
+custom.prerender.enable: true
