@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.validation.annotation.Validated;
 import javax.validation.constraints.NotNull;
+import java.util.Collection;
 import java.util.Optional;
 
 @Validated
@@ -27,4 +28,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Post getRight(@Param("post") @NotNull Long post);
 
     Post findByTitle(@NotNull String title);
+
+    @Query("select p.id from Post p")
+    Collection<Long> findPostIds();
 }

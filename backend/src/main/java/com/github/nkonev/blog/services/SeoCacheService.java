@@ -97,8 +97,8 @@ public class SeoCacheService {
         LOGGER.info("Starting refreshing page cache");
         setHtml(getRedisKeyForIndex(), getRendrered(Constants.Urls.ROOT, ""));
 
-        postRepository.findAll().forEach(post -> {
-            setHtmlForPost(post.getId());
+        postRepository.findPostIds().forEach(postId -> {
+            setHtmlForPost(postId);
         });
         LOGGER.info("Finished refreshing page cache");
     }
