@@ -6,30 +6,43 @@ import com.github.nkonev.blog.AbstractUtTestRunner;
 import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.TestConstants;
 import com.github.nkonev.blog.dto.PostDTO;
+import com.github.nkonev.blog.dto.PostDTOWithAuthorization;
 import com.github.nkonev.blog.dto.UserAccountDTO;
 import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
 import com.github.nkonev.blog.repo.jpa.PostRepository;
 import com.github.nkonev.blog.services.SeoCacheService;
 import com.github.nkonev.blog.utils.PageUtils;
+import org.hamcrest.core.StringStartsWith;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.web.client.ExpectedCount;
+import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.util.UriUtils;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 
+import static com.github.nkonev.blog.services.SeoCacheService.RENDERTRON_HTML;
 import static org.hamcrest.core.Is.is;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -53,6 +66,18 @@ public class PostControllerTest extends AbstractUtTestRunner {
 
     @Autowired
     private SeoCacheService seoCacheService;
+
+    private MockRestServiceServer mockServer;
+
+    @Before
+    public void setUp() {
+        mockServer = MockRestServiceServer.createServer(restTemplate);
+    }
+
+    @After
+    public void tearDown(){
+        redisTemplate.delete(RENDERTRON_HTML+"*");
+    }
 
     public static class PostDtoBuilder {
         public static class Instance {
@@ -155,6 +180,16 @@ public class PostControllerTest extends AbstractUtTestRunner {
     @WithUserDetails(TestConstants.USER_ADMIN)
     @Test
     public void testFulltextSearchHostPort() throws Exception {
+        final String newPostRendered = "<body>Post Rendered</body>";
+        mockServer.expect(requestTo(new StringStartsWith("http://rendertron.example.com:3000/http://127.0.0.1:9080/post/")))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess(newPostRendered, MediaType.TEXT_HTML));
+
+        final String newIndexRendered = "<body>Index Rendered</body>";
+        mockServer.expect(requestTo("http://rendertron.example.com:3000/http://127.0.0.1:9080"))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess(newIndexRendered, MediaType.TEXT_HTML));
+
         UserAccountDetailsDTO userAccountDetailsDTO = (UserAccountDetailsDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         postController.updatePost(userAccountDetailsDTO, new PostDTO(500L, "edited for search host port", "A new host for test www.google.com:80 with port too", "", null, null));
         postRepository.flush();
@@ -200,6 +235,17 @@ public class PostControllerTest extends AbstractUtTestRunner {
     @WithUserDetails(TestConstants.USER_ALICE)
     @Test
     public void testUserCanAddAndUpdateAndCannotDeletePost() throws Exception {
+        final String newPostRendered = "<body>Post Rendered</body>";
+        mockServer.expect(ExpectedCount.times(2), requestTo(new StringStartsWith("http://rendertron.example.com:3000/http://127.0.0.1:9080/post/")))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess(newPostRendered, MediaType.TEXT_HTML));
+
+        final String newIndexRendered = "<body>Index Rendered</body>";
+        mockServer.expect(ExpectedCount.times(2), requestTo("http://rendertron.example.com:3000/http://127.0.0.1:9080"))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess(newIndexRendered, MediaType.TEXT_HTML));
+
+
         final String oldDataIndex = "<html>bad old index data</html>";
         redisTemplate.opsForValue().set(SeoCacheService.getRedisKeyForIndex(), oldDataIndex);
 
@@ -214,7 +260,13 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andExpect(jsonPath("$.canEdit").value(true))
                 .andExpect(jsonPath("$.canDelete").value(false))
                 .andReturn();
+
         Assert.assertFalse(oldDataIndex.equals(redisTemplate.opsForValue().get(SeoCacheService.getRedisKeyForIndex())));
+        Assert.assertEquals(newIndexRendered, redisTemplate.opsForValue().get(SeoCacheService.getRedisKeyForIndex()));
+
+        long id = objectMapper.readValue(addPostRequest.getResponse().getContentAsString(), PostDTOWithAuthorization.class).getId();
+        Assert.assertTrue(redisTemplate.hasKey(SeoCacheService.getRedisKeyHtmlForPost(id)));
+
         String addStr = addPostRequest.getResponse().getContentAsString();
         LOGGER.info(addStr);
         PostDTO added = objectMapper.readValue(addStr, PostDTO.class);
@@ -255,12 +307,15 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andReturn();
         LOGGER.info(updatePostRequest.getResponse().getContentAsString());
         Assert.assertFalse(oldCachedPost.equals(redisTemplate.opsForValue().get(SeoCacheService.getRedisKeyHtmlForPost(added.getId()))));
+        Assert.assertEquals(newPostRendered, redisTemplate.opsForValue().get(SeoCacheService.getRedisKeyHtmlForPost(id)));
 
         MvcResult deleteResult = mockMvc.perform(
                 delete(Constants.Urls.API+ Constants.Urls.POST+"/"+added.getId()).with(csrf())
         )
                 .andExpect(status().isForbidden())
                 .andReturn();
+
+        mockServer.verify();
     }
 
     @Test(expected = AuthenticationCredentialsNotFoundException.class)
@@ -384,6 +439,17 @@ public class PostControllerTest extends AbstractUtTestRunner {
     @WithUserDetails(TestConstants.USER_ADMIN)
     @Test
     public void testAdminCanUpdateForeignPost() throws Exception {
+        final String newPostRendered = "<body>Post Rendered</body>";
+        mockServer.expect(requestTo(new StringStartsWith("http://rendertron.example.com:3000/http://127.0.0.1:9080/post/")))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess(newPostRendered, MediaType.TEXT_HTML));
+
+        final String newIndexRendered = "<body>Index Rendered</body>";
+        mockServer.expect(requestTo("http://rendertron.example.com:3000/http://127.0.0.1:9080"))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess(newIndexRendered, MediaType.TEXT_HTML));
+
+
         final long foreignPostId = FOREIGN_POST;
 
         MvcResult getPostRequest = mockMvc.perform(
@@ -410,7 +476,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andReturn();
         String addStr = updatePostRequest.getResponse().getContentAsString();
         LOGGER.info(addStr);
-
+        mockServer.verify();
     }
 
     @WithUserDetails(TestConstants.USER_ADMIN)
@@ -433,6 +499,10 @@ public class PostControllerTest extends AbstractUtTestRunner {
                     .andReturn();
         }
 
+        final String newIndexRendered = "<body>Index Rendered</body>";
+        mockServer.expect(requestTo("http://rendertron.example.com:3000/http://127.0.0.1:9080"))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess(newIndexRendered, MediaType.TEXT_HTML));
 
         MvcResult deletePostRequest = mockMvc.perform(
                 delete(Constants.Urls.API+ Constants.Urls.POST+"/"+foreignPostId).with(csrf())
@@ -448,6 +518,17 @@ public class PostControllerTest extends AbstractUtTestRunner {
     @WithUserDetails(TestConstants.USER_ALICE)
     @Test
     public void xssText() throws Exception {
+        final String newPostRendered = "<body>Post Rendered</body>";
+        mockServer.expect(requestTo(new StringStartsWith("http://rendertron.example.com:3000/http://127.0.0.1:9080/post/")))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess(newPostRendered, MediaType.TEXT_HTML));
+
+        final String newIndexRendered = "<body>Index Rendered</body>";
+        mockServer.expect(requestTo("http://rendertron.example.com:3000/http://127.0.0.1:9080"))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess(newIndexRendered, MediaType.TEXT_HTML));
+
+
         MvcResult addPostRequest = mockMvc.perform(
                 post(Constants.Urls.API+ Constants.Urls.POST)
                         .content(objectMapper.writeValueAsString(PostDtoBuilder.startBuilding().text("Harmless <script>alert('XSS')</script>text").build()))

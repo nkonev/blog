@@ -7,19 +7,14 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultHandler;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import javax.servlet.http.HttpSession;
 import java.net.URI;
-import java.util.UUID;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -101,14 +96,14 @@ public abstract class AbstractImageUploadControllerTest extends AbstractUtTestRu
         LOGGER.info("responsed image url: {}", urlResponse);
 
         RequestEntity requestEntity1 = RequestEntity.get(URI.create(urlResponse)).build();
-        ResponseEntity<byte[]> re1 = restTemplate.exchange(requestEntity1, byte[].class);
+        ResponseEntity<byte[]> re1 = testRestTemplate.exchange(requestEntity1, byte[].class);
         Assert.assertEquals(200, re1.getStatusCodeValue());
 
         String etag = re1.getHeaders().getFirst(org.springframework.http.HttpHeaders.ETAG);
         Assert.assertNotNull(etag);
 
         RequestEntity requestEntity2 = RequestEntity.get(URI.create(urlResponse)).header(org.springframework.http.HttpHeaders.IF_NONE_MATCH, etag).build();
-        ResponseEntity<byte[]> re2 = restTemplate.exchange(requestEntity2, byte[].class);
+        ResponseEntity<byte[]> re2 = testRestTemplate.exchange(requestEntity2, byte[].class);
         Assert.assertEquals(304, re2.getStatusCodeValue());
     }
 

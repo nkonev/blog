@@ -48,7 +48,7 @@ public class BlogErrorControllerTest extends AbstractUtTestRunner {
      */
     @Test
     public void testNotAuthorized() throws Exception {
-        ResponseEntity<String> responseEntity = restTemplate.getForEntity(urlWithContextPath()+ Constants.Urls.API+ Constants.Urls.PROFILE, String.class);
+        ResponseEntity<String> responseEntity = testRestTemplate.getForEntity(urlWithContextPath()+ Constants.Urls.API+ Constants.Urls.PROFILE, String.class);
         String str = responseEntity.getBody();
         Assert.assertEquals(401, responseEntity.getStatusCodeValue());
 
@@ -66,7 +66,7 @@ public class BlogErrorControllerTest extends AbstractUtTestRunner {
 
     @Test
     public void testNotFoundJs() throws Exception {
-        ResponseEntity<String> responseEntity = restTemplate.getForEntity(urlWithContextPath()+"/not-exists", String.class);
+        ResponseEntity<String> responseEntity = testRestTemplate.getForEntity(urlWithContextPath()+"/not-exists", String.class);
         String str = responseEntity.getBody();
         Assert.assertEquals(404, responseEntity.getStatusCodeValue());
 
@@ -83,7 +83,7 @@ public class BlogErrorControllerTest extends AbstractUtTestRunner {
     public void test404Fallback() throws Exception {
         RequestEntity<Void> requestEntity = RequestEntity.<Void>get(new URI(urlWithContextPath()+"/not-exists")).accept(MediaType.TEXT_HTML).build();
 
-        ResponseEntity<String> responseEntity = restTemplate.exchange(requestEntity, String.class);
+        ResponseEntity<String> responseEntity = testRestTemplate.exchange(requestEntity, String.class);
         String str = responseEntity.getBody();
         Assert.assertEquals(200, responseEntity.getStatusCodeValue()); // we respond 200 for 404 fallback
 
@@ -95,7 +95,7 @@ public class BlogErrorControllerTest extends AbstractUtTestRunner {
 
     @Test
     public void testSqlExceptionIsHidden() throws Exception {
-        ResponseEntity<String> responseEntity = restTemplate.getForEntity(urlWithContextPath()+ Constants.Urls.API+ TestConstants.SQL_URL, String.class);
+        ResponseEntity<String> responseEntity = testRestTemplate.getForEntity(urlWithContextPath()+ Constants.Urls.API+ TestConstants.SQL_URL, String.class);
         String str = responseEntity.getBody();
         Assert.assertEquals(500, responseEntity.getStatusCodeValue());
 
@@ -112,7 +112,7 @@ public class BlogErrorControllerTest extends AbstractUtTestRunner {
 
     @Test
     public void testUserDetailsWithPasswordIsNotSerialized() throws Exception {
-        ResponseEntity<String> responseEntity = restTemplate.getForEntity(urlWithContextPath()+ Constants.Urls.API+TestConstants.USER_DETAILS, String.class);
+        ResponseEntity<String> responseEntity = testRestTemplate.getForEntity(urlWithContextPath()+ Constants.Urls.API+TestConstants.USER_DETAILS, String.class);
         String str = responseEntity.getBody();
         Assert.assertEquals(500, responseEntity.getStatusCodeValue());
 

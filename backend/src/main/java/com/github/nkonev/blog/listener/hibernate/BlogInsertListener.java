@@ -36,6 +36,7 @@ public class BlogInsertListener implements PostInsertEventListener {
             PostDTO postDTO = postConverter.convertToPostDTOWithCleanTags(post);
             webSocketService.sendInsertPostEvent(postDTO);
             seoCacheService.rewriteCachedPost(post.getId());
+            seoCacheService.rewriteCachedIndex();
             LOGGER.debug("sql insert: {}", post);
         }
     }

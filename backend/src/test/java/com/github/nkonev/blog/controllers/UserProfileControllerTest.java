@@ -270,7 +270,7 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
                 .get(new URI(urlWithContextPath() + Constants.Urls.API + Constants.Urls.SESSIONS + "?userId=1"))
                 .header(CommonTestConstants.HEADER_COOKIE, headerValue).build();
 
-        ResponseEntity<String> responseEntity = restTemplate.exchange(requestEntity, String.class);
+        ResponseEntity<String> responseEntity = testRestTemplate.exchange(requestEntity, String.class);
         String str = responseEntity.getBody();
 
         Assert.assertEquals(403, responseEntity.getStatusCodeValue());
@@ -290,7 +290,7 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
                 .get(new URI(urlWithContextPath() + Constants.Urls.API + Constants.Urls.SESSIONS + "?userId=1"))
                 .header(CommonTestConstants.HEADER_COOKIE, headerValue).build();
 
-        ResponseEntity<String> responseEntity = restTemplate.exchange(requestEntity, String.class);
+        ResponseEntity<String> responseEntity = testRestTemplate.exchange(requestEntity, String.class);
         String str = responseEntity.getBody();
         Assert.assertEquals(200, responseEntity.getStatusCodeValue());
     }

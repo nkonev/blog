@@ -27,6 +27,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+
 import java.net.HttpCookie;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -60,7 +62,10 @@ public abstract class AbstractUtTestRunner {
     protected UserConfirmationTokenRepository userConfirmationTokenRepository;
 
     @Autowired
-    protected TestRestTemplate restTemplate;
+    protected TestRestTemplate testRestTemplate;
+
+    @Autowired
+    protected RestTemplate restTemplate;
 
     @Value("${local.management.port}")
     protected int mgmtPort;

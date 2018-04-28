@@ -3,26 +3,26 @@ package com.github.nkonev.blog.services;
 import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.config.CustomConfig;
 import com.github.nkonev.blog.config.PrerenderConfig;
-import com.github.nkonev.blog.entity.jpa.Post;
 import com.github.nkonev.blog.repo.jpa.PostRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-
+import java.net.URI;
+import java.net.URISyntaxException;
 import static com.github.nkonev.blog.Constants.Urls.POST;
 import static com.github.nkonev.blog.utils.ServletUtils.nullToEmpty;
 
 @Service
 public class SeoCacheService {
 
-    private static final String RENDERTRON_HTML = "rendertron_html_";
+    public static final String RENDERTRON_HTML = "rendertron_html_";
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
@@ -33,16 +33,11 @@ public class SeoCacheService {
     @Autowired
     private CustomConfig customConfig;
 
+    @Autowired
     private RestTemplate restTemplate;
 
     @Autowired
     private PostRepository postRepository;
-
-    @PostConstruct
-    public void pc() {
-        restTemplate = new RestTemplate();
-    }
-
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SeoCacheService.class);
 
@@ -84,11 +79,18 @@ public class SeoCacheService {
      * @return
      */
     public String getRendrered(String path, String query){
-        final String rendertronUrl = prerenderConfig.getPrerenderServiceUrl()
-                + customConfig.getBaseUrl() + path + query;
-        LOGGER.info("Requesting {} from rendertron", rendertronUrl);
-        final ResponseEntity<String> re = restTemplate.getForEntity(rendertronUrl, String.class);
-        return re.getBody();
+        final String rendertronUrl = prerenderConfig.getPrerenderServiceUrl() + customConfig.getBaseUrl() + path + query;
+        try {
+            final RequestEntity<Void> requestEntity = RequestEntity.<Void>get(new URI(rendertronUrl))
+                    .accept(MediaType.TEXT_HTML)
+                    .build();
+            LOGGER.info("Requesting {} from rendertron", rendertronUrl);
+            final ResponseEntity<String> re = restTemplate.exchange(requestEntity, String.class);
+            return re.getBody();
+
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void refreshPageCache(){
@@ -106,7 +108,16 @@ public class SeoCacheService {
         setHtml(getRedisKeyHtmlForPost(postId), getRendrered(Constants.Urls.POST + "/"+postId, ""));
     }
 
+    private void setHtmlForIndex() {
+        setHtml(getRedisKeyForIndex(), getRendrered("", ""));
+    }
+
     public void rewriteCachedPost(Long id) {
         setHtmlForPost(id);
     }
+
+    public void rewriteCachedIndex() {
+        setHtmlForIndex();
+    }
+
 }

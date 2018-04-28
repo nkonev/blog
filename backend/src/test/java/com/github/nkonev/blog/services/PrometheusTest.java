@@ -17,7 +17,7 @@ public class PrometheusTest extends AbstractUtTestRunner {
     @Test
     public void testPrometheus() throws Exception {
 
-        ResponseEntity<String> entity = this.restTemplate.exchange(
+        ResponseEntity<String> entity = this.testRestTemplate.exchange(
                 RequestEntity.get(new URI("http://127.0.0.1:"+mgmtPort+"/actuator/prometheus"))
                         .accept(MediaType.TEXT_PLAIN).build(), String.class
         );

@@ -35,6 +35,7 @@ public class BlogUpdateListener implements PostUpdateEventListener {
             PostDTO postDTO = postConverter.convertToPostDTOWithCleanTags(post);
             webSocketService.sendUpdatePostEvent(postDTO);
             seoCacheService.rewriteCachedPost(post.getId());
+            seoCacheService.rewriteCachedIndex();
             LOGGER.debug("sql update: {}", post);
         }
     }
