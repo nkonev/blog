@@ -3,6 +3,7 @@ package com.github.nkonev.blog.services;
 import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.config.CustomConfig;
 import com.github.nkonev.blog.config.PrerenderConfig;
+import com.github.nkonev.blog.entity.jpa.Post;
 import com.github.nkonev.blog.repo.jpa.PostRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,8 +96,17 @@ public class SeoCacheService {
         setHtml(getRedisKeyForIndex(), getRendrered(Constants.Urls.ROOT, ""));
 
         postRepository.findAll().forEach(post -> {
-            setHtml(getRedisKeyHtmlForPost(post.getId()), getRendrered(Constants.Urls.POST + "/"+post.getId(), ""));
+            setHtmlForPost(post.getId());
         });
         LOGGER.info("Finished refreshing page cache");
+    }
+
+    private void setHtmlForPost(Long postId) {
+        if (postId == null) {return;}
+        setHtml(getRedisKeyHtmlForPost(postId), getRendrered(Constants.Urls.POST + "/"+postId, ""));
+    }
+
+    public void rewriteCachedPost(Long id) {
+        setHtmlForPost(id);
     }
 }
