@@ -38,10 +38,8 @@ public class TaskConfig {
     private SeoCacheService seoCacheService;
 
     private static final String IMAGES_CLEAN_TASK = "imagesCleanTask";
-    private static final String REFRESH_CACHE_CLEAN_TASK = "refreshCacheTask";
 
     public static final Logger LOGGER_IMAGE_CLEAN_TASK = LoggerFactory.getLogger(IMAGES_CLEAN_TASK);
-    public static final Logger LOGGER_REFRESH_CACHE_CLEAN_TASK = LoggerFactory.getLogger(REFRESH_CACHE_CLEAN_TASK);
 
     @Bean
     public LockProvider lockProvider(DataSource dataSource) {
@@ -72,6 +70,10 @@ public class TaskConfig {
 
         LOGGER_IMAGE_CLEAN_TASK.info("Cleared {} post content images(created before 1 day ago); {} post title images; {} user avatar images", deletedPostContent, deletedPostTitles, deletedAvatarImages);
     }
+
+    private static final String REFRESH_CACHE_CLEAN_TASK = "refreshCacheTask";
+    public static final Logger LOGGER_REFRESH_CACHE_CLEAN_TASK = LoggerFactory.getLogger(REFRESH_CACHE_CLEAN_TASK);
+
 
     @Scheduled(cron = "${custom.tasks.rendered.cache.refresh.cron}")
     @SchedulerLock(name = REFRESH_CACHE_CLEAN_TASK)

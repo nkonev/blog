@@ -34,10 +34,8 @@ public class BlogDeleteListener implements PostDeleteEventListener {
         if (event.getEntity() instanceof Post) {
             Post post = (Post) event.getEntity();
             webSocketService.sendDeletePostEvent(post.getId());
-            if (environment.getProperty(CUSTOM_PRERENDER_ENABLE, boolean.class, false)) {
-                seoCacheService.removeCachesForPost(post.getId());
-                seoCacheService.rewriteCachedIndex();
-            }
+            seoCacheService.removeCachesForPost(post.getId());
+            seoCacheService.rewriteCachedIndex();
             LOGGER.debug("sql delete: {}", post);
         }
 

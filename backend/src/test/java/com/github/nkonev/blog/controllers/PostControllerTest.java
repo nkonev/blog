@@ -30,15 +30,12 @@ import org.springframework.test.web.client.ExpectedCount;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.util.UriUtils;
-
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
-
-import static com.github.nkonev.blog.services.SeoCacheService.RENDERTRON_HTML;
-import static org.hamcrest.core.Is.is;
+import static com.github.nkonev.blog.utils.SeoCacheKeyUtils.RENDERTRON_HTML;
+import static com.github.nkonev.blog.utils.SeoCacheKeyUtils.getRedisKeyForIndex;
+import static com.github.nkonev.blog.utils.SeoCacheKeyUtils.getRedisKeyHtmlForPost;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
@@ -247,7 +244,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
 
 
         final String oldDataIndex = "<html>bad old index data</html>";
-        redisTemplate.opsForValue().set(SeoCacheService.getRedisKeyForIndex(), oldDataIndex);
+        redisTemplate.opsForValue().set(getRedisKeyForIndex(), oldDataIndex);
 
         MvcResult addPostRequest = mockMvc.perform(
                 post(Constants.Urls.API+ Constants.Urls.POST)
@@ -261,11 +258,11 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andExpect(jsonPath("$.canDelete").value(false))
                 .andReturn();
 
-        Assert.assertFalse(oldDataIndex.equals(redisTemplate.opsForValue().get(SeoCacheService.getRedisKeyForIndex())));
-        Assert.assertEquals(newIndexRendered, redisTemplate.opsForValue().get(SeoCacheService.getRedisKeyForIndex()));
+        Assert.assertFalse(oldDataIndex.equals(redisTemplate.opsForValue().get(getRedisKeyForIndex())));
+        Assert.assertEquals(newIndexRendered, redisTemplate.opsForValue().get(getRedisKeyForIndex()));
 
         long id = objectMapper.readValue(addPostRequest.getResponse().getContentAsString(), PostDTOWithAuthorization.class).getId();
-        Assert.assertTrue(redisTemplate.hasKey(SeoCacheService.getRedisKeyHtmlForPost(id)));
+        Assert.assertTrue(redisTemplate.hasKey(getRedisKeyHtmlForPost(id)));
 
         String addStr = addPostRequest.getResponse().getContentAsString();
         LOGGER.info(addStr);
@@ -292,7 +289,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
         final String updatedTitle = "updated title";
         final String oldCachedPost = "<html>old post data</html>";
         added.setTitle(updatedTitle);
-        redisTemplate.opsForValue().set(SeoCacheService.getRedisKeyHtmlForPost(added.getId()), oldCachedPost);
+        redisTemplate.opsForValue().set(getRedisKeyHtmlForPost(added.getId()), oldCachedPost);
         MvcResult updatePostRequest = mockMvc.perform(
                 put(Constants.Urls.API+ Constants.Urls.POST)
                         .content(objectMapper.writeValueAsString(added))
@@ -306,8 +303,8 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andExpect(jsonPath("$.canDelete").value(false))
                 .andReturn();
         LOGGER.info(updatePostRequest.getResponse().getContentAsString());
-        Assert.assertFalse(oldCachedPost.equals(redisTemplate.opsForValue().get(SeoCacheService.getRedisKeyHtmlForPost(added.getId()))));
-        Assert.assertEquals(newPostRendered, redisTemplate.opsForValue().get(SeoCacheService.getRedisKeyHtmlForPost(id)));
+        Assert.assertFalse(oldCachedPost.equals(redisTemplate.opsForValue().get(getRedisKeyHtmlForPost(added.getId()))));
+        Assert.assertEquals(newPostRendered, redisTemplate.opsForValue().get(getRedisKeyHtmlForPost(id)));
 
         MvcResult deleteResult = mockMvc.perform(
                 delete(Constants.Urls.API+ Constants.Urls.POST+"/"+added.getId()).with(csrf())

@@ -24,7 +24,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import static com.github.nkonev.blog.services.SeoCacheService.getRedisKeyHtml;
+
+import static com.github.nkonev.blog.utils.SeoCacheKeyUtils.getRedisKeyHtml;
 import static com.github.nkonev.blog.utils.ServletUtils.getQuery;
 import static org.springframework.util.StringUtils.isEmpty;
 
