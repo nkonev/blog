@@ -10,9 +10,7 @@ const NODE_ENV = process.env.NODE_ENV || DEVELOPMENT_ENV;
 const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const WebpackOnBuildPlugin = require('on-build-webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const LiveReloadPlugin = require('webpack-livereload-plugin');
-
 
 module.exports = {
     cache: true,
@@ -63,14 +61,6 @@ module.exports = {
             var currentdate = new Date();
             console.log("Built with environment:", NODE_ENV, "at", currentdate.toLocaleString());
         }),
-        new ExtractTextPlugin({
-            filename: '[name].css'
-        }),
-        new webpack.ProvidePlugin({
-            // "$":"jquery",
-            // "jQuery":"jquery",
-            // "window.jQuery":"jquery"
-        }),
     ],
 
     resolve: {
@@ -98,17 +88,11 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                use: ExtractTextPlugin.extract({
-                    fallback: "style-loader",
-                    use: "css-loader?sourceMap"
-                })
+                use: ['vue-style-loader', "style-loader?sourceMap", "css-loader"]
             },
             {
                 test: /\.styl$/,
-                use: ExtractTextPlugin.extract({
-                    fallback: "style-loader",
-                    use: ["css-loader?sourceMap", 'stylus-loader']
-                })
+                use: ['vue-style-loader', "style-loader?sourceMap", "css-loader", 'stylus-loader']
             },
             {
                 test: /\.(ttf|eot|woff|woff2)$/,
@@ -147,9 +131,6 @@ module.exports = {
             {
                 test: /\.vue$/,
                 loader: 'vue-loader',
-                options: {
-                    extractCSS: true
-                }
             }
         ]
 
