@@ -12,6 +12,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const WebpackOnBuildPlugin = require('on-build-webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const LiveReloadPlugin = require('webpack-livereload-plugin');
+const { VueLoaderPlugin } = require('vue-loader')
 
 module.exports = {
     cache: true,
@@ -52,6 +53,7 @@ module.exports = {
     devtool: NODE_ENV == DEVELOPMENT_ENV ? "source-map" : false,
 
     plugins: [
+        new VueLoaderPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /^$/),
         new CleanWebpackPlugin([buildDir], {
@@ -103,7 +105,7 @@ module.exports = {
                 })
             },
             {
-                test: /\.styl$/,
+                test: /\.styl|stylus$/,
                 use: ExtractTextPlugin.extract({
                     fallback: "style-loader",
                     use: ["css-loader?sourceMap", 'stylus-loader']
