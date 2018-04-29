@@ -95,7 +95,7 @@ public class SeoCacheService {
 
     public void refreshPageCache(){
         LOGGER.info("Starting refreshing page cache");
-        setHtml(getRedisKeyForIndex(), getRendrered(Constants.Urls.ROOT, ""));
+        setHtmlForIndex();
 
         postRepository.findPostIds().forEach(postId -> {
             setHtmlForPost(postId);
@@ -109,7 +109,7 @@ public class SeoCacheService {
     }
 
     private void setHtmlForIndex() {
-        setHtml(getRedisKeyForIndex(), getRendrered("", ""));
+        setHtml(getRedisKeyForIndex(), getRendrered(Constants.Urls.ROOT, ""));
     }
 
     public void rewriteCachedPost(Long id) {
