@@ -1,5 +1,8 @@
 package com.github.nkonev.blog.services;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public class SeoCacheServiceNoop implements SeoCacheService {
     @Override
     public String getHtmlFromCache(String key) {
