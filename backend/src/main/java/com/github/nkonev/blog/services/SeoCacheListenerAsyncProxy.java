@@ -6,7 +6,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Primary
-@ConditionalOnProperty("${CUSTOM_HIBERNATE_LISTENER_ENABLE_ASYNC_CACHE_REFRESH}")
+@ConditionalOnProperty("${custom.hibernate.listener.enable.async.cache.refresh}")
 @Component
 public class SeoCacheListenerAsyncProxy extends SeoCacheListenerSyncProxy implements SeoCacheListenerProxy {
 
