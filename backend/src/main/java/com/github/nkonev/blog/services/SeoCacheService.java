@@ -1,18 +1,18 @@
 package com.github.nkonev.blog.services;
 
 
+import javax.servlet.http.HttpServletRequest;
+
 public interface SeoCacheService {
     String getHtmlFromCache(String key);
 
-    void setHtml(String key, String value);
+    void removeAllPagesCache(Long postId);
 
-    void removeCachesForPost(Long postId);
-
-    String getRendrered(String path, String query);
-
-    void refreshPageCache();
+    void refreshAllPagesCache();
 
     void rewriteCachedPost(Long id);
 
     void rewriteCachedIndex();
+
+    String rewriteCachedPost(HttpServletRequest request);
 }

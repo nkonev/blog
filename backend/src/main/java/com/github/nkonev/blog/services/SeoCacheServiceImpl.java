@@ -16,12 +16,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import static com.github.nkonev.blog.Constants.CUSTOM_PRERENDER_ENABLE;
 import static com.github.nkonev.blog.utils.SeoCacheKeyUtils.getRedisKeyForIndex;
+import static com.github.nkonev.blog.utils.SeoCacheKeyUtils.getRedisKeyHtml;
 import static com.github.nkonev.blog.utils.SeoCacheKeyUtils.getRedisKeyHtmlForPost;
+import static com.github.nkonev.blog.utils.ServletUtils.getQuery;
 
 @ConditionalOnProperty(CUSTOM_PRERENDER_ENABLE)
 @Primary
@@ -50,14 +53,13 @@ public class SeoCacheServiceImpl implements SeoCacheService {
         return redisTemplate.opsForValue().get(key);
     }
 
-    @Override
-    public void setHtml(String key, String value){
+    private void setHtml(String key, String value){
         redisTemplate.opsForValue().set(key, value);
         redisTemplate.expire(key, prerenderConfig.getCacheExpire(), prerenderConfig.getCacheExpireTimeUnit());
     }
 
     @Override
-    public void removeCachesForPost(Long postId) {
+    public void removeAllPagesCache(Long postId) {
         if (postId != null){
             redisTemplate.delete(getRedisKeyHtmlForPost(postId));
             redisTemplate.delete(getRedisKeyForIndex());
@@ -73,8 +75,7 @@ public class SeoCacheServiceImpl implements SeoCacheService {
      * @param query "", "?a=b&c=d"
      * @return
      */
-    @Override
-    public String getRendrered(String path, String query){
+    private String getRendrered(String path, String query){
         final String rendertronUrl = prerenderConfig.getPrerenderServiceUrl() + customConfig.getBaseUrl() + path + query;
         try {
             final RequestEntity<Void> requestEntity = RequestEntity.<Void>get(new URI(rendertronUrl))
@@ -90,7 +91,7 @@ public class SeoCacheServiceImpl implements SeoCacheService {
     }
 
     @Override
-    public void refreshPageCache(){
+    public void refreshAllPagesCache(){
         LOGGER.info("Starting refreshing page cache");
         rewriteCachedIndex();
 
@@ -108,4 +109,14 @@ public class SeoCacheServiceImpl implements SeoCacheService {
     public void rewriteCachedIndex() {
         setHtml(getRedisKeyForIndex(), getRendrered("", ""));
     }
+
+    @Override
+    public String rewriteCachedPost(HttpServletRequest request) {
+        final String key = getRedisKeyHtml(request);
+        final String path = request.getRequestURI();
+        final String value = getRendrered(path, getQuery(request));
+        setHtml(key, value);
+        return value;
+    }
+
 }

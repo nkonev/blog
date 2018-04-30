@@ -119,8 +119,7 @@ public class RendertronFilter extends GenericFilterBean {
             String value = seoCacheService.getHtmlFromCache(key);
 
             if (value==null) {
-                value = seoCacheService.getRendrered(path, getQuery(request));
-                seoCacheService.setHtml(key, value);
+                value = seoCacheService.rewriteCachedPost(request);
             }
             response.setHeader("Content-Type", "text/html; charset=utf-8");
             response.getWriter().print(value);

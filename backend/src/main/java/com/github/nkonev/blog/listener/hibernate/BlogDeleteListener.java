@@ -12,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import static com.github.nkonev.blog.Constants.CUSTOM_PRERENDER_ENABLE;
-
 @Component
 public class BlogDeleteListener implements PostDeleteEventListener {
     private static final long serialVersionUID = 3341150678491703105L;
@@ -34,7 +32,7 @@ public class BlogDeleteListener implements PostDeleteEventListener {
         if (event.getEntity() instanceof Post) {
             Post post = (Post) event.getEntity();
             webSocketService.sendDeletePostEvent(post.getId());
-            seoCacheService.removeCachesForPost(post.getId());
+            seoCacheService.removeAllPagesCache(post.getId());
             seoCacheService.rewriteCachedIndex();
             LOGGER.debug("sql delete: {}", post);
         }

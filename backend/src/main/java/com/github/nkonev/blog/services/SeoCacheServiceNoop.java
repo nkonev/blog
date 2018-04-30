@@ -2,6 +2,8 @@ package com.github.nkonev.blog.services;
 
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Service
 public class SeoCacheServiceNoop implements SeoCacheService {
     @Override
@@ -10,22 +12,12 @@ public class SeoCacheServiceNoop implements SeoCacheService {
     }
 
     @Override
-    public void setHtml(String key, String value) {
+    public void removeAllPagesCache(Long postId) {
 
     }
 
     @Override
-    public void removeCachesForPost(Long postId) {
-
-    }
-
-    @Override
-    public String getRendrered(String path, String query) {
-        return null;
-    }
-
-    @Override
-    public void refreshPageCache() {
+    public void refreshAllPagesCache() {
 
     }
 
@@ -37,5 +29,10 @@ public class SeoCacheServiceNoop implements SeoCacheService {
     @Override
     public void rewriteCachedIndex() {
 
+    }
+
+    @Override
+    public String rewriteCachedPost(HttpServletRequest request) {
+        return null;
     }
 }

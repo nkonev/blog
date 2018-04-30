@@ -78,7 +78,7 @@ public class TaskConfig {
     @Scheduled(cron = "${custom.tasks.rendered.cache.refresh.cron}")
     @SchedulerLock(name = REFRESH_CACHE_CLEAN_TASK)
     public void refreshCache(){
-        seoCacheService.refreshPageCache();
+        seoCacheService.refreshAllPagesCache();
     }
 
 }
