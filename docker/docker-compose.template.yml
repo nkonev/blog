@@ -36,6 +36,9 @@ services:
       - SPRING_MAIL_PASSWORD=password
       - CUSTOM_BASE-URL=http://blog:8098 # also used for prerender's forwardedURLPrefix
       - MANAGEMENT_HEALTH_MAIL_ENABLED=false
+      - CUSTOM_PRERENDER_CACHE-EXPIRE-TIME-UNIT=HOURS
+      - CUSTOM_PRERENDER_CACHE-EXPIRE=72
+      - CUSTOM_HIBERNATE_LISTENER_ENABLE_ASYNC_CACHE_REFRESH=true
     volumes :
       - ./www:/opt/blog/www
     ports:
