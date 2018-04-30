@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -109,9 +110,15 @@ public class BlogExceptionHandler {
                 e instanceof RemoteAuthenticationException
         ) {throw e;} // Spring Security has own exception handling
 
-        LOGGER.error("Unexpected exception", e);
+        if (e.getCause() instanceof IOException){
+            LOGGER.info("IOException: ", e.getMessage());
+        } else {
+            LOGGER.error("Unexpected exception", e);
+        }
 
         // response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "internal error");
+        if (!response.isCommitted()) {
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "internal error");
+        }
     }
 }
