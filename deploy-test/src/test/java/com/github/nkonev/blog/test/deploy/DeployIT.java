@@ -59,7 +59,6 @@ public class DeployIT {
     }
 
     private void dropVolumes(String stackName) throws InterruptedException, IOException {
-        launch("docker volume rm "+stackName+"_redis_prerender_prod_data_dir", processBuilder -> {}).waitFor();
         launch("docker volume rm "+stackName+"_redis_prod_data_dir", processBuilder -> {}).waitFor();
         launch("docker volume rm "+stackName+"_rabbitmq_prod_data_dir", processBuilder -> {}).waitFor();
         launch("docker volume rm "+stackName+"_postgresql_prod_data_dir", processBuilder -> {}).waitFor();
