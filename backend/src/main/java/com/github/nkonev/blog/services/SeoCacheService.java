@@ -10,9 +10,9 @@ public interface SeoCacheService {
 
     void refreshAllPagesCache();
 
-    void rewriteCachedPost(Long id);
+    void rewriteCachedPage(Long postId);
 
     void rewriteCachedIndex();
 
-    String rewriteCachedPost(HttpServletRequest request);
+    String rewriteCachedPage(HttpServletRequest request);
 }

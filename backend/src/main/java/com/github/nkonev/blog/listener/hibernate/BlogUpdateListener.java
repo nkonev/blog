@@ -14,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import static com.github.nkonev.blog.Constants.CUSTOM_PRERENDER_ENABLE;
-
 @Component
 public class BlogUpdateListener implements PostUpdateEventListener {
     private static final long serialVersionUID = 3341150678491703105L;
@@ -40,7 +38,7 @@ public class BlogUpdateListener implements PostUpdateEventListener {
             Post post = (Post) event.getEntity();
             PostDTO postDTO = postConverter.convertToPostDTOWithCleanTags(post);
             webSocketService.sendUpdatePostEvent(postDTO);
-            seoCacheService.rewriteCachedPost(post.getId());
+            seoCacheService.rewriteCachedPage(post.getId());
             seoCacheService.rewriteCachedIndex();
             LOGGER.debug("sql update: {}", post);
         }

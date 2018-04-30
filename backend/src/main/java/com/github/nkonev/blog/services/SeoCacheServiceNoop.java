@@ -22,7 +22,7 @@ public class SeoCacheServiceNoop implements SeoCacheService {
     }
 
     @Override
-    public void rewriteCachedPost(Long id) {
+    public void rewriteCachedPage(Long id) {
 
     }
 
@@ -32,7 +32,7 @@ public class SeoCacheServiceNoop implements SeoCacheService {
     }
 
     @Override
-    public String rewriteCachedPost(HttpServletRequest request) {
+    public String rewriteCachedPage(HttpServletRequest request) {
         return null;
     }
 }

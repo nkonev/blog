@@ -95,12 +95,12 @@ public class SeoCacheServiceImpl implements SeoCacheService {
         LOGGER.info("Starting refreshing page cache");
         rewriteCachedIndex();
 
-        postRepository.findPostIds().forEach(this::rewriteCachedPost);
+        postRepository.findPostIds().forEach(this::rewriteCachedPage);
         LOGGER.info("Finished refreshing page cache");
     }
 
     @Override
-    public void rewriteCachedPost(Long postId) {
+    public void rewriteCachedPage(Long postId) {
         if (postId == null) {return;}
         setHtml(getRedisKeyHtmlForPost(postId), getRendrered(Constants.Urls.POST + "/"+postId, ""));
     }
@@ -111,7 +111,7 @@ public class SeoCacheServiceImpl implements SeoCacheService {
     }
 
     @Override
-    public String rewriteCachedPost(HttpServletRequest request) {
+    public String rewriteCachedPage(HttpServletRequest request) {
         final String key = getRedisKeyHtml(request);
         final String path = request.getRequestURI();
         final String value = getRendrered(path, getQuery(request));

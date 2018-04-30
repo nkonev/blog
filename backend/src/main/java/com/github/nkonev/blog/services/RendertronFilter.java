@@ -8,12 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.GenericFilterBean;
-import org.springframework.web.servlet.HandlerInterceptor;
-import javax.annotation.PostConstruct;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -26,7 +23,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.github.nkonev.blog.utils.SeoCacheKeyUtils.getRedisKeyHtml;
-import static com.github.nkonev.blog.utils.ServletUtils.getQuery;
 import static org.springframework.util.StringUtils.isEmpty;
 
 @Component
@@ -119,7 +115,7 @@ public class RendertronFilter extends GenericFilterBean {
             String value = seoCacheService.getHtmlFromCache(key);
 
             if (value==null) {
-                value = seoCacheService.rewriteCachedPost(request);
+                value = seoCacheService.rewriteCachedPage(request);
             }
             response.setHeader("Content-Type", "text/html; charset=utf-8");
             response.getWriter().print(value);

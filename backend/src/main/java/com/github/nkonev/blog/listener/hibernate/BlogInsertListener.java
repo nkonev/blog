@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import static com.github.nkonev.blog.Constants.CUSTOM_PRERENDER_ENABLE;
-
 @Component
 public class BlogInsertListener implements PostInsertEventListener {
 
@@ -41,7 +39,7 @@ public class BlogInsertListener implements PostInsertEventListener {
             Post post = (Post) event.getEntity();
             PostDTO postDTO = postConverter.convertToPostDTOWithCleanTags(post);
             webSocketService.sendInsertPostEvent(postDTO);
-            seoCacheService.rewriteCachedPost(post.getId());
+            seoCacheService.rewriteCachedPage(post.getId());
             seoCacheService.rewriteCachedIndex();
             LOGGER.debug("sql insert: {}", post);
         }
