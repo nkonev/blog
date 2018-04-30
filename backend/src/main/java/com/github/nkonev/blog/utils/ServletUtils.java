@@ -18,4 +18,15 @@ public class ServletUtils {
             return "?" + request.getQueryString();
         }
     }
+
+    public static String getPath(HttpServletRequest request) {
+        String s = request.getRequestURI();
+        if (s == null){
+            return "";
+        }
+        if (s.endsWith("/")){
+            return s.substring(0, s.length()-1);
+        }
+        return s;
+    }
 }

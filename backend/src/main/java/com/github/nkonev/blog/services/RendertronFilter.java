@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.github.nkonev.blog.utils.SeoCacheKeyUtils.getRedisKeyHtml;
+import static com.github.nkonev.blog.utils.ServletUtils.getPath;
 import static org.springframework.util.StringUtils.isEmpty;
 
 @Component
@@ -109,7 +110,7 @@ public class RendertronFilter extends GenericFilterBean {
         final String userAgent = request.getHeader("User-Agent");
         final String url = request.getRequestURL().toString();
 
-        final String path = request.getRequestURI();
+        final String path = getPath(request);
         if (isInSearchUserAgent(userAgent) && !isInResources(url) && !isInBlackList(path)) {
             final String key = getRedisKeyHtml(request);
             String value = seoCacheService.getHtmlFromCache(key);

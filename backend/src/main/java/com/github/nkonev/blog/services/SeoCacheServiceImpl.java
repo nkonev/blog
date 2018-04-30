@@ -24,6 +24,7 @@ import static com.github.nkonev.blog.Constants.CUSTOM_PRERENDER_ENABLE;
 import static com.github.nkonev.blog.utils.SeoCacheKeyUtils.getRedisKeyForIndex;
 import static com.github.nkonev.blog.utils.SeoCacheKeyUtils.getRedisKeyHtml;
 import static com.github.nkonev.blog.utils.SeoCacheKeyUtils.getRedisKeyHtmlForPost;
+import static com.github.nkonev.blog.utils.ServletUtils.getPath;
 import static com.github.nkonev.blog.utils.ServletUtils.getQuery;
 
 @ConditionalOnProperty(CUSTOM_PRERENDER_ENABLE)
@@ -113,7 +114,7 @@ public class SeoCacheServiceImpl implements SeoCacheService {
     @Override
     public String rewriteCachedPage(HttpServletRequest request) {
         final String key = getRedisKeyHtml(request);
-        final String path = request.getRequestURI();
+        final String path = getPath(request);
         final String value = getRendrered(path, getQuery(request));
         setHtml(key, value);
         return value;
