@@ -332,6 +332,8 @@
                 top inherit
             }
             &:hover {
+                transition: none
+                box-shadow: none
                 transform none
             }
         }
