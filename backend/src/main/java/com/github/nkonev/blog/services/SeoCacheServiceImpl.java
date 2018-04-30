@@ -92,31 +92,20 @@ public class SeoCacheServiceImpl implements SeoCacheService {
     @Override
     public void refreshPageCache(){
         LOGGER.info("Starting refreshing page cache");
-        setHtmlForIndex();
+        rewriteCachedIndex();
 
-        postRepository.findPostIds().forEach(postId -> {
-            setHtmlForPost(postId);
-        });
+        postRepository.findPostIds().forEach(this::rewriteCachedPost);
         LOGGER.info("Finished refreshing page cache");
     }
 
     @Override
-    public void rewriteCachedPost(Long id) {
-        setHtmlForPost(id);
-    }
-
-    @Override
-    public void rewriteCachedIndex() {
-        setHtmlForIndex();
-    }
-
-    public void setHtmlForPost(Long postId) {
+    public void rewriteCachedPost(Long postId) {
         if (postId == null) {return;}
         setHtml(getRedisKeyHtmlForPost(postId), getRendrered(Constants.Urls.POST + "/"+postId, ""));
     }
 
-    public void setHtmlForIndex() {
+    @Override
+    public void rewriteCachedIndex() {
         setHtml(getRedisKeyForIndex(), getRendrered("", ""));
     }
-
 }

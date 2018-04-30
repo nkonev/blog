@@ -30,16 +30,6 @@ public class SeoCacheServiceNoop implements SeoCacheService {
     }
 
     @Override
-    public void setHtmlForPost(Long postId) {
-
-    }
-
-    @Override
-    public void setHtmlForIndex() {
-
-    }
-
-    @Override
     public void rewriteCachedPost(Long id) {
 
     }

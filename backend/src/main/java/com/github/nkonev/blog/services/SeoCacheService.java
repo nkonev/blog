@@ -12,10 +12,6 @@ public interface SeoCacheService {
 
     void refreshPageCache();
 
-    void setHtmlForPost(Long postId);
-
-    void setHtmlForIndex();
-
     void rewriteCachedPost(Long id);
 
     void rewriteCachedIndex();
