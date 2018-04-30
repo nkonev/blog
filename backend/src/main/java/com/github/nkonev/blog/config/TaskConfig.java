@@ -64,7 +64,7 @@ public class TaskConfig {
                 .build();
     }
 
-    @Bean
+    @Bean(name = "taskExecutor")
     public Executor asyncExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(8);
