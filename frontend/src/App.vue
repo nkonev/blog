@@ -163,6 +163,13 @@
                 text-align center
             }
 
+            nav {
+                a.router-link:hover {
+                    transform: none
+                    transition: none
+                    box-shadow: none
+                }
+            }
         }
 
     }

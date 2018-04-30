@@ -232,25 +232,6 @@
         }
     }
 
-    @media screen and (max-width: $contentWidth+300px) {
-        aside {
-            position static
-            transform none
-            font-size 1.8em
-            &.left {
-                top inherit
-            }
-            &.right {
-                top inherit
-            }
-            &:hover {
-                transform none
-            }
-        }
-
-    }
-
-
     .post {
         &-head {
             display flex
@@ -337,6 +318,31 @@
                 background $titleBackground
             }
         }
+    }
+
+    @media screen and (max-width: $contentWidth+300px) {
+        aside {
+            position static
+            transform none
+            font-size 1.8em
+            &.left {
+                top inherit
+            }
+            &.right {
+                top inherit
+            }
+            &:hover {
+                transform none
+            }
+        }
+        .post {
+            .img-container {
+                .title-img {
+                    filter none
+                }
+            }
+        }
+
     }
 </style>
 
