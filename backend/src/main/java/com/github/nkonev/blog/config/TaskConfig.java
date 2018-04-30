@@ -17,9 +17,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import javax.sql.DataSource;
 import java.time.Duration;
+import java.util.concurrent.Executor;
 
 @ConditionalOnProperty(value = "custom.tasks.enable", matchIfMissing = true)
 @Configuration
@@ -38,6 +40,7 @@ public class TaskConfig {
     private SeoCacheService seoCacheService;
 
     private static final String IMAGES_CLEAN_TASK = "imagesCleanTask";
+    private static final String REFRESH_CACHE_CLEAN_TASK = "refreshCacheTask";
 
     public static final Logger LOGGER_IMAGE_CLEAN_TASK = LoggerFactory.getLogger(IMAGES_CLEAN_TASK);
 
@@ -61,6 +64,17 @@ public class TaskConfig {
                 .build();
     }
 
+    @Bean
+    public Executor asyncExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(8);
+        executor.setMaxPoolSize(8);
+        executor.setQueueCapacity(512);
+        executor.setThreadNamePrefix("BlogAsync-");
+        executor.initialize();
+        return executor;
+    }
+
     @Scheduled(cron = "${custom.tasks.images.clean.cron}")
     @SchedulerLock(name = IMAGES_CLEAN_TASK)
     public void cleanImages(){
@@ -70,9 +84,6 @@ public class TaskConfig {
 
         LOGGER_IMAGE_CLEAN_TASK.info("Cleared {} post content images(created before 1 day ago); {} post title images; {} user avatar images", deletedPostContent, deletedPostTitles, deletedAvatarImages);
     }
-
-    private static final String REFRESH_CACHE_CLEAN_TASK = "refreshCacheTask";
-    public static final Logger LOGGER_REFRESH_CACHE_CLEAN_TASK = LoggerFactory.getLogger(REFRESH_CACHE_CLEAN_TASK);
 
 
     @Scheduled(cron = "${custom.tasks.rendered.cache.refresh.cron}")

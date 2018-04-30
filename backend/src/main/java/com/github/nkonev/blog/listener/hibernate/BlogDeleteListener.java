@@ -1,6 +1,7 @@
 package com.github.nkonev.blog.listener.hibernate;
 
 import com.github.nkonev.blog.entity.jpa.Post;
+import com.github.nkonev.blog.services.SeoCacheListenerProxy;
 import com.github.nkonev.blog.services.SeoCacheService;
 import com.github.nkonev.blog.services.WebSocketService;
 import org.hibernate.event.spi.PostDeleteEvent;
@@ -9,7 +10,6 @@ import org.hibernate.persister.entity.EntityPersister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -25,7 +25,7 @@ public class BlogDeleteListener implements PostDeleteEventListener {
     private SeoCacheService seoCacheService;
 
     @Autowired
-    private Environment environment;
+    private SeoCacheListenerProxy seoCacheListenerProxy;
 
     @Override
     public void onPostDelete(PostDeleteEvent event) {
@@ -33,7 +33,7 @@ public class BlogDeleteListener implements PostDeleteEventListener {
             Post post = (Post) event.getEntity();
             webSocketService.sendDeletePostEvent(post.getId());
             seoCacheService.removeAllPagesCache(post.getId());
-            seoCacheService.rewriteCachedIndex();
+            seoCacheListenerProxy.rewriteCachedIndex();
             LOGGER.debug("sql delete: {}", post);
         }
 
