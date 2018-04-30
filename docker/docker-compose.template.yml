@@ -132,8 +132,6 @@ services:
 #      options:
 #        tag: rendertron
     deploy:
-      placement:
-        constraints: [node.labels.blog.server.role == db]
       resources:
         limits:
           cpus: '0.40'
