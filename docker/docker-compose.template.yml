@@ -134,6 +134,9 @@ services:
     deploy:
       placement:
         constraints: [node.labels.blog.server.role == db]
+      resources:
+        limits:
+          cpus: '0.40'
     networks:
       - traefik_backend
       - backend

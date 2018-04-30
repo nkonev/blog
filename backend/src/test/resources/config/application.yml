@@ -67,7 +67,7 @@ custom:
     images.clean:
       cron: "0 * * * * *"
     rendered.cache.refresh:
-      cron: "0 */5 * * * *"
+      cron: "0 */30 * * * *"
   prerender:
     prerenderServiceUrl: http://rendertron.example.com:3000/
 
