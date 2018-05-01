@@ -57,6 +57,7 @@ public class SeoCacheServiceImpl implements SeoCacheService {
     private void setHtml(String key, String value){
         redisTemplate.opsForValue().set(key, value);
         redisTemplate.expire(key, prerenderConfig.getCacheExpire(), prerenderConfig.getCacheExpireTimeUnit());
+        LOGGER.info("Successfully set {} bytes html for key {}", value.getBytes()!=null?value.getBytes().length:0, key);
     }
 
     @Override
