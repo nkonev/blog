@@ -18,7 +18,7 @@ public class SeoCacheKeyUtils {
     }
 
     public static String getRedisKeyForIndex(){
-        return RENDERTRON_HTML + "/";
+        return RENDERTRON_HTML;
     }
 
 }
