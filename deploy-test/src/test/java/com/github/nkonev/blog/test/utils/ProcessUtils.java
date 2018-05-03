@@ -35,7 +35,7 @@ public class ProcessUtils {
     }
 
     public static Process launch(String line) throws IOException {
-        return launch(line, processBuilder -> {}, true);
+        return launch(line, processBuilder -> {}, false);
     }
 
     /**
