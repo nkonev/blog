@@ -34,6 +34,10 @@ public class ProcessUtils {
         return s.split("\\s+");
     }
 
+    public static Process launch(String line) throws IOException {
+        return launch(line, processBuilder -> {}, true);
+    }
+
     /**
      * Launch process and write its stdout to log
      * @param line

@@ -2,6 +2,9 @@ version: '3.4'
 
 services:
   blog:
+    # Chane it for deploy to production. Consult with readme.md.
+    # Used for prevent download latest stable image during test, so for force use local image.
+    # See also DeployIT#checkImageExistence
     image: nkonev/blog:current-test
     logging:
       driver: "json-file"

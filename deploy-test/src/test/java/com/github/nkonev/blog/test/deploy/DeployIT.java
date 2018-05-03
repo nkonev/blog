@@ -38,6 +38,7 @@ public class DeployIT {
     @Parameters({"testStack", "timeoutToStartSec", "baseUrl", "inContainerBlogUrl", "lbCheckTimes", "hostHeader"})
     @BeforeSuite
     public void startup(String testStack, int timeoutToStartSec, String baseUrl, String inContainerBlogUrl, int lbCheckTimes, String hostHeader) throws IOException, InterruptedException {
+        checkImageExistence();
         // initilize swarm if need
         initializeSwarmIfNeed();
 
@@ -56,6 +57,12 @@ public class DeployIT {
         this.inContainerBlogUrl = inContainerBlogUrl;
 
         waitForStart(timeoutToStartSec, lbCheckTimes, hostHeader);
+    }
+
+    private void checkImageExistence() throws IOException {
+        ProcessInfo processInfo = get(launch("docker images -q --filter reference=nkonev/blog:current-test"));
+        Assert.assertNotNull(processInfo.stdout, "Image not found");
+        Assert.assertFalse(processInfo.stdout.isEmpty(), "Image not found");
     }
 
     private void dropVolumes(String stackName) throws InterruptedException, IOException {
