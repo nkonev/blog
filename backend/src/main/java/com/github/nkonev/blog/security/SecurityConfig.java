@@ -93,9 +93,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests().requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll();
 
+        http.headers().frameOptions().disable();
+
 //        http.rememberMe().rememberMeParameter(REMEMBER_ME_PARAMETER).tokenRepository(tokenRepository)
 //                .tokenValiditySeconds(86400);
-        http.headers().cacheControl().disable();
+        http.headers().cacheControl().disable(); // see also com.github.nkonev.blog.controllers.AbstractImageUploadController#shouldReturnLikeCache
     }
 
     // https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#data-configuration

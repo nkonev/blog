@@ -11,6 +11,7 @@ public class Constants {
     public static class Urls {
         public static final String ROOT = "/";
         public static final String API = "/api";
+        public static final String IMAGE = "/image";
         public static final String ADMIN = "/admin";
         public static final String POST = "/post";
         public static final String PROFILE = "/profile";

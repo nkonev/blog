@@ -239,3 +239,20 @@ docker exec -it $(docker ps --filter label=com.docker.swarm.service.name=BLOGSTA
 cat /tmp/blog.sql | docker exec -i $(docker ps --filter label=com.docker.swarm.service.name=BLOGSTACK_postgresql -q) psql -U postgres
 ```
 
+# SEO
+First configure `custom.prerender.prerenderServiceUrl` - setup correct url of Rendertron installation. See also dockerized [build](https://hub.docker.com/r/nkonev/rendertron-docker/).
+
+## How to add SEO metrics scripts
+
+Just prepend `file:` location which contains index.html, and copy modified index.html to there folder.
+
+```yml
+spring.resources.static-locations: file:/var/www/, file:backend/src/main/resources/static/, classpath:/static/
+```
+
+So firstly Spring Mvc will found in `/var/www`, next in `$PWD/backend/src/main/resources/static/`...
+
+If your search(Yandex Metrics for example) checks for existence script - request will passed through rendertron, which wipes `<script>` tags.
+ 
+In order to solve it, use `custom.seo.script=file:/var/www/seo.html` - Rendertron filter will inject content of 
+this file before closing `</head>`. 

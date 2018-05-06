@@ -11,10 +11,13 @@ import javax.validation.constraints.NotNull;
 import java.sql.SQLException;
 import java.util.UUID;
 
+import static com.github.nkonev.blog.Constants.Urls.API;
+import static com.github.nkonev.blog.Constants.Urls.IMAGE;
+
 @RestController
 public class ImagePostTitleUploadController extends AbstractImageUploadController {
 
-    public static final String POST_TEMPLATE = "/api/image/post/title";
+    public static final String POST_TEMPLATE = API+IMAGE+"/post/title";
     public static final String GET_TEMPLATE = POST_TEMPLATE + "/{id}.{ext}";
 
     public static final String imageType = "postTitleImages";
