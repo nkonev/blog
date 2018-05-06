@@ -53,6 +53,7 @@
   },
   "dependencies": {
     "@stomp/stompjs": "^4.0.2",
+    "marked": "^0.3.19",
     "mini-toastr": "^0.8.1",
     "moment": "^2.22.1",
     "vue": "^2.5.16",

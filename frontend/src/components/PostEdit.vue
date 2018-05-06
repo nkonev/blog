@@ -32,14 +32,17 @@
             </croppa >
         </div>
         <input class="title" placeholder="Title of your megapost" type="text" autofocus v-model="editPostDTO.title"/>
-        <vue-editor id="editor"
+        <!--<vue-editor id="editor"
                     :editorOptions="editorOptions"
                     :placeholder="computePlaceholder()"
                     useCustomImageHandler
                     @imageAdded="handleImageAdded" v-model="editPostDTO.text"
         >
-        </vue-editor>
-
+        </vue-editor>-->
+        <div id="editor">
+            <textarea :value="editorInput" @input="update"></textarea>
+            <div v-html="compiledMarkdown"></div>
+        </div>
 
         <div class="post-command-buttons">
             <div class="send">
@@ -58,6 +61,8 @@
     import BlogSpinner from './BlogSpinner.vue'
     import {API_POST} from '../constants'
     import Croppa from 'vue-croppa'
+    import debounce from "lodash/debounce";
+    import marked from 'marked';
 
     const MIN_LENGTH = 10;
 
@@ -97,13 +102,15 @@
         data () {
             return {
                 submitting: false,
-                editorOptions: {
+                /*editorOptions: {
+                    debug: 'info',
                     theme: 'bubble',
                     modules: {
                         syntax: false,
                         toolbar: toolbarOptions,
                     }
-                },
+                },*/
+                editorInput: '# hello',
                 editPostDTO: {}, // will be overriden below in created()
                 myCroppa: {},
                 chosenFile: null,
@@ -127,8 +134,15 @@
             cropperRemoveButtonSize(){
                 return screen.width > 969 ? 30 : 45;
             },
+            compiledMarkdown: function () {
+                return marked(this.editorInput, { sanitize: true })
+            },
+
         },
         methods: {
+            update: debounce(function (e) {
+                this.editorInput = e.target.value
+            }, 300),
             startSending() {
                 this.submitting = true;
             },
@@ -292,6 +306,36 @@
         .send {
             display inline
         }
+    }
+
+
+    #editor {
+        margin: 0;
+        height: 100%;
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+        color: #333;
+    }
+    textarea, #editor div {
+        display: inline-block;
+        width: 49%;
+        height: 100%;
+        vertical-align: top;
+        box-sizing: border-box;
+        padding: 0 20px;
+    }
+    textarea {
+        border: none;
+        border-right: 1px solid #ccc;
+        resize: none;
+        outline: none;
+        background-color: #f6f6f6;
+        font-size: 14px;
+        font-family: 'Monaco', courier, monospace;
+        padding: 20px;
+    }
+
+    code {
+        color: #f66;
     }
 </style>
 
