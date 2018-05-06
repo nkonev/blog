@@ -71,11 +71,19 @@ services:
     container_name: riak-coordinator-blog-dev
     restart: unless-stopped
     ports:
-      - "8098:8098"
+      - "8098:8098" # http (curl)
+      - "8087:8087" # protobuf (netty)
     environment:
       - CLUSTER_NAME=riakkv
     volumes:
       - riak_schemas:/etc/riak/schemas
+    networks:
+      blog-dev:
+        ipv4_address: 172.22.0.5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
   riak-member: # you can scale it
     image: basho/riak-kv:ubuntu-2.2.3
     restart: unless-stopped
@@ -88,6 +96,12 @@ services:
     environment:
       - CLUSTER_NAME=riakkv
       - COORDINATOR_NODE=riak-coordinator
+    networks:
+      blog-dev:
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
 volumes:
   #enviroment
   postgresql_blog_dev_data_dir:

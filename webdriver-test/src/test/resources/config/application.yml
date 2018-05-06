@@ -31,6 +31,11 @@ custom.stomp.broker:
   system-login: blog
   system-password: blogPazZw0rd
 
+custom.riak:
+  host: 172.22.0.5
+  # protobuf
+  port: 8087
+
 # Postgres image store configuration
 custom.image:
   max-bytes: 1048576 # 1 Mb. Must be < than tomcat file upload limit
