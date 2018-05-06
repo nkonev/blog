@@ -65,13 +65,36 @@ services:
       driver: "json-file"
       options:
         max-size: "50m"
-
+  riak-coordinator:
+    image: basho/riak-kv:ubuntu-2.2.3
+    hostname: riak-coordinator
+    container_name: riak-coordinator-blog-dev
+    restart: unless-stopped
+    ports:
+      - "8098:8098"
+    environment:
+      - CLUSTER_NAME=riakkv
+    volumes:
+      - riak_schemas:/etc/riak/schemas
+  riak-member: # you can scale it
+    image: basho/riak-kv:ubuntu-2.2.3
+    restart: unless-stopped
+    ports:
+      - "8098"
+    links:
+      - riak-coordinator
+    depends_on:
+      - riak-coordinator
+    environment:
+      - CLUSTER_NAME=riakkv
+      - COORDINATOR_NODE=riak-coordinator
 volumes:
   #enviroment
   postgresql_blog_dev_data_dir:
   redis_blog_dev_data_dir:
   rabbitmq_data_dir:
-
+  riak_schemas:
+    external: false
 networks:
   blog-dev:
     driver: bridge
