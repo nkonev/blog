@@ -239,3 +239,10 @@ docker exec -it $(docker ps --filter label=com.docker.swarm.service.name=BLOGSTA
 cat /tmp/blog.sql | docker exec -i $(docker ps --filter label=com.docker.swarm.service.name=BLOGSTACK_postgresql -q) psql -U postgres
 ```
 
+# How to add SEO metrics scripts
+
+Just add `file:` location which contains index.html, and copy modified index.html to there folder.
+
+```yml
+spring.resources.static-locations: file:/var/www/, file:backend/src/main/resources/static/, classpath:/static/
+```
