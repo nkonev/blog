@@ -248,3 +248,8 @@ spring.resources.static-locations: file:/var/www/, file:backend/src/main/resourc
 ```
 
 So firstly Spring Mvc will found in `/var/www`, next in `$PWD/backend/src/main/resources/static/`...
+
+If your search checks for existence script - request will passed through rendertron, which wipes `<script>` tags.
+ 
+In order to solve it, use `custom.seo.script=file:/var/www/seo.html` - Rendertron filter will inject content of 
+this file before closing `</head>`. 

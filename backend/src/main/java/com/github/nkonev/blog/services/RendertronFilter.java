@@ -5,9 +5,11 @@ import com.github.nkonev.blog.config.PrerenderConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -17,10 +19,13 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.github.nkonev.blog.utils.SeoCacheKeyUtils.getRedisKeyHtml;
 import static com.github.nkonev.blog.utils.ServletUtils.getPath;
@@ -39,6 +44,9 @@ public class RendertronFilter extends GenericFilterBean {
 
     @Autowired
     private SeoCacheService seoCacheService;
+
+    @Value("${custom.seo.script:}")
+    private Resource resource;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RendertronFilter.class);
 
@@ -118,11 +126,28 @@ public class RendertronFilter extends GenericFilterBean {
             if (value==null) {
                 value = seoCacheService.rewriteCachedPage(request);
             }
+            value = injectSeoScripts(value);
             response.setHeader("Content-Type", "text/html; charset=utf-8");
             response.getWriter().print(value);
             return;
         }
 
         filterChain.doFilter(servletRequest, servletResponse);
+    }
+
+    private String injectSeoScripts(String value) {
+        if (resource!=null && resource.exists()) {
+            String script = stringFromResource(resource);
+            value = value.replaceFirst("</head>", script+"</head>");
+        }
+        return value;
+    }
+
+    public static String stringFromResource(Resource resource) {
+        try(BufferedReader br = new BufferedReader(new InputStreamReader(resource.getInputStream()));) {
+            return br.lines().collect(Collectors.joining("\n"));
+        } catch (IOException e){
+            throw new RuntimeException(e);
+        }
     }
 }
