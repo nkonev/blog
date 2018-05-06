@@ -239,7 +239,10 @@ docker exec -it $(docker ps --filter label=com.docker.swarm.service.name=BLOGSTA
 cat /tmp/blog.sql | docker exec -i $(docker ps --filter label=com.docker.swarm.service.name=BLOGSTACK_postgresql -q) psql -U postgres
 ```
 
-# How to add SEO metrics scripts
+# SEO
+First configure `custom.prerender.prerenderServiceUrl` - setup correct url of Rendertron installation. See also dockerized [build](https://hub.docker.com/r/nkonev/rendertron-docker/).
+
+## How to add SEO metrics scripts
 
 Just prepend `file:` location which contains index.html, and copy modified index.html to there folder.
 
