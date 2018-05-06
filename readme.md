@@ -241,8 +241,10 @@ cat /tmp/blog.sql | docker exec -i $(docker ps --filter label=com.docker.swarm.s
 
 # How to add SEO metrics scripts
 
-Just add `file:` location which contains index.html, and copy modified index.html to there folder.
+Just prepend `file:` location which contains index.html, and copy modified index.html to there folder.
 
 ```yml
 spring.resources.static-locations: file:/var/www/, file:backend/src/main/resources/static/, classpath:/static/
 ```
+
+So firstly Spring Mvc will found in `/var/www`, next in `$PWD/backend/src/main/resources/static/`...
