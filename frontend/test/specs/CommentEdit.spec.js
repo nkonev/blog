@@ -18,7 +18,7 @@ describe("CommentEdit.vue", () => {
         CommentEditWrapper = null;
     });
 
-    it("save", (done) => {
+    it("update", (done) => {
         const instance = Vue.extend();
         CommentEditWrapper = shallow(CommentEdit, {
             mocks: { $http: $http, $route },
