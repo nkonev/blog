@@ -5,7 +5,7 @@
 
 # Requirements
 
-* JDK 9
+* JDK 10
 * Docker 17.09.1-ce +
 * docker-compose 1.16.1 +
 
