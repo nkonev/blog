@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Search from "../../src/components/Search.vue"
-import { mount } from 'vue-test-utils';
+import { mount } from '@vue/test-utils';
 
 describe('Search.vue', ()=>{
     let wrapper;

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import PostView from "../../src/components/PostView.vue"
 import postFactory from "../../src/factories/PostDtoFactory"
-import { mount, shallow } from 'vue-test-utils';
+import { mount, shallow } from '@vue/test-utils';
 
 describe("PostView.vue", () => {
     let PostViewWrapper, $router, $route, checkGetPost;

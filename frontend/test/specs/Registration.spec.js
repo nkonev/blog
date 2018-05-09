@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Registration from "../../src/components/Registration.vue"
-import { mount } from 'vue-test-utils';
+import { mount } from '@vue/test-utils';
 
 describe("Registration.vue", () => {
 

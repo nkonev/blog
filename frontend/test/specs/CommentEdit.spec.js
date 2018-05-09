@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import CommentEdit from "../../src/components/CommentEdit.vue"
-import { mount, shallow } from 'vue-test-utils';
+import { mount, shallow } from '@vue/test-utils';
 
 describe("CommentEdit.vue", () => {
     let CommentEditWrapper, $router, $route, checkGetPost;

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import LoginModal from "../../src/components/LoginModal.vue"
-import { mount, shallow, createLocalVue } from 'vue-test-utils';
+import { mount, shallow, createLocalVue } from '@vue/test-utils';
 const localVue = createLocalVue();
 localVue.use(Vuex);
 

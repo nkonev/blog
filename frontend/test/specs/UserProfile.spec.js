@@ -1,5 +1,5 @@
 import UserProfile from "../../src/components/UserProfile.vue"
-import { mount } from 'vue-test-utils';
+import { mount } from '@vue/test-utils';
 import Vue from 'vue'
 
 describe("UserProfile.vue", () => {
@@ -29,7 +29,6 @@ describe("UserProfile.vue", () => {
                 propsData: {
                     id: 2,
                     onFetchSuccess: () => {
-                        UserProfileWrapper.update();// force update ui
                         expect(UserProfileWrapper.text()).toContain('Viewing profile #2');
                         expect(UserProfileWrapper.text()).toContain('testor');
                         done();
