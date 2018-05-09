@@ -85,6 +85,18 @@
                             </configuration>
                         </execution>
                         <execution>
+                            <id>jest clean</id>
+                            <goals>
+                                <goal>npm</goal>
+                            </goals>
+                            <phase>generate-test-sources</phase>
+                            <configuration>
+                                <skip>${skipTests}</skip>
+                                <arguments>clear</arguments>
+                            </configuration>
+                        </execution>
+
+                        <execution>
                             <id>jest test</id>
                             <goals>
                                 <goal>npm</goal>
@@ -92,7 +104,7 @@
                             <phase>generate-test-sources</phase>
                             <configuration>
                                 <skip>${skipTests}</skip>
-                                <arguments>test -- --coverage</arguments>
+                                <arguments>test-cov</arguments>
                             </configuration>
                         </execution>
 
