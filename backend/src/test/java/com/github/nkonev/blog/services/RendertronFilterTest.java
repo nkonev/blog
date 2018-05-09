@@ -29,7 +29,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "custom.prerender.crawlerUserAgents=YaBot",
         "custom.seo.script=classpath:seo.html",
         "server.port=9082",
-        "management.server.port=3012"
+        "management.server.port=3012",
+        "spring.flyway.drop-first=false"
 })
 public class RendertronFilterTest extends AbstractUtTestRunner {
 
