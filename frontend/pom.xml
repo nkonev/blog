@@ -92,7 +92,7 @@
                             <phase>generate-test-sources</phase>
                             <configuration>
                                 <skip>${skipTests}</skip>
-                                <arguments>clear</arguments>
+                                <arguments>run clear</arguments>
                             </configuration>
                         </execution>
 
@@ -104,7 +104,7 @@
                             <phase>generate-test-sources</phase>
                             <configuration>
                                 <skip>${skipTests}</skip>
-                                <arguments>test-cov</arguments>
+                                <arguments>run test-cov</arguments>
                             </configuration>
                         </execution>
 
