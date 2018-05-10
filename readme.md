@@ -250,7 +250,7 @@ Just prepend `file:` location which contains index.html, and copy modified index
 spring.resources.static-locations: file:/var/www/, file:backend/src/main/resources/static/, classpath:/static/
 ```
 
-So firstly Spring Mvc will found in `/var/www`, next in `$PWD/backend/src/main/resources/static/`...
+So firstly Spring Mvc will looking in `/var/www`, next in `$PWD/backend/src/main/resources/static/`...
 
 If your search(Yandex Metrics for example) checks for existence script - request will passed through rendertron, which wipes `<script>` tags.
  
