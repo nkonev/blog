@@ -233,11 +233,6 @@ docker exec -it $(docker ps --filter label=com.docker.swarm.service.name=TESTBLO
 docker exec -it $(docker ps --filter label=com.docker.swarm.service.name=BLOGSTACK_blog -q | head -n 1) bash
 ```
 
-## Restore PostgreSQL backup
-
-```bash
-cat /tmp/blog.sql | docker exec -i $(docker ps --filter label=com.docker.swarm.service.name=BLOGSTACK_postgresql -q) psql -U postgres
-```
 
 # SEO
 First configure `custom.prerender.prerenderServiceUrl` - setup correct url of Rendertron installation. See also dockerized [build](https://hub.docker.com/r/nkonev/rendertron-docker/).
