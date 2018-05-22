@@ -32,13 +32,15 @@
             </croppa >
         </div>
         <input class="title" placeholder="Title of your megapost" type="text" autofocus v-model="editPostDTO.title"/>
-        <vue-editor id="editor"
+        <!--<vue-editor id="editor"
                     :editorOptions="editorOptions"
                     :placeholder="computePlaceholder()"
                     useCustomImageHandler
                     @imageAdded="handleImageAdded" v-model="editPostDTO.text"
         >
-        </vue-editor>
+        </vue-editor> -->
+
+        <tinymce id="d1"  v-model="editPostDTO.text"/>
 
 
         <div class="post-command-buttons">
@@ -52,12 +54,13 @@
 </template>
 
 <script>
-    import { VueEditor } from 'vue2-editor'
     import 'vue-croppa/dist/vue-croppa.css'
     import Vue from 'vue'
     import BlogSpinner from './BlogSpinner.vue'
     import {API_POST} from '../constants'
     import Croppa from 'vue-croppa'
+    import tinymce from 'vue-tinymce-editor'
+    Vue.component('tinymce', tinymce)
 
     const MIN_LENGTH = 10;
 
@@ -72,24 +75,6 @@
         return tmp.textContent || tmp.innerText || "";
     }
 
-    // https://quilljs.com/docs/modules/toolbar/
-    const toolbarOptions = [
-        ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
-        ['link', 'image'],
-        ['blockquote', 'code-block'],
-
-        [{ 'header': 1 }, { 'header': 2 }],               // custom button values
-        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-
-        [{ 'header': [1, 2, 3, false] }],
-
-        [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-        [{ 'align': [] }],
-        ['clean']                                         // remove formatting button
-    ];
-
-
-
     export default {
         props : [
             'postDTO', 'onAfterSubmit', 'onCancel', 'onError'
@@ -97,25 +82,11 @@
         data () {
             return {
                 submitting: false,
-                editorOptions: {
-                    theme: 'bubble',
-                    modules: {
-                        syntax: false,
-                        toolbar: toolbarOptions,
-                    }
-                },
                 editPostDTO: {}, // will be overriden below in created()
                 myCroppa: {},
                 chosenFile: null,
+                data : ''
             }
-        },
-        mounted() {
-//            this.quillInstance = this.$refs.myQuillEditor.quill;
-
-
-        },
-        beforeDestroy(){
-//            this.quillInstance = null;
         },
         computed: {
             cropperWidth(){
@@ -241,9 +212,8 @@
 
         },
         components: {
-            VueEditor,
             BlogSpinner,
-            'croppa': Croppa.component
+            'croppa': Croppa.component,
         },
         watch: {
             'editPostDTO': {
@@ -293,21 +263,4 @@
             display inline
         }
     }
-</style>
-
-<style lang="stylus">
-    @import "../constants.styl"
-
-    .ql-editor {
-        font-size $postBodyFontSize
-        font-family $postBodyFontFamily
-
-        margin-top $postBodyMarginTop
-        margin-bottom $postBodyMarginBottom
-    }
-</style>
-
-
-<style lang="stylus" scoped>
-    @import "~quill/dist/quill.bubble.css"
 </style>

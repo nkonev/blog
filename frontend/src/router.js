@@ -13,6 +13,7 @@ import ResendRegistrationConfirmationToken from './components/ResendRegistration
 import PasswordRestore from './components/PasswordRestore.vue'
 import PasswordReset from './components/PasswordReset.vue'
 import Help from './components/Help.vue'
+import Mce from "./components/mce"
 import {root, root_name, users, useProfileName, post} from './routes'
 const PostView = () => import('./components/PostView.vue');
 const PostEdit = () => import('./components/PostEdit.vue');
@@ -48,6 +49,7 @@ const router = new Router({
         { path: '/help', component: Help},
         { path: '/password-restore', component: PasswordRestore },
         { path: '/password-reset', component: PasswordReset },
+        { path: '/mce', component: Mce},
         { path: '*', component: NotFoundComponent },
     ]
 });
