@@ -347,7 +347,3 @@
 
     }
 </style>
-
-<style lang="stylus">
-    @import "~quill/dist/quill.bubble.css"
-</style>

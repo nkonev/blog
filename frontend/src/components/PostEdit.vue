@@ -32,14 +32,15 @@
             </croppa >
         </div>
         <input class="title" placeholder="Title of your megapost" type="text" autofocus v-model="editPostDTO.title"/>
-        <vue-editor id="editor"
+        <!--<vue-editor id="editor"
                     :editorOptions="editorOptions"
                     :placeholder="computePlaceholder()"
                     useCustomImageHandler
                     @imageAdded="handleImageAdded" v-model="editPostDTO.text"
         >
-        </vue-editor>
+        </vue-editor> -->
 
+        <medium-editor :text='editPostDTO.text' :options='options' custom-tag='div' v-on:edit='processEditOperation'/>
 
         <div class="post-command-buttons">
             <div class="send">
@@ -52,12 +53,14 @@
 </template>
 
 <script>
-    import { VueEditor } from 'vue2-editor'
     import 'vue-croppa/dist/vue-croppa.css'
     import Vue from 'vue'
     import BlogSpinner from './BlogSpinner.vue'
     import {API_POST} from '../constants'
     import Croppa from 'vue-croppa'
+    import editor from 'vue2-medium-editor'
+    // import 'medium-editor/dist/css/medium-editor.css'
+    // import 'medium-editor/dist/css/themes/default.css'
 
     const MIN_LENGTH = 10;
 
@@ -72,23 +75,9 @@
         return tmp.textContent || tmp.innerText || "";
     }
 
-    // https://quilljs.com/docs/modules/toolbar/
-    const toolbarOptions = [
-        ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
-        ['link', 'image'],
-        ['blockquote', 'code-block'],
-
-        [{ 'header': 1 }, { 'header': 2 }],               // custom button values
-        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-
-        [{ 'header': [1, 2, 3, false] }],
-
-        [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-        [{ 'align': [] }],
-        ['clean']                                         // remove formatting button
-    ];
-
-
+    const options = {
+        toolbar: {buttons: ['bold', 'strikethrough', 'h1']}
+    };
 
     export default {
         props : [
@@ -97,16 +86,10 @@
         data () {
             return {
                 submitting: false,
-                editorOptions: {
-                    theme: 'bubble',
-                    modules: {
-                        syntax: false,
-                        toolbar: toolbarOptions,
-                    }
-                },
                 editPostDTO: {}, // will be overriden below in created()
                 myCroppa: {},
                 chosenFile: null,
+                options: options
             }
         },
         mounted() {
@@ -134,6 +117,9 @@
             },
             finishSending() {
                 this.submitting = false;
+            },
+            processEditOperation: function (operation) {
+                this.editPostDTO.text = operation.api.origElements.innerHTML
             },
             onBtnSave() {
                 this.startSending();
@@ -241,9 +227,9 @@
 
         },
         components: {
-            VueEditor,
             BlogSpinner,
-            'croppa': Croppa.component
+            'croppa': Croppa.component,
+            'medium-editor': editor
         },
         watch: {
             'editPostDTO': {
@@ -308,6 +294,7 @@
 </style>
 
 
-<style lang="stylus" scoped>
-    @import "~quill/dist/quill.bubble.css"
+<style lang="css" scoped>
+    @import "~medium-editor/dist/css/medium-editor.css";
+    @import "~medium-editor/dist/css/themes/default.css";
 </style>
