@@ -19,9 +19,7 @@
                             <img class="remove-container-x" src="../assets/remove.png" v-if="postDTO.canDelete" @click="doDelete()"/>
                         </div>
                     </div>
-                    <div class="ql-container ql-bubble">
-                        <div class="post-content ql-editor" v-html="postDTO.text"></div>
-                    </div>
+                    <div class="post-content" v-html="postDTO.text"></div>
                 </template>
                 <template v-if="errorMessage">
                     <div class="post-error">
@@ -48,7 +46,6 @@
 
 <script>
     import Vue from 'vue'
-    // import 'quill/dist/quill.bubble.css'
     import {API_POST} from '../constants'
     import bus, {LOGIN, LOGOUT, POST_SWITCHED} from '../bus'
     import {root, post} from '../routes'
@@ -264,34 +261,6 @@
                 }
             }
         }
-        &-content {
-            blockquote {
-                background: #f9f9f9;
-                border-left: 10px solid #ccc;
-                margin: 1.5em 10px;
-                padding: 0.5em 10px;
-                quotes: "\201C""\201D""\2018""\2019";
-            }
-            blockquote:before {
-                color: #ccc;
-                content: open-quote;
-                font-size: 4em;
-                line-height: 0.1em;
-                margin-right: 0.25em;
-                vertical-align: -0.4em;
-            }
-            blockquote p {
-                display: inline
-            }
-        }
-
-        .ql-editor {
-            font-size $postBodyFontSize
-            font-family $postBodyFontFamily
-
-            margin-top $postBodyMarginTop
-            margin-bottom $postBodyMarginBottom
-        }
 
         &-error {
             font-size 4em
@@ -346,4 +315,8 @@
         }
 
     }
+</style>
+
+<style lang="stylus">
+    @import './post-content.styl'
 </style>

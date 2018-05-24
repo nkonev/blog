@@ -40,7 +40,9 @@
         >
         </vue-editor> -->
 
-        <medium-editor :text='editPostDTO.text' :options='options' custom-tag='div' v-on:edit='processEditOperation'/>
+        <div class="post-content">
+            <medium-editor :text='editPostDTO.text' :options='options' custom-tag='div' v-on:edit='processEditOperation'/>
+        </div>
 
         <div class="post-command-buttons">
             <div class="send">
@@ -76,7 +78,15 @@
     }
 
     const options = {
-        toolbar: {buttons: ['bold', 'strikethrough', 'h1']}
+        toolbar: {
+            buttons: [
+                'bold', 'italic', 'underline', 'anchor', 'quote', 'h1', 'h2', 'h3', 'strikethrough',
+                'pre', 'orderedlist', 'unorderedlist',
+                'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
+                'removeFormat'
+            ],
+            spellcheck: false,
+        }
     };
 
     export default {
@@ -268,10 +278,6 @@
             color $titleColor
             background $titleBackground
         }
-        div.quill-editor {
-            margin-top: 0.3em
-            margin-bottom: 0.5em
-        }
     }
 
     .post-command-buttons {
@@ -282,17 +288,8 @@
 </style>
 
 <style lang="stylus">
-    @import "../constants.styl"
-
-    .ql-editor {
-        font-size $postBodyFontSize
-        font-family $postBodyFontFamily
-
-        margin-top $postBodyMarginTop
-        margin-bottom $postBodyMarginBottom
-    }
+    @import './post-content.styl'
 </style>
-
 
 <style lang="css" scoped>
     @import "~medium-editor/dist/css/medium-editor.css";

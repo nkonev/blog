@@ -12,7 +12,8 @@ public class XssSanitizeUtil {
                     "h1","h2","h3","h4","h5","h6",
                     "ol", "ul", "li",
                     "sub", "sup",
-                    "span", "img", "code"
+                    "span", "img", "code",
+                    "strike"
             )
             .allowUrlProtocols("https", "http")
             .allowAttributes("href", "target").onElements("a")
