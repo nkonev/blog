@@ -40,7 +40,7 @@
         >
         </vue-editor> -->
 
-        <div class="post-content">
+        <div class="post-content editable">
             <medium-editor :text='editPostDTO.text' :options='options' custom-tag='div' v-on:edit='processEditOperation'/>
         </div>
 
@@ -60,9 +60,10 @@
     import BlogSpinner from './BlogSpinner.vue'
     import {API_POST} from '../constants'
     import Croppa from 'vue-croppa'
-    import editor from 'vue2-medium-editor'
-    // import 'medium-editor/dist/css/medium-editor.css'
-    // import 'medium-editor/dist/css/themes/default.css'
+    import editor from 'vue2-medium-editor';
+    const $ = require('jquery');
+    require('medium-editor-insert-plugin')($);
+    const originalEditor = editor.MediumEditor;
 
     const MIN_LENGTH = 10;
 
@@ -103,12 +104,11 @@
             }
         },
         mounted() {
-//            this.quillInstance = this.$refs.myQuillEditor.quill;
-
-
+            $('.editable').mediumInsert({
+                editor: originalEditor
+            });
         },
         beforeDestroy(){
-//            this.quillInstance = null;
         },
         computed: {
             cropperWidth(){

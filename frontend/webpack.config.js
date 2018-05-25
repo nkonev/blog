@@ -91,6 +91,14 @@ module.exports = {
     module: {
         rules: [
             {
+                test: require.resolve("blueimp-file-upload"),
+                loader: "imports-loader?define=>false"
+            },
+            {
+                test: require.resolve("medium-editor-insert-plugin"),
+                loader: "imports-loader?define=>false"
+            },
+            {
                 test: /\.js$/,
                 exclude: /node_modules/,
                 use: {
