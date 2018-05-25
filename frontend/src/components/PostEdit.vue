@@ -71,6 +71,23 @@
 
     const MediumEditor = editor.MediumEditor;
 
+
+
+
+
+
+
+    var MergeExtension = MediumEditor.Extension.extend({
+        name: 'merge-p-in-pre',
+        init: function () {
+            this.subscribe('editableInput', this.handleInput.bind(this));
+        },
+        handleInput: function(event, editable){
+            //console.log("event=", event, "editable=", editable);
+            console.log(editable.childNodes);
+        }
+    });
+
     const uploadFunction = file => {
         console.log("insertImageFile");
 
@@ -107,6 +124,7 @@
             'imageDragging': {},
             'fileDragging': {},
             'image-upload': new (ImageUploadExtension(MediumEditor, uploadFunction)),
+            'merge-p-in-pre': new MergeExtension()
         },
     };
 
