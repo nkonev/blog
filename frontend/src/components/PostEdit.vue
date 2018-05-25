@@ -71,6 +71,27 @@
 
     const MediumEditor = editor.MediumEditor;
 
+    const uploadFunction = file => {
+        console.log("insertImageFile");
+
+        const formData = new FormData();
+        formData.append('image', file);
+
+        Vue.http.post('/api/image/post/content', formData)
+            .then((result) => {
+                const addImageElement = document.createElement('img');
+
+                const url = result.data.relativeUrl; // Get url from response
+                console.log("got url", url);
+                addImageElement.src = url;
+
+                MediumEditor.util.insertHTMLCommand(document, addImageElement.outerHTML);
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    };
+
     const options = {
         toolbar: {
             buttons: [
@@ -85,7 +106,7 @@
         extensions: {
             'imageDragging': {},
             'fileDragging': {},
-            'image-upload': new (ImageUploadExtension(MediumEditor)),
+            'image-upload': new (ImageUploadExtension(MediumEditor, uploadFunction)),
         },
     };
 

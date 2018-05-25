@@ -1,6 +1,6 @@
 import Vue from 'vue'
 
-export default (MediumEditor) => {
+export default (MediumEditor, uploadFunction) => {
     var CLASS_DRAG_OVER = 'medium-editor-dragover';
     function clearClassNames(element) {
         var editable = MediumEditor.util.getContainerEditorElement(element),
@@ -72,25 +72,7 @@ export default (MediumEditor) => {
             },
 
             insertImageFile: function (file) {
-                console.log("insertImageFile");
-
-                const formData = new FormData();
-                formData.append('image', file);
-
-                Vue.http.post('/api/image/post/content', formData)
-                    .then((result) => {
-                        const addImageElement = this.document.createElement('img');
-
-                        const url = result.data.relativeUrl; // Get url from response
-                        console.log("got url", url);
-                        addImageElement.src = url;
-
-                        MediumEditor.util.insertHTMLCommand(this.document, addImageElement.outerHTML);
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                    })
-
+                return uploadFunction(file);
             }
         });
 };
