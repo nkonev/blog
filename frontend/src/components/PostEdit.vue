@@ -32,13 +32,6 @@
             </croppa >
         </div>
         <input class="title" placeholder="Title of your megapost" type="text" autofocus v-model="editPostDTO.title"/>
-        <!--<vue-editor id="editor"
-                    :editorOptions="editorOptions"
-                    :placeholder="computePlaceholder()"
-                    useCustomImageHandler
-                    @imageAdded="handleImageAdded" v-model="editPostDTO.text"
-        >
-        </vue-editor> -->
 
         <div class="post-content">
             <medium-editor :text='editPostDTO.text' :options='options' custom-tag='div' v-on:edit='processEditOperation'/>
@@ -62,8 +55,6 @@
     import Croppa from 'vue-croppa'
     import editor from 'vue2-medium-editor'
     import ImageUploadExtension from './image-upload'
-    // import 'medium-editor/dist/css/medium-editor.css'
-    // import 'medium-editor/dist/css/themes/default.css'
 
     const MIN_LENGTH = 10;
 
@@ -80,19 +71,6 @@
 
     const MediumEditor = editor.MediumEditor;
 
-    const DisableContextMenuExtension = MediumEditor.Extension.extend({
-        name: 'disable-context-menu',
-        init: function () {
-            this.getEditorElements().forEach(function (element) {
-                this.base.on(element, 'contextmenu', this.handleContextmenu.bind(this));
-            }, this);
-        },
-
-        handleContextmenu: function (event) {
-            event.preventDefault();
-        }
-    });
-
     const options = {
         toolbar: {
             buttons: [
@@ -105,8 +83,8 @@
         spellcheck: false,
         imageDragging: false,
         extensions: {
-            'disable-context-menu': new DisableContextMenuExtension(),
             'imageDragging': {},
+            'fileDragging': {},
             'image-upload': new (ImageUploadExtension(MediumEditor)),
         },
     };
@@ -238,25 +216,6 @@
             computePlaceholder(){
                 return screen.width > 969 ? "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi." : "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."
             },
-            handleImageAdded: function(file, Editor, cursorLocation) {
-                // An example of using FormData
-                // NOTE: Your key could be different such as:
-                // formData.append('file', file)
-
-                var formData = new FormData();
-                formData.append('image', file)
-
-                this.$http.post('/api/image/post/content', formData)
-                    .then((result) => {
-                        let url = result.data.relativeUrl; // Get url from response
-                        console.log("got url", url);
-                        Editor.insertEmbed(cursorLocation, 'image', url);
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                    })
-            }
-
         },
         components: {
             BlogSpinner,

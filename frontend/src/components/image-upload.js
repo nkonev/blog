@@ -1,6 +1,6 @@
-export default (MediumEditor) => {
-    console.log(MediumEditor);
+import Vue from 'vue'
 
+export default (MediumEditor) => {
     var CLASS_DRAG_OVER = 'medium-editor-dragover';
     function clearClassNames(element) {
         var editable = MediumEditor.util.getContainerEditorElement(element),
@@ -16,7 +16,7 @@ export default (MediumEditor) => {
             allowedTypes: ['image'],
 
             init: function () {
-                console.log("init image");
+                console.log("init image-upload extension");
                 MediumEditor.Extension.prototype.init.apply(this, arguments);
 
                 this.subscribe('editableDrag', this.handleDrag.bind(this));
@@ -72,18 +72,25 @@ export default (MediumEditor) => {
             },
 
             insertImageFile: function (file) {
-                if (typeof FileReader !== 'function') {
-                    return;
-                }
-                var fileReader = new FileReader();
-                fileReader.readAsDataURL(file);
+                console.log("insertImageFile");
 
-                // attach the onload event handler, makes it easier to listen in with jasmine
-                fileReader.addEventListener('load', function (e) {
-                    var addImageElement = this.document.createElement('img');
-                    addImageElement.src = e.target.result;
-                    MediumEditor.util.insertHTMLCommand(this.document, addImageElement.outerHTML);
-                }.bind(this));
+                const formData = new FormData();
+                formData.append('image', file);
+
+                Vue.http.post('/api/image/post/content', formData)
+                    .then((result) => {
+                        const addImageElement = this.document.createElement('img');
+
+                        const url = result.data.relativeUrl; // Get url from response
+                        console.log("got url", url);
+                        addImageElement.src = url;
+
+                        MediumEditor.util.insertHTMLCommand(this.document, addImageElement.outerHTML);
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    })
+
             }
         });
 };
