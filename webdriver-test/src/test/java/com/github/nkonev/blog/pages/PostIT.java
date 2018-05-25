@@ -87,7 +87,7 @@ public class PostIT extends AbstractItTestRunner {
         }
 
         public void setText(String newText) {
-            $("div.ql-editor")
+            $("div.medium-editor-element")
                     .waitUntil(Condition.exist, 20 * 1000)
                     .waitUntil(Condition.visible, 20 * 1000)
                     .waitUntil(Condition.enabled, 20 * 1000)
