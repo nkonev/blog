@@ -61,6 +61,7 @@
     import {API_POST} from '../constants'
     import Croppa from 'vue-croppa'
     import editor from 'vue2-medium-editor'
+    import ImageUploadExtension from './image-upload'
     // import 'medium-editor/dist/css/medium-editor.css'
     // import 'medium-editor/dist/css/themes/default.css'
 
@@ -77,6 +78,21 @@
         return tmp.textContent || tmp.innerText || "";
     }
 
+    const MediumEditor = editor.MediumEditor;
+
+    const DisableContextMenuExtension = MediumEditor.Extension.extend({
+        name: 'disable-context-menu',
+        init: function () {
+            this.getEditorElements().forEach(function (element) {
+                this.base.on(element, 'contextmenu', this.handleContextmenu.bind(this));
+            }, this);
+        },
+
+        handleContextmenu: function (event) {
+            event.preventDefault();
+        }
+    });
+
     const options = {
         toolbar: {
             buttons: [
@@ -85,8 +101,14 @@
                 'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
                 'removeFormat'
             ],
-            spellcheck: false,
-        }
+        },
+        spellcheck: false,
+        imageDragging: false,
+        extensions: {
+            'disable-context-menu': new DisableContextMenuExtension(),
+            'imageDragging': {},
+            'image-upload': new (ImageUploadExtension(MediumEditor)),
+        },
     };
 
     export default {
