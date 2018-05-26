@@ -84,7 +84,24 @@
         },
         handleInput: function(event, editable){
             //console.log("event=", event, "editable=", editable);
-            console.log(editable.childNodes);
+
+            // merge pre
+            const toRemove = [];
+            let prevNode;
+            for (const node of editable.childNodes){
+                if (node.nodeName.toLowerCase()==='pre' && prevNode && prevNode.nodeName.toLowerCase()==='pre'){
+                    console.log('Merge to prevNode=', prevNode, 'nodeValue=', node.textContent);
+                    prevNode.textContent += ('\n' + node.textContent);
+
+                    toRemove.push(node);
+                    continue;
+                }
+                prevNode = node;
+            }
+            for (const r of toRemove) {
+                r.remove();
+            }
+
         }
     });
 
