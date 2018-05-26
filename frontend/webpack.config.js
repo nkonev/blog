@@ -12,7 +12,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const WebpackOnBuildPlugin = require('on-build-webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const LiveReloadPlugin = require('webpack-livereload-plugin');
-const { VueLoaderPlugin } = require('vue-loader')
+const { VueLoaderPlugin } = require('vue-loader');
 
 module.exports = {
     cache: true,
@@ -99,10 +99,14 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                use: ExtractTextPlugin.extract({
+                use: [
+                    "style-loader",
+                    "css-loader"
+                ]
+                /*ExtractTextPlugin.extract({
                     fallback: "style-loader",
                     use: "css-loader?sourceMap"
-                })
+                })*/
             },
             {
                 test: /\.styl|stylus$/,
