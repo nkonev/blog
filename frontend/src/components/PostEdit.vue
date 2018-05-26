@@ -32,16 +32,8 @@
             </croppa >
         </div>
         <input class="title" placeholder="Title of your megapost" type="text" autofocus v-model="editPostDTO.title"/>
-        <!--<vue-editor id="editor"
-                    :editorOptions="editorOptions"
-                    :placeholder="computePlaceholder()"
-                    useCustomImageHandler
-                    @imageAdded="handleImageAdded" v-model="editPostDTO.text"
-        >
-        </vue-editor> -->
 
-        <tinymce id="d1"  v-model="editPostDTO.text"/>
-
+        <tinymce id="d1" v-model="editPostDTO.text"></tinymce>
 
         <div class="post-command-buttons">
             <div class="send">
@@ -59,8 +51,7 @@
     import BlogSpinner from './BlogSpinner.vue'
     import {API_POST} from '../constants'
     import Croppa from 'vue-croppa'
-    import tinymce from 'vue-tinymce-editor'
-    Vue.component('tinymce', tinymce)
+    import tinymce from './TinymceVue'
 
     const MIN_LENGTH = 10;
 
@@ -85,9 +76,9 @@
                 editPostDTO: {}, // will be overriden below in created()
                 myCroppa: {},
                 chosenFile: null,
-                data : ''
             }
         },
+
         computed: {
             cropperWidth(){
                 return screen.width > 969 ? 800 : screen.width - 25
@@ -214,6 +205,7 @@
         components: {
             BlogSpinner,
             'croppa': Croppa.component,
+            tinymce
         },
         watch: {
             'editPostDTO': {
