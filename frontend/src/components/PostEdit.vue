@@ -52,7 +52,7 @@
 </template>
 
 <script>
-    import { VueEditor } from 'vue2-editor'
+    import VueEditor from './VueEditor.vue'
     import 'vue-croppa/dist/vue-croppa.css'
     import Vue from 'vue'
     import BlogSpinner from './BlogSpinner.vue'
