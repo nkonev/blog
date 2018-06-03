@@ -6,7 +6,7 @@ import com.github.nkonev.blog.controllers.ImageUserAvatarUploadController;
 import com.github.nkonev.blog.services.SeoCacheService;
 import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.core.SchedulerLock;
-import net.javacrumbs.shedlock.provider.jdbc.JdbcLockProvider;
+import net.javacrumbs.shedlock.provider.redis.spring.RedisLockProvider;
 import net.javacrumbs.shedlock.spring.ScheduledLockConfiguration;
 import net.javacrumbs.shedlock.spring.ScheduledLockConfigurationBuilder;
 import org.slf4j.Logger;
@@ -16,10 +16,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-
-import javax.sql.DataSource;
 import java.time.Duration;
 import java.util.concurrent.Executor;
 
@@ -45,8 +45,8 @@ public class TaskConfig {
     public static final Logger LOGGER_IMAGE_CLEAN_TASK = LoggerFactory.getLogger(IMAGES_CLEAN_TASK);
 
     @Bean
-    public LockProvider lockProvider(DataSource dataSource) {
-        return new JdbcLockProvider(dataSource, "locks.task_lock");
+    public LockProvider lockProvider(LettuceConnectionFactory redisConnectionFactory) {
+        return new RedisLockProvider(redisConnectionFactory);
     }
 
     @Bean

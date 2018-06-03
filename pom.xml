@@ -31,6 +31,7 @@
         <selenide.version>4.11.4</selenide.version>
         <phantomjsdriver.version>1.4.4</phantomjsdriver.version>
         <webdrivermanager.version>2.2.1</webdrivermanager.version>
+        <shedlock.version>0.18.2</shedlock.version>
 
         <postgresql.version>42.2.2</postgresql.version>
         <greenmail.version>1.5.7</greenmail.version>
@@ -253,6 +254,17 @@
                 <artifactId>flyway-core</artifactId>
                 <version>5.1.1</version>
             </dependency>
+            <dependency>
+                <groupId>net.javacrumbs.shedlock</groupId>
+                <artifactId>shedlock-spring</artifactId>
+                <version>${shedlock.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.javacrumbs.shedlock</groupId>
+                <artifactId>shedlock-provider-redis-spring</artifactId>
+                <version>${shedlock.version}</version>
+            </dependency>
+
 
             <!-- https://docs.spring.io/spring-boot/docs/2.0.0.M7/reference/htmlsingle/#using-boot-maven-without-a-parent -->
             <dependency>
