@@ -31,7 +31,7 @@
         <selenide.version>4.11.4</selenide.version>
         <phantomjsdriver.version>1.4.4</phantomjsdriver.version>
         <webdrivermanager.version>2.2.1</webdrivermanager.version>
-        <shedlock.version>0.18.2</shedlock.version>
+        <shedlock.version>1.0.0</shedlock.version>
 
         <postgresql.version>42.2.2</postgresql.version>
         <greenmail.version>1.5.7</greenmail.version>
