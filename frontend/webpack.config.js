@@ -6,11 +6,12 @@ const buildDir = path.join(__dirname, '../backend/src/main/resources/static/buil
 
 const DEVELOPMENT_ENV = 'development';
 const NODE_ENV = process.env.NODE_ENV || DEVELOPMENT_ENV;
+const publicPath = "/build/";
 
 const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const WebpackOnBuildPlugin = require('on-build-webpack');
-// const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const LiveReloadPlugin = require('webpack-livereload-plugin');
 const { VueLoaderPlugin } = require('vue-loader')
 
@@ -25,7 +26,7 @@ module.exports = {
 
     output: {
         path: buildDir,
-        publicPath: "/build/", // url prefix
+        publicPath: publicPath, // url prefix
         filename: "[name].js",
     },
 
@@ -71,10 +72,10 @@ module.exports = {
             var currentdate = new Date();
             console.log("Built with environment:", NODE_ENV, "at", currentdate.toLocaleString());
         }),
-        /*new ExtractTextPlugin({
+        new MiniCssExtractPlugin({
             filename: '[name].css',
-            allChunks: true
-        }),*/
+            chunkFilename: "[id].css"
+        }),
         new webpack.ProvidePlugin({
             // "$":"jquery",
             // "jQuery":"jquery",
@@ -107,17 +108,20 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                use: ["style-loader", "css-loader?sourceMap"]/*ExtractTextPlugin.extract({
-                    fallback: "style-loader",
-                    use: "css-loader?sourceMap"
-                })*/
+                //use: ["style-loader", "css-loader?sourceMap"]
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    "css-loader"
+                ]
             },
             {
                 test: /\.styl|stylus$/,
-                use: ["style-loader", "css-loader?sourceMap", 'stylus-loader']/*ExtractTextPlugin.extract({
-                    fallback: "style-loader",
-                    use: ["css-loader?sourceMap", 'stylus-loader']
-                })*/
+                use: ["style-loader", "css-loader?sourceMap", 'stylus-loader']
+                /*use: [
+                    MiniCssExtractPlugin.loader,
+                    'css-loader',
+                    'stylus-loader'
+                ]*/
             },
             {
                 test: /\.(ttf|eot|woff|woff2)$/,
@@ -127,7 +131,6 @@ module.exports = {
                         loader: 'url-loader',
                         options: {
                             name: '[path][name].[ext]',
-                            limit: '4096'
                         }
                     }
                 ],
@@ -139,26 +142,16 @@ module.exports = {
                         loader: 'file-loader',
                         options: {
                             name: '[path][name].[ext]',
-                            // publicPath: '/static/build/',
                         }
                     }
                 ]
             },
             {
-                test: /\.html$/,
-                use: [{
-                    loader: 'html-loader',
-                    options: {
-                        minimize: true
-                    }
-                }],
-            },
-            {
                 test: /\.vue$/,
                 loader: 'vue-loader',
-                options: {
-                    extractCSS: true
-                }
+                // options: {
+                //     extractCSS: true
+                // }
             }
         ]
 
