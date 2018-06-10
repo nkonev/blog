@@ -10,7 +10,7 @@ const NODE_ENV = process.env.NODE_ENV || DEVELOPMENT_ENV;
 const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const WebpackOnBuildPlugin = require('on-build-webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+// const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const LiveReloadPlugin = require('webpack-livereload-plugin');
 const { VueLoaderPlugin } = require('vue-loader')
 
@@ -20,7 +20,6 @@ module.exports = {
     context: srcDir,
 
     entry: {
-        vendor: ["vue"],
         main: "./main.js", // vue.js
     },
 
@@ -28,7 +27,6 @@ module.exports = {
         path: buildDir,
         publicPath: "/build/", // url prefix
         filename: "[name].js",
-        library: "[name]"
     },
 
     optimization: {
@@ -41,20 +39,14 @@ module.exports = {
             automaticNameDelimiter: '~',
             name: true,
             cacheGroups: {
+                default: false,
                 vendors: {
                     test: /[\\/]node_modules[\\/]/,
-                    priority: -10,
-                    minChunks: 2,
                     name: "vendor",
-                    reuseExistingChunk: true,
+                    priority: 1,
                     chunks: "all",
-                },
-                default: {
-                    minChunks: 2,
-                    priority: -20,
-                    reuseExistingChunk: true,
-                    chunks: "all",
-                },
+                    reuseExistingChunk: true
+                }
             }
         }
     },
@@ -79,9 +71,10 @@ module.exports = {
             var currentdate = new Date();
             console.log("Built with environment:", NODE_ENV, "at", currentdate.toLocaleString());
         }),
-        new ExtractTextPlugin({
-            filename: '[name].css'
-        }),
+        /*new ExtractTextPlugin({
+            filename: '[name].css',
+            allChunks: true
+        }),*/
         new webpack.ProvidePlugin({
             // "$":"jquery",
             // "jQuery":"jquery",
@@ -114,17 +107,17 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                use: ExtractTextPlugin.extract({
+                use: ["style-loader", "css-loader?sourceMap"]/*ExtractTextPlugin.extract({
                     fallback: "style-loader",
                     use: "css-loader?sourceMap"
-                })
+                })*/
             },
             {
                 test: /\.styl|stylus$/,
-                use: ExtractTextPlugin.extract({
+                use: ["style-loader", "css-loader?sourceMap", 'stylus-loader']/*ExtractTextPlugin.extract({
                     fallback: "style-loader",
                     use: ["css-loader?sourceMap", 'stylus-loader']
-                })
+                })*/
             },
             {
                 test: /\.(ttf|eot|woff|woff2)$/,
