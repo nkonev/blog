@@ -24,6 +24,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -131,6 +132,34 @@ public class PostController {
 
         return posts;
     }
+
+    public static class RandomPostDTO {
+        private long id;
+        private String title;
+
+        public RandomPostDTO(long id, String title) {
+            this.id = id;
+            this.title = title;
+        }
+
+        public long getId() {
+            return id;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+    }
+
+    @GetMapping(Constants.Urls.API + Constants.Urls.POST + Constants.Urls.RANDOM)
+    public List<RandomPostDTO> getRandomPosts() {
+
+        return jdbcTemplate.query(
+                "select id, title from posts.post order by random() limit 10",
+                (resultSet, i) -> new RandomPostDTO(resultSet.getLong("id"), resultSet.getString("title"))
+        );
+    }
+
 
     @GetMapping(Constants.Urls.API + Constants.Urls.POST + Constants.Urls.POST_ID)
     public PostDTOExtended getPost(

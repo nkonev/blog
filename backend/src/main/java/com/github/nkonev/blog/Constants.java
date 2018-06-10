@@ -14,6 +14,7 @@ public class Constants {
         public static final String IMAGE = "/image";
         public static final String ADMIN = "/admin";
         public static final String POST = "/post";
+        public static final String RANDOM = "/random";
         public static final String PROFILE = "/profile";
         public static final String MY = "/my";
         public static final String POST_ID = "/{"+ PathVariables.POST_ID+"}";

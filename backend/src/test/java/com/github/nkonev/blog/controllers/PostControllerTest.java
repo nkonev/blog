@@ -124,6 +124,16 @@ public class PostControllerTest extends AbstractUtTestRunner {
     }
 
     @Test
+    public void testAnonymousCanGetRandomPosts() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get(Constants.Urls.API+ Constants.Urls.POST + Constants.Urls.RANDOM)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+        )
+                .andExpect(status().isOk())
+                .andReturn();
+    }
+
+    @Test
     public void testTrimmed() throws Exception {
         MvcResult getPostsRequest = mockMvc.perform(
                 get(Constants.Urls.API+ Constants.Urls.POST+"?searchString= ")

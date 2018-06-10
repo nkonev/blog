@@ -9,6 +9,7 @@
             <div v-else>
                 No data
             </div>
+            <random-posts></random-posts>
 
             <infinite-loading @infinite="infiniteHandler" ref="infiniteLoading">
                 <span slot="no-more">
@@ -30,8 +31,9 @@
     import BlogSpinner from './BlogSpinner.vue'
     import PostAddFab from './PostAddFab.vue'
     import Search from './Search.vue';
-    import {updateById, cutPost, initStompClient, closeStompClient, getHeaderNavHeight} from '../utils'
+    import {updateById, cutPost, initStompClient, closeStompClient} from '../utils'
     import VueSticky from 'vue-sticky'
+    import RandomPosts from "./RandomPosts.vue";
 
     // https://peachscript.github.io/vue-infinite-loading/#!/getting-started/with-filter
     const POSTS_PAGE_SIZE = 20;
@@ -51,6 +53,7 @@
             }
         },
         components: {
+            RandomPosts,
             PostItem,
             InfiniteLoading,
             BlogSpinner,
