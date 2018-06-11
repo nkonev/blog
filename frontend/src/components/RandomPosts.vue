@@ -8,13 +8,14 @@
 </template>
 
 <script>
-    import {API_POST} from "../constants";
+    import {API_POST_RANDOM} from "../constants";
 
     export default {
         name: 'random-posts',
         data(){
             return {
-                posts: []
+                posts: [],
+                t: null
             }
         },
         computed:{
@@ -28,7 +29,7 @@
         },
         methods: {
             fetchData() {
-                this.$http.get(API_POST + '/random').then((response) => {
+                this.$http.get(API_POST_RANDOM).then((response) => {
                     this.posts = response.body;
                 }, response => {
                     console.error("Error on fetch random posts", response);

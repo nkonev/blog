@@ -6,6 +6,8 @@ export const PROFILE_URL = '/api/profile';
 
 export const API_POST = '/api/post';
 
+export const API_POST_RANDOM = '/api/post/random';
+
 export const API_CONFIG = '/api/config';
 
 export const PASSWORD_MIN_LENGTH = 6;
