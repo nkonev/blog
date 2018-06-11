@@ -1,5 +1,5 @@
 <template>
-    <div class="random">
+    <div class="random" v-if="correctSize">
         <h1 class="random-h1">Random posts</h1>
         <ul>
             <li v-for="post in posts"><a :href="'/post/' + post.id">{{post.title}}</a></li>
@@ -12,13 +12,19 @@
 
     export default {
         name: 'random-posts',
-        mounted(){
-            this.fetchData();
-        },
         data(){
             return {
                 posts: []
             }
+        },
+        computed:{
+            correctSize(){
+                const isNeed = window.innerWidth > 969 + 400;
+                if (isNeed){
+                    this.fetchData();
+                }
+                return isNeed;
+            },
         },
         methods: {
             fetchData() {
