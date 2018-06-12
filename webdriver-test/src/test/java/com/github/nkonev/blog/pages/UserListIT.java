@@ -91,7 +91,7 @@ public class UserListIT extends AbstractItTestRunner {
 
         loginModal.logout();
         // $(UsersPage.USERS_CONTAINER_SELECTOR).shouldNotHave(Condition.text("generated_user_6"));
-        $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("No data")); // it faster than shouldNothave
+//        $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("No data")); // it faster than shouldNothave
 
         FailoverUtils.retry(2, () -> {
             loginModal.openLoginModal();
