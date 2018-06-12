@@ -66,6 +66,7 @@
 </script>
 
 <style lang="stylus" scoped>
+    @import "../constants.styl"
     $h=48px
 
     .user-profile-nav{
@@ -108,6 +109,8 @@
 
         .login {
             //background-color red
+            color: $lightblack
+            font-weight bold
             height $h
             line-height $h
             margin-right 10px
@@ -137,6 +140,8 @@
         width 100%
         box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.8);
         z-index: 1;
+        font-size 16px
+        font-weight normal
 
         /* Links inside the dropdown */
         span {

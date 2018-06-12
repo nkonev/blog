@@ -75,11 +75,12 @@
     @import "./buttons.styl"
 
     body {
-        background-color white;
+        background-color: $strongblack
     }
 
     #app {
         top: 0px
+        border-radius 2px
 
         font-family: 'Avenir', Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;
@@ -101,11 +102,18 @@
         }
 
         .logo {
-            padding-left 1em;
+            padding 0.4em 0 0.4em 0.7em
+            margin 0 0 0 0
+            background-color dimgrey
+            color white
+            border-radius 2px
         }
 
         nav {
             background white
+            font-size 22px
+            font-family 'DejaVu Sans Mono', monospace
+            font-weight bold
             a.router-link,
             span.router-link {
                 text-decoration none

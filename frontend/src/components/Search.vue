@@ -38,8 +38,8 @@
 
 <style lang="stylus" scoped>
     .search {
-        //margin-top 4px;
-        //margin-bottom 4px;
+        margin-top 0px;
+        margin-bottom 0px;
         display flex
         flex-direction row
         align-items center
