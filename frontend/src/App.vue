@@ -123,6 +123,8 @@
                 flex-direction column
                 justify-content center
                 align-self: center
+                margin-top 2px
+                margin-bottom 2px
             }
             span.router-link {
                 color black

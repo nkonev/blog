@@ -27,7 +27,7 @@
 <script>
     import PostItem from './PostItem.vue'
     import InfiniteLoading from 'vue-infinite-loading';
-    import {API_POST} from '../constants'
+    import {API_POST, POSTS_PAGE_SIZE, POSTS_MAX_PAGES} from '../constants'
     import BlogSpinner from './BlogSpinner.vue'
     import PostAddFab from './PostAddFab.vue'
     import Search from './Search.vue';
@@ -36,8 +36,6 @@
     import RandomPosts from "./RandomPosts.vue";
 
     // https://peachscript.github.io/vue-infinite-loading/#!/getting-started/with-filter
-    const POSTS_PAGE_SIZE = 20;
-    const MAX_PAGES = 10;
 
     let stompObj;
     let subscriptionInsert;
@@ -72,7 +70,7 @@
                     },
                 }).then((res) => {
                     if (res.data.length) {
-                        var new_array = res.data.map((e) => {
+                        const new_array = res.data.map((e) => {
                             cutPost(e);
                             return e;
                         });
@@ -80,8 +78,8 @@
                         this.posts = this.posts.concat(new_array); // add data from server's response
                         $state.loaded();
 
-                        if (Math.floor(this.posts.length / POSTS_PAGE_SIZE) === MAX_PAGES) {
-                            this.noMoreMessage = `You reached max pages limit (${MAX_PAGES}). We want to stop to overwhelming your RAM.`;
+                        if (Math.floor(this.posts.length / POSTS_PAGE_SIZE) === POSTS_MAX_PAGES) {
+                            this.noMoreMessage = `You reached max pages limit (${POSTS_MAX_PAGES}). We want to stop to overwhelming your RAM.`;
                             console.log("Overwhelming prevention");
                             $state.complete();
                         }

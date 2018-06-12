@@ -23,7 +23,6 @@
 </template>
 
 <script>
-//    import router from '../router'
     import Vue from 'vue'
     import {FETCH_USER_PROFILE} from '../store'
     import bus from '../bus'
@@ -55,6 +54,9 @@
         },
         methods:{
             beforeOpen (event) {
+                this.clearError();
+            },
+            clearError(){
                 this.formError = null;
             },
             doLogin() {
@@ -82,6 +84,14 @@
                 });
 
             }
+        },
+        watch: {
+            formUsername() {
+                this.clearError();
+            },
+            formPassword() {
+                this.clearError();
+            },
         },
         components: {
             Spinner

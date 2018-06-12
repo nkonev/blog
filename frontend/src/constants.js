@@ -11,3 +11,6 @@ export const API_POST_RANDOM = '/api/post/random';
 export const API_CONFIG = '/api/config';
 
 export const PASSWORD_MIN_LENGTH = 6;
+
+export const POSTS_PAGE_SIZE = 20;
+export const POSTS_MAX_PAGES = 10;
