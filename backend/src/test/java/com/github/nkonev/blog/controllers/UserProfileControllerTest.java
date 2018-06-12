@@ -368,4 +368,19 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
                 .andExpect(status().isForbidden())
                 .andReturn();
     }
+
+    @Test
+    public void userPosts() throws Exception {
+        long userId = 2;
+        MvcResult getPostRequest = mockMvc.perform(
+                get(Constants.Urls.API+ Constants.Urls.USER + "/" +userId + Constants.Urls.POSTS)
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalCount").value(2002))
+                .andExpect(jsonPath("$.data.length()").value(20))
+                .andReturn();
+        String getStr = getPostRequest.getResponse().getContentAsString();
+        LOGGER.info(getStr);
+
+    }
 }

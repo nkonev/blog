@@ -1,10 +1,13 @@
 package com.github.nkonev.blog.controllers;
 
 import com.github.nkonev.blog.Constants;
+import com.github.nkonev.blog.converter.PostConverter;
 import com.github.nkonev.blog.converter.UserAccountConverter;
 import com.github.nkonev.blog.dto.*;
+import com.github.nkonev.blog.entity.jpa.Post;
 import com.github.nkonev.blog.entity.jpa.UserAccount;
 import com.github.nkonev.blog.exception.UserAlreadyPresentException;
+import com.github.nkonev.blog.repo.jpa.PostRepository;
 import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
 import com.github.nkonev.blog.security.BlogSecurityService;
 import com.github.nkonev.blog.security.BlogUserDetailsService;
@@ -30,12 +33,14 @@ import java.util.stream.Collectors;
  */
 @RequestMapping(Constants.Urls.API)
 @RestController
-@PreAuthorize("isAuthenticated()")
 @Transactional
 public class UserProfileController {
 
     @Autowired
     private UserAccountRepository userAccountRepository;
+
+    @Autowired
+    private PostRepository postRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -46,11 +51,15 @@ public class UserProfileController {
     @Autowired
     private BlogSecurityService blogSecurityService;
 
+    @Autowired
+    private PostConverter postConverter;
+
     /**
      *
      * @param userAccount
      * @return current logged in profile
      */
+    @PreAuthorize("isAuthenticated()")
     @GetMapping(value = Constants.Urls.PROFILE)
     public UserAccountDTO checkAuthenticated(@AuthenticationPrincipal UserAccountDetailsDTO userAccount) throws MalformedURLException {
         return UserAccountConverter.convertToUserAccountDTO(userAccount);
@@ -74,6 +83,26 @@ public class UserProfileController {
         );
     }
 
+    @GetMapping(value = Constants.Urls.USER + Constants.Urls.USER_ID + Constants.Urls.POSTS)
+    public Wrapper<PostDTO> getUserPosts(
+            @PathVariable(Constants.PathVariables.USER_ID) Long userId,
+            @RequestParam(value = "page", required=false, defaultValue = "0") int page,
+            @RequestParam(value = "size", required=false, defaultValue = "0") int size
+    ) {
+        PageRequest springDataPage = PageRequest.of(PageUtils.fixPage(page), PageUtils.fixSize(size), Sort.Direction.DESC, "id");
+
+        Page<Post> resultPage = postRepository.findByOwnerId(springDataPage, userId);
+
+        return new Wrapper<>(
+                resultPage.getContent()
+                    .stream()
+                    .map(postConverter::convertToPostDTOWithCleanTags)
+                    .collect(Collectors.toList()),
+                resultPage.getTotalElements()
+        );
+    }
+
+
     private Function<UserAccount, UserAccountDTO> getConvertToUserAccountDTO(UserAccountDetailsDTO currentUser) {
         if (blogSecurityService.hasUserManagementPermission(currentUser)) {
             return UserAccountConverter::convertToUserAccountDTOExtended;
@@ -96,6 +125,7 @@ public class UserProfileController {
     }
 
     @PostMapping(Constants.Urls.PROFILE)
+    @PreAuthorize("isAuthenticated()")
     public EditUserDTO editProfile(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount,
             @RequestBody @Valid EditUserDTO userAccountDTO
@@ -124,8 +154,7 @@ public class UserProfileController {
         return UserAccountConverter.convertToEditUserDto(exists);
     }
 
-    // TODO delete user with delete avatar
-
+    @PreAuthorize("isAuthenticated()")
     @GetMapping(Constants.Urls.SESSIONS+"/my")
     public Map<String, Session> mySessions(@AuthenticationPrincipal UserAccountDetailsDTO userDetails){
         return blogUserDetailsService.getMySessions(userDetails);

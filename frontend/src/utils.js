@@ -1,4 +1,6 @@
 import moment from 'moment'
+import Vue from 'vue';
+import {POSTS_PAGE_SIZE, POSTS_MAX_PAGES} from './constants'
 
 /**
  *
@@ -52,3 +54,37 @@ export const closeStompClient = obj => {
     } catch (ignored){}
     obj.stompClient.disconnect();
 };
+
+export const infinitePostsHandler = (that, getWithPaginationUrl, responseArrayExtractor, onSuccess, $state) => {
+    Vue.http.get(getWithPaginationUrl, {
+        params: {
+            page: Math.floor(that.posts.length / POSTS_PAGE_SIZE),
+            searchString: that.searchString,
+        },
+    }).then((res) => {
+        onSuccess(res);
+        const respObj = responseArrayExtractor(res);
+        if (respObj.data.length) {
+            const new_array = respObj.data.map((e) => {
+                cutPost(e);
+                return e;
+            });
+
+            that.posts = that.posts.concat(new_array); // add data from server's response
+            $state.loaded();
+
+            if (Math.floor(that.posts.length / POSTS_PAGE_SIZE) === POSTS_MAX_PAGES) {
+                that.noMoreMessage = `You reached max pages limit (${POSTS_MAX_PAGES}). We want to stop to overwhelming your RAM.`;
+                console.log("Overwhelming prevention");
+                $state.complete();
+            }
+            // Prevent infinity loading bug when there server responds is less than POSTS_PAGE_SIZE elements
+            if (respObj.data.length < POSTS_PAGE_SIZE) {
+                console.log("Loaded less than page size");
+                $state.complete();
+            }
+        } else {
+            $state.complete();
+        }
+    });
+}

@@ -27,11 +27,11 @@
 <script>
     import PostItem from './PostItem.vue'
     import InfiniteLoading from 'vue-infinite-loading';
-    import {API_POST, POSTS_PAGE_SIZE, POSTS_MAX_PAGES} from '../constants'
+    import {API_POST} from '../constants'
     import BlogSpinner from './BlogSpinner.vue'
     import PostAddFab from './PostAddFab.vue'
     import Search from './Search.vue';
-    import {updateById, cutPost, initStompClient, closeStompClient} from '../utils'
+    import {updateById, cutPost, initStompClient, closeStompClient, infinitePostsHandler} from '../utils'
     import VueSticky from 'vue-sticky'
     import RandomPosts from "./RandomPosts.vue";
 
@@ -63,38 +63,11 @@
         },
         methods: {
             infiniteHandler($state) {
-                this.$http.get(API_POST, {
-                    params: {
-                        searchString: this.searchString,
-                        page: Math.floor(this.posts.length / POSTS_PAGE_SIZE),
-                    },
-                }).then((res) => {
-                    if (res.data.length) {
-                        const new_array = res.data.map((e) => {
-                            cutPost(e);
-                            return e;
-                        });
-
-                        this.posts = this.posts.concat(new_array); // add data from server's response
-                        $state.loaded();
-
-                        if (Math.floor(this.posts.length / POSTS_PAGE_SIZE) === POSTS_MAX_PAGES) {
-                            this.noMoreMessage = `You reached max pages limit (${POSTS_MAX_PAGES}). We want to stop to overwhelming your RAM.`;
-                            console.log("Overwhelming prevention");
-                            $state.complete();
-                        }
-                        // Prevent infinity loading bug when there server responds is less than POSTS_PAGE_SIZE elements
-                        if (res.data.length < POSTS_PAGE_SIZE) {
-                            console.log("Loaded less than page size");
-                            $state.complete();
-                        }
-                    } else {
-                        $state.complete();
-                    }
-                });
+                infinitePostsHandler(this, API_POST, res => res, res => {}, $state);
             },
+
             onChangeSearchString(str) {
-                console.debug('onChangeSearchString', str);
+                console.log('onChangeSearchString', str);
                 this.searchString = str;
                 this.posts = [];
                 this.$nextTick(() => {

@@ -73,6 +73,7 @@ public class UserListIT extends AbstractItTestRunner {
         usersPage.openPage();
 
         LoginModal loginModal = new LoginModal(user, password);
+        loginModal.openLoginModal();
         loginModal.login();
         $(UsersPage.PREV_PAGE_LI_SELECTOR).shouldHave(Condition.cssClass(UsersPage.DISABLED_CLASS));
 
@@ -125,6 +126,7 @@ public class UserListIT extends AbstractItTestRunner {
         usersPage.openPage(page);
 
         LoginModal loginModal = new LoginModal(user, password);
+        loginModal.openLoginModal();
         loginModal.login();
 
         // Selenide.refresh();
@@ -138,6 +140,7 @@ public class UserListIT extends AbstractItTestRunner {
         userPage.openPage();
 
         LoginModal loginModal = new LoginModal(user, password);
+        loginModal.openLoginModal();
 
         loginModal.login();
 

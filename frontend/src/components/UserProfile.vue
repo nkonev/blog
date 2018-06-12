@@ -17,6 +17,8 @@
                     <div class="login">{{ dto.login }}</div>
                     <div v-if="dto.email" class="email">{{dto.email}}</div>
                 </div>
+
+                <UserPostList :id="id"/>
             </div>
             <div v-else>
                 <UserProfileEdit :dto="dto" @CANCELED="onCancel" @SAVED="onSaved"></UserProfileEdit>
@@ -32,6 +34,7 @@
     import Error from './Error.vue'
     import UserProfileEdit from './UserProfileEdit.vue'
     import bus, {LOGIN, LOGOUT} from '../bus'
+    import UserPostList from "./UserPostList.vue"
 
     export default {
         name: 'user-profile', // это имя компонента, которое м. б. тегом в другом компоненте
@@ -91,7 +94,7 @@
             '$route': 'fetch'
         },
         components:{
-            Error, UserProfileEdit
+            Error, UserProfileEdit, UserPostList
         },
         created(){
             this.fetch();

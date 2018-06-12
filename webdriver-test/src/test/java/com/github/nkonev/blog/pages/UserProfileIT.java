@@ -6,6 +6,7 @@ import com.github.nkonev.blog.CommonTestConstants;
 import com.github.nkonev.blog.FailoverUtils;
 import com.github.nkonev.blog.integration.AbstractItTestRunner;
 import com.github.nkonev.blog.pages.object.Croppa;
+import com.github.nkonev.blog.pages.object.IndexPage;
 import com.github.nkonev.blog.pages.object.LoginModal;
 import com.github.nkonev.blog.pages.object.UserNav;
 import com.github.nkonev.blog.util.FileUtils;
@@ -16,7 +17,10 @@ import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
@@ -33,6 +37,7 @@ import java.util.concurrent.TimeUnit;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
+import static com.github.nkonev.blog.pages.object.IndexPage.POST_LIST;
 
 /**
  * Тест на страницу профиля
@@ -50,6 +55,8 @@ public class UserProfileIT extends AbstractItTestRunner {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     public static class UserProfilePage {
+        private static final String BODY = "body";
+
         private static final Logger LOGGER = LoggerFactory.getLogger(UserProfilePage.class);
         private String urlPrefix;
         private WebDriver driver;
@@ -61,6 +68,14 @@ public class UserProfileIT extends AbstractItTestRunner {
         public void openPage(int userId) {
             Selenide.open(urlPrefix+ IntegrationTestConstants.Pages.USER+"/"+userId);
         }
+
+        public void sendEnd() {
+            $(BODY).sendKeys(Keys.END);
+            // firing key down / up
+            WebElement e = $(BODY).getWrappedElement();
+            new Actions(driver).keyDown(e, Keys.CONTROL).keyUp(e, Keys.CONTROL).perform();
+        }
+
 
         public void setAvatarImage(String absoluteFilePath) {
             Croppa.setImage(absoluteFilePath);
@@ -106,6 +121,7 @@ public class UserProfileIT extends AbstractItTestRunner {
 
         FailoverUtils.retry(3, () -> {
             userPage.openPage(userId);
+            loginModal.openLoginModal();
             loginModal.login();
             return null;
         });
@@ -129,6 +145,7 @@ public class UserProfileIT extends AbstractItTestRunner {
         userPage.openPage(505);
 
         LoginModal loginModal = new LoginModal("generated_user_500", "generated_user_password");
+        loginModal.openLoginModal();
         loginModal.login();
 
         userPage.assertThisIsYou();
@@ -167,6 +184,7 @@ public class UserProfileIT extends AbstractItTestRunner {
         userPage.openPage();
 
         LoginModal loginModal = new LoginModal(user, password);
+        loginModal.openLoginModal();
         loginModal.login();
 
         final long anotherUserId = 5;
@@ -201,6 +219,40 @@ public class UserProfileIT extends AbstractItTestRunner {
         String myAvatarUrl = userProfilePage.getAvatarUrl();
 
         Assert.assertNotEquals(anotherUserAvatarUrl, myAvatarUrl);
+    }
+
+    @Test
+    public void testInfinityPosts() throws Exception {
+
+        UserProfilePage userPage = new UserProfilePage(urlPrefix, driver);
+        userPage.openPage(2);
+
+        $("body").shouldHave(Condition.text("posts"));
+
+        $(POST_LIST).shouldHave(Condition.text("generated_post_1999"));
+
+//        userPage.sendEnd();
+//        TimeUnit.SECONDS.sleep(2);
+//        userPage.sendEnd();
+//        TimeUnit.SECONDS.sleep(2);
+//        userPage.sendEnd();
+//        TimeUnit.SECONDS.sleep(2);
+//
+
+        $(POST_LIST).shouldHave(Condition.text("generated_post_1982")).scrollTo();
+        TimeUnit.SECONDS.sleep(1);
+        $(POST_LIST).shouldHave(Condition.text("generated_post_1981")).scrollTo();
+        TimeUnit.SECONDS.sleep(1);
+        $(POST_LIST).shouldHave(Condition.text("generated_post_1980")).scrollTo();
+        TimeUnit.SECONDS.sleep(1);
+        $(POST_LIST).shouldHave(Condition.text("generated_post_1979")).scrollTo();
+        TimeUnit.SECONDS.sleep(1);
+        $(POST_LIST).shouldHave(Condition.text("generated_post_1978")).scrollTo();
+        TimeUnit.SECONDS.sleep(1);
+        $(POST_LIST).shouldHave(Condition.text("generated_post_1977")).scrollTo();
+        TimeUnit.SECONDS.sleep(1);
+        $(POST_LIST).shouldHave(Condition.text("generated_post_1976")).scrollTo();
+
     }
 
 }

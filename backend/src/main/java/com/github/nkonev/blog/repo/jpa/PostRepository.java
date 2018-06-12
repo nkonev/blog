@@ -27,8 +27,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query(value = "SELECT p.* FROM posts.post p WHERE p.id > :post ORDER BY id ASC LIMIT 1", nativeQuery = true)
     Post getRight(@Param("post") @NotNull Long post);
 
-    Post findByTitle(@NotNull String title);
-
     @Query("select p.id from Post p")
     Collection<Long> findPostIds();
+
+    Page<Post> findByOwnerId(Pageable springDataPage, Long userId);
 }

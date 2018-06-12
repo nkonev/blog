@@ -233,6 +233,14 @@
     }
 
     .post {
+        &-title {
+            h1 {
+                padding-top 0.2em
+                padding-bottom 0.2em
+                padding-left 0.4em
+                padding-right 0
+            }
+        }
         &-head {
             display flex
             flex-direction row
@@ -297,6 +305,7 @@
             font-size 4em
         }
 
+
         // https://css-tricks.com/text-blocks-over-image/
         .img-container {
             //display flex
@@ -311,9 +320,10 @@
 
             h1 {
                 position: absolute;
-                bottom: 20px;
+                bottom: 40px;
                 left: 0;
-                width: 100%;
+                right 0;
+                //width: 90%;
                 color $titleColor
                 background $titleBackground
             }

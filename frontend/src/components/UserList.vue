@@ -76,9 +76,11 @@
                 );
             },
             onLogin(ignore) {
+                console.log("onLogin");
                 this.reloadPage(this.initialPageIndex+1);
             },
             onLogout(ignore) {
+                console.log("onLogout");
                 this.pageCount=0;
                 this.users=[];
             },
@@ -108,13 +110,11 @@
 
             bus.$on(LOGIN, this.onLogin);
             bus.$on(LOGOUT, this.onLogout);
-            bus.$on(UNAUTHORIZED, this.onLogout);
         },
         destroyed() {
             //console.log("destroyed");
             bus.$off(LOGIN, this.onLogin);
             bus.$off(LOGOUT, this.onLogout);
-            bus.$off(UNAUTHORIZED, this.onLogout);
         },
         metaInfo: {
             title: 'Users',
