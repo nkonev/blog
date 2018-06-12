@@ -71,9 +71,6 @@ public class UserProfileIT extends AbstractItTestRunner {
 
         public void sendEnd() {
             $(BODY).sendKeys(Keys.END);
-            // firing key down / up
-            WebElement e = $(BODY).getWrappedElement();
-            new Actions(driver).keyDown(e, Keys.CONTROL).keyUp(e, Keys.CONTROL).perform();
         }
 
 
@@ -231,28 +228,15 @@ public class UserProfileIT extends AbstractItTestRunner {
 
         $(POST_LIST).shouldHave(Condition.text("generated_post_1999"));
 
-//        userPage.sendEnd();
-//        TimeUnit.SECONDS.sleep(2);
-//        userPage.sendEnd();
-//        TimeUnit.SECONDS.sleep(2);
-//        userPage.sendEnd();
-//        TimeUnit.SECONDS.sleep(2);
-//
+        userPage.sendEnd();
 
-        $(POST_LIST).shouldHave(Condition.text("generated_post_1982")).scrollTo();
-        TimeUnit.SECONDS.sleep(1);
-        $(POST_LIST).shouldHave(Condition.text("generated_post_1981")).scrollTo();
-        TimeUnit.SECONDS.sleep(1);
-        $(POST_LIST).shouldHave(Condition.text("generated_post_1980")).scrollTo();
-        TimeUnit.SECONDS.sleep(1);
-        $(POST_LIST).shouldHave(Condition.text("generated_post_1979")).scrollTo();
-        TimeUnit.SECONDS.sleep(1);
-        $(POST_LIST).shouldHave(Condition.text("generated_post_1978")).scrollTo();
-        TimeUnit.SECONDS.sleep(1);
-        $(POST_LIST).shouldHave(Condition.text("generated_post_1977")).scrollTo();
-        TimeUnit.SECONDS.sleep(1);
-        $(POST_LIST).shouldHave(Condition.text("generated_post_1976")).scrollTo();
-
+        $(POST_LIST).shouldHave(Condition.text("generated_post_1982"));
+        $(POST_LIST).shouldHave(Condition.text("generated_post_1981"));
+        $(POST_LIST).shouldHave(Condition.text("generated_post_1980"));
+        $(POST_LIST).shouldHave(Condition.text("generated_post_1979"));
+        $(POST_LIST).shouldHave(Condition.text("generated_post_1978"));
+        $(POST_LIST).shouldHave(Condition.text("generated_post_1977"));
+        $(POST_LIST).shouldHave(Condition.text("generated_post_1976"));
     }
 
 }
