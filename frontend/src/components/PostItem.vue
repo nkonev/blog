@@ -65,6 +65,7 @@
                 //max-height 400px;
                 max-height $imgMaxHeight
                 max-width $imgMaxWidth
+                border-radius 2px
             }
 
         }
