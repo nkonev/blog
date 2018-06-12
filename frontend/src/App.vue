@@ -22,7 +22,7 @@
     import Vue from 'vue';
     import LoginModal from './components/LoginModal.vue';
     import vmodal from 'vue-js-modal'
-    import autoProgress from './components/auto-progress.vue'
+    import autoProgress from './lib/auto-progress.vue'
     import userProfileNav from './components/UserProfileNav.vue'
     import store, {GET_USER, FETCH_USER_PROFILE} from './store'
     import {mapGetters} from 'vuex'

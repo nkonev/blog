@@ -53,6 +53,7 @@
         store,
         methods: {
             reloadPage: function(pageNum, searchString) {
+                this.users = []; // bypass caching or something same
                 if (!searchString) {searchString=''}
                 this.$router.push({path: users, query: {page: pageNum}});
                 console.log("opening page ", pageNum);
@@ -81,8 +82,7 @@
             },
             onLogout(ignore) {
                 console.log("onLogout");
-                this.pageCount=0;
-                this.users=[];
+                this.reloadPage(this.initialPageIndex+1);
             },
             onChangeSearchString(str) {
                 console.debug('onChangeSearchString', str);
