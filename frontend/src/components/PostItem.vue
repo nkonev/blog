@@ -66,6 +66,7 @@
                 max-height $imgMaxHeight
                 max-width $imgMaxWidth
                 border-radius 2px
+                box-shadow: 0 4px 8px 4px rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
             }
 
         }
@@ -121,6 +122,7 @@
                     width auto
                     max-width 100%
                     max-height 500px
+                    box-shadow: none
                 }
                 img:hover {
                     transform none
