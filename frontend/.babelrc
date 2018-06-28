@@ -7,11 +7,8 @@
     "test": {
       "presets": [
         ["env",  { "targets": { "node": 8 }}]
-      ],
-      "plugins": [
-         "dynamic-import-node"
       ]
     }
   },
-  "plugins": ["syntax-dynamic-import", "dynamic-import-node"]
+  "plugins": ["syntax-dynamic-import", "dynamic-import-webpack"]
 }

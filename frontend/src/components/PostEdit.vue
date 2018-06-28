@@ -58,6 +58,12 @@
     import BlogSpinner from './BlogSpinner.vue'
     import {API_POST} from '../constants'
     import Croppa from 'vue-croppa'
+    import {isLargeScreen} from "../utils";
+    if (isLargeScreen()) {
+        require("quill/dist/quill.bubble.css");
+    } else {
+        require("quill/dist/quill.snow.css");
+    }
 
     const MIN_LENGTH = 10;
 
@@ -88,8 +94,6 @@
         ['clean']                                         // remove formatting button
     ];
 
-
-
     export default {
         props : [
             'postDTO', 'onAfterSubmit', 'onCancel', 'onError'
@@ -98,7 +102,7 @@
             return {
                 submitting: false,
                 editorOptions: {
-                    theme: 'bubble',
+                    theme: isLargeScreen() ? 'bubble' : 'snow',
                     modules: {
                         syntax: false,
                         toolbar: toolbarOptions,
@@ -109,23 +113,15 @@
                 chosenFile: null,
             }
         },
-        mounted() {
-//            this.quillInstance = this.$refs.myQuillEditor.quill;
-
-
-        },
-        beforeDestroy(){
-//            this.quillInstance = null;
-        },
         computed: {
             cropperWidth(){
-                return screen.width > 969 ? 800 : screen.width - 25
+                return isLargeScreen() ? 800 : screen.width - 25
             },
             cropperHeight(){
-                return screen.width > 969 ? 600 : this.cropperWidth;
+                return isLargeScreen() ? 600 : this.cropperWidth;
             },
             cropperRemoveButtonSize(){
-                return screen.width > 969 ? 30 : 45;
+                return isLargeScreen() ? 30 : 45;
             },
         },
         methods: {
@@ -218,7 +214,7 @@
                 this.$data.chosenFile = null;
             },
             computePlaceholder(){
-                return screen.width > 969 ? "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi." : "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."
+                return isLargeScreen() ? "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi." : "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat."
             },
             handleImageAdded: function(file, Editor, cursorLocation) {
                 // An example of using FormData
@@ -308,6 +304,3 @@
 </style>
 
 
-<style lang="stylus" scoped>
-    @import "~quill/dist/quill.bubble.css"
-</style>

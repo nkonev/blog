@@ -88,3 +88,8 @@ export const infinitePostsHandler = (that, getWithPaginationUrl, responseArrayEx
         }
     });
 }
+
+
+export const isLargeScreen = () => {
+    return screen.width > 969;
+}
