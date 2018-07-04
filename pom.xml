@@ -23,7 +23,7 @@
         <maven.jxr.report.plugin.version>2.5</maven.jxr.report.plugin.version>
         <maven.clean.plugin.version>3.0.0</maven.clean.plugin.version>
         <java.version>10</java.version>
-        <spring.boot.version>2.0.2.RELEASE</spring.boot.version>
+        <spring.boot.version>2.0.3.RELEASE</spring.boot.version>
 	    <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
         <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
 
@@ -98,7 +98,7 @@
                         <dependency>
                             <groupId>org.ow2.asm</groupId>
                             <artifactId>asm</artifactId>
-                            <version>6.1.1</version> <!-- Use newer version of ASM -->
+                            <version>6.2</version> <!-- Use newer version of ASM -->
                         </dependency>
                     </dependencies>
                 </plugin>
@@ -252,7 +252,7 @@
             <dependency>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-core</artifactId>
-                <version>5.1.1</version>
+                <version>5.1.4</version>
             </dependency>
             <dependency>
                 <groupId>net.javacrumbs.shedlock</groupId>
