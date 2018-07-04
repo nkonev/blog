@@ -188,3 +188,9 @@ npm install
 Q: I suddenly get http 403 error in JUnit mockMvc tests.
 
 A: Add `.with(csrf())` to MockMvcRequestBuilder chain
+
+
+# Code coverage
+
+1. Add profile `jacoco` `./mvnw -Pjacoco clean package`
+2. See coverage HTML report in `./jacoco/target/site/jacoco-aggregate/index.html` directory.
