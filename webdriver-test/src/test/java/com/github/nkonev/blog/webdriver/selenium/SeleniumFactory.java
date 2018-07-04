@@ -31,7 +31,7 @@ public class SeleniumFactory implements FactoryBean<WebDriver> {
     public static final String PROPERTY_BROWSER_PHANTOM_LOG = "phantomjs.log";
 
 
-    public static final String FIREFOX_DRIVER_VERSION = "0.19.1"; // https://github.com/mozilla/geckodriver/releases
+    public static final String FIREFOX_DRIVER_VERSION = "0.21.0"; // https://github.com/mozilla/geckodriver/releases
     public static final String CHROME_DRIVER_VERSION = "2.35"; // https://sites.google.com/a/chromium.org/chromedriver/
     public static final String PHANTOM_JS_DRIVER_VERSION = "2.1.1"; // https://npm.taobao.org/mirrors/phantomjs
 

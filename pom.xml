@@ -27,10 +27,10 @@
 	    <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
         <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
 
-        <selenium.override.version>3.12.0</selenium.override.version>
-        <selenide.version>4.11.4</selenide.version>
+        <selenium.override.version>3.13.0</selenium.override.version>
+        <selenide.version>4.12.2</selenide.version>
         <phantomjsdriver.version>1.4.4</phantomjsdriver.version>
-        <webdrivermanager.version>2.2.1</webdrivermanager.version>
+        <webdrivermanager.version>2.2.4</webdrivermanager.version>
         <shedlock.version>1.0.0</shedlock.version>
 
         <postgresql.version>42.2.2</postgresql.version>
