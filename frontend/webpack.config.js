@@ -57,7 +57,9 @@ module.exports = {
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /^$/),
         new CleanWebpackPlugin([buildDir], {
-            verbose: false,
+            watch: false,
+            allowExternal: true,
+            verbose: true,
             dry: false
         }),
         new WebpackOnBuildPlugin(function (stats) {
