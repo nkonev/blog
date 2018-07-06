@@ -5,7 +5,7 @@ version: '3.2'
 services:
   #enviroment
   postgresql:
-    image : postgres:10.3
+    image : postgres:10.4
     hostname: postgresql
     container_name: postgresql-blog-dev
     restart: unless-stopped
@@ -26,7 +26,7 @@ services:
         max-file: "1"
 
   redis:
-    image: redis:4.0.9
+    image: redis:5.0-rc3
     hostname: redis
     container_name: redis-blog-dev
     restart: unless-stopped
@@ -44,7 +44,7 @@ services:
         max-file: "1"
 
   rabbitmq:
-    image : nkonev/rabbitmq-web-stomp:3.7.3
+    image : nkonev/rabbitmq-web-stomp:3.7.6
     hostname: rabbitmq
     container_name: rabbitmq-blog-dev
     restart: unless-stopped

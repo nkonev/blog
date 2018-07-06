@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   blog:
-    # Chane it for deploy to production. Consult with readme.md.
+    # Change it for deploy to production. Consult with readme.md.
     # Used for prevent download latest stable image during test, so for force use local image.
     # See also DeployIT#checkImageExistence
     image: nkonev/blog:current-test
@@ -54,7 +54,7 @@ services:
       - traefik_backend
       - backend
   traefik:
-    image: traefik:1.5
+    image: traefik:1.6
     hostname: traefik
     command: -c /traefik.toml
     ports:
@@ -85,7 +85,7 @@ services:
       - backend
 
   postgresql:
-    image: postgres:10.3
+    image: postgres:10.4
     hostname: postgresql
     environment:
       - POSTGRES_PASSWORD=postgresqlPassword
@@ -102,7 +102,7 @@ services:
     networks:
       - backend
   redis:
-    image: redis:4.0.9
+    image: redis:5.0-rc3
     hostname: redis
     volumes :
       - redis_prod_data_dir:/data
@@ -116,7 +116,7 @@ services:
     networks:
       - backend
   rabbitmq:
-    image: nkonev/rabbitmq-web-stomp:3.7.3
+    image: nkonev/rabbitmq-web-stomp:3.7.6
     hostname: rabbitmq
     environment:
       - RABBITMQ_DEFAULT_USER=blog
@@ -195,11 +195,11 @@ services:
     networks:
       - backend
   node_exporter:
-    image: prom/node-exporter:v0.15.2
+    image: prom/node-exporter:v0.16.0
     hostname: 'node_exporter'
     ports:
       - '9100:9100'
-    command: ["--log.level", "fatal", "--log.format", "logger:stdout"]
+    command: ["--log.level", "info", "--log.format", "logger:stdout"]
     logging:
       driver: "json-file"
 #      options:
@@ -222,7 +222,7 @@ services:
       - traefik_backend
       - backend
   prometheus:
-    image: prom/prometheus:v2.2.1
+    image: prom/prometheus:v2.3.1
     hostname: prometheus
     ports:
       - 9090:9090
@@ -249,7 +249,7 @@ services:
       - backend
 
   alertmanager:
-    image: prom/alertmanager:v0.14.0
+    image: prom/alertmanager:v0.15.0
     hostname: alertmanager
     volumes:
       - ./alertmanager/alert.yml:/alert.yml
@@ -273,7 +273,7 @@ services:
       - traefik_backend
 
   grafana:
-    image: grafana/grafana:5.0.4
+    image: grafana/grafana:5.2.1
     hostname: grafana
     environment:
       - GF_AUTH_BASIC_ENABLED=false
