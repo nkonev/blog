@@ -200,6 +200,8 @@ services:
     ports:
       - '9100:9100'
     command: ["--log.level", "info", "--log.format", "logger:stdout"]
+    volumes:
+      - /:/rootfs:ro
     logging:
       driver: "json-file"
 #      options:

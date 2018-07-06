@@ -1,3 +1,5 @@
+# config file version
+apiVersion: 1
 datasources:
         - name: blog_ds
           type: prometheus

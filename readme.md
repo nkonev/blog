@@ -251,3 +251,13 @@ If your search(Yandex Metrics for example) checks for existence script - request
  
 In order to solve it, use `custom.seo.script=file:/var/www/seo.html` - Rendertron filter will inject content of 
 this file before closing `</head>`. 
+
+# Grafana
+
+## Fix disk usage in https://grafana.com/dashboards/1860
+
+
+Set query
+```100 - ((node_filesystem_avail_bytes{mountpoint="/rootfs"} * 100) / node_filesystem_size_bytes{mountpoint="/rootfs"})```
+
+Set Instant

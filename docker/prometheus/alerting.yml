@@ -37,3 +37,22 @@ groups:
     annotations:
       summary: "Warnings count is increasing for 30s"
       description: "Please check application logs"
+
+- name: node
+  rules:
+  - alert: "CPU > 80%"
+    expr: 1-irate(node_cpu{job="node-exporter",mode="idle"}[1h]) > 0.8
+    for: 3m
+    labels:
+      severity: page
+    annotations:
+      summary: "CPU > 80%"
+      description: "Please check top"
+  - alert: "Disk > 90%"
+    expr: 1-((node_filesystem_avail_bytes{mountpoint="/rootfs"}) / node_filesystem_size_bytes{mountpoint="/rootfs"})>0.9
+    for: 1m
+    labels:
+      severity: high
+    annotations:
+      summary: "Disk > 90%"
+      description: "Please cleanup disks"
