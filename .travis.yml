@@ -6,6 +6,7 @@ cache:
   - "$HOME/.m2"
   - frontend/node
   - frontend/node_modules
+  - $HOME/.cache/install-jdk
 jdk: openjdk10
 services:
   - docker
