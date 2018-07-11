@@ -123,7 +123,7 @@ public class RendertronFilter extends GenericFilterBean {
             if (value==null) {
                 value = seoCacheService.rewriteCachedPage(request);
             }
-            value = injectSeoScripts(value, request);
+            value = injectSeoScripts(value, request); // for Yandex verification
             response.setHeader("Content-Type", "text/html; charset=utf-8");
             response.getWriter().print(value);
             return;
@@ -140,6 +140,11 @@ public class RendertronFilter extends GenericFilterBean {
         return isInSearchUserAgent(userAgent) && !isInResources(url) && !isInBlackList(path);
     }
 
+    /**
+     * Intended for skip script rendering for prerender/rendertron
+     * @param request
+     * @return
+     */
     public boolean shouldRenderSeoScript(HttpServletRequest request){
         final String userAgent = request.getHeader("User-Agent");
         return !isPrerenderUserAgent(userAgent);
