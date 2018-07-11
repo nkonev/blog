@@ -86,13 +86,18 @@ chmod 600 traefik/acme.json
 
 
 ## Manual changes
-In `docker-compose.template.yml` or `docker-compose.stack.yml`:
 
-a) Change tag in service blog `image: nkonev/blog:current-test` -> `image: nkonev/blog:latest`
+Let' s assume `cd docker`.
+
+a) `./swarm-init.sh`
+
+b) In `docker-compose.template.yml` or `docker-compose.stack.yml`:.
+
+Change tag in service blog `image: nkonev/blog:current-test` -> `image: nkonev/blog:latest`
 
 Also you can remove demo profile
 
-b) Change next properties:
+c) Change next properties:
 
 ```
       - SPRING_MAIL_HOST=smtp.yandex.ru
@@ -105,14 +110,14 @@ b) Change next properties:
 And remove explicit ports definition where it's don't need - postgres, redis, rabbit, because of docker publishes ports by add it to iptables chain.
 If you very want, you can skip setting these properties, but you'll have non-working email, wrong links in emails and so on.
 
-c) Generating monitoring grafana & prometheus password
+d) Generating monitoring grafana & prometheus password
 ```bash
 sudo yum install -y httpd-tools
 # generate login and hash with replaced $ with $$ sign for able to copy-paste to docker-compose.stack.yml
 htpasswd -nb admin admin | sed -e 's/\$/\$\$/g'
 ```
 
-d) Set `journald` logging with appropriate tag for all services
+e) Set `journald` logging with appropriate tag for all services
 
 ```yaml
     logging:
@@ -122,11 +127,11 @@ d) Set `journald` logging with appropriate tag for all services
 ```
 
 
-e) Uncomment & change SSL setting in `./traefik/traefik.toml`
+f) Uncomment & change SSL setting in `./traefik/traefik.toml`
 
-f) Configure notifications in `./alertmanager/alert.yml`
+g) Configure notifications in `./alertmanager/alert.yml`
 
-g) For able to http(s) request your domain registrar name with curl from container
+i) For able to http(s) request your domain registrar name with curl from container
 ensure that 
 ```bash
 cat /proc/sys/net/ipv4/ip_forward
