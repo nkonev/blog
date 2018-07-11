@@ -17,6 +17,7 @@ public class PrerenderConfig {
     private List<String> blacklistPaths = Collections.singletonList("/error");
     private TimeUnit cacheExpireTimeUnit = TimeUnit.MINUTES;
     private long cacheExpire = 30;
+    private String prerenderUserAgent = "HeadlessChrome";
 
     public PrerenderConfig() { }
 
@@ -78,5 +79,13 @@ public class PrerenderConfig {
 
     public void setBlacklistPaths(List<String> blacklistPaths) {
         this.blacklistPaths = blacklistPaths;
+    }
+
+    public String getPrerenderUserAgent() {
+        return prerenderUserAgent;
+    }
+
+    public void setPrerenderUserAgent(String prerenderUserAgent) {
+        this.prerenderUserAgent = prerenderUserAgent;
     }
 }

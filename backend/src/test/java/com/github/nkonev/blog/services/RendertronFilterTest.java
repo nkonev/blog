@@ -18,6 +18,7 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static com.github.nkonev.blog.utils.SeoCacheKeyUtils.RENDERTRON_HTML;
+import static org.hamcrest.Matchers.not;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
@@ -74,6 +75,47 @@ public class RendertronFilterTest extends AbstractUtTestRunner {
                 .andReturn();
 
         mockServer.verify();
+    }
+
+    @Test
+    public void testSeoScriptInjectionWorksWhenNonBot() throws Exception {
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get(Constants.Urls.ROOT)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .accept(MediaType.TEXT_HTML)
+                        .header("User-Agent", "Common User Browser")
+        ).andDo(result -> {
+            LOGGER.info("result body={}", result.getResponse().getContentAsString());
+        })
+                .andExpect(status().isOk())
+                .andExpect(content().string(new StringContains("<div id=\"app-container\"></div>")))
+                .andExpect(content().string(new StringContains("<script>console.log(\"Seo\");</script>")))
+                .andReturn();
+
+    }
+
+
+    @Test
+    public void testSeoScriptInjectionNotWorksWhenBot() throws Exception {
+        mockServer.expect(ExpectedCount.never(), requestTo("http://rendertron.example.com:3000/http://127.0.0.1:9082"))
+                .andExpect(method(HttpMethod.GET));
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get(Constants.Urls.ROOT)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .accept(MediaType.TEXT_HTML)
+                        .header("User-Agent", "HeadlessChrome/65.1.2.3.4")
+        ).andDo(result -> {
+            LOGGER.info("result body={}", result.getResponse().getContentAsString());
+        })
+                .andExpect(status().isOk())
+                .andExpect(content().string(new StringContains("<div id=\"app-container\"></div>")))
+                .andExpect(content().string(not(new StringContains("<script>console.log(\"Seo\");</script>"))))
+                .andReturn();
+
+        mockServer.verify();
+
     }
 
 }

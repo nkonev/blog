@@ -7,11 +7,14 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <link rel="stylesheet" href="/build/main.css">
+    <#if seoScript?has_content>
+        ${seoScript}
+    </#if>
 </head>
 <body>
-    <div id="app-container"></div>
+<div id="app-container"></div>
 
-    <script type="application/javascript" src="/build/vendor.js"></script>
-    <script type="application/javascript" src="/build/main.js"></script>
+<script type="application/javascript" src="/build/vendor.js"></script>
+<script type="application/javascript" src="/build/main.js"></script>
 </body>
 </html>

@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 
 import static com.github.nkonev.blog.utils.SeoCacheKeyUtils.getRedisKeyHtml;
 import static com.github.nkonev.blog.utils.ServletUtils.getPath;
+import static com.github.nkonev.blog.utils.ServletUtils.nullToEmpty;
 import static org.springframework.util.StringUtils.isEmpty;
 
 @Component
@@ -115,18 +116,14 @@ public class RendertronFilter extends GenericFilterBean {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-        final String userAgent = request.getHeader("User-Agent");
-        final String url = request.getRequestURL().toString();
-
-        final String path = getPath(request);
-        if (isInSearchUserAgent(userAgent) && !isInResources(url) && !isInBlackList(path)) {
+        if (shouldUseCache(request)) {
             final String key = getRedisKeyHtml(request);
             String value = seoCacheService.getHtmlFromCache(key);
 
             if (value==null) {
                 value = seoCacheService.rewriteCachedPage(request);
             }
-            value = injectSeoScripts(value);
+            value = injectSeoScripts(value, request);
             response.setHeader("Content-Type", "text/html; charset=utf-8");
             response.getWriter().print(value);
             return;
@@ -135,15 +132,42 @@ public class RendertronFilter extends GenericFilterBean {
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
-    private String injectSeoScripts(String value) {
-        if (resource!=null && resource.exists()) {
-            String script = stringFromResource(resource);
-            value = value.replaceFirst("</head>", script+"</head>");
+    public boolean shouldUseCache(HttpServletRequest request) {
+        final String userAgent = request.getHeader("User-Agent");
+        final String url = request.getRequestURL().toString();
+        final String path = getPath(request);
+
+        return isInSearchUserAgent(userAgent) && !isInResources(url) && !isInBlackList(path);
+    }
+
+    public boolean shouldRenderSeoScript(HttpServletRequest request){
+        final String userAgent = request.getHeader("User-Agent");
+        return !isPrerenderUserAgent(userAgent);
+    }
+
+    private boolean isPrerenderUserAgent(String userAgent) {
+        return userAgent != null && userAgent.contains(prerenderConfig.getPrerenderUserAgent());
+    }
+
+    public String getSeoScript() {
+        if (resource != null && resource.exists()) {
+            return stringFromResource(resource);
+        } else {
+            return null;
+        }
+    }
+
+    private String injectSeoScripts(String value, HttpServletRequest request) {
+        if (shouldRenderSeoScript(request)) {
+            String maybeSeoScript = getSeoScript();
+            if (maybeSeoScript != null) {
+                value = value.replaceFirst("</head>", maybeSeoScript + "</head>");
+            }
         }
         return value;
     }
 
-    public static String stringFromResource(Resource resource) {
+    private static String stringFromResource(Resource resource) {
         try(BufferedReader br = new BufferedReader(new InputStreamReader(resource.getInputStream()));) {
             return br.lines().collect(Collectors.joining("\n"));
         } catch (IOException e){
