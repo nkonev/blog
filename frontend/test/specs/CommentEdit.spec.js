@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import CommentEdit from "../../src/components/CommentEdit.vue"
-import { mount, shallow } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
 
 describe("CommentEdit.vue", () => {
     let CommentEditWrapper, $router, $route, checkGetPost;
@@ -20,7 +20,7 @@ describe("CommentEdit.vue", () => {
 
     it("update", (done) => {
         const instance = Vue.extend();
-        CommentEditWrapper = shallow(CommentEdit, {
+        CommentEditWrapper = shallowMount(CommentEdit, {
             mocks: { $http: $http, $route },
             propsData: {
                 commentDTO: {
@@ -43,7 +43,7 @@ describe("CommentEdit.vue", () => {
 
     it("cancel", () => {
         const instance = Vue.extend();
-        CommentEditWrapper = shallow(CommentEdit, {
+        CommentEditWrapper = shallowMount(CommentEdit, {
             mocks: { $http: $http, $route },
             propsData: {
                 commentDTO: {

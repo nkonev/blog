@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import PostView from "../../src/components/PostView.vue"
 import postFactory from "../../src/factories/PostDtoFactory"
-import { mount, shallow } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
 
 describe("PostView.vue", () => {
     let PostViewWrapper, $router, $route, checkGetPost;
@@ -71,7 +71,7 @@ describe("PostView.vue", () => {
 
     it("tap left", (done) => {
         const instance = Vue.extend();
-        PostViewWrapper = shallow(PostView, {
+        PostViewWrapper = shallowMount(PostView, {
             mocks: { $router,  $route, $http: $httpLeft },
             instance
         });
@@ -101,7 +101,7 @@ describe("PostView.vue", () => {
 
     it("tap right", (done) => {
         const instance = Vue.extend();
-        PostViewWrapper = shallow(PostView, {
+        PostViewWrapper = shallowMount(PostView, {
             mocks: { $router,  $route, $http: $httpRight },
             instance
         });

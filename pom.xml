@@ -93,14 +93,6 @@
                         <target>${java.version}</target>
                         <release>${java.version}</release>
                     </configuration>
-                    <dependencies>
-                        <!-- https://issues.apache.org/jira/projects/MCOMPILER/issues/MCOMPILER-332 -->
-                        <dependency>
-                            <groupId>org.ow2.asm</groupId>
-                            <artifactId>asm</artifactId>
-                            <version>6.2</version> <!-- Use newer version of ASM -->
-                        </dependency>
-                    </dependencies>
                 </plugin>
 
                   <plugin>

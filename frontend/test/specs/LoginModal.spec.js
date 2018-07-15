@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import LoginModal from "../../src/components/LoginModal.vue"
-import { mount, shallow, createLocalVue } from '@vue/test-utils';
+import LoginModal from "../../src/components/LoginModal.vue";
+import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
@@ -59,7 +59,7 @@ describe("LoginModal.vue", () => {
             actions
         });
 
-        LoginModalWrapper = shallow(
+        LoginModalWrapper = shallowMount(
             LoginModal,
             {
                 attachToDocument: false,
@@ -98,7 +98,7 @@ describe("LoginModal.vue", () => {
     });
 
     it("login with incorrect credentials", (done) => {
-        LoginModalWrapper = shallow(
+        LoginModalWrapper = shallowMount(
             LoginModal,
             {
                 attachToDocument: false,

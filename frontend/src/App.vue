@@ -28,13 +28,22 @@
     import {mapGetters} from 'vuex'
     import VmBackTop from 'vue-multiple-back-top'
     import {API_CONFIG} from './constants'
+    import bus, {LOGIN, LOGOUT} from './bus'
+    import Notifications from './notifications'
 
     Vue.use(vmodal);
     Vue.component(VmBackTop.name, VmBackTop);
 
     export default {
         name: 'app',
-        methods: {},
+        methods: {
+            onSuccessLogin(){
+                Notifications.successfulLogin()
+            },
+            onSuccessLogout(){
+                Notifications.successfulLogout()
+            },
+        },
         store,
         computed: mapGetters({currentUser: GET_USER}), // currentUser is here, 'getUser' -- in store.js
         // used components for provide custom tags
@@ -51,6 +60,14 @@
             }, response => {
                 console.error("Error on get config", response);
             });
+        },
+        created() {
+            bus.$on(LOGIN, this.onSuccessLogin);
+            bus.$on(LOGOUT, this.onSuccessLogout);
+        },
+        destroyed() {
+            bus.$off(LOGIN, this.onSuccessLogin);
+            bus.$off(LOGOUT, this.onSuccessLogout);
         },
         data(){
             return {
