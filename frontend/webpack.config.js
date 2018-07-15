@@ -10,7 +10,6 @@ const NODE_ENV = process.env.NODE_ENV || DEVELOPMENT_ENV;
 const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const WebpackOnBuildPlugin = require('on-build-webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const LiveReloadPlugin = require('webpack-livereload-plugin');
 const { VueLoaderPlugin } = require('vue-loader')
 
@@ -66,9 +65,6 @@ module.exports = {
             var currentdate = new Date();
             console.log("Built with environment:", NODE_ENV, "at", currentdate.toLocaleString());
         }),
-        new ExtractTextPlugin({
-            filename: '[name].css'
-        }),
         new webpack.ProvidePlugin({
             // "$":"jquery",
             // "jQuery":"jquery",
@@ -102,17 +98,11 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                use: ExtractTextPlugin.extract({
-                    fallback: "style-loader",
-                    use: "css-loader?sourceMap"
-                })
+                use: ["style-loader", "css-loader?sourceMap"]
             },
             {
                 test: /\.styl|stylus$/,
-                use: ExtractTextPlugin.extract({
-                    fallback: "style-loader",
-                    use: ["css-loader?sourceMap", 'stylus-loader']
-                })
+                use: ["style-loader", "css-loader?sourceMap", 'stylus-loader']
             },
             {
                 test: /\.(ttf|eot|woff|woff2)$/,
