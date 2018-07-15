@@ -33,7 +33,7 @@
         <webdrivermanager.version>2.2.4</webdrivermanager.version>
         <shedlock.version>1.0.0</shedlock.version>
 
-        <postgresql.version>42.2.2</postgresql.version>
+        <postgresql.version>42.2.4</postgresql.version>
         <greenmail.version>1.5.7</greenmail.version>
         <maven.install.plugin.version>2.5.2</maven.install.plugin.version>
         <jacoco-maven-plugin.version>0.8.1</jacoco-maven-plugin.version>
