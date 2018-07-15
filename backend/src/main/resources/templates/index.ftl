@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <link rel="stylesheet" href="/build/main.css">
+    <link rel="stylesheet" href="/build/vendor.css">
     <#if seoScript?has_content>
         ${seoScript}
     </#if>

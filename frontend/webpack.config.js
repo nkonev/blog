@@ -5,13 +5,16 @@ const srcDir = path.join(__dirname, 'src');
 const buildDir = path.join(__dirname, '../backend/src/main/resources/static/build');
 
 const DEVELOPMENT_ENV = 'development';
+const PRODUCTION_ENV = 'production';
 const NODE_ENV = process.env.NODE_ENV || DEVELOPMENT_ENV;
 
 const webpack = require('webpack');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const WebpackOnBuildPlugin = require('on-build-webpack');
 const LiveReloadPlugin = require('webpack-livereload-plugin');
-const { VueLoaderPlugin } = require('vue-loader')
+const { VueLoaderPlugin } = require('vue-loader');
+const devMode = process.env.NODE_ENV !== PRODUCTION_ENV;
 
 module.exports = {
     cache: true,
@@ -43,13 +46,13 @@ module.exports = {
         }
     },
 
-    watch: NODE_ENV == DEVELOPMENT_ENV,
+    watch: devMode,
     watchOptions: {
         aggregateTimeout: 100,
         poll: 250
     },
 
-    devtool: NODE_ENV == DEVELOPMENT_ENV ? "source-map" : false,
+    devtool: devMode ? "source-map" : false,
 
     plugins: [
         new VueLoaderPlugin(),
@@ -60,6 +63,11 @@ module.exports = {
             allowExternal: true,
             verbose: true,
             dry: false
+        }),
+        new MiniCssExtractPlugin({
+            // Options similar to the same options in webpackOptions.output
+            // both options are optional
+            filename: '[name].css',
         }),
         new WebpackOnBuildPlugin(function (stats) {
             var currentdate = new Date();
@@ -98,11 +106,18 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                use: ["style-loader", "css-loader?sourceMap"]
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    "css-loader?sourceMap"
+                ]
             },
             {
                 test: /\.styl|stylus$/,
-                use: ["style-loader", "css-loader?sourceMap", 'stylus-loader']
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    "css-loader?sourceMap",
+                    'stylus-loader'
+                ]
             },
             {
                 test: /\.(ttf|eot|woff|woff2)$/,
@@ -150,7 +165,7 @@ module.exports = {
     }
 };
 
-if (NODE_ENV === DEVELOPMENT_ENV) {
+if (devMode) {
     module.exports.plugins.push(
         new LiveReloadPlugin({
             appendScriptTag: true
