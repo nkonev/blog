@@ -9,7 +9,7 @@
             <div v-else>
                 No data
             </div>
-            <random-posts></random-posts>
+            <random-posts v-if="showRandom"/>
 
             <infinite-loading @infinite="infiniteHandler" ref="infiniteLoading">
                 <span slot="no-more">
@@ -31,7 +31,7 @@
     import BlogSpinner from './BlogSpinner.vue'
     import PostAddFab from './PostAddFab.vue'
     import Search from './Search.vue';
-    import {updateById, cutPost, initStompClient, closeStompClient, infinitePostsHandler} from '../utils'
+    import {updateById, cutPost, initStompClient, closeStompClient, infinitePostsHandler, isLargeScreen} from '../utils'
     import VueSticky from 'vue-sticky'
     import RandomPosts from "./RandomPosts.vue";
     import Notifications from "../notifications"
@@ -75,6 +75,11 @@
                     this.$refs.infiniteLoading.$emit('$InfiniteLoading:reset');
                 });
             },
+        },
+        computed: {
+            showRandom(){
+                return isLargeScreen();
+            }
         },
         mounted(){
             stompObj = initStompClient((frame) => {
