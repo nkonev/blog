@@ -119,10 +119,11 @@
                     float: none
                     margin 0px;
                     // margin 4px;
-                    width auto
-                    max-width 100%
-                    max-height 500px
+                    width 100%
+                    height 100%
                     box-shadow: none
+                    max-height 100%
+                    max-width 100%
                 }
                 img:hover {
                     transform none
