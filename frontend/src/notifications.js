@@ -31,5 +31,8 @@ export default {
     },
     successfulLogout(){
         VueNotifications.info({message: 'You are successfully logged out'})
+    },
+    postCreated(title){
+        VueNotifications.info({title: 'Created new post', message: title})
     }
 }

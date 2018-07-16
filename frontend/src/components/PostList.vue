@@ -34,6 +34,7 @@
     import {updateById, cutPost, initStompClient, closeStompClient, infinitePostsHandler} from '../utils'
     import VueSticky from 'vue-sticky'
     import RandomPosts from "./RandomPosts.vue";
+    import Notifications from "../notifications"
 
     // https://peachscript.github.io/vue-infinite-loading/#!/getting-started/with-filter
 
@@ -85,6 +86,7 @@
                     cutPost(obj);
                     // console.log(message);
                     this.posts.unshift(obj);
+                    Notifications.postCreated(obj.title);
                 });
                 subscriptionUpdate=stompObj.stompClient.subscribe("/topic/posts.update", (data) => {
                     const message = data.body;
