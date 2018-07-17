@@ -75,6 +75,10 @@ public class PostIT extends AbstractItTestRunner {
                     .waitUntil(Condition.enabled, 20 * 1000)
                     .shouldBe(CLICKABLE).click();
         }
+
+        public void confirmDelete() {
+            $(".vue-dialog .vue-dialog-button:nth-child(2)").click();
+        }
     }
 
     public static class PostEditPage {
@@ -253,6 +257,7 @@ public class PostIT extends AbstractItTestRunner {
 
         FailoverUtils.retry(3, () -> {
             postViewPage.delete();
+            postViewPage.confirmDelete();
             String urlAfter = driver.getCurrentUrl();
             Assert.assertNotEquals(urlBefore, urlAfter);
             return null;

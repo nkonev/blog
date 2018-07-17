@@ -1,5 +1,6 @@
 <template>
     <div class="post">
+        <v-dialog/>
         <template v-if="postDTO">
             <template v-if="isEditing">
                 <PostEdit :postDTO="postDTO" :onAfterSubmit="afterSubmit" :onCancel="cancel" />
@@ -16,7 +17,7 @@
 
                         <div class="manage-buttons" v-if="postDTO.canEdit || postDTO.canDelete">
                             <img class="edit-container-pen" src="../assets/pen.png" v-if="postDTO.canEdit" @click="setEdit()"/>
-                            <img class="remove-container-x" src="../assets/remove.png" v-if="postDTO.canDelete" @click="doDelete()"/>
+                            <img class="remove-container-x" src="../assets/remove.png" v-if="postDTO.canDelete" @click="openDeleteConfirmation()"/>
                         </div>
                     </div>
                     <div class="ql-container ql-bubble">
@@ -48,7 +49,6 @@
 
 <script>
     import Vue from 'vue'
-    // import 'quill/dist/quill.bubble.css'
     import {API_POST} from '../constants'
     import bus, {LOGIN, LOGOUT, POST_SWITCHED} from '../bus'
     import {root, post} from '../routes'
@@ -60,6 +60,8 @@
     import {getPostId, getTimestampFromUtc} from '../utils'
     // Lazy load heavy component https://router.vuejs.org/en/advanced/lazy-loading.html. see also in .babelrc
     const PostEdit = () => import('./PostEdit.vue');
+
+    const DIALOG = "dialog";
 
     export default {
         name: 'post-view',
@@ -90,7 +92,7 @@
             'blog-spinner': BlogSpinner,
             PostAddFab,
             CommentList,
-            Owner
+            Owner,
         },
         computed:{
             createTime(){
@@ -152,6 +154,28 @@
             },
             goRight() {
                 this.goto(this.postDTO.right);
+            },
+            openDeleteConfirmation(){
+                this.$modal.show(DIALOG, {
+                    title: 'Post delete confirmation',
+                    text: 'Do you want to delete this post?',
+                    buttons: [
+                        {
+                            title: 'No',
+                            handler: () => {
+                                this.$modal.hide(DIALOG)
+                            }
+                        },
+                        {
+                            title: 'Yes',
+                            default: true,
+                            handler: () => {
+                                this.doDelete();
+                                this.$modal.hide(DIALOG)
+                            }
+                        },
+                    ]
+                })
             },
             doDelete() {
                 this.isLoading = true;

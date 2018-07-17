@@ -31,7 +31,7 @@
     import bus, {LOGIN, LOGOUT} from './bus'
     import Notifications from './notifications'
 
-    Vue.use(vmodal);
+    Vue.use(vmodal, { dialog: true });
     Vue.component(VmBackTop.name, VmBackTop);
 
     export default {
