@@ -3,7 +3,7 @@
         <div class="dropdown">
             <span class="dropobj">
                 <span class="login">{{currentUser.login}}</span>
-                <img class="avatar" :src="currentUser.avatar"/>
+                <avatar :src="currentUser.avatar" :username="currentUser.login"/>
             </span>
             <div class="dropdown-content">
                 <span class="blue" @click.prevent="dispatchAction('profile')">Profile</span>
@@ -25,6 +25,7 @@
     import bus from '../bus'
     import {LOGOUT} from '../bus'
     import {useProfileName} from  '../routes'
+    import Avatar from 'vue-avatar'
 
     export default {
         name: 'user-profile-nav',
@@ -62,6 +63,9 @@
                 this.$modal.show(LOGIN_MODAL);
             }
         },
+        components:{
+            Avatar
+        }
     }
 </script>
 

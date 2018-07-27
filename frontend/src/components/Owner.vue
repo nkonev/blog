@@ -3,7 +3,7 @@
         <span v-if="prepend" class="prepend">{{prepend}}</span>
 
         <router-link :to="`/user/${owner.id}`">
-            <img :src="owner.avatar"/>
+            <avatar :src="owner.avatar" :username="owner.login" :size="40"/>
         </router-link>
         <router-link :to="`/user/${owner.id}`">
             <span>{{owner.login}}</span>
@@ -13,8 +13,13 @@
 </template>
 
 <script>
+    import Avatar from 'vue-avatar'
+
     export default {
-        props: ['prepend', 'owner', 'time']
+        props: ['prepend', 'owner', 'time'],
+        components:{
+            Avatar
+        }
     }
 </script>
 
@@ -35,9 +40,9 @@
             //align-items center
         }
 
-        img {
-            margin-right 5px
-            height 40px;
+        span {
+            margin-left 6px
+            margin-right 6px
         }
 
         span.time {

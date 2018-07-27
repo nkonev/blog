@@ -1,6 +1,6 @@
 <template>
     <div class="user">
-        <div class="user-avatar"><img :src="model.avatar"/></div>
+        <div class="user-avatar"><avatar :src="model.avatar" :username="model.login"/></div>
         <div class="user-info">
             <router-link :to="{ name: 'user-profile', params: { id: model.id } }">{{ model.login }}</router-link>
         </div>
@@ -15,7 +15,8 @@
 
 <script>
     import Vue from "vue"
-    
+    import Avatar from 'vue-avatar'
+
     export default {
         name: 'user-item', // это имя компонента, которое м. б. тегом в другом компоненте
         props: ['userDTO', 'currentUser'], // it may be an object, for ability to set default values
@@ -45,6 +46,9 @@
         },
         created(){
             this.model = Vue.util.extend({}, this.userDTO);
+        },
+        components:{
+            Avatar
         }
     };
 </script>
@@ -68,19 +72,16 @@
 
             width 48px;
             height 48px;
-            margin 2px;
-
-            // needs for correct display in Chrome
-            img {
-                //width 100%;
-                height 100%;
-            }
+            //margin 2px;
+            padding 4px 4px 4px 4px
         }
 
         &-info {
             display: flex;
             flex-direction: column;
             justify-content: center;
+            margin-left 6px
+            margin-right 6px
         }
 
         &-management {
