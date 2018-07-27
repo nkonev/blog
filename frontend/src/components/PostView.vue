@@ -8,7 +8,7 @@
             <template v-else>
                 <template v-if="!isLoading && !errorMessage">
                     <div v-if="postDTO.titleImg" class="img-container post-title">
-                        <img class="title-img" :src="postDTO.titleImg"/>
+                        <img v-img class="title-img" :src="postDTO.titleImg"/>
                         <h1>{{postDTO.title}}</h1>
                     </div>
                     <div v-else class="post-title"><h1>{{postDTO.title}}</h1></div>
@@ -58,6 +58,8 @@
     import CommentList from './CommentList.vue'
     import Owner from './Owner.vue'
     import {getPostId, getTimestampFromUtc} from '../utils'
+    import VueImg from 'v-img';
+    Vue.use(VueImg);
     // Lazy load heavy component https://router.vuejs.org/en/advanced/lazy-loading.html. see also in .babelrc
     const PostEdit = () => import('./PostEdit.vue');
 
