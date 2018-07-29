@@ -49,7 +49,7 @@
 
                 const postId = getPostId(this);
                 const newComment = Vue.util.extend({}, this.$props.commentDTO);
-                newComment.text = this.editContent;
+                newComment.text = this.editContent.replace(/\n/g, "<br />");
                 if (this.$props.isAdd) {
                     this.$http.post(`/api/post/${postId}/comment`, newComment)
                         .then(successResp => {

@@ -8,9 +8,7 @@
             </span>
         </div>
 
-        <div v-if="!isEditing" class="comment-content">
-            {{commentDTO.text}}
-        </div>
+        <div v-if="!isEditing" class="comment-content" v-html="commentDTO.text"></div>
         <comment-edit v-else :commentDTO="commentDTO"></comment-edit>
         <hr size="1"/>
     </div>
