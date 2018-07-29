@@ -9,14 +9,14 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.web.servlet.MvcResult;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Map;
 
 import static com.github.nkonev.blog.security.SecurityConfig.*;
+import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -80,7 +80,7 @@ public class BlogErrorControllerTest extends AbstractUtTestRunner {
     }
 
     @Test
-    public void test404Fallback() throws Exception {
+    public void test404FallbackAccept() throws Exception {
         RequestEntity<Void> requestEntity = RequestEntity.<Void>get(new URI(urlWithContextPath()+"/not-exists")).accept(MediaType.TEXT_HTML).build();
 
         ResponseEntity<String> responseEntity = testRestTemplate.exchange(requestEntity, String.class);
@@ -92,6 +92,23 @@ public class BlogErrorControllerTest extends AbstractUtTestRunner {
         Assert.assertTrue(responseEntity.getHeaders().getContentType().toString().contains(MediaType.TEXT_HTML_VALUE));
         Assert.assertTrue(str.contains("<!doctype html>"));
     }
+
+    @Test
+    public void test404FallbackNoAccept() throws Exception {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(new ArrayList<>()); // explicitly set zero Accept values
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<String> responseEntity = testRestTemplate.exchange(new URI(urlWithContextPath()+"/not-exists"), GET, entity, String.class);
+        String str = responseEntity.getBody();
+        Assert.assertEquals(200, responseEntity.getStatusCodeValue()); // we respond 200 for 404 fallback
+
+        LOGGER.info(str);
+        LOGGER.info("HTML 404 fallback Content-Type: {}", responseEntity.getHeaders().getContentType());
+        Assert.assertTrue(responseEntity.getHeaders().getContentType().toString().contains(MediaType.TEXT_HTML_VALUE));
+        Assert.assertTrue(str.contains("<!doctype html>"));
+    }
+
 
     @Test
     public void testSqlExceptionIsHidden() throws Exception {

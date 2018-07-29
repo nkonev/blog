@@ -199,7 +199,8 @@ public class DeployIT {
             final Response response = client.newCall(request).execute();
             final String html = response.body().string();
             LOGGER.info("Metrics response: {}", html);
-            Assert.assertEquals(response.code(), 404);
+            Assert.assertEquals(response.code(), 200);
+            Assert.assertTrue(html.contains("<script type=\"application/javascript\" src=\"/build/main.js\">"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
