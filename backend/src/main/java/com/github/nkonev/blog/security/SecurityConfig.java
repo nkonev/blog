@@ -1,5 +1,6 @@
 package com.github.nkonev.blog.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.entity.jpa.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,8 +52,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public RESTAuthenticationLogoutSuccessHandler restAuthenticationLogoutSuccessHandler() {
-        return new RESTAuthenticationLogoutSuccessHandler(csrfTokenRepository());
+    public RESTAuthenticationLogoutSuccessHandler restAuthenticationLogoutSuccessHandler(ObjectMapper objectMapper) {
+        return new RESTAuthenticationLogoutSuccessHandler(csrfTokenRepository(), objectMapper);
     }
 
     @Override

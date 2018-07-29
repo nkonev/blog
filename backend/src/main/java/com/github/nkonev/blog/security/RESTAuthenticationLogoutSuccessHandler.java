@@ -19,17 +19,17 @@ import java.util.Collections;
 /**
  * Created by nik on 09.07.17.
  */
-@Component
 public class RESTAuthenticationLogoutSuccessHandler implements LogoutSuccessHandler {
 
     private final CsrfTokenRepository csrfTokenRepository;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
-    public RESTAuthenticationLogoutSuccessHandler(CsrfTokenRepository csrfTokenRepository) {
+    public RESTAuthenticationLogoutSuccessHandler(CsrfTokenRepository csrfTokenRepository, ObjectMapper objectMapper) {
         Assert.notNull(csrfTokenRepository, "csrfTokenRepository cannot be null");
+        Assert.notNull(objectMapper, "objectMapper cannot be null");
         this.csrfTokenRepository = csrfTokenRepository;
+        this.objectMapper = objectMapper;
     }
 
 
