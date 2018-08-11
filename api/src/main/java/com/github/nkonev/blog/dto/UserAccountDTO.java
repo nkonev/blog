@@ -5,6 +5,7 @@ import java.io.Serializable;
 
 /**
  * Created by nik on 22.06.17.
+ * Contains public information
  */
 public class UserAccountDTO implements Serializable {
     private static final long serialVersionUID = -5796134399691582320L;
@@ -16,10 +17,13 @@ public class UserAccountDTO implements Serializable {
 
     private String avatar;
 
-    public UserAccountDTO(Long id, String login, String avatar) {
+    private String facebookId;
+
+    public UserAccountDTO(Long id, String login, String avatar, String facebookId) {
         this.id = id;
         this.login = login;
         this.avatar = avatar;
+        this.facebookId = facebookId;
     }
 
 
@@ -47,5 +51,13 @@ public class UserAccountDTO implements Serializable {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public String getFacebookId() {
+        return facebookId;
+    }
+
+    public void setFacebookId(String facebookId) {
+        this.facebookId = facebookId;
     }
 }

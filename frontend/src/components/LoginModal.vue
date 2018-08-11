@@ -10,13 +10,19 @@
                     <div class="button-set">
                         <button id="btn-submit" class="blog-btn login-btn" type="submit" :disabled="loading" @click.prevent="doLogin">Login!</button>
                     </div>
-
                     <spinner v-show="loading" class="send-spinner" :speed="0.3"></spinner>
-
-                    <div class="errors">
-                        <div v-show="formError" class="box-error-message">{{formError}}</div>
-                    </div>
                 </form>
+                <form action="/api/login/facebook" v-if="!loading && !formError">
+                    <button id="btn-submit-facebook" class="blog-btn login-btn-facebook" type="submit">
+                        <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'facebook' }" style="width: 28px; height:28px; margin-right: 1em" ></font-awesome-icon>
+                        <span>Facebook</span>
+                    </button>
+                </form>
+
+                <div class="errors">
+                    <div v-show="formError" class="box-error-message">{{formError}}</div>
+                </div>
+
             </div>
         </div>
     </modal>
@@ -101,6 +107,7 @@
 
 <style lang="stylus" scoped>
     $background_color=#404142;
+    $fbColor=#3B5998
     @import "../buttons.styl"
 
     .box {
@@ -179,6 +186,30 @@
             &:hover:enabled {
                 border-color: $ok_color;
                 background: #00cf6b;
+                color: white;
+            }
+            &:disabled{
+                border-color: $grey_color
+                color: $grey_color
+            }
+        }
+
+        .login-btn-facebook{
+            width 100%
+            height: 36px
+            background: white;
+            padding 3px
+            color: $ok_color;
+            border-color: $ok_color;
+            display flex
+            justify-content center
+            align-items center
+            span {
+                align-items center
+            }
+            &:hover:enabled {
+                border-color: $fbColor
+                background: $fbColor
                 color: white;
             }
             &:disabled{

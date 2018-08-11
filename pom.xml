@@ -37,6 +37,7 @@
         <greenmail.version>1.5.7</greenmail.version>
         <maven.install.plugin.version>2.5.2</maven.install.plugin.version>
         <jacoco-maven-plugin.version>0.8.1</jacoco-maven-plugin.version>
+        <mockserver.version>3.10.8</mockserver.version>
     </properties>
 
     <modules>

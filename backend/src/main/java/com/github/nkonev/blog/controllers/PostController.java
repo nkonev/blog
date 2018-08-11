@@ -61,7 +61,8 @@ public class PostController {
             new UserAccountDTO(
                     resultSet.getLong("owner_id"),
                     resultSet.getString("owner_login"),
-                    resultSet.getString("owner_avatar")
+                    resultSet.getString("owner_avatar"),
+                    resultSet.getString("owner_facebook_id")
             )
     );
 
@@ -92,6 +93,7 @@ public class PostController {
                             "p.create_date_time," +
                             "u.id as owner_id," +
                             "u.username as owner_login," +
+                            "u.facebook_id as owner_facebook_id," +
                             "u.avatar as owner_avatar \n" +
                             "  from posts.post p join auth.users u on p.owner_id = u.id \n" +
                             "  order by id desc " +
@@ -110,6 +112,7 @@ public class PostController {
                             " fulltext_result.create_date_time,\n" +
                             " u.id as owner_id," +
                             " u.username as owner_login," +
+                            " u.facebook_id as owner_facebook_id," +
                             " u.avatar as owner_avatar \n" +
                             "from (\n" +
                             "  select id, title, text_no_tags, title_img, create_date_time, owner_id \n" +

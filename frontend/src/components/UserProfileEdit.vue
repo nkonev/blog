@@ -207,6 +207,9 @@
         }
 
         &-buttons{
+            display flex
+            flex-direction row
+
             clear both
         }
     }

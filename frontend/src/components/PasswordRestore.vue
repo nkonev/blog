@@ -74,3 +74,9 @@
         }
     }
 </script>
+
+<style lang="stylus">
+    .restore-password button {
+        display unset
+    }
+</style>

@@ -7,8 +7,8 @@ public class UserAccountDTOExtended extends UserAccountDTO {
 
     public UserAccountDTOExtended() { }
 
-    public UserAccountDTOExtended(Long id, String login, String avatar, boolean enabled, boolean expired, boolean locked) {
-        super(id, login, avatar);
+    public UserAccountDTOExtended(Long id, String login, String avatar, boolean enabled, boolean expired, boolean locked, String facebookId) {
+        super(id, login, avatar, facebookId);
         this.managementData = new DataDTO(enabled, expired, locked);
     }
 

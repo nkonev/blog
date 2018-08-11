@@ -130,6 +130,33 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
         Assert.assertTrue("password should be changed if there is set explicitly", passwordEncoder.matches(newPassword, afterChange.getPassword()));
     }
 
+    @WithUserDetails(TestConstants.USER_ALICE)
+    @Test
+    public void fullyAuthenticatedUserCannotChangeHerProfileWithoutEmail() throws Exception {
+        UserAccount userAccount = getUserFromBd(TestConstants.USER_ALICE);
+        final String newLogin = "new_alice12";
+        final String newPassword = "new_alice_password";
+
+        EditUserDTO edit = UserAccountConverter.convertToEditUserDto(userAccount);
+        edit.setLogin(newLogin);
+        edit.setPassword(newPassword);
+        edit.setEmail(null);
+
+        MvcResult mvcResult = mockMvc.perform(
+                post(Constants.Urls.API+ Constants.Urls.PROFILE)
+                        .content(objectMapper.writeValueAsString(edit))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .with(csrf())
+        )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.validationErrors[0].field").value("email"))
+                .andExpect(jsonPath("$.validationErrors[0].message").value("must not be empty"))
+                .andReturn();
+
+        LOGGER.info(mvcResult.getResponse().getContentAsString());
+    }
+
+
     /**
      * Bob wants steal Alice's account by rewrite login and set her id
      * @throws Exception

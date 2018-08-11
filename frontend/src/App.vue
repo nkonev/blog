@@ -31,6 +31,14 @@
     import bus, {LOGIN, LOGOUT} from './bus'
     import Notifications from './notifications'
 
+    // https://www.endpoint.com/blog/2018/07/12/vue-fontawesome-facebook-twitter
+    import { library } from '@fortawesome/fontawesome-svg-core'
+    import { faFacebook } from '@fortawesome/free-brands-svg-icons'
+    import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+    library.add(faFacebook);
+
+    Vue.component('font-awesome-icon', FontAwesomeIcon);
     Vue.use(vmodal, { dialog: true });
     Vue.component(VmBackTop.name, VmBackTop);
 

@@ -2,9 +2,14 @@ package com.github.nkonev.blog.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.nkonev.blog.Constants;
+import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
 import com.github.nkonev.blog.entity.jpa.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -15,8 +20,21 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
+import org.springframework.security.oauth2.client.OAuth2ClientContext;
+import org.springframework.security.oauth2.client.OAuth2RestTemplate;
+import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
+import org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter;
+import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
+
+import javax.servlet.Filter;
+import java.util.ArrayList;
+import java.util.Collections;
+
+import static com.github.nkonev.blog.security.AuthorityUtils.getDefaultGrantedAuthority;
 
 /**
  * http://websystique.com/springmvc/spring-mvc-4-and-spring-security-4-integration-example/
@@ -24,6 +42,7 @@ import org.springframework.security.web.csrf.CsrfTokenRepository;
  */
 @Configuration
 @EnableWebSecurity
+@EnableOAuth2Client
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     public static final String API_LOGIN_URL = "/api/login";
@@ -45,6 +64,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private BlogUserDetailsService blogUserDetailsService;
+
+    @Autowired
+    private OAuth2ClientContext oauth2ClientContext;
 
     @Bean
     public CsrfTokenRepository csrfTokenRepository() {
@@ -85,6 +107,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         }
                 )*/
         ;
+
+        http.addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
+
         http.formLogin()
                 .loginPage(API_LOGIN_URL).usernameParameter(USERNAME_PARAMETER).passwordParameter(PASSWORD_PARAMETER).permitAll()
                 .successHandler(authenticationSuccessHandler)
@@ -99,6 +124,42 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //        http.rememberMe().rememberMeParameter(REMEMBER_ME_PARAMETER).tokenRepository(tokenRepository)
 //                .tokenValiditySeconds(86400);
         http.headers().cacheControl().disable(); // see also com.github.nkonev.blog.controllers.AbstractImageUploadController#shouldReturnLikeCache
+    }
+
+    @Bean
+    @ConfigurationProperties("facebook.client")
+    public AuthorizationCodeResourceDetails facebook() {
+        return new AuthorizationCodeResourceDetails();
+    }
+
+    @Bean
+    @ConfigurationProperties("facebook.resource")
+    public ResourceServerProperties facebookResource() {
+        return new ResourceServerProperties();
+    }
+
+    @Autowired
+    private FacebookPrincipalExtractor facebookPrincipalExtractor;
+
+    // https://spring.io/guides/tutorials/spring-boot-oauth2/#_social_login_github for compose facebook with github
+    private Filter ssoFilter() {
+        OAuth2ClientAuthenticationProcessingFilter facebookFilter = new OAuth2ClientAuthenticationProcessingFilter("/api/login/facebook");
+        OAuth2RestTemplate facebookTemplate = new OAuth2RestTemplate(facebook(), oauth2ClientContext);
+        facebookFilter.setRestTemplate(facebookTemplate);
+        UserInfoTokenServices tokenServices = new UserInfoTokenServices(facebookResource().getUserInfoUri(), facebook().getClientId());
+        tokenServices.setPrincipalExtractor(facebookPrincipalExtractor);
+        tokenServices.setAuthoritiesExtractor(new FacebookAuthoritiesExtractor());
+        tokenServices.setRestTemplate(facebookTemplate);
+        facebookFilter.setTokenServices(tokenServices);
+        return facebookFilter;
+    }
+
+    @Bean
+    public FilterRegistrationBean oauth2ClientFilterRegistration(OAuth2ClientContextFilter filter) {
+        FilterRegistrationBean registration = new FilterRegistrationBean();
+        registration.setFilter(filter);
+        registration.setOrder(-100);
+        return registration;
     }
 
     // https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#data-configuration

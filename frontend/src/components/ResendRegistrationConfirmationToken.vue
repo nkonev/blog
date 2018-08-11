@@ -73,3 +73,9 @@
         }
     }
 </script>
+
+<style lang="stylus">
+    .resend-registration-confirmation-token button {
+        display unset
+    }
+</style>

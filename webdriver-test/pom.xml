@@ -116,7 +116,16 @@ https://github.com/bonigarcia/webdrivermanager
             <groupId>com.icegreen</groupId>
             <artifactId>greenmail</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.mock-server</groupId>
+            <artifactId>mockserver-netty</artifactId>
+            <version>${mockserver.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mock-server</groupId>
+            <artifactId>mockserver-client-java</artifactId>
+            <version>${mockserver.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

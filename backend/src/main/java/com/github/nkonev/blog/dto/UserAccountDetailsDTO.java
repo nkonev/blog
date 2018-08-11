@@ -19,7 +19,7 @@ public class UserAccountDetailsDTO extends UserAccountDTO implements UserDetails
     private boolean locked;
     private boolean enabled; // synonym to "confirmed"
 
-    private Collection<SimpleGrantedAuthority> roles = new HashSet<>();
+    private Collection<GrantedAuthority> roles = new HashSet<>();
     private String email;
 
     public UserAccountDetailsDTO() { }
@@ -32,10 +32,11 @@ public class UserAccountDetailsDTO extends UserAccountDTO implements UserDetails
             boolean expired,
             boolean locked,
             boolean enabled,
-            Collection<SimpleGrantedAuthority> roles,
-            String email
+            Collection<GrantedAuthority> roles,
+            String email,
+            String facebookId
     ) {
-        super(id, login, avatar);
+        super(id, login, avatar, facebookId);
         this.password = password;
         this.expired = expired;
         this.locked = locked;
@@ -103,11 +104,11 @@ public class UserAccountDetailsDTO extends UserAccountDTO implements UserDetails
         this.enabled = enabled;
     }
 
-    public Collection<SimpleGrantedAuthority> getRoles() {
+    public Collection<GrantedAuthority> getRoles() {
         return roles;
     }
 
-    public void setRoles(Collection<SimpleGrantedAuthority> roles) {
+    public void setRoles(Collection<GrantedAuthority> roles) {
         this.roles = roles;
     }
 

@@ -17,4 +17,6 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long> 
     Optional<UserAccount> findByEmail(String email);
 
     Page<UserAccount> findByUsernameContains(Pageable springDataPage, String login);
+
+    Optional<UserAccount> findByFacebookId(String facebookId);
 }

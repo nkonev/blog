@@ -31,4 +31,9 @@ public class UserNav {
     public static String getAvatarUrl(){
         return $(".user-profile-nav .avatar").getAttribute("src");
     }
+
+    public static String getLogin() {
+        return $(".user-profile-nav .login").text();
+    }
+
 }

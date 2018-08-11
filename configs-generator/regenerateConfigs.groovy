@@ -233,6 +233,18 @@ ${DATA_STORE_SNIPPET(false, 'validate')}
 ${MANAGEMENT_SNIPPET(false)}
 ${FRONT_CONFIGURATION_SNIPPET}
 
+facebook:
+  client:
+    clientId: 1684113965162824
+    clientSecret: provide-it
+    userAuthorizationUri: https://www.facebook.com/dialog/oauth
+    accessTokenUri: https://graph.facebook.com/oauth/access_token
+    tokenName: oauth_token
+    authenticationScheme: query
+    clientAuthenticationScheme: form
+  resource:
+    userInfoUri: https://graph.facebook.com/me?fields=id,name,picture
+
 ---
 # Profile for demo data
 spring:
@@ -289,5 +301,17 @@ ${TEST_USERS_SNIPPET}
 ${DATA_STORE_SNIPPET(true, 'none')}
 ${MANAGEMENT_SNIPPET(true)}
 ${FRONT_CONFIGURATION_SNIPPET}
+
+facebook:
+  client:
+    clientId: 1684113965162824
+    clientSecret: provide-it
+    userAuthorizationUri: http://127.0.0.1:10080/mock/facebook/dialog/oauth
+    accessTokenUri: http://127.0.0.1:10080/mock/facebook/oauth/access_token
+    tokenName: oauth_token
+    authenticationScheme: query
+    clientAuthenticationScheme: form
+  resource:
+    userInfoUri: http://127.0.0.1:10080/mock/facebook/me?fields=id,name,picture
 """;
 writeAndLog(INTEGRATION_TEST_YML_FILE, WEBDRIVER_TEST_YML_CONTENT);

@@ -14,9 +14,12 @@
 <script>
     import Vue from 'vue'
     import BlogSpinner from './BlogSpinner.vue'
-    import bus, {COMMENT_UPDATED, COMMENT_ADD, COMMENT_CANCELED, POST_SWITCHED, LOGIN} from '../bus'
+    import bus, {COMMENT_UPDATED, COMMENT_ADD, COMMENT_CANCELED, LOGIN} from '../bus'
     import {getPostId} from '../utils'
     import Error from './Error.vue'
+
+    const br = "<br />";
+    const brRegexp = /\<br \/\>/g;
 
     export default {
         data() {
@@ -31,7 +34,8 @@
             BlogSpinner, Error
         },
         created(){
-            this.editContent = this.commentDTO.text;
+            const prevText = this.commentDTO.text;
+            this.editContent = prevText ? prevText.replace(brRegexp, '\n') : '';
             bus.$on(LOGIN, this.clearErrorMessage);
         },
         destroyed(){
@@ -49,7 +53,7 @@
 
                 const postId = getPostId(this);
                 const newComment = Vue.util.extend({}, this.$props.commentDTO);
-                newComment.text = this.editContent.replace(/\n/g, "<br />");
+                newComment.text = this.editContent.replace(/\n/g, br);
                 if (this.$props.isAdd) {
                     this.$http.post(`/api/post/${postId}/comment`, newComment)
                         .then(successResp => {

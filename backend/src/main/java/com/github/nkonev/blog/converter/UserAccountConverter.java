@@ -2,9 +2,11 @@ package com.github.nkonev.blog.converter;
 
 import com.github.nkonev.blog.ApiConstants;
 import com.github.nkonev.blog.dto.*;
+import com.github.nkonev.blog.entity.jpa.CreationType;
 import com.github.nkonev.blog.entity.jpa.UserAccount;
 import com.github.nkonev.blog.entity.jpa.UserRole;
 import com.github.nkonev.blog.exception.BadRequestException;
+import com.github.nkonev.blog.security.LoginUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
@@ -12,6 +14,8 @@ import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.github.nkonev.blog.security.AuthorityUtils.getDefaultUserRole;
 
 public class UserAccountConverter {
     public static UserAccountDetailsDTO convertToUserAccountDetailsDTO(UserAccount userAccount) {
@@ -25,7 +29,8 @@ public class UserAccountConverter {
                 userAccount.isLocked(),
                 userAccount.isEnabled(),
                 Collections.singletonList(convertRole(userAccount.getRole())),
-                userAccount.getEmail()
+                userAccount.getEmail(),
+                userAccount.getFacebookId()
         );
     }
 
@@ -35,7 +40,8 @@ public class UserAccountConverter {
                 userAccount.getId(),
                 userAccount.getUsername(),
                 userAccount.getAvatar(),
-                userAccount.getEmail()
+                userAccount.getEmail(),
+                userAccount.getFacebookId()
         );
     }
 
@@ -54,7 +60,8 @@ public class UserAccountConverter {
         return new UserAccountDTO(
                 userAccount.getId(),
                 userAccount.getUsername(),
-                userAccount.getAvatar()
+                userAccount.getAvatar(),
+                userAccount.getFacebookId()
         );
     }
 
@@ -66,7 +73,8 @@ public class UserAccountConverter {
                 userAccount.getAvatar(),
                 userAccount.isEnabled(),
                 userAccount.isExpired(),
-                userAccount.isLocked()
+                userAccount.isLocked(),
+                userAccount.getFacebookId()
         );
     }
 
@@ -76,7 +84,8 @@ public class UserAccountConverter {
         return new UserAccountDTO(
                 userAccount.getId(),
                 userAccount.getUsername(),
-                userAccount.getAvatar()
+                userAccount.getAvatar(),
+                userAccount.getFacebookId()
         );
     }
 
@@ -93,8 +102,10 @@ public class UserAccountConverter {
         final boolean locked = false;
         final boolean enabled = false;
 
-        final UserRole newUserRole = UserRole.ROLE_USER;
+        final UserRole newUserRole = getDefaultUserRole();
 
+        validateLoginAndEmail(userAccountDTO);
+        validateAndTrimLogin(userAccountDTO);
         String password = userAccountDTO.getPassword();
         try {
             validateUserPassword(password);
@@ -103,6 +114,7 @@ public class UserAccountConverter {
         }
 
         return new UserAccount(
+                CreationType.REGISTRATION,
                 userAccountDTO.getLogin(),
                 passwordEncoder.encode(password),
                 userAccountDTO.getAvatar(),
@@ -110,12 +122,45 @@ public class UserAccountConverter {
                 locked,
                 enabled,
                 newUserRole,
-                userAccountDTO.getEmail()
+                userAccountDTO.getEmail(),
+                null
         );
     }
 
-    public static void updateUserAccountEntity(EditUserDTO userAccountDTO, UserAccount userAccount, PasswordEncoder passwordEncoder) {
+    private static void validateAndTrimLogin(EditUserDTO userAccountDTO) {
+        userAccountDTO.setLogin(LoginUtils.validateAndTrimLogin(userAccountDTO.getLogin()));
+    }
 
+    // used for just get user id
+    public static UserAccount buildUserAccountEntityForFacebookInsert(String facebookId, String login, String maybeImageUrl) {
+        final boolean expired = false;
+        final boolean locked = false;
+        final boolean enabled = true;
+
+        final UserRole newUserRole = getDefaultUserRole();
+
+        return new UserAccount(
+                CreationType.FACEBOOK,
+                login,
+                null,
+                maybeImageUrl,
+                expired,
+                locked,
+                enabled,
+                newUserRole,
+                null,
+                facebookId
+        );
+    }
+
+    private static void validateLoginAndEmail(EditUserDTO userAccountDTO){
+        Assert.hasLength(userAccountDTO.getLogin(), "login should have length");
+        Assert.hasLength(userAccountDTO.getEmail(), "email should have length");
+    }
+
+    public static void updateUserAccountEntity(EditUserDTO userAccountDTO, UserAccount userAccount, PasswordEncoder passwordEncoder) {
+        validateLoginAndEmail(userAccountDTO);
+        validateAndTrimLogin(userAccountDTO);
         String password = userAccountDTO.getPassword();
         if (!StringUtils.isEmpty(password)) {
             validateUserPassword(password);

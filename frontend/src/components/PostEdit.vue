@@ -285,6 +285,9 @@
     }
 
     .post-command-buttons {
+        display flex
+        flex-direction row
+
         .send {
             display inline
         }

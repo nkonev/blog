@@ -158,6 +158,18 @@ custom.frontend:
     header: "Owner's blog"
 
 
+facebook:
+  client:
+    clientId: 1684113965162824
+    clientSecret: provide-it
+    userAuthorizationUri: https://www.facebook.com/dialog/oauth
+    accessTokenUri: https://graph.facebook.com/oauth/access_token
+    tokenName: oauth_token
+    authenticationScheme: query
+    clientAuthenticationScheme: form
+  resource:
+    userInfoUri: https://graph.facebook.com/me?fields=id,name,picture
+
 ---
 # Profile for demo data
 spring:

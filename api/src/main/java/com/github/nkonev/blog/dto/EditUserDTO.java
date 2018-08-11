@@ -1,6 +1,7 @@
 package com.github.nkonev.blog.dto;
 
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
 public class EditUserDTO {
@@ -12,6 +13,7 @@ public class EditUserDTO {
     private String password; // password which user desires
 
     @NotEmpty
+    @Email
     private String email;
 
     public EditUserDTO() { }

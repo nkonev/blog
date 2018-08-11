@@ -155,3 +155,15 @@ custom.frontend:
     titleTemplate: "%s | owner's blog"
     header: "Owner's blog"
 
+
+facebook:
+  client:
+    clientId: 1684113965162824
+    clientSecret: provide-it
+    userAuthorizationUri: http://127.0.0.1:10080/mock/facebook/dialog/oauth
+    accessTokenUri: http://127.0.0.1:10080/mock/facebook/oauth/access_token
+    tokenName: oauth_token
+    authenticationScheme: query
+    clientAuthenticationScheme: form
+  resource:
+    userInfoUri: http://127.0.0.1:10080/mock/facebook/me?fields=id,name,picture

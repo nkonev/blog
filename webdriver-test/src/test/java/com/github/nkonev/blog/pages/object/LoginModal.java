@@ -29,12 +29,9 @@ public class LoginModal {
     }
 
     public void login() {
-        SelenideElement modal = $(".v--modal-box");
+        SelenideElement modal = getValidModal();
         WebElement modal2 = modal.getWrappedElement();
 
-        modal.waitUntil(Condition.visible, 5*1000);
-
-        modal.shouldHave(text("Please login"));
         modal.find("input#username").setValue(user);
         modal.find("input#password").setValue(password);
         modal.find(ID_SUBMIT).shouldBe(AbstractItTestRunner.CLICKABLE).click();
@@ -58,5 +55,17 @@ public class LoginModal {
 
     public void openLoginModal() {
         $(byText("login")).shouldBe(AbstractItTestRunner.CLICKABLE).click();
+    }
+
+    public void loginFacebook() {
+        SelenideElement modal = getValidModal();
+        modal.find("#btn-submit-facebook").click();
+    }
+
+    private SelenideElement getValidModal() {
+        SelenideElement modal = $(".v--modal-box");
+        modal.waitUntil(Condition.visible, 5*1000);
+        modal.shouldHave(text("Please login"));
+        return modal;
     }
 }

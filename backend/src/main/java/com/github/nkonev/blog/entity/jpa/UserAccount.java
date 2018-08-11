@@ -6,7 +6,6 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 @TypeDefs({
@@ -27,8 +26,10 @@ public class UserAccount {
     private boolean expired;
     private boolean locked;
     private boolean enabled; // synonym to "confirmed"
-    @Email
     private String email;
+    @Enumerated(EnumType.STRING)
+    private CreationType creationType;
+    private String facebookId;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -41,7 +42,8 @@ public class UserAccount {
 
     public UserAccount() { }
 
-    public UserAccount(String username, String password, String avatar, boolean expired, boolean locked, boolean enabled, UserRole role, String email) {
+    public UserAccount(CreationType creationType, String username, String password, String avatar, boolean expired, boolean locked, boolean enabled, UserRole role, String email, String facebookId) {
+        this.creationType = creationType;
         this.username = username;
         this.password = password;
         this.avatar = avatar;
@@ -50,6 +52,7 @@ public class UserAccount {
         this.enabled = enabled;
         this.role = role;
         this.email = email;
+        this.facebookId = facebookId;
     }
 
     public Long getId() {
@@ -122,5 +125,21 @@ public class UserAccount {
 
     public void setRole(UserRole role) {
         this.role = role;
+    }
+
+    public String getFacebookId() {
+        return facebookId;
+    }
+
+    public void setFacebookId(String facebookId) {
+        this.facebookId = facebookId;
+    }
+
+    public CreationType getCreationType() {
+        return creationType;
+    }
+
+    public void setCreationType(CreationType creationType) {
+        this.creationType = creationType;
     }
 }
