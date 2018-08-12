@@ -2,6 +2,7 @@ package com.github.nkonev.blog.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.nkonev.blog.Constants;
+import com.github.nkonev.blog.config.CustomConfig;
 import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
 import com.github.nkonev.blog.entity.jpa.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public static final String USERNAME_PARAMETER = "username";
     public static final String PASSWORD_PARAMETER = "password";
     public static final String REMEMBER_ME_PARAMETER = "remember-me";
+    private static final String API_LOGIN_FACEBOOK = "/api/login/facebook";
 
+    @Autowired
+    private CustomConfig customConfig;
 
     @Autowired
     private RESTAuthenticationEntryPoint authenticationEntryPoint;
@@ -129,7 +133,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     @ConfigurationProperties("facebook.client")
     public AuthorizationCodeResourceDetails facebook() {
-        return new AuthorizationCodeResourceDetails();
+        AuthorizationCodeResourceDetails authorizationCodeResourceDetails = new AuthorizationCodeResourceDetails();
+        authorizationCodeResourceDetails.setPreEstablishedRedirectUri(customConfig.getBaseUrl()+API_LOGIN_FACEBOOK);
+        authorizationCodeResourceDetails.setUseCurrentUri(false);
+        return authorizationCodeResourceDetails;
     }
 
     @Bean
@@ -143,7 +150,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     // https://spring.io/guides/tutorials/spring-boot-oauth2/#_social_login_github for compose facebook with github
     private Filter ssoFilter() {
-        OAuth2ClientAuthenticationProcessingFilter facebookFilter = new OAuth2ClientAuthenticationProcessingFilter("/api/login/facebook");
+        OAuth2ClientAuthenticationProcessingFilter facebookFilter = new OAuth2ClientAuthenticationProcessingFilter(API_LOGIN_FACEBOOK);
         OAuth2RestTemplate facebookTemplate = new OAuth2RestTemplate(facebook(), oauth2ClientContext);
         facebookFilter.setRestTemplate(facebookTemplate);
         UserInfoTokenServices tokenServices = new UserInfoTokenServices(facebookResource().getUserInfoUri(), facebook().getClientId());

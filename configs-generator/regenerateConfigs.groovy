@@ -124,7 +124,7 @@ custom.it.password: admin
 
 def common = { boolean test ->
 """
-custom.base-url: "${ExportedConstants.SCHEME}://127.0.0.1:\${server.port}"
+custom.base-url: "${ExportedConstants.SCHEME}://localhost:\${server.port}"
 
 # https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-email.html
 # https://yandex.ru/support/mail-new/mail-clients.html
