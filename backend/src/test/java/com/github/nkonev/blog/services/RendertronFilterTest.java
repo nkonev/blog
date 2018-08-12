@@ -2,6 +2,7 @@ package com.github.nkonev.blog.services;
 
 import com.github.nkonev.blog.AbstractUtTestRunner;
 import com.github.nkonev.blog.Constants;
+import com.github.nkonev.blog.config.CustomConfig;
 import org.hamcrest.core.StringContains;
 import org.junit.After;
 import org.junit.Before;
@@ -43,6 +44,9 @@ public class RendertronFilterTest extends AbstractUtTestRunner {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
+    @Autowired
+    private CustomConfig customConfig;
+
     @Before
     public void setUp() {
         mockServer = MockRestServiceServer.createServer(restTemplate);
@@ -56,7 +60,7 @@ public class RendertronFilterTest extends AbstractUtTestRunner {
     @Test
     public void testSeoHtmlInjectionBeforeClosingHeadWorks() throws Exception {
         final String newIndexRendered = "<head></head><body>Index Rendered</body>";
-        mockServer.expect(ExpectedCount.once(), requestTo("http://rendertron.example.com:3000/http://127.0.0.1:9082"))
+        mockServer.expect(ExpectedCount.once(), requestTo("http://rendertron.example.com:3000/"+customConfig.getBaseUrl()))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(newIndexRendered, MediaType.TEXT_HTML));
 

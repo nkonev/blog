@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.nkonev.blog.AbstractUtTestRunner;
 import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.TestConstants;
+import com.github.nkonev.blog.config.CustomConfig;
 import com.github.nkonev.blog.dto.PostDTO;
 import com.github.nkonev.blog.dto.PostDTOWithAuthorization;
 import com.github.nkonev.blog.dto.UserAccountDTO;
@@ -65,6 +66,9 @@ public class PostControllerTest extends AbstractUtTestRunner {
     private SeoCacheService seoCacheService;
 
     private MockRestServiceServer mockServer;
+
+    @Autowired
+    private CustomConfig customConfig;
 
     @Before
     public void setUp() {
@@ -188,12 +192,12 @@ public class PostControllerTest extends AbstractUtTestRunner {
     @Test
     public void testFulltextSearchHostPort() throws Exception {
         final String newPostRendered = "<body>Post Rendered</body>";
-        mockServer.expect(requestTo(new StringStartsWith("http://rendertron.example.com:3000/http://127.0.0.1:9080/post/")))
+        mockServer.expect(requestTo(new StringStartsWith("http://rendertron.example.com:3000/"+customConfig.getBaseUrl()+"/post/")))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(newPostRendered, MediaType.TEXT_HTML));
 
         final String newIndexRendered = "<body>Index Rendered</body>";
-        mockServer.expect(requestTo("http://rendertron.example.com:3000/http://127.0.0.1:9080"))
+        mockServer.expect(requestTo("http://rendertron.example.com:3000/"+customConfig.getBaseUrl()))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(newIndexRendered, MediaType.TEXT_HTML));
 
@@ -243,12 +247,12 @@ public class PostControllerTest extends AbstractUtTestRunner {
     @Test
     public void testUserCanAddAndUpdateAndCannotDeletePost() throws Exception {
         final String newPostRendered = "<body>Post Rendered</body>";
-        mockServer.expect(ExpectedCount.times(2), requestTo(new StringStartsWith("http://rendertron.example.com:3000/http://127.0.0.1:9080/post/")))
+        mockServer.expect(ExpectedCount.times(2), requestTo(new StringStartsWith("http://rendertron.example.com:3000/"+customConfig.getBaseUrl()+"/post/")))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(newPostRendered, MediaType.TEXT_HTML));
 
         final String newIndexRendered = "<body>Index Rendered</body>";
-        mockServer.expect(ExpectedCount.times(2), requestTo("http://rendertron.example.com:3000/http://127.0.0.1:9080"))
+        mockServer.expect(ExpectedCount.times(2), requestTo("http://rendertron.example.com:3000/"+customConfig.getBaseUrl()))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(newIndexRendered, MediaType.TEXT_HTML));
 
@@ -447,12 +451,12 @@ public class PostControllerTest extends AbstractUtTestRunner {
     @Test
     public void testAdminCanUpdateForeignPost() throws Exception {
         final String newPostRendered = "<body>Post Rendered</body>";
-        mockServer.expect(requestTo(new StringStartsWith("http://rendertron.example.com:3000/http://127.0.0.1:9080/post/")))
+        mockServer.expect(requestTo(new StringStartsWith("http://rendertron.example.com:3000/"+customConfig.getBaseUrl()+"/post/")))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(newPostRendered, MediaType.TEXT_HTML));
 
         final String newIndexRendered = "<body>Index Rendered</body>";
-        mockServer.expect(requestTo("http://rendertron.example.com:3000/http://127.0.0.1:9080"))
+        mockServer.expect(requestTo("http://rendertron.example.com:3000/"+customConfig.getBaseUrl()))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(newIndexRendered, MediaType.TEXT_HTML));
 
@@ -507,7 +511,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
         }
 
         final String newIndexRendered = "<body>Index Rendered</body>";
-        mockServer.expect(requestTo("http://rendertron.example.com:3000/http://127.0.0.1:9080"))
+        mockServer.expect(requestTo("http://rendertron.example.com:3000/"+customConfig.getBaseUrl()))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(newIndexRendered, MediaType.TEXT_HTML));
 
@@ -526,12 +530,12 @@ public class PostControllerTest extends AbstractUtTestRunner {
     @Test
     public void xssText() throws Exception {
         final String newPostRendered = "<body>Post Rendered</body>";
-        mockServer.expect(requestTo(new StringStartsWith("http://rendertron.example.com:3000/http://127.0.0.1:9080/post/")))
+        mockServer.expect(requestTo(new StringStartsWith("http://rendertron.example.com:3000/"+customConfig.getBaseUrl()+"/post/")))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(newPostRendered, MediaType.TEXT_HTML));
 
         final String newIndexRendered = "<body>Index Rendered</body>";
-        mockServer.expect(requestTo("http://rendertron.example.com:3000/http://127.0.0.1:9080"))
+        mockServer.expect(requestTo("http://rendertron.example.com:3000/"+customConfig.getBaseUrl()))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(newIndexRendered, MediaType.TEXT_HTML));
 
