@@ -137,7 +137,7 @@ public class UserProfileController {
         UserAccount exists = userAccountRepository.findById(userAccount.getId()).orElseThrow(()-> new RuntimeException("Authenticated user account not found in database"));
 
         // check email already present
-        if (!exists.getEmail().equals(userAccountDTO.getEmail()) && userAccountRepository.findByEmail(userAccountDTO.getEmail()).isPresent()) {
+        if (exists.getEmail()!=null && !exists.getEmail().equals(userAccountDTO.getEmail()) && userAccountRepository.findByEmail(userAccountDTO.getEmail()).isPresent()) {
             // throw new UserAlreadyPresentException("User with email '" + userAccountDTO.getEmail() + "' is already present");
             return UserAccountConverter.convertToEditUserDto(exists); // we care for email leak...
         }
