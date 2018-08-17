@@ -295,7 +295,7 @@ custom.selenium.window-width: 1600
 custom.selenium.selenide-condition-timeout: 10
 custom.selenium.selenide-collections-timeout: 10
 
-custom.it.url.prefix: ${ExportedConstants.SCHEME}://127.0.0.1:\${server.port}
+custom.it.url.prefix: ${ExportedConstants.SCHEME}://localhost:\${server.port}
 custom.it.user.id: 1
 ${TEST_USERS_SNIPPET}
 ${DATA_STORE_SNIPPET(true, 'none')}
