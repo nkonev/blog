@@ -1,23 +1,25 @@
 <template>
     <modal :name="modalName" transition="pop-out" @before-open="beforeOpen" :width="loginModalWidth" :height="240">
         <div class="box">
+            <div class="login-title">Please login</div>
+
             <div class="box-part">
-                <div class="login-title">Please login</div>
-                <form autocomplete="off">
+                <form autocomplete="off" v-if="!loading">
                     <input id="username" type="text" placeholder="Username" v-model="formUsername">
                     <input id="password" type="password" placeholder="Password" v-model="formPassword">
 
                     <div class="button-set">
                         <button id="btn-submit" class="blog-btn login-btn" type="submit" :disabled="loading" @click.prevent="doLogin">Login!</button>
                     </div>
-                    <spinner v-show="loading" class="send-spinner" :speed="0.3"></spinner>
                 </form>
-                <form action="/api/login/facebook" v-if="!loading && !formError">
+                <form action="/api/login/facebook" v-if="!loading && !formError" @click="setSpinner">
                     <button id="btn-submit-facebook" class="blog-btn login-btn-facebook" type="submit">
                         <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'facebook' }" style="width: 28px; height:28px; margin-right: 1em" ></font-awesome-icon>
                         <span>Facebook</span>
                     </button>
                 </form>
+
+                <BlogSpinner v-show="loading" class="send-spinner" :speed="0.3" :size="72"></BlogSpinner>
 
                 <div class="errors">
                     <div v-show="formError" class="box-error-message">{{formError}}</div>
@@ -33,8 +35,9 @@
     import {FETCH_USER_PROFILE} from '../store'
     import bus from '../bus'
     import {LOGIN} from '../bus'
-    import Spinner from 'vue-simple-spinner'
+    //import Spinner from 'vue-simple-spinner'
     import {LOGIN_MODAL} from '../constants';
+    import BlogSpinner from "./BlogSpinner.vue"
 
     export default {
         name: 'LoginModal',
@@ -66,7 +69,7 @@
                 this.formError = null;
             },
             doLogin() {
-                this.loading = true;
+                this.setSpinner();
                 this.formError = null;
                 const options = { emulateJSON: true }; // for pass as form data
                 this.$http.post('/api/login', {username: this.formUsername, password: this.formPassword}, options).then(response => {
@@ -89,6 +92,9 @@
                     }
                 });
 
+            },
+            setSpinner(){
+                this.loading = true;
             }
         },
         watch: {
@@ -100,7 +106,7 @@
             },
         },
         components: {
-            Spinner
+            BlogSpinner
         }
     }
 </script>
@@ -113,9 +119,9 @@
     .box {
         background: white;
         display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: stretch;
+        flex-direction: column;
+        //justify-content: center;
+        //align-items: stretch;
         border-radius: 2px;
         box-sizing: border-box;
         box-shadow: 0 0 40px black;
@@ -125,15 +131,17 @@
 
         .box-part {
             height: 100%;
-            width: 100%;
-            margin-left 5%;
-            margin-right 5%;
+            padding-left 5%;
+            padding-right 5%;
+            padding-bottom 5%
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .errors {
             display: block
-            margin-top 0.5em;
-            margin-bottom 0.5em;
 
             .box-error-message {
                 padding 0.4em;
