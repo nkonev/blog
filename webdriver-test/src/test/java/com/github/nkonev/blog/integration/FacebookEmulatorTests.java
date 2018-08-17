@@ -1,6 +1,5 @@
 package com.github.nkonev.blog.integration;
 
-import com.github.nkonev.blog.entity.jpa.UserAccount;
 import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
 import com.github.nkonev.blog.webdriver.configuration.SeleniumConfiguration;
 import io.netty.handler.codec.http.HttpHeaderNames;
@@ -11,7 +10,6 @@ import org.junit.BeforeClass;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.Header;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
@@ -42,8 +40,8 @@ public abstract class FacebookEmulatorTests extends AbstractItTestRunner {
     @Before
     public void configureEmulator(){
         mockServer
-                .when(request().withPath("/mock/facebook/dialog/oauth")).callback(httpRequest -> {
-            String state = httpRequest.getQueryStringParameters().stream().filter(parameter -> "state".equals(parameter.getName().getValue())).findFirst().get().getValues().get(0).getValue();
+                .when(request().withPath("/mock/facebook/dialog/oauth")).respond(httpRequest -> {
+            String state = httpRequest.getQueryStringParameters().getEntries().stream().filter(parameter -> "state".equals(parameter.getName().getValue())).findFirst().get().getValues().get(0).getValue();
             return response().withHeaders(
                     new Header(HttpHeaderNames.CONTENT_TYPE.toString(), "text/html; charset=\"utf-8\""),
                     new Header(HttpHeaderNames.LOCATION.toString(), urlPrefix+"/api/login/facebook?code=fake_code&state="+state)
