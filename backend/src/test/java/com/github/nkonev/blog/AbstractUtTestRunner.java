@@ -31,7 +31,9 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.HttpCookie;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.github.nkonev.blog.security.SecurityConfig.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -124,7 +126,15 @@ public abstract class AbstractUtTestRunner {
         })
                 .andExpect(status().isOk())
                 .andReturn();
-        return mvcResult.getResponse().getCookie(CommonTestConstants.COOKIE_SESSION).getValue();
+
+        return mvcResult.getResponse().getHeaders("Set-Cookie").stream()
+                .map(s -> s.split(";"))
+                .flatMap(Arrays::stream)
+                .map(String::trim)
+                .filter(s -> s.startsWith("SESSION="))
+                .map(s -> s.substring("SESSION=".length()))
+                .reduce((first, second) -> second)
+                .orElseThrow(RuntimeException::new); // todo revert
     }
 
     @Before
