@@ -410,4 +410,19 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
         LOGGER.info(getStr);
 
     }
+
+    @Test
+    public void userSearchJohnSmithTrim() throws Exception {
+        MvcResult getPostRequest = mockMvc.perform(
+                get(Constants.Urls.API+ Constants.Urls.USER).param("searchString", " John Smith")
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.length()").value(1))
+                .andExpect(jsonPath("$.data.[0].login").value("John Smith"))
+                .andReturn();
+        String getStr = getPostRequest.getResponse().getContentAsString();
+        LOGGER.info(getStr);
+
+    }
+
 }

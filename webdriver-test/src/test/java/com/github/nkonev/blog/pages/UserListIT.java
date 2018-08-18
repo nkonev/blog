@@ -81,12 +81,13 @@ public class UserListIT extends AbstractItTestRunner {
         $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("nikita"));
         $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("alice"));
         $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("bob"));
+        $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("John Smith"));
 
         $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("generated_user_0"));
         $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("generated_user_4"));
-        $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("generated_user_5"));
 
         usersPage.goNextPaginatorPage();
+        $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("generated_user_5"));
         $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("generated_user_6"));
 
         loginModal.logout();

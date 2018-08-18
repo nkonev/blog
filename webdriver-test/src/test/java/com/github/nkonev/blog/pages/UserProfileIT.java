@@ -162,9 +162,11 @@ public class UserProfileIT extends AbstractItTestRunner {
     @Test
     public void userEdit() throws Exception {
         UserProfilePage userPage = new UserProfilePage(urlPrefix, driver);
-        userPage.openPage(505);
+        final String login = "generated_user_500";
+        final long userId = userAccountRepository.findByUsername(login).orElseThrow(()-> new RuntimeException("user Not found")).getId();
+        userPage.openPage((int)userId);
 
-        LoginModal loginModal = new LoginModal("generated_user_500", "generated_user_password");
+        LoginModal loginModal = new LoginModal(login, "generated_user_password");
         loginModal.openLoginModal();
         loginModal.login();
 
@@ -207,8 +209,8 @@ public class UserProfileIT extends AbstractItTestRunner {
         loginModal.openLoginModal();
         loginModal.login();
 
-        final long anotherUserId = 5;
         final String anotherUserLogin = "generated_user_0";
+        long anotherUserId = userAccountRepository.findByUsername(anotherUserLogin).orElseThrow(()->new RuntimeException("User Not found")).getId();
 
         UserProfilePage userProfilePage = new UserProfilePage(null, driver);
 
@@ -231,8 +233,8 @@ public class UserProfileIT extends AbstractItTestRunner {
             return null;
         });
 
-        final long myUserId = 1;
         final String myLogin = user;
+        final long myUserId = userAccountRepository.findByUsername(myLogin).orElseThrow(()->new RuntimeException("User Not found")).getId();
 
         userProfilePage.assertMsg(myUserId);
         userProfilePage.assertLogin(myLogin);

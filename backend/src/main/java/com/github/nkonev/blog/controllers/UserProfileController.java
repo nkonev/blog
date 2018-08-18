@@ -73,6 +73,7 @@ public class UserProfileController {
             @RequestParam(value = "searchString", required=false, defaultValue = "") String searchString
     ) {
         PageRequest springDataPage = PageRequest.of(PageUtils.fixPage(page), PageUtils.fixSize(size), Sort.Direction.ASC, "id");
+        searchString = searchString.trim();
 
         Page<UserAccount> resultPage = userAccountRepository.findByUsernameContains(springDataPage, searchString);
 
