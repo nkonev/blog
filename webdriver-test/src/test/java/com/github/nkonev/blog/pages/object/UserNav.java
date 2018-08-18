@@ -4,6 +4,10 @@ import com.codeborne.selenide.Condition;
 import com.github.nkonev.blog.integration.AbstractItTestRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 
@@ -29,7 +33,12 @@ public class UserNav {
     }
 
     public static String getAvatarUrl(){
-        return $(".user-profile-nav .avatar").getAttribute("src");
+        String val =  $(".user-profile-nav .vue-avatar--wrapper").getWrappedElement().getCssValue("background");
+
+        Pattern pattern = Pattern.compile("(\\()\"(.*)(\"\\))");
+        Matcher m = pattern.matcher(val);
+        m.find();
+        return m.group(2);
     }
 
     public static String getLogin() {

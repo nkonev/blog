@@ -171,8 +171,8 @@ public class UserProfileIT extends AbstractItTestRunner {
         userPage.assertThisIsYou();
 
         String urlOnPageBefore = userPage.getAvatarUrl();
-//        String urlInNavbarBefore = UserNav.getAvatarUrl();
-//        Assert.assertEquals(urlOnPageBefore, urlInNavbarBefore);
+        String urlInNavbarBefore = UserNav.getAvatarUrl();
+        Assert.assertEquals(urlOnPageBefore, urlInNavbarBefore);
 
         userPage.edit();
 
@@ -191,10 +191,10 @@ public class UserProfileIT extends AbstractItTestRunner {
         Assert.assertEquals(countBefore+1, countAfter);
 
         String urlOnPageAfter = userPage.getAvatarUrl();
-//        String urlInNavbarAfter = UserNav.getAvatarUrl();
+        String urlInNavbarAfter = UserNav.getAvatarUrl();
         Assert.assertFalse(StringUtils.isEmpty(urlOnPageAfter));
         Assert.assertNotEquals(urlOnPageBefore, urlOnPageAfter);
-//        Assert.assertEquals(urlOnPageAfter, urlInNavbarAfter);
+        Assert.assertEquals(urlOnPageAfter, urlInNavbarAfter);
     }
 
 
@@ -308,7 +308,7 @@ public class UserProfileIT extends AbstractItTestRunner {
         loginModal.openLoginModal();
         loginModal.loginFacebook();
 
-//        Assert.assertEquals("https://i.pinimg.com/236x/37/47/62/374762701f2571ffaacba61325d6dbf1--linux-penguin.jpg", UserNav.getAvatarUrl());
+        Assert.assertEquals("https://i.pinimg.com/236x/37/47/62/374762701f2571ffaacba61325d6dbf1--linux-penguin.jpg", UserNav.getAvatarUrl());
         Assert.assertEquals("Nikita K", UserNav.getLogin());
 
 
