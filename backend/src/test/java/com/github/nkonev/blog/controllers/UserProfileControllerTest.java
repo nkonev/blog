@@ -425,4 +425,18 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
 
     }
 
+    @Test
+    public void userSearchJohnSmithIgnoreCase() throws Exception {
+        MvcResult getPostRequest = mockMvc.perform(
+                get(Constants.Urls.API+ Constants.Urls.USER).param("searchString", "john sMith")
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.length()").value(1))
+                .andExpect(jsonPath("$.data.[0].login").value("John Smith"))
+                .andReturn();
+        String getStr = getPostRequest.getResponse().getContentAsString();
+        LOGGER.info(getStr);
+
+    }
+
 }

@@ -75,7 +75,7 @@ public class UserProfileController {
         PageRequest springDataPage = PageRequest.of(PageUtils.fixPage(page), PageUtils.fixSize(size), Sort.Direction.ASC, "id");
         searchString = searchString.trim();
 
-        Page<UserAccount> resultPage = userAccountRepository.findByUsernameContains(springDataPage, searchString);
+        Page<UserAccount> resultPage = userAccountRepository.findByUsernameContainsIgnoreCase(springDataPage, searchString);
 
         return new UserListWrapper(
                 resultPage.getContent().stream().map(getConvertToUserAccountDTO(userAccount)).collect(Collectors.toList()),
