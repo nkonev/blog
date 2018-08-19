@@ -28,6 +28,10 @@ public class LoginModal {
         this.password = password;
     }
 
+    public LoginModal() {
+    }
+
+
     public void login() {
         SelenideElement modal = getValidModal();
         WebElement modal2 = modal.getWrappedElement();

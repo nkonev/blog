@@ -18,6 +18,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -54,7 +57,7 @@ public class BlogErrorController extends AbstractErrorController {
     }
 
     @RequestMapping(value = PATH)
-    public ModelAndView error(HttpServletRequest request, HttpServletResponse response) {
+    public ModelAndView error(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         final List<String> acceptValues = Collections.list(request.getHeaders(HttpHeaders.ACCEPT))
                         .stream()
@@ -97,7 +100,18 @@ public class BlogErrorController extends AbstractErrorController {
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.setContentType(MediaType.TEXT_HTML_VALUE);
                 return new ModelAndView(Constants.Urls.ROOT);
+            } else if (status.equals(HttpStatus.FORBIDDEN)) {
+                response.setStatus(status.value());
+                response.setContentType(MediaType.TEXT_HTML_VALUE);
+                response.sendRedirect("/forbidden");
+                return new ModelAndView(Constants.Urls.ROOT);
+            } else if (status.equals(HttpStatus.UNAUTHORIZED)) {
+                response.setStatus(status.value());
+                response.setContentType(MediaType.TEXT_HTML_VALUE);
+                response.sendRedirect("/unauthorized");
+                return new ModelAndView(Constants.Urls.ROOT);
             }
+
             Map<String, Object> model = Collections.unmodifiableMap(getErrorAttributes(request, debug));
             response.setStatus(status.value());
             ModelAndView modelAndView = resolveErrorView(request, response, status, model);

@@ -1,13 +1,20 @@
 package com.github.nkonev.blog.controllers;
 
+import com.codeborne.selenide.Condition;
 import com.github.nkonev.blog.CommonTestConstants;
 import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.dto.LockDTO;
 import com.github.nkonev.blog.dto.SuccessfulLoginDTO;
+import com.github.nkonev.blog.entity.jpa.UserAccount;
 import com.github.nkonev.blog.integration.AbstractItTestRunner;
+import com.github.nkonev.blog.integration.FacebookEmulatorTests;
+import com.github.nkonev.blog.pages.object.IndexPage;
+import com.github.nkonev.blog.pages.object.LoginModal;
+import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
 import com.github.nkonev.blog.utils.ContextPathHelper;
 import org.junit.Assert;
 import org.junit.Test;
+import org.openqa.selenium.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.server.AbstractServletWebServerFactory;
 import org.springframework.http.MediaType;
@@ -21,8 +28,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.clearBrowserCookies;
+import static com.codeborne.selenide.Selenide.refresh;
 import static com.github.nkonev.blog.CommonTestConstants.COOKIE_XSRF;
 import static com.github.nkonev.blog.CommonTestConstants.HEADER_SET_COOKIE;
 import static com.github.nkonev.blog.CommonTestConstants.HEADER_XSRF_TOKEN;
@@ -31,12 +42,11 @@ import static com.github.nkonev.blog.security.SecurityConfig.*;
 import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.HttpHeaders.COOKIE;
 
-public class SessionIT extends AbstractItTestRunner {
+public class SessionIT extends FacebookEmulatorTests {
 
 
     @Autowired
     protected AbstractServletWebServerFactory abstractConfigurableEmbeddedServletContainer;
-
 
     public String urlWithContextPath(){
         return ContextPathHelper.urlWithContextPath(abstractConfigurableEmbeddedServletContainer);
@@ -169,4 +179,55 @@ public class SessionIT extends AbstractItTestRunner {
         return Optional.ofNullable(getXsrfTokenResponse.getHeaders().get(HEADER_SET_COOKIE)).orElseThrow(()->new RuntimeException("missed header "+ HEADER_SET_COOKIE));
     }
 
+    @Test
+    public void testLockFacebookUser() throws Exception{
+        IndexPage indexPage = new IndexPage(urlPrefix);
+        indexPage.openPage();
+
+        LoginModal loginModal = new LoginModal();
+        loginModal.openLoginModal();
+        loginModal.loginFacebook();
+
+
+        UserAccount userAccountForLock = userAccountRepository.findByUsername(facebookLogin).orElseThrow();
+
+        Cookie sessionCookie = driver.manage().getCookies().stream().filter(cookie -> "SESSION".equals(cookie.getName())).findFirst().orElseThrow(()->new RuntimeException("No SESSION cookie found"));
+
+        RequestEntity myPostsRequest3 = RequestEntity
+                .get(new URI(urlWithContextPath()+ API + Constants.Urls.POST + Constants.Urls.MY))
+                .header(COOKIE, sessionCookie.toString())
+                .build();
+        ResponseEntity<String> myPostsResponse3 = testRestTemplate.exchange(myPostsRequest3, String.class);
+        Assert.assertEquals(200, myPostsResponse3.getStatusCodeValue());
+
+
+        SessionHolder userAdminSession = login(user, password);
+
+        LockDTO lockDTO = new LockDTO(userAccountForLock.getId(), true);
+        RequestEntity lockRequest = RequestEntity
+                .post(new URI(urlWithContextPath()+API+ Constants.Urls.USER+LOCK))
+                .header(HEADER_XSRF_TOKEN, userAdminSession.newXsrf)
+                .header(COOKIE, userAdminSession.getCookiesArray())
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .body(lockDTO);
+        ResponseEntity<String> lockResponseEntity = testRestTemplate.exchange(lockRequest, String.class);
+        String str = lockResponseEntity.getBody();
+        Assert.assertEquals(200, lockResponseEntity.getStatusCodeValue());
+
+
+        RequestEntity myPostsRequest4 = RequestEntity
+                .get(new URI(urlWithContextPath()+ API + Constants.Urls.POST + Constants.Urls.MY))
+                .header(COOKIE, sessionCookie.toString())
+                .build();
+        ResponseEntity<String> myPostsResponse4 = testRestTemplate.exchange(myPostsRequest4, String.class);
+        Assert.assertEquals(401, myPostsResponse4.getStatusCodeValue());
+
+        clearBrowserCookies();
+        refresh();
+
+        loginModal.openLoginModal();
+        loginModal.loginFacebook();
+
+        $("#content").shouldHave(Condition.text("401 Unauthorized"));
+    }
 }

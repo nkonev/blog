@@ -5,6 +5,8 @@ import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.config.CustomConfig;
 import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
 import com.github.nkonev.blog.entity.jpa.UserRole;
+import com.github.nkonev.blog.security.checks.BlogPostAuthenticationChecks;
+import com.github.nkonev.blog.security.checks.BlogPreAuthenticationChecks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
@@ -153,8 +155,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         OAuth2ClientAuthenticationProcessingFilter facebookFilter = new OAuth2ClientAuthenticationProcessingFilter(API_LOGIN_FACEBOOK);
         OAuth2RestTemplate facebookTemplate = new OAuth2RestTemplate(facebook(), oauth2ClientContext);
         facebookFilter.setRestTemplate(facebookTemplate);
-        UserInfoTokenServices tokenServices = new UserInfoTokenServices(facebookResource().getUserInfoUri(), facebook().getClientId());
-        tokenServices.setPrincipalExtractor(facebookPrincipalExtractor);
+        UserInfoTokenServices tokenServices = new CheckedUserInfoTokenServices(
+                facebookResource().getUserInfoUri(), facebook().getClientId(),
+                facebookPrincipalExtractor, blogPreAuthenticationChecks(), blogPostAuthenticationChecks());
         tokenServices.setAuthoritiesExtractor(new FacebookAuthoritiesExtractor());
         tokenServices.setRestTemplate(facebookTemplate);
         facebookFilter.setTokenServices(tokenServices);
@@ -180,9 +183,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(blogUserDetailsService);
         authenticationProvider.setPasswordEncoder(passwordEncoder());
+        authenticationProvider.setPreAuthenticationChecks(blogPreAuthenticationChecks());
+        authenticationProvider.setPostAuthenticationChecks(blogPostAuthenticationChecks());
         return authenticationProvider;
     }
 
+    @Bean
+    public BlogPreAuthenticationChecks blogPreAuthenticationChecks(){
+        return new BlogPreAuthenticationChecks();
+    }
+
+    @Bean
+    public BlogPostAuthenticationChecks blogPostAuthenticationChecks(){
+        return new BlogPostAuthenticationChecks();
+    }
 //    @Bean
 //    public PersistentTokenBasedRememberMeServices getPersistentTokenBasedRememberMeServices() {
 //        PersistentTokenBasedRememberMeServices tokenBasedservice = new PersistentTokenBasedRememberMeServices(

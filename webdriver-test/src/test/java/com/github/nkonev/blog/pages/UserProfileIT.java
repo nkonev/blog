@@ -5,7 +5,7 @@ import com.codeborne.selenide.Selenide;
 import com.github.nkonev.blog.CommonTestConstants;
 import com.github.nkonev.blog.FailoverUtils;
 import com.github.nkonev.blog.entity.jpa.UserAccount;
-import com.github.nkonev.blog.integration.AbstractItTestRunner;
+import com.github.nkonev.blog.integration.FacebookEmulatorTests;
 import com.github.nkonev.blog.pages.object.Croppa;
 import com.github.nkonev.blog.pages.object.IndexPage;
 import com.github.nkonev.blog.pages.object.LoginModal;
@@ -14,13 +14,9 @@ import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
 import com.github.nkonev.blog.util.FileUtils;
 import com.github.nkonev.blog.webdriver.IntegrationTestConstants;
 import com.github.nkonev.blog.webdriver.configuration.SeleniumConfiguration;
-import io.netty.handler.codec.http.HttpHeaderNames;
-import org.junit.After;
+import com.github.nkonev.blog.webdriver.selenium.Browser;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.mockserver.integration.ClientAndServer;
-import org.mockserver.model.Header;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
@@ -30,18 +26,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.util.StringUtils;
+
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 import static com.github.nkonev.blog.pages.object.IndexPage.POST_LIST;
-import static org.mockserver.integration.ClientAndServer.startClientAndServer;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assume.assumeThat;
 
 /**
  * Тест на страницу профиля
  * Created by nik on 06.06.17.
  */
-public class UserProfileIT extends AbstractItTestRunner {
+public class UserProfileIT extends FacebookEmulatorTests {
 
     @Value(IntegrationTestConstants.USER_ID)
     private int userId;
@@ -51,25 +47,6 @@ public class UserProfileIT extends AbstractItTestRunner {
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    private static final int MOCK_SERVER_PORT = 10080;
-
-    private static ClientAndServer mockServer;
-
-    @Autowired
-    private UserAccountRepository userAccountRepository;
-
-    @Before
-    public void setUp() {
-        mockServer = startClientAndServer(MOCK_SERVER_PORT);
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        mockServer.reset();
-        mockServer.stop();
-    }
-
 
     public static class UserProfilePage {
         private static final String BODY = "body";
@@ -161,6 +138,8 @@ public class UserProfileIT extends AbstractItTestRunner {
 
     @Test
     public void userEdit() throws Exception {
+        assumeThat(seleniumConfiguration.getBrowser(), is(Browser.CHROME));
+
         UserProfilePage userPage = new UserProfilePage(urlPrefix, driver);
         final String login = "generated_user_500";
         final long userId = userAccountRepository.findByUsername(login).orElseThrow(()-> new RuntimeException("user Not found")).getId();
@@ -267,56 +246,22 @@ public class UserProfileIT extends AbstractItTestRunner {
 
     @Test
     public void testFacebookLogin() throws InterruptedException {
-        mockServer
-                .when(request().withPath("/mock/facebook/dialog/oauth")).callback(httpRequest -> {
-            String state = httpRequest.getQueryStringParameters().stream().filter(parameter -> "state".equals(parameter.getName().getValue())).findFirst().get().getValues().get(0).getValue();
-            return response().withHeaders(
-                    new Header(HttpHeaderNames.CONTENT_TYPE.toString(), "text/html; charset=\"utf-8\""),
-                    new Header(HttpHeaderNames.LOCATION.toString(), urlPrefix+"/api/login/facebook?code=fake_code&state="+state)
-            ).withStatusCode(302);
-        });
-
-        mockServer
-                .when(request().withPath("/mock/facebook/oauth/access_token"))
-                .respond(response().withHeaders(
-                        new Header(HttpHeaderNames.CONTENT_TYPE.toString(), "application/json")
-                        ).withStatusCode(200).withBody("{\n" +
-                                "  \"access_token\": \"fake-access-token\", \n" +
-                                "  \"token_type\": \"bearer\",\n" +
-                                "  \"expires_in\":  3600\n" +
-                                "}")
-                );
-
-        mockServer
-                .when(request().withPath("/mock/facebook/me"))
-                .respond(response().withHeaders(
-                        new Header(HttpHeaderNames.CONTENT_TYPE.toString(), "application/json")
-                        ).withStatusCode(200).withBody("{\n" +
-                                "  \"id\": \"1234\", \n" +
-                                "  \"name\": \"Nikita K\",\n" +
-                                "  \"picture\": {\n" +
-                                "      \"data\": {\t\n" +
-                                "           \"url\": \"https://i.pinimg.com/236x/37/47/62/374762701f2571ffaacba61325d6dbf1--linux-penguin.jpg\"\n" +
-                                "        }\n" +
-                                "    }"+
-                                "}")
-                );
-
+        assumeThat(seleniumConfiguration.getBrowser(), is(Browser.CHROME));
 
         IndexPage indexPage = new IndexPage(urlPrefix);
         indexPage.openPage();
 
-        LoginModal loginModal = new LoginModal(user, password);
+        LoginModal loginModal = new LoginModal();
         loginModal.openLoginModal();
         loginModal.loginFacebook();
 
         Assert.assertEquals("https://i.pinimg.com/236x/37/47/62/374762701f2571ffaacba61325d6dbf1--linux-penguin.jpg", UserNav.getAvatarUrl());
-        Assert.assertEquals("Nikita K", UserNav.getLogin());
+        Assert.assertEquals(facebookLogin, UserNav.getLogin());
 
 
         // now we attempt to change email
         UserProfilePage userPage = new UserProfilePage(urlPrefix, driver);
-        UserAccount userAccount = userAccountRepository.findByUsername("Nikita K").orElseThrow();
+        UserAccount userAccount = userAccountRepository.findByUsername(facebookLogin).orElseThrow();
         userPage.openPage(userAccount.getId().intValue());
         userPage.assertThisIsYou();
         userPage.edit();

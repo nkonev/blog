@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import UserProfile from './components/UserProfile.vue'
-import NotFoundComponent from './components/NotFoundComponent.vue'
+import Error404 from './components/Error404.vue'
+import Error401 from './components/Error401.vue'
+import Error403 from './components/Error403.vue'
 import UserList from './components/UserList.vue'
 import Registration from './components/Registration.vue'
 import PostList from './components/PostList.vue'
@@ -48,7 +50,9 @@ const router = new Router({
         { path: '/help', component: Help},
         { path: '/password-restore', component: PasswordRestore },
         { path: '/password-reset', component: PasswordReset },
-        { path: '*', component: NotFoundComponent },
+        { path: '/unauthorized', component: Error401 },
+        { path: '/forbidden', component: Error403 },
+        { path: '*', component: Error404 },
     ]
 });
 
