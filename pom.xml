@@ -243,11 +243,6 @@
                 <version>2.3.0</version>
             </dependency>
             <dependency>
-                <groupId>org.flywaydb</groupId>
-                <artifactId>flyway-core</artifactId>
-                <version>5.1.4</version>
-            </dependency>
-            <dependency>
                 <groupId>net.javacrumbs.shedlock</groupId>
                 <artifactId>shedlock-spring</artifactId>
                 <version>${shedlock.version}</version>

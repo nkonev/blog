@@ -103,7 +103,7 @@ public class PostController {
             );
         } else {
             posts = jdbcTemplate.query(
-                    "with tsq as (select to_tsquery("+regConfig+", array_to_string(array(select replace(i, ':', '\\:')||':*' from unnest(tsvector_to_array(to_tsvector("+regConfig+", :search_string))) as i), ' & ')) ) \n" +
+                    "with tsq as (select websearch_to_tsquery("+regConfig+", :search_string) ) \n" +
                             "select\n" +
                             " fulltext_result.id, \n" +
                             " ts_headline("+regConfig+", fulltext_result.title, (select * from tsq), 'StartSel=\"<u>\", StopSel=\"</u>\"') as title, \n" +
