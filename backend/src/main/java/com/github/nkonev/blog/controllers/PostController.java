@@ -76,7 +76,7 @@ public class PostController {
         size = PageUtils.fixSize(size);
         searchString = StringUtils.trimWhitespace(searchString);
 
-        Map<String, Object> params = new HashMap<>();
+        var params = new HashMap<String, Object>();
         params.put("search_string", searchString);
         params.put("offset", PageUtils.getOffset(page, size));
         params.put("limit", size);
