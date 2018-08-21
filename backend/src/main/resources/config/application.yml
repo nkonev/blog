@@ -170,6 +170,10 @@ facebook:
   resource:
     userInfoUri: https://graph.facebook.com/me?fields=id,name,picture
 
+spring.data.elasticsearch.cluster-name: elasticsearch
+spring.data.elasticsearch.clusterNodes: 172.22.0.5:9300
+spring.data.elasticsearch.repositories.enabled: false
+
 ---
 # Profile for demo data
 spring:
