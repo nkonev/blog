@@ -194,3 +194,56 @@ A: Add `.with(csrf())` to MockMvcRequestBuilder chain
 
 1. Add profile `jacoco` `./mvnw -Pjacoco clean package`
 2. See coverage HTML report in `./jacoco/target/site/jacoco-aggregate/index.html` directory.
+
+# Elasticsearch
+```bash
+curl -X GET    -H "Content-Type:application/json"    -d '{
+  "query": {
+        "prefix": {
+          "text": "почт"
+        }
+  }
+}'  'http://127.0.0.1:19200/blog/_search' | jq
+```
+
+```bash
+curl -X GET    -H "Content-Type:application/json"    -d '{
+  "query": {
+    "bool":{
+      "should": [
+         {"match_phrase_prefix": { "text": "почт" }},
+         {"match_phrase_prefix": { "title": "почт" }}
+      ]
+    }
+  },
+  "_source": ["_"],
+  "highlight" : {
+        "fields" : {
+            "text" : { "fragment_size" : 150, "pre_tags" : ["<em>"], "post_tags" : ["</em>"], "number_of_fragments" : 5 },
+            "title" : { "fragment_size" : 150, "pre_tags" : ["<em>"], "post_tags" : ["</em>"], "number_of_fragments" : 5 }
+        }
+  }
+}'  'http://127.0.0.1:19200/blog/_search' | jq
+```
+
+```bash
+curl -X GET    -H "Content-Type:application/json"    -d '{
+  "query": {
+    "bool":{
+      "should": [
+         {"match_phrase_prefix": { "text": "рыбами" }},
+         {"match_phrase_prefix": { "title": "рыбами" }}
+      ]
+    }
+  },
+  "highlight" : {
+        "fields" : {
+            "text" : { "fragment_size" : 150, "pre_tags" : ["<em>"], "post_tags" : ["</em>"], "number_of_fragments" : 5 },
+            "title" : { "fragment_size" : 150, "pre_tags" : ["<em>"], "post_tags" : ["</em>"], "number_of_fragments" : 1 }
+        }
+  },
+     "sort" : [
+        {"id" : {"order" : "desc"}}
+     ]
+}'  'http://127.0.0.1:19200/post/_search' | jq
+```

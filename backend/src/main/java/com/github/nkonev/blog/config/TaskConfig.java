@@ -3,6 +3,8 @@ package com.github.nkonev.blog.config;
 import com.github.nkonev.blog.controllers.ImagePostContentUploadController;
 import com.github.nkonev.blog.controllers.ImagePostTitleUploadController;
 import com.github.nkonev.blog.controllers.ImageUserAvatarUploadController;
+import com.github.nkonev.blog.services.ElasticsearchPopulator;
+import com.github.nkonev.blog.services.PostService;
 import com.github.nkonev.blog.services.SeoCacheService;
 import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.core.SchedulerLock;
@@ -39,10 +41,19 @@ public class TaskConfig {
     @Autowired
     private SeoCacheService seoCacheService;
 
+    @Autowired
+    private PostService postService;
+
+    @Autowired
+    private ElasticsearchPopulator elasticsearchPopulator;
+
     private static final String IMAGES_CLEAN_TASK = "imagesCleanTask";
     private static final String REFRESH_CACHE_CLEAN_TASK = "refreshCacheTask";
+    private static final String REFRESH_INDEX_TASK = "refreshIndexTask";
 
     public static final Logger LOGGER_IMAGE_CLEAN_TASK = LoggerFactory.getLogger(IMAGES_CLEAN_TASK);
+    public static final Logger LOGGER_INDEX_REFRESH = LoggerFactory.getLogger(REFRESH_INDEX_TASK);
+
 
     @Bean
     public LockProvider lockProvider(LettuceConnectionFactory redisConnectionFactory) {
@@ -65,12 +76,17 @@ public class TaskConfig {
     }
 
     @Bean(name = "taskExecutor")
-    public Executor asyncExecutor() {
+    public Executor asyncExecutor(
+            @Value("${custom.async.corePoolSize:8}") int corePoolSize,
+            @Value("${custom.async.maxPoolSize:8}") int maxPoolSize,
+            @Value("${custom.async.queueCapacity:512}") int queueCapacity,
+            @Value("${custom.async.threadNamePrefix:BlogAsync-}") String threadNamePrefix
+    ) {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(8);
-        executor.setMaxPoolSize(8);
-        executor.setQueueCapacity(512);
-        executor.setThreadNamePrefix("BlogAsync-");
+        executor.setCorePoolSize(corePoolSize);
+        executor.setMaxPoolSize(maxPoolSize);
+        executor.setQueueCapacity(queueCapacity);
+        executor.setThreadNamePrefix(threadNamePrefix);
         executor.initialize();
         return executor;
     }
@@ -82,7 +98,8 @@ public class TaskConfig {
         final int deletedPostTitles  = imagePostTitleUploadController.clearPostTitleImages();
         final int deletedAvatarImages = imageUserAvatarUploadController.clearAvatarImages();
 
-        LOGGER_IMAGE_CLEAN_TASK.info("Cleared {} post content images(created before 1 day ago); {} post title images; {} user avatar images", deletedPostContent, deletedPostTitles, deletedAvatarImages);
+        LOGGER_IMAGE_CLEAN_TASK.info("Cleared {} post content images(created before 1 day ago); {} post title images; {} user avatar images",
+                deletedPostContent, deletedPostTitles, deletedAvatarImages);
     }
 
 
@@ -92,4 +109,13 @@ public class TaskConfig {
         seoCacheService.refreshAllPagesCache();
     }
 
+    @Scheduled(cron = "${custom.tasks.index.refresh.cron}")
+    @SchedulerLock(name = REFRESH_INDEX_TASK)
+    public void refreshIndex() {
+        if (!elasticsearchPopulator.refreshInProgress()){
+            postService.refreshFulltextIndex();
+        } else {
+            LOGGER_INDEX_REFRESH.info("Skipping scheduled index refreshing because ElasticsearchPopulator in progress");
+        }
+    }
 }

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
+import com.github.nkonev.blog.utils.ResourceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +64,7 @@ public class AppConfig {
     @PostConstruct
     public void printVersion() throws IOException {
         if(resource.exists()){
-            String text = new Scanner(resource.getInputStream()).useDelimiter("\\A").next();
+            String text = ResourceUtils.stringFromResource(resource);
             LOGGER.info("Version {}", text);
         }
     }

@@ -17,7 +17,7 @@ public class PostRepositoryTest extends AbstractUtTestRunner {
 
     @Before
     public void beforePostRepositoryTest() {
-        target = postRepository.findById(500L).orElseThrow(()->new IllegalArgumentException("test post not found"));
+        target = postRepository.findById(50L).orElseThrow(()->new IllegalArgumentException("test post not found"));
     }
 
     @Test

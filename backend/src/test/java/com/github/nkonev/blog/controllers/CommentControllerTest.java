@@ -69,11 +69,11 @@ public class CommentControllerTest extends AbstractUtTestRunner {
         }
     }
     
-    public static final long POST_UNDER_TEST = 1990;
+    public static final long POST_UNDER_TEST = 90;
 
     public static final long FOREIGN_COMMENT_ID = 20;
 
-    public static final long POST_WITH_COMMENTS = 2001; // select distinct c.post_id from posts.comment c;
+    public static final long POST_WITH_COMMENTS = 101; // select distinct c.post_id from posts.comment c;
 
     @Test
     public void testAnonymousCanGetCommentsAndItsLimiting() throws Exception {

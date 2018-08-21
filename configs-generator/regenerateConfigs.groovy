@@ -93,8 +93,10 @@ spring.flyway:
 
 spring.redis.url: redis://172.22.0.3:6379/0
 spring.data.redis.repositories.enabled: false
-# Also see index in bootstrap.sql
-custom.postgres.fulltext.reg-config: "'russian'::regconfig"
+
+spring.data.elasticsearch.cluster-name: elasticsearch
+spring.data.elasticsearch.clusterNodes: 172.22.0.5:9300
+spring.data.elasticsearch.repositories.enabled: false
 """};
 
 def MANAGEMENT_SNIPPET = { boolean test ->
@@ -191,6 +193,8 @@ custom:
       cron: "0 * * * * *"
     rendered.cache.refresh:
       cron: "0 */30 * * * *"
+    index.refresh:
+      cron: "0 0 */2 * * *"
   prerender:
     prerenderServiceUrl: http://rendertron.example.com:3000/
 """

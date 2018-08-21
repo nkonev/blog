@@ -1,7 +1,6 @@
 package com.github.nkonev.blog.controllers;
 
 import com.github.nkonev.blog.Constants;
-import com.github.nkonev.blog.converter.PostConverter;
 import com.github.nkonev.blog.converter.UserAccountConverter;
 import com.github.nkonev.blog.dto.*;
 import com.github.nkonev.blog.entity.jpa.Post;
@@ -11,6 +10,7 @@ import com.github.nkonev.blog.repo.jpa.PostRepository;
 import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
 import com.github.nkonev.blog.security.BlogSecurityService;
 import com.github.nkonev.blog.security.BlogUserDetailsService;
+import com.github.nkonev.blog.services.PostService;
 import com.github.nkonev.blog.utils.PageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -52,7 +52,7 @@ public class UserProfileController {
     private BlogSecurityService blogSecurityService;
 
     @Autowired
-    private PostConverter postConverter;
+    private PostService postService;
 
     /**
      *
@@ -97,7 +97,7 @@ public class UserProfileController {
         return new Wrapper<>(
                 resultPage.getContent()
                     .stream()
-                    .map(postConverter::convertToPostDTOWithCleanTags)
+                    .map(postService::convertToPostDTOWithCleanTags)
                     .collect(Collectors.toList()),
                 resultPage.getTotalElements()
         );

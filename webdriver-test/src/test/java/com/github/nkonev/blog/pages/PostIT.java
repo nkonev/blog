@@ -38,8 +38,8 @@ public class PostIT extends AbstractItTestRunner {
     @Autowired
     private SeleniumConfiguration seleniumConfiguration;
 
-    private static final long POST_WITHOUT_COMMENTS = 1990;
-    private static final long POST_FOR_EDIT_COMMENTS = 1980;
+    private static final long POST_WITHOUT_COMMENTS = 90;
+    private static final long POST_FOR_EDIT_COMMENTS = 80;
 
     public static class PostViewPage {
         private static final String POST_PART = "/post/";

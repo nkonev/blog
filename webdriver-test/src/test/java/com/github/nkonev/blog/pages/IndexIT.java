@@ -60,8 +60,8 @@ public class IndexIT extends AbstractItTestRunner {
 
         indexPage.contains("Added via websocket");
 
-        indexPage.setSearchString("234");
-        indexPage.contains("generated_post_234");
+        indexPage.setSearchString("generated_post_34");
+        indexPage.contains("generated_post_34");
         indexPage.clearSearchButton();
 
         added.setTitle("Updated via websocket");
@@ -83,9 +83,9 @@ public class IndexIT extends AbstractItTestRunner {
         IndexPage indexPage = new IndexPage(urlPrefix);
         indexPage.openPage();
 
-        indexPage.setSearchString("generated_post_1765"); // request that respond one result
+        indexPage.setSearchString("generated_post_65"); // request that respond one result
 
-        indexPage.contains("generated_post_1765");
+        indexPage.contains("generated_post_65");
 
         indexPage.sendEnd();
 
