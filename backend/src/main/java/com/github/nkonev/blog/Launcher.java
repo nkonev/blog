@@ -18,6 +18,8 @@ public class Launcher {
 
 
     public static void main(String[] args) throws Exception {
+        System.setProperty("es.set.netty.runtime.available.processors", "false");
+
         SpringApplication.run(Launcher.class, args);
     }
 }
