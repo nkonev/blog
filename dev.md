@@ -194,3 +194,14 @@ A: Add `.with(csrf())` to MockMvcRequestBuilder chain
 
 1. Add profile `jacoco` `./mvnw -Pjacoco clean package`
 2. See coverage HTML report in `./jacoco/target/site/jacoco-aggregate/index.html` directory.
+
+# Elasticsearch
+```bash
+curl -X GET    -H "Content-Type:application/json"    -d '{
+  "query": {
+        "prefix": {
+          "text": "почт"
+        }
+  }
+}'  'http://127.0.0.1:19200/blog/_search' | jq
+```
