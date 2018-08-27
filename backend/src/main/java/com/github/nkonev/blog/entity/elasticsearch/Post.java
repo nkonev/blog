@@ -3,7 +3,7 @@ package com.github.nkonev.blog.entity.elasticsearch;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
-@Document(indexName = "blog", type = "posts")
+@Document(indexName = "blog", type = "_doc")
 public class Post {
     @Id
     private Long id;
