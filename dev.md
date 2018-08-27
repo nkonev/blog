@@ -205,3 +205,43 @@ curl -X GET    -H "Content-Type:application/json"    -d '{
   }
 }'  'http://127.0.0.1:19200/blog/_search' | jq
 ```
+
+```bash
+curl -X GET    -H "Content-Type:application/json"    -d '{
+  "query": {
+    "bool":{
+      "should": [
+         {"match_phrase_prefix": { "text": "почт" }},
+         {"match_phrase_prefix": { "title": "почт" }}
+      ]
+    }
+  },
+  "_source": ["_"],
+  "highlight" : {
+        "fields" : {
+            "text" : { "fragment_size" : 150, "pre_tags" : ["<em>"], "post_tags" : ["</em>"], "number_of_fragments" : 5 },
+            "title" : { "fragment_size" : 150, "pre_tags" : ["<em>"], "post_tags" : ["</em>"], "number_of_fragments" : 5 }
+        }
+  }
+}'  'http://127.0.0.1:19200/blog/_search' | jq
+```
+
+```bash
+curl -X GET    -H "Content-Type:application/json"    -d '{
+  "query": {
+    "bool":{
+      "should": [
+         {"match_phrase_prefix": { "text": "bas" }},
+         {"match_phrase_prefix": { "title": "bas" }}
+      ]
+    }
+  },
+  "_source": ["_"],
+  "highlight" : {
+        "fields" : {
+            "text" : { "fragment_size" : 150, "pre_tags" : ["<em>"], "post_tags" : ["</em>"], "number_of_fragments" : 5 },
+            "title" : { "fragment_size" : 150, "pre_tags" : ["<em>"], "post_tags" : ["</em>"], "number_of_fragments" : 1 }
+        }
+  }
+}'  'http://127.0.0.1:19200/blog/_search' | jq
+```
