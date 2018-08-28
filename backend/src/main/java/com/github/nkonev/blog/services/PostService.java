@@ -122,25 +122,21 @@ public class PostService {
         if (postDTO.getId() != 0) {
             throw new BadRequestException("id cannot be set");
         }
-        Post fromWeb = convertAndSaveToIndex(postDTO, null);
+        Post fromWeb = postConverter.convertToPost(postDTO, null);
         UserAccount ua = userAccountRepository.findById(userAccount.getId()).orElseThrow(()->new IllegalArgumentException("User account not found")); // Hibernate caches it
         fromWeb.setOwner(ua);
         Post saved = postRepository.save(fromWeb);
+        indexPostRepository.save(toElasticsearchPost(saved));
         return postConverter.convertToDto(saved, userAccount);
     }
 
     public PostDTOWithAuthorization updatePost(UserAccountDetailsDTO userAccount, @NotNull PostDTO postDTO) {
         Assert.notNull(userAccount, "UserAccountDetailsDTO can't be null");
         Post found = postRepository.findById(postDTO.getId()).orElseThrow(()->new IllegalArgumentException("Post with id " + postDTO.getId() + " not found"));
-        Post updatedEntity = convertAndSaveToIndex(postDTO, found);
-        Post saved = postRepository.saveAndFlush(updatedEntity);
-        return postConverter.convertToDto(saved, userAccount);
-    }
-
-    private Post convertAndSaveToIndex(@NotNull PostDTO postDTO, Post found) {
         Post updatedEntity = postConverter.convertToPost(postDTO, found);
-        indexPostRepository.save(toElasticsearchPost(updatedEntity));
-        return updatedEntity;
+        Post saved = postRepository.saveAndFlush(updatedEntity);
+        indexPostRepository.save(toElasticsearchPost(saved));
+        return postConverter.convertToDto(saved, userAccount);
     }
 
     public PostDTO convertToPostDTOWithCleanTags(Post post) {
