@@ -6,6 +6,8 @@ import com.github.nkonev.blog.dto.PostDTOWithAuthorization;
 import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
 import com.github.nkonev.blog.entity.jpa.Post;
 import com.github.nkonev.blog.exception.BadRequestException;
+import com.github.nkonev.blog.exception.DataNotFoundException;
+import com.github.nkonev.blog.repo.elasticsearch.IndexPostRepository;
 import com.github.nkonev.blog.repo.jpa.PostRepository;
 import com.github.nkonev.blog.security.BlogSecurityService;
 import com.github.nkonev.blog.security.permissions.PostPermissions;
@@ -15,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+
+import java.util.Optional;
 
 @Service
 public class PostConverter {
@@ -67,6 +71,9 @@ public class PostConverter {
         }
     }
 
+    @Autowired
+    private IndexPostRepository indexPostRepository;
+
     public Post convertToPost(PostDTO postDTO, Post forUpdate) {
         Assert.notNull(postDTO, "postDTO can't be null");
 
@@ -74,10 +81,18 @@ public class PostConverter {
         String sanitizedHtml = XssSanitizeUtil.sanitize(postDTO.getText());
         checkLength(sanitizedHtml);
         forUpdate.setText(sanitizedHtml);
-        forUpdate.setTextNoTags(cleanHtmlTags(sanitizedHtml));
         forUpdate.setTitle(cleanHtmlTags(postDTO.getTitle()));
         forUpdate.setTitleImg(postDTO.getTitleImg());
+
+        // to separate post service
+        indexPostRepository.save(toElasticsearchPost(forUpdate));
+
         return forUpdate;
+    }
+
+    public com.github.nkonev.blog.entity.elasticsearch.Post toElasticsearchPost(com.github.nkonev.blog.entity.jpa.Post jpaPost) {
+        String sanitizedHtml = XssSanitizeUtil.sanitize(jpaPost.getText());
+        return new com.github.nkonev.blog.entity.elasticsearch.Post(jpaPost.getId(), jpaPost.getTitle(), cleanHtmlTags(sanitizedHtml));
     }
 
     /**
@@ -85,7 +100,7 @@ public class PostConverter {
      * @param html
      * @return
      */
-    public static String cleanHtmlTags(String html) {
+    private static String cleanHtmlTags(String html) {
         return html == null ? null : Jsoup.parse(html).text();
     }
 
@@ -94,10 +109,15 @@ public class PostConverter {
      */
     public PostDTO convertToPostDTOWithCleanTags(Post post) {
         if (post==null) {return null;}
+        // todo to separate post service
+        com.github.nkonev.blog.entity.elasticsearch.Post byId = indexPostRepository
+                .findById(post.getId())
+                .orElseThrow(()->new DataNotFoundException("post not found in fulltext store"));
+
         return new PostDTO(
                 post.getId(),
                 post.getTitle(),
-                post.getTextNoTags(),
+                byId.getText(),
                 post.getTitleImg(),
                 post.getCreateDateTime(),
                 UserAccountConverter.convertToUserAccountDTO(post.getOwner())

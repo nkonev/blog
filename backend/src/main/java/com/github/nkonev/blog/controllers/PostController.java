@@ -7,13 +7,28 @@ import com.github.nkonev.blog.entity.jpa.Post;
 import com.github.nkonev.blog.entity.jpa.UserAccount;
 import com.github.nkonev.blog.exception.BadRequestException;
 import com.github.nkonev.blog.exception.DataNotFoundException;
+import com.github.nkonev.blog.repo.elasticsearch.IndexPostRepository;
 import com.github.nkonev.blog.repo.jpa.CommentRepository;
 import com.github.nkonev.blog.repo.jpa.PostRepository;
 import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
 import com.github.nkonev.blog.utils.PageUtils;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.common.text.Text;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.SearchResultMapper;
+import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
+import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,11 +39,12 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.github.nkonev.blog.entity.elasticsearch.Post.FIELD_TEXT;
+import static com.github.nkonev.blog.entity.elasticsearch.Post.FIELD_TITLE;
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 @Transactional
 @RestController
@@ -49,13 +65,19 @@ public class PostController {
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private IndexPostRepository indexPostRepository;
+
+    @Autowired
+    private ElasticsearchTemplate elasticsearchTemplate;
+
     @Value("${custom.postgres.fulltext.reg-config}")
     private String regConfig;
 
     private final RowMapper<PostDTO> rowMapper = (resultSet, i) -> new PostDTO(
             resultSet.getLong("id"),
             resultSet.getString("title"),
-            resultSet.getString("text_column"),
+            "post clean text",
             resultSet.getString("title_img"),
             resultSet.getObject("create_date_time", LocalDateTime.class),
             new UserAccountDTO(
@@ -76,19 +98,19 @@ public class PostController {
         size = PageUtils.fixSize(size);
         searchString = StringUtils.trimWhitespace(searchString);
 
-        var params = new HashMap<String, Object>();
-        params.put("search_string", searchString);
-        params.put("offset", PageUtils.getOffset(page, size));
-        params.put("limit", size);
 
         List<PostDTO> posts;
 
         if (StringUtils.isEmpty(searchString)) {
+            var params = new HashMap<String, Object>();
+            params.put("search_string", searchString);
+            params.put("offset", PageUtils.getOffset(page, size));
+            params.put("limit", size);
+
             posts = jdbcTemplate.query(
                     "select " +
                             "p.id, " +
                             "p.title, " +
-                            "substring(p.text_no_tags from 0 for 700) as text_column, " +
                             "p.title_img, " +
                             "p.create_date_time," +
                             "u.id as owner_id," +
@@ -101,36 +123,92 @@ public class PostController {
                     params,
                     rowMapper
             );
+
+            posts.forEach(postDTO -> {
+                com.github.nkonev.blog.entity.elasticsearch.Post post = indexPostRepository
+                        .findById(postDTO.getId())
+                        .orElseThrow(() -> new DataNotFoundException("post not found in elasticsearch store"));
+                postDTO.setText(post.getText());
+            });
+
         } else {
-            posts = jdbcTemplate.query(
-                    "with tsq as (select to_tsquery("+regConfig+", array_to_string(array(select replace(i, ':', '\\:')||':*' from unnest(tsvector_to_array(to_tsvector("+regConfig+", :search_string))) as i), ' & ')) ) \n" +
-                            "select\n" +
-                            " fulltext_result.id, \n" +
-                            " ts_headline("+regConfig+", fulltext_result.title, (select * from tsq), 'StartSel=\"<u>\", StopSel=\"</u>\"') as title, \n" +
-                            " ts_headline("+regConfig+", fulltext_result.text_no_tags, (select * from tsq), 'StartSel=\"<b>\", StopSel=\"</b>\", MaxWords=165, MinWords=85, MaxFragments=5') as text_column, \n" +
-                            " fulltext_result.title_img,\n" +
-                            " fulltext_result.create_date_time,\n" +
-                            " u.id as owner_id," +
-                            " u.username as owner_login," +
-                            " u.facebook_id as owner_facebook_id," +
-                            " u.avatar as owner_avatar \n" +
-                            "from (\n" +
-                            "  select id, title, text_no_tags, title_img, create_date_time, owner_id \n" +
-                            "  from posts.post \n" +
-                            "  where to_tsvector("+regConfig+", title || ' ' || text_no_tags) @@ (select * from tsq) " +
-                            " union " +
-                            "  select id, title, text_no_tags, title_img, create_date_time, owner_id \n" +
-                            "  from posts.post \n" +
-                            "  where lower(title || ' ' || text_no_tags) LIKE '%' || lower(:search_string) || '%' " +
-                            " order by id desc " +
-                            " limit :limit offset :offset\n" +
-                            ") as fulltext_result " +
-                            "join auth.users u on fulltext_result.owner_id = u.id " +
-                            "order by id desc" +
-                            ";",
-                    params,
-                    rowMapper
-            );
+            // todo to separate post service
+            PageRequest pageRequest = PageRequest.of(page, size);
+
+            SearchQuery searchQuery = new NativeSearchQueryBuilder()
+                    .withQuery(boolQuery()
+                            .should(matchPhrasePrefixQuery(FIELD_TEXT, searchString))
+                            .should(matchPhrasePrefixQuery(FIELD_TITLE, searchString))
+                    )
+                    .withHighlightFields(
+                            new HighlightBuilder.Field(FIELD_TEXT).preTags("<b>").postTags("</b>").numOfFragments(5).fragmentSize(150),
+                            new HighlightBuilder.Field(FIELD_TITLE).preTags("<u>").postTags("</u>").numOfFragments(1).fragmentSize(150)
+                    )
+                    .withPageable(pageRequest)
+                    .build();
+            // https://stackoverflow.com/questions/37049764/how-to-provide-highlighting-with-spring-data-elasticsearch/37163711#37163711
+            Page<com.github.nkonev.blog.entity.elasticsearch.Post> fulltextResult = elasticsearchTemplate.queryForPage(searchQuery, com.github.nkonev.blog.entity.elasticsearch.Post.class, new SearchResultMapper() {
+                @Override
+                public <T> AggregatedPage<T> mapResults(SearchResponse response, Class<T> clazz, Pageable pageable) {
+                    List<com.github.nkonev.blog.entity.elasticsearch.Post> list = new ArrayList<>();
+                    for (SearchHit searchHit : response.getHits()) {
+                        if (response.getHits().getHits().length <= 0) {
+                            return new AggregatedPageImpl<T>((List<T>) list);
+                        }
+                        com.github.nkonev.blog.entity.elasticsearch.Post tempPost = new com.github.nkonev.blog.entity.elasticsearch.Post();
+                        tempPost.setId(Long.valueOf(searchHit.getId()));
+
+                        String title = (String) searchHit.getSource().get(FIELD_TITLE);
+                        String text = (String) searchHit.getSource().get(FIELD_TEXT);
+
+                        HighlightField highlightedTitle = searchHit.getHighlightFields().get(FIELD_TITLE);
+                        HighlightField highlightedText = searchHit.getHighlightFields().get(FIELD_TEXT);
+
+                        if (highlightedTitle!=null && highlightedTitle.getFragments()!=null && highlightedTitle.getFragments().length>0){
+                            title = highlightedTitle.getFragments()[0].toString();
+                        }
+
+                        if (highlightedText!=null && highlightedText.getFragments()!=null && highlightedText.getFragments().length>0){
+                            text = Arrays.stream(highlightedText.getFragments()).map(Text::toString).collect(Collectors.joining("... "));
+                        }
+
+                        tempPost.setTitle(title);
+                        tempPost.setText(text);
+                        list.add(tempPost);
+                    }
+                    return new AggregatedPageImpl<T>((List<T>) list);
+                }
+            });
+
+            posts = new ArrayList<>();
+            for (com.github.nkonev.blog.entity.elasticsearch.Post fulltextPost: fulltextResult){
+
+                var params = new HashMap<String, Object>();
+                params.put("id", fulltextPost.getId());
+
+                PostDTO postDTO = jdbcTemplate.queryForObject(
+                        "select " +
+                                "p.id, " +
+                                "p.title, " +
+                                "p.title_img, " +
+                                "p.create_date_time," +
+                                "u.id as owner_id," +
+                                "u.username as owner_login," +
+                                "u.facebook_id as owner_facebook_id," +
+                                "u.avatar as owner_avatar \n" +
+                                "  from posts.post p join auth.users u on p.owner_id = u.id \n" +
+                                " where p.id = :id",
+                        params,
+                        rowMapper
+                );
+                if (postDTO == null){
+                    throw new DataNotFoundException("post not found in postgres");
+                }
+                postDTO.setText(fulltextPost.getText());
+                postDTO.setTitle(fulltextPost.getTitle());
+
+                posts.add(postDTO);
+            }
         }
 
         return posts;

@@ -5,6 +5,10 @@ import org.springframework.data.elasticsearch.annotations.Document;
 
 @Document(indexName = "blog", type = "_doc")
 public class Post {
+
+    public static final String FIELD_TEXT = "text";
+    public static final String FIELD_TITLE = "title";
+
     @Id
     private Long id;
 

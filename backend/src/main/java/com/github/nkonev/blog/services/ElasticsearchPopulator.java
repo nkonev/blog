@@ -1,7 +1,6 @@
 package com.github.nkonev.blog.services;
 
-import com.github.nkonev.blog.entity.elasticsearch.Post;
-import com.github.nkonev.blog.utils.XssSanitizeUtil;
+import com.github.nkonev.blog.converter.PostConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +9,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.Collection;
 import java.util.Optional;
-
-import static com.github.nkonev.blog.converter.PostConverter.cleanHtmlTags;
 
 @Service
 public class ElasticsearchPopulator {
@@ -23,6 +20,9 @@ public class ElasticsearchPopulator {
 
     @Autowired
     private com.github.nkonev.blog.repo.jpa.PostRepository postRepositoryJpa;
+
+    @Autowired
+    private PostConverter postConverter;
 
     private static final Logger LOGGER  = LoggerFactory.getLogger(ElasticsearchPopulator.class);
 
@@ -40,9 +40,7 @@ public class ElasticsearchPopulator {
             if (post.isPresent()){
                 com.github.nkonev.blog.entity.jpa.Post jpaPost = post.get();
                 LOGGER.info("Copying post: {}", id);
-                String sanitizedHtml = XssSanitizeUtil.sanitize(jpaPost.getText());
-                indexPostRepositoryElastic.save(new Post(id, jpaPost.getTitle(), cleanHtmlTags(sanitizedHtml)));
-
+                indexPostRepositoryElastic.save(postConverter.toElasticsearchPost(jpaPost));
             }
         }
         LOGGER.info("Finished populate elasticsearch index");
