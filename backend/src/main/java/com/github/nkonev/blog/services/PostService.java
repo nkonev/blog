@@ -85,6 +85,15 @@ public class PostService {
     );
 
     private final SearchResultMapper searchResultMapper = new SearchResultMapper() {
+        private String getHighlightedOrOriginalField(SearchHit searchHit, String fieldName){
+            String field = (String) searchHit.getSource().get(fieldName);
+            HighlightField highlightedField = searchHit.getHighlightFields().get(fieldName);
+            if (highlightedField!=null && highlightedField.getFragments()!=null && highlightedField.getFragments().length>0){
+                field = Arrays.stream(highlightedField.getFragments()).map(Text::toString).collect(Collectors.joining("... "));
+            }
+            return field;
+        }
+
         @Override
         public <T> AggregatedPage<T> mapResults(SearchResponse response, Class<T> clazz, Pageable pageable) {
             List<com.github.nkonev.blog.entity.elasticsearch.Post> list = new ArrayList<>();
@@ -94,23 +103,8 @@ public class PostService {
                 }
                 com.github.nkonev.blog.entity.elasticsearch.Post tempPost = new com.github.nkonev.blog.entity.elasticsearch.Post();
                 tempPost.setId(Long.valueOf(searchHit.getId()));
-
-                String title = (String) searchHit.getSource().get(FIELD_TITLE);
-                String text = (String) searchHit.getSource().get(FIELD_TEXT);
-
-                HighlightField highlightedTitle = searchHit.getHighlightFields().get(FIELD_TITLE);
-                HighlightField highlightedText = searchHit.getHighlightFields().get(FIELD_TEXT);
-
-                if (highlightedTitle!=null && highlightedTitle.getFragments()!=null && highlightedTitle.getFragments().length>0){
-                    title = highlightedTitle.getFragments()[0].toString();
-                }
-
-                if (highlightedText!=null && highlightedText.getFragments()!=null && highlightedText.getFragments().length>0){
-                    text = Arrays.stream(highlightedText.getFragments()).map(Text::toString).collect(Collectors.joining("... "));
-                }
-
-                tempPost.setTitle(title);
-                tempPost.setText(text);
+                tempPost.setTitle(getHighlightedOrOriginalField(searchHit, FIELD_TITLE));
+                tempPost.setText(getHighlightedOrOriginalField(searchHit, FIELD_TEXT));
                 list.add(tempPost);
             }
             return new AggregatedPageImpl<T>((List<T>) list);
