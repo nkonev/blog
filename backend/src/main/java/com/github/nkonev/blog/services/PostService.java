@@ -84,6 +84,39 @@ public class PostService {
             )
     );
 
+    private final SearchResultMapper searchResultMapper = new SearchResultMapper() {
+        @Override
+        public <T> AggregatedPage<T> mapResults(SearchResponse response, Class<T> clazz, Pageable pageable) {
+            List<com.github.nkonev.blog.entity.elasticsearch.Post> list = new ArrayList<>();
+            for (SearchHit searchHit : response.getHits()) {
+                if (response.getHits().getHits().length <= 0) {
+                    return new AggregatedPageImpl<T>((List<T>) list);
+                }
+                com.github.nkonev.blog.entity.elasticsearch.Post tempPost = new com.github.nkonev.blog.entity.elasticsearch.Post();
+                tempPost.setId(Long.valueOf(searchHit.getId()));
+
+                String title = (String) searchHit.getSource().get(FIELD_TITLE);
+                String text = (String) searchHit.getSource().get(FIELD_TEXT);
+
+                HighlightField highlightedTitle = searchHit.getHighlightFields().get(FIELD_TITLE);
+                HighlightField highlightedText = searchHit.getHighlightFields().get(FIELD_TEXT);
+
+                if (highlightedTitle!=null && highlightedTitle.getFragments()!=null && highlightedTitle.getFragments().length>0){
+                    title = highlightedTitle.getFragments()[0].toString();
+                }
+
+                if (highlightedText!=null && highlightedText.getFragments()!=null && highlightedText.getFragments().length>0){
+                    text = Arrays.stream(highlightedText.getFragments()).map(Text::toString).collect(Collectors.joining("... "));
+                }
+
+                tempPost.setTitle(title);
+                tempPost.setText(text);
+                list.add(tempPost);
+            }
+            return new AggregatedPageImpl<T>((List<T>) list);
+        }
+    };
+
     public PostDTOWithAuthorization addPost(UserAccountDetailsDTO userAccount, @NotNull PostDTO postDTO){
         Assert.notNull(userAccount, "UserAccountDetailsDTO can't be null");
         if (postDTO.getId() != 0) {
@@ -171,38 +204,7 @@ public class PostService {
                     .withPageable(pageRequest)
                     .build();
             // https://stackoverflow.com/questions/37049764/how-to-provide-highlighting-with-spring-data-elasticsearch/37163711#37163711
-            Page<com.github.nkonev.blog.entity.elasticsearch.Post> fulltextResult = elasticsearchTemplate.queryForPage(searchQuery, com.github.nkonev.blog.entity.elasticsearch.Post.class, new SearchResultMapper() {
-                @Override
-                public <T> AggregatedPage<T> mapResults(SearchResponse response, Class<T> clazz, Pageable pageable) {
-                    List<com.github.nkonev.blog.entity.elasticsearch.Post> list = new ArrayList<>();
-                    for (SearchHit searchHit : response.getHits()) {
-                        if (response.getHits().getHits().length <= 0) {
-                            return new AggregatedPageImpl<T>((List<T>) list);
-                        }
-                        com.github.nkonev.blog.entity.elasticsearch.Post tempPost = new com.github.nkonev.blog.entity.elasticsearch.Post();
-                        tempPost.setId(Long.valueOf(searchHit.getId()));
-
-                        String title = (String) searchHit.getSource().get(FIELD_TITLE);
-                        String text = (String) searchHit.getSource().get(FIELD_TEXT);
-
-                        HighlightField highlightedTitle = searchHit.getHighlightFields().get(FIELD_TITLE);
-                        HighlightField highlightedText = searchHit.getHighlightFields().get(FIELD_TEXT);
-
-                        if (highlightedTitle!=null && highlightedTitle.getFragments()!=null && highlightedTitle.getFragments().length>0){
-                            title = highlightedTitle.getFragments()[0].toString();
-                        }
-
-                        if (highlightedText!=null && highlightedText.getFragments()!=null && highlightedText.getFragments().length>0){
-                            text = Arrays.stream(highlightedText.getFragments()).map(Text::toString).collect(Collectors.joining("... "));
-                        }
-
-                        tempPost.setTitle(title);
-                        tempPost.setText(text);
-                        list.add(tempPost);
-                    }
-                    return new AggregatedPageImpl<T>((List<T>) list);
-                }
-            });
+            Page<com.github.nkonev.blog.entity.elasticsearch.Post> fulltextResult = elasticsearchTemplate.queryForPage(searchQuery, com.github.nkonev.blog.entity.elasticsearch.Post.class, searchResultMapper);
 
             postsResult = new ArrayList<>();
             for (com.github.nkonev.blog.entity.elasticsearch.Post fulltextPost: fulltextResult){
