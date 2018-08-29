@@ -60,7 +60,7 @@ public class IndexIT extends AbstractItTestRunner {
 
         indexPage.contains("Added via websocket");
 
-        indexPage.setSearchString("234");
+        indexPage.setSearchString("generated_post_234");
         indexPage.contains("generated_post_234");
         indexPage.clearSearchButton();
 

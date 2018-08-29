@@ -1,8 +1,8 @@
 package com.github.nkonev.blog.listener.hibernate;
 
-import com.github.nkonev.blog.converter.PostConverter;
 import com.github.nkonev.blog.dto.PostDTO;
 import com.github.nkonev.blog.entity.jpa.Post;
+import com.github.nkonev.blog.services.PostService;
 import com.github.nkonev.blog.services.SeoCacheListenerProxy;
 import com.github.nkonev.blog.services.WebSocketService;
 import org.hibernate.event.spi.*;
@@ -23,7 +23,7 @@ public class BlogInsertListener implements PostInsertEventListener {
     private WebSocketService webSocketService;
 
     @Autowired
-    private PostConverter postConverter;
+    private PostService postService;
 
     @Autowired
     private SeoCacheListenerProxy seoCacheListenerProxy;
@@ -33,7 +33,7 @@ public class BlogInsertListener implements PostInsertEventListener {
         LOGGER.trace("object: {}", event.getEntity());
         if (event.getEntity() instanceof Post) {
             Post post = (Post) event.getEntity();
-            PostDTO postDTO = postConverter.convertToPostDTOWithCleanTags(post);
+            PostDTO postDTO = postService.convertToPostDTOWithCleanTags(post);
             webSocketService.sendInsertPostEvent(postDTO);
             seoCacheListenerProxy.rewriteCachedPage(post.getId());
             seoCacheListenerProxy.rewriteCachedIndex();
