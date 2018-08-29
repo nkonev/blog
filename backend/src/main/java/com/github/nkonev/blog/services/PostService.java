@@ -10,6 +10,7 @@ import com.github.nkonev.blog.entity.jpa.UserAccount;
 import com.github.nkonev.blog.exception.BadRequestException;
 import com.github.nkonev.blog.exception.DataNotFoundException;
 import com.github.nkonev.blog.repo.elasticsearch.IndexPostRepository;
+import com.github.nkonev.blog.repo.jpa.CommentRepository;
 import com.github.nkonev.blog.repo.jpa.PostRepository;
 import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
 import com.github.nkonev.blog.utils.PageUtils;
@@ -69,6 +70,9 @@ public class PostService {
 
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private CommentRepository commentRepository;
 
     private final RowMapper<PostDTO> rowMapper = (resultSet, i) -> new PostDTO(
             resultSet.getLong("id"),
@@ -227,6 +231,13 @@ public class PostService {
         }
 
         return postsResult;
+    }
 
+    public void deletePost(UserAccountDetailsDTO userAccount, long postId) {
+        Assert.notNull(userAccount, "UserAccountDetailsDTO can't be null");
+        commentRepository.deleteByPostId(postId);
+        postRepository.deleteById(postId);
+        postRepository.flush();
+        indexPostRepository.deleteById(postId);
     }
 }

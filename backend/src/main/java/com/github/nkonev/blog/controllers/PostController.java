@@ -165,9 +165,6 @@ public class PostController {
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount, // null if not authenticated
             @PathVariable(Constants.PathVariables.POST_ID) long postId
     ) {
-        Assert.notNull(userAccount, "UserAccountDetailsDTO can't be null");
-        commentRepository.deleteByPostId(postId);
-        postRepository.deleteById(postId);
-        postRepository.flush();
+        postService.deletePost(userAccount, postId);
     }
 }
