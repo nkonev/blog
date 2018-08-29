@@ -2,10 +2,12 @@ package com.github.nkonev.blog.entity.elasticsearch;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
+import static com.github.nkonev.blog.entity.elasticsearch.Post.INDEX;
 
-@Document(indexName = "blog", type = "_doc")
+@Document(indexName = INDEX, type = "_doc")
 public class Post {
 
+    public static final String INDEX = "post";
     public static final String FIELD_TEXT = "text";
     public static final String FIELD_TITLE = "title";
 

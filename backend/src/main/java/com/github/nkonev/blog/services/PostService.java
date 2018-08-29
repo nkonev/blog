@@ -47,6 +47,7 @@ import java.util.stream.Collectors;
 import static com.github.nkonev.blog.converter.PostConverter.toElasticsearchPost;
 import static com.github.nkonev.blog.entity.elasticsearch.Post.FIELD_TEXT;
 import static com.github.nkonev.blog.entity.elasticsearch.Post.FIELD_TITLE;
+import static com.github.nkonev.blog.entity.elasticsearch.Post.INDEX;
 import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchPhrasePrefixQuery;
 
@@ -187,6 +188,7 @@ public class PostService {
             PageRequest pageRequest = PageRequest.of(page, size);
 
             SearchQuery searchQuery = new NativeSearchQueryBuilder()
+                    .withIndices(INDEX)
                     .withQuery(boolQuery()
                             .should(matchPhrasePrefixQuery(FIELD_TEXT, searchString))
                             .should(matchPhrasePrefixQuery(FIELD_TITLE, searchString))
