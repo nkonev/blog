@@ -231,17 +231,19 @@ curl -X GET    -H "Content-Type:application/json"    -d '{
   "query": {
     "bool":{
       "should": [
-         {"match_phrase_prefix": { "text": "bas" }},
-         {"match_phrase_prefix": { "title": "bas" }}
+         {"match_phrase_prefix": { "text": "generated_post" }},
+         {"match_phrase_prefix": { "title": "generated_post" }}
       ]
     }
   },
-  "_source": ["_"],
   "highlight" : {
         "fields" : {
             "text" : { "fragment_size" : 150, "pre_tags" : ["<em>"], "post_tags" : ["</em>"], "number_of_fragments" : 5 },
             "title" : { "fragment_size" : 150, "pre_tags" : ["<em>"], "post_tags" : ["</em>"], "number_of_fragments" : 1 }
         }
-  }
-}'  'http://127.0.0.1:19200/blog/_search' | jq
+  },
+     "sort" : [
+        {"id" : {"order" : "desc"}}
+     ]
+}'  'http://127.0.0.1:19200/post/_search' | jq
 ```

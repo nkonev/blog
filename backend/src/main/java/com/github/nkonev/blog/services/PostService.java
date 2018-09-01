@@ -19,6 +19,9 @@ import org.elasticsearch.common.text.Text;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
+import org.elasticsearch.search.sort.FieldSortBuilder;
+import org.elasticsearch.search.sort.SortMode;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -45,9 +48,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.github.nkonev.blog.converter.PostConverter.toElasticsearchPost;
-import static com.github.nkonev.blog.entity.elasticsearch.Post.FIELD_TEXT;
-import static com.github.nkonev.blog.entity.elasticsearch.Post.FIELD_TITLE;
-import static com.github.nkonev.blog.entity.elasticsearch.Post.INDEX;
+import static com.github.nkonev.blog.entity.elasticsearch.Post.*;
 import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchPhrasePrefixQuery;
 
@@ -188,6 +189,7 @@ public class PostService {
             PageRequest pageRequest = PageRequest.of(page, size);
 
             SearchQuery searchQuery = new NativeSearchQueryBuilder()
+                    .withSort(new FieldSortBuilder(FIELD_ID).order(SortOrder.DESC))
                     .withIndices(INDEX)
                     .withQuery(boolQuery()
                             .should(matchPhrasePrefixQuery(FIELD_TEXT, searchString))

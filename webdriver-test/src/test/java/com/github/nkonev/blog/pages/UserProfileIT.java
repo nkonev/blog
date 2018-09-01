@@ -230,17 +230,17 @@ public class UserProfileIT extends FacebookEmulatorTests {
 
         $("body").shouldHave(Condition.text("posts"));
 
-        $(POST_LIST).shouldHave(Condition.text("generated_post_1999"));
+        $(POST_LIST).shouldHave(Condition.text("generated_post_99"));
 
         userPage.sendEnd();
 
-        $(POST_LIST).shouldHave(Condition.text("generated_post_1982"));
-        $(POST_LIST).shouldHave(Condition.text("generated_post_1981"));
-        $(POST_LIST).shouldHave(Condition.text("generated_post_1980"));
-        $(POST_LIST).shouldHave(Condition.text("generated_post_1979"));
-        $(POST_LIST).shouldHave(Condition.text("generated_post_1978"));
-        $(POST_LIST).shouldHave(Condition.text("generated_post_1977"));
-        $(POST_LIST).shouldHave(Condition.text("generated_post_1976"));
+        $(POST_LIST).shouldHave(Condition.text("generated_post_82"));
+        $(POST_LIST).shouldHave(Condition.text("generated_post_81"));
+        $(POST_LIST).shouldHave(Condition.text("generated_post_80"));
+        $(POST_LIST).shouldHave(Condition.text("generated_post_79"));
+        $(POST_LIST).shouldHave(Condition.text("generated_post_78"));
+        $(POST_LIST).shouldHave(Condition.text("generated_post_77"));
+        $(POST_LIST).shouldHave(Condition.text("generated_post_76"));
     }
 
 

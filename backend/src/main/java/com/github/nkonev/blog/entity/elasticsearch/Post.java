@@ -8,6 +8,8 @@ import static com.github.nkonev.blog.entity.elasticsearch.Post.INDEX;
 public class Post {
 
     public static final String INDEX = "post";
+
+    public static final String FIELD_ID = "id";
     public static final String FIELD_TEXT = "text";
     public static final String FIELD_TITLE = "title";
 
