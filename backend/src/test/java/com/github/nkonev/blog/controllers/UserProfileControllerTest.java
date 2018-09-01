@@ -403,7 +403,7 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
                 get(Constants.Urls.API+ Constants.Urls.USER + "/" +userId + Constants.Urls.POSTS)
         )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.totalCount").value(2002))
+                .andExpect(jsonPath("$.totalCount").value(102))
                 .andExpect(jsonPath("$.data.length()").value(20))
                 .andReturn();
         String getStr = getPostRequest.getResponse().getContentAsString();

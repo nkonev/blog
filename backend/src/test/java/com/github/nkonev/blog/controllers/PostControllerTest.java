@@ -113,7 +113,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
         }
     }
 
-    public static final long FOREIGN_POST = 1000;
+    public static final long FOREIGN_POST = 50;
 
 
     @Test
@@ -169,7 +169,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
         )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(PageUtils.DEFAULT_SIZE))
-                .andExpect(jsonPath("$.[0].title").value("generated_post_2000"))
+                .andExpect(jsonPath("$.[0].title").value("generated_post_100"))
                 .andExpect(jsonPath("$.[0].text").value("Lorem Ipsum - это текст-\"рыба\", часто <b>используемый</b> в печати и вэб-дизайне. Lorem Ipsum является стандартной \"рыбой\" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, <b>используя</b> Lorem Ipsum для распечатки образцов. Lorem Ipsum не только успешно пережил без заметных изменений пять веков, но и перешагнул в электронный дизайн. Его популяризации в новое время послужили публикация листов Letraset с образцами Lorem Ipsum в 60-х годах и, в более недавнее время, программы электронной вёрстки типа Aldus PageMaker, в шаблонах которых <b>используется</b> Lorem Ipsum"))
                 .andReturn();
     }
@@ -182,7 +182,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
         )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(PageUtils.DEFAULT_SIZE))
-                .andExpect(jsonPath("$.[0].title").value("generated_post_2000"))
+                .andExpect(jsonPath("$.[0].title").value("generated_post_100"))
                 .andExpect(jsonPath("$.[0].text").value("Lorem Ipsum - это текст-\"рыба\", часто используемый в печати и вэб-дизайне. Lorem Ipsum является стандартной \"рыбой\" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem Ipsum для распечатки образцов. Lorem Ipsum не только успешно пережил без заметных изменений пять веков, но и перешагнул в электронный дизайн. Его популяризации в новое время послужили публикация листов Letraset с образцами Lorem Ipsum в 60-х годах и, в более недавнее время, программы электронной"))
                 .andReturn();
     }
