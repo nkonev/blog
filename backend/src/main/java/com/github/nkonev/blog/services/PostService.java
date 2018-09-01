@@ -75,6 +75,15 @@ public class PostService {
     @Autowired
     private CommentRepository commentRepository;
 
+    @Autowired
+    private WebSocketService webSocketService;
+
+    @Autowired
+    private SeoCacheListenerProxy seoCacheListenerProxy;
+
+    @Autowired
+    private SeoCacheService seoCacheService;
+
     private final RowMapper<PostDTO> rowMapper = (resultSet, i) -> new PostDTO(
             resultSet.getLong("id"),
             null,
@@ -124,8 +133,13 @@ public class PostService {
         Post fromWeb = postConverter.convertToPost(postDTO, null);
         UserAccount ua = userAccountRepository.findById(userAccount.getId()).orElseThrow(()->new IllegalArgumentException("User account not found")); // Hibernate caches it
         fromWeb.setOwner(ua);
-        Post saved = postRepository.save(fromWeb);
+        Post saved = postRepository.saveAndFlush(fromWeb);
         indexPostRepository.save(toElasticsearchPost(saved));
+
+        webSocketService.sendInsertPostEvent(postDTO);
+        seoCacheListenerProxy.rewriteCachedPage(saved.getId());
+        seoCacheListenerProxy.rewriteCachedIndex();
+
         return postConverter.convertToDto(saved, userAccount);
     }
 
@@ -135,6 +149,11 @@ public class PostService {
         Post updatedEntity = postConverter.convertToPost(postDTO, found);
         Post saved = postRepository.saveAndFlush(updatedEntity);
         indexPostRepository.save(toElasticsearchPost(saved));
+
+        webSocketService.sendUpdatePostEvent(postDTO);
+        seoCacheListenerProxy.rewriteCachedPage(saved.getId());
+        seoCacheListenerProxy.rewriteCachedIndex();
+
         return postConverter.convertToDto(saved, userAccount);
     }
 
@@ -241,5 +260,9 @@ public class PostService {
         postRepository.deleteById(postId);
         postRepository.flush();
         indexPostRepository.deleteById(postId);
+
+        webSocketService.sendDeletePostEvent(postId);
+        seoCacheService.removeAllPagesCache(postId);
+        seoCacheListenerProxy.rewriteCachedIndex();
     }
 }
