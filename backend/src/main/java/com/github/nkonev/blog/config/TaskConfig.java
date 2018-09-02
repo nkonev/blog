@@ -66,10 +66,10 @@ public class TaskConfig {
 
     @Bean(name = "taskExecutor")
     public Executor asyncExecutor(
-            @Value("${custom.tasks.async.corePoolSize:8}") int corePoolSize,
-            @Value("${custom.tasks.async.maxPoolSize:8}") int maxPoolSize,
-            @Value("${custom.tasks.async.queueCapacity:512}") int queueCapacity,
-            @Value("${custom.tasks.async.threadNamePrefix:BlogAsync-}") String threadNamePrefix
+            @Value("${custom.async.corePoolSize:8}") int corePoolSize,
+            @Value("${custom.async.maxPoolSize:8}") int maxPoolSize,
+            @Value("${custom.async.queueCapacity:512}") int queueCapacity,
+            @Value("${custom.async.threadNamePrefix:BlogAsync-}") String threadNamePrefix
     ) {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(corePoolSize);
