@@ -34,13 +34,17 @@ public class ElasticsearchPopulator {
     public void pc(){
 
         if (refreshOnStart) {
+            LOGGER.info("Will try to refresh elasticsearch index");
             final String key = "elasticsearch:"+ Post.INDEX+":build";
             final boolean wasSet = redisTemplate.opsForValue().setIfAbsent(key, "true");
 
             if (wasSet) {
+                LOGGER.info("Probe is successful, so we'll refresh elasticsearch index");
                 redisTemplate.expire(key, timeout, timeUnit);
                 postService.refreshFulltextIndex();
                 redisTemplate.delete(key);
+            } else {
+                LOGGER.info("Probe isn't successful, so we won't refresh elasticsearch index");
             }
         }
     }
