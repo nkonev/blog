@@ -43,6 +43,7 @@ public class ElasticsearchPopulator {
                 redisTemplate.expire(key, timeout, timeUnit);
                 postService.refreshFulltextIndex();
                 redisTemplate.delete(key);
+                LOGGER.info("Successful delete probe");
             } else {
                 LOGGER.info("Probe isn't successful, so we won't refresh elasticsearch index");
             }

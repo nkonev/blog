@@ -277,7 +277,7 @@ public class PostService {
             Optional<com.github.nkonev.blog.entity.jpa.Post> post = postRepository.findById(id);
             if (post.isPresent()) {
                 com.github.nkonev.blog.entity.jpa.Post jpaPost = post.get();
-                LOGGER.info("Copying post: {}", id);
+                LOGGER.info("Copying PostgreSQL -> Elasticsearch post id={}", id);
                 indexPostRepository.save(PostConverter.toElasticsearchPost(jpaPost));
             }
         }
