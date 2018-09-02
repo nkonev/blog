@@ -65,12 +65,17 @@ public class TaskConfig {
     }
 
     @Bean(name = "taskExecutor")
-    public Executor asyncExecutor() {
+    public Executor asyncExecutor(
+            @Value("${custom.tasks.async.corePoolSize:8}") int corePoolSize,
+            @Value("${custom.tasks.async.maxPoolSize:8}") int maxPoolSize,
+            @Value("${custom.tasks.async.queueCapacity:512}") int queueCapacity,
+            @Value("${custom.tasks.async.threadNamePrefix:BlogAsync-}") String threadNamePrefix
+    ) {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(8);
-        executor.setMaxPoolSize(8);
-        executor.setQueueCapacity(512);
-        executor.setThreadNamePrefix("BlogAsync-");
+        executor.setCorePoolSize(corePoolSize);
+        executor.setMaxPoolSize(maxPoolSize);
+        executor.setQueueCapacity(queueCapacity);
+        executor.setThreadNamePrefix(threadNamePrefix);
         executor.initialize();
         return executor;
     }
@@ -82,7 +87,8 @@ public class TaskConfig {
         final int deletedPostTitles  = imagePostTitleUploadController.clearPostTitleImages();
         final int deletedAvatarImages = imageUserAvatarUploadController.clearAvatarImages();
 
-        LOGGER_IMAGE_CLEAN_TASK.info("Cleared {} post content images(created before 1 day ago); {} post title images; {} user avatar images", deletedPostContent, deletedPostTitles, deletedAvatarImages);
+        LOGGER_IMAGE_CLEAN_TASK.info("Cleared {} post content images(created before 1 day ago); {} post title images; {} user avatar images",
+                deletedPostContent, deletedPostTitles, deletedAvatarImages);
     }
 
 

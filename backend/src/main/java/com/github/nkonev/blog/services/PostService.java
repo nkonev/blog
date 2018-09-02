@@ -22,6 +22,8 @@ import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortMode;
 import org.elasticsearch.search.sort.SortOrder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -41,10 +43,7 @@ import org.springframework.util.StringUtils;
 import javax.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.github.nkonev.blog.converter.PostConverter.toElasticsearchPost;
@@ -84,6 +83,8 @@ public class PostService {
 
     @Autowired
     private SeoCacheService seoCacheService;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PostService.class);
 
     private final RowMapper<PostDTO> rowMapper = (resultSet, i) -> new PostDTO(
             resultSet.getLong("id"),
@@ -266,5 +267,20 @@ public class PostService {
         webSocketService.sendDeletePostEvent(postId);
         seoCacheService.removeAllPagesCache(postId);
         seoCacheListenerProxy.rewriteCachedIndex();
+    }
+
+    public void refreshFulltextIndex(){
+        LOGGER.info("Starting refreshing elasticsearch index {}", com.github.nkonev.blog.entity.elasticsearch.Post.INDEX);
+        final Collection<Long> postIds = postRepository.findPostIds();
+
+        for (Long id : postIds) {
+            Optional<com.github.nkonev.blog.entity.jpa.Post> post = postRepository.findById(id);
+            if (post.isPresent()) {
+                com.github.nkonev.blog.entity.jpa.Post jpaPost = post.get();
+                LOGGER.info("Copying post: {}", id);
+                indexPostRepository.save(PostConverter.toElasticsearchPost(jpaPost));
+            }
+        }
+        LOGGER.info("Finished refreshing elasticsearch index {}", com.github.nkonev.blog.entity.elasticsearch.Post.INDEX);
     }
 }
