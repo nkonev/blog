@@ -231,8 +231,8 @@ curl -X GET    -H "Content-Type:application/json"    -d '{
   "query": {
     "bool":{
       "should": [
-         {"match_phrase_prefix": { "text": "generated_post" }},
-         {"match_phrase_prefix": { "title": "generated_post" }}
+         {"match_phrase_prefix": { "text": "рыбами" }},
+         {"match_phrase_prefix": { "title": "рыбами" }}
       ]
     }
   },

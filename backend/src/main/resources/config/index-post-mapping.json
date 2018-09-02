@@ -1,0 +1,18 @@
+{
+  "properties": {
+    "text": {
+      "type": "text",
+      "index": true,
+      "search_analyzer": "my_analyzer",
+      "analyzer": "my_analyzer",
+      "term_vector": "with_positions_offsets_payloads"
+    },
+    "title": {
+      "type": "text",
+      "index": true,
+      "search_analyzer": "my_analyzer",
+      "analyzer": "my_analyzer",
+      "term_vector": "with_positions_offsets_payloads"
+    }
+  }
+}

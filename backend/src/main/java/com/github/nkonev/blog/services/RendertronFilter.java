@@ -27,6 +27,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.github.nkonev.blog.utils.ResourceUtils.stringFromResource;
+import static com.github.nkonev.blog.utils.ResourceUtils.stringFromResourceOrNullIfNotExists;
 import static com.github.nkonev.blog.utils.SeoCacheKeyUtils.getRedisKeyHtml;
 import static com.github.nkonev.blog.utils.ServletUtils.getPath;
 import static com.github.nkonev.blog.utils.ServletUtils.nullToEmpty;
@@ -155,11 +157,7 @@ public class RendertronFilter extends GenericFilterBean {
     }
 
     public String getSeoScript() {
-        if (resource != null && resource.exists()) {
-            return stringFromResource(resource);
-        } else {
-            return null;
-        }
+        return stringFromResourceOrNullIfNotExists(resource);
     }
 
     private String injectSeoScripts(String value, HttpServletRequest request) {
@@ -172,11 +170,4 @@ public class RendertronFilter extends GenericFilterBean {
         return value;
     }
 
-    private static String stringFromResource(Resource resource) {
-        try(BufferedReader br = new BufferedReader(new InputStreamReader(resource.getInputStream()));) {
-            return br.lines().collect(Collectors.joining("\n"));
-        } catch (IOException e){
-            throw new RuntimeException(e);
-        }
-    }
 }
