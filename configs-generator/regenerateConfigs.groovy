@@ -193,6 +193,8 @@ custom:
       cron: "0 * * * * *"
     rendered.cache.refresh:
       cron: "0 */30 * * * *"
+    index.refresh:
+      cron: "0 0 */2 * * *"
   prerender:
     prerenderServiceUrl: http://rendertron.example.com:3000/
 """

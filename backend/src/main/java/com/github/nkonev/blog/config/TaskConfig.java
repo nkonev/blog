@@ -3,6 +3,7 @@ package com.github.nkonev.blog.config;
 import com.github.nkonev.blog.controllers.ImagePostContentUploadController;
 import com.github.nkonev.blog.controllers.ImagePostTitleUploadController;
 import com.github.nkonev.blog.controllers.ImageUserAvatarUploadController;
+import com.github.nkonev.blog.services.PostService;
 import com.github.nkonev.blog.services.SeoCacheService;
 import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.core.SchedulerLock;
@@ -39,8 +40,12 @@ public class TaskConfig {
     @Autowired
     private SeoCacheService seoCacheService;
 
+    @Autowired
+    private PostService postService;
+
     private static final String IMAGES_CLEAN_TASK = "imagesCleanTask";
     private static final String REFRESH_CACHE_CLEAN_TASK = "refreshCacheTask";
+    private static final String REFRESH_INDEX_TASK = "refreshIndexTask";
 
     public static final Logger LOGGER_IMAGE_CLEAN_TASK = LoggerFactory.getLogger(IMAGES_CLEAN_TASK);
 
@@ -98,4 +103,9 @@ public class TaskConfig {
         seoCacheService.refreshAllPagesCache();
     }
 
+    @Scheduled(cron = "${custom.tasks.index.refresh.cron}")
+    @SchedulerLock(name = REFRESH_INDEX_TASK)
+    public void refreshIndex() {
+        postService.refreshFulltextIndex();
+    }
 }

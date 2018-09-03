@@ -25,13 +25,16 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.ResultsExtractor;
 import org.springframework.data.elasticsearch.core.SearchResultMapper;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
+import org.springframework.data.elasticsearch.core.query.FetchSourceFilter;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.jdbc.core.RowMapper;
@@ -39,7 +42,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-
 import javax.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
@@ -49,6 +51,7 @@ import java.util.stream.Collectors;
 import static com.github.nkonev.blog.converter.PostConverter.toElasticsearchPost;
 import static com.github.nkonev.blog.entity.elasticsearch.Post.*;
 import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
+import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchPhrasePrefixQuery;
 
 @Service
@@ -83,6 +86,9 @@ public class PostService {
 
     @Autowired
     private SeoCacheService seoCacheService;
+
+    @Value("${cuastom.get.all.index.ids.chunk.size:20}")
+    private int chunkSize;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PostService.class);
 
@@ -269,17 +275,45 @@ public class PostService {
         seoCacheListenerProxy.rewriteCachedIndex();
     }
 
+
     public void refreshFulltextIndex(){
         LOGGER.info("Starting refreshing elasticsearch index {}", com.github.nkonev.blog.entity.elasticsearch.Post.INDEX);
         final Collection<Long> postIds = postRepository.findPostIds();
 
-        for (Long id : postIds) {
+        for (Long id: postIds) {
             Optional<com.github.nkonev.blog.entity.jpa.Post> post = postRepository.findById(id);
             if (post.isPresent()) {
                 com.github.nkonev.blog.entity.jpa.Post jpaPost = post.get();
                 LOGGER.info("Copying PostgreSQL -> Elasticsearch post id={}", id);
                 indexPostRepository.save(PostConverter.toElasticsearchPost(jpaPost));
             }
+        }
+
+        List<Long> toDeleteFromIndex = new ArrayList<>();
+        for(int page=0; ;page++) {
+            PageRequest pageRequest = PageRequest.of(page, chunkSize);
+            final String[] includes = {"_"};
+            SearchQuery searchQuery = new NativeSearchQueryBuilder()
+                    .withIndices(INDEX)
+                    .withQuery(matchAllQuery())
+                    .withPageable(pageRequest)
+                    .withSourceFilter(new FetchSourceFilter(includes, null))
+                    .build();
+            List<String> idsString = elasticsearchTemplate.queryForIds(searchQuery);
+            LOGGER.info("Get {} index ids", idsString.size());
+            if (idsString.isEmpty()) {
+                break;
+            }
+            idsString.stream().map(Long::valueOf).forEach(id -> {
+                if (!postRepository.existsById(id)){
+                    toDeleteFromIndex.add(id);
+                }
+            });
+        }
+        LOGGER.info("Found {} orphan posts in index", toDeleteFromIndex.size());
+        for (Long id: toDeleteFromIndex) {
+            LOGGER.info("Deleting orphan post id={} from index", id);
+            indexPostRepository.deleteById(id);
         }
         LOGGER.info("Finished refreshing elasticsearch index {}", com.github.nkonev.blog.entity.elasticsearch.Post.INDEX);
     }
