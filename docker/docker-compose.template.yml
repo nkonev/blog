@@ -148,6 +148,11 @@ services:
       driver: "json-file"
 #      options:
 #        tag: rabbitmq
+    deploy:
+      placement:
+        constraints: [node.labels.blog.server.role == db]
+    networks:
+    - backend
 
   rendertron:
     image: nkonev/rendertron-docker:0.0.2
