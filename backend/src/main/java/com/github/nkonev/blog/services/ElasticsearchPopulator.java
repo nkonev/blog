@@ -35,8 +35,8 @@ public class ElasticsearchPopulator {
 
         if (refreshOnStart) {
             LOGGER.info("Will try to refresh elasticsearch index");
-            final String key = "elasticsearch:"+ Post.INDEX+":build";
-            final boolean wasSet = redisTemplate.opsForValue().setIfAbsent(key, "true");
+            final String key = getKey();
+            final boolean wasSet = Boolean.TRUE.equals(redisTemplate.opsForValue().setIfAbsent(key, "true"));
 
             if (wasSet) {
                 LOGGER.info("Probe is successful, so we'll refresh elasticsearch index");
@@ -48,6 +48,14 @@ public class ElasticsearchPopulator {
                 LOGGER.info("Probe isn't successful, so we won't refresh elasticsearch index");
             }
         }
+    }
+
+    private String getKey() {
+        return "elasticsearch:"+ Post.INDEX+":build";
+    }
+
+    public boolean refreshInProgress(){
+        return redisTemplate.opsForValue().get(getKey()) != null;
     }
 
 }

@@ -3,6 +3,7 @@ package com.github.nkonev.blog.config;
 import com.github.nkonev.blog.controllers.ImagePostContentUploadController;
 import com.github.nkonev.blog.controllers.ImagePostTitleUploadController;
 import com.github.nkonev.blog.controllers.ImageUserAvatarUploadController;
+import com.github.nkonev.blog.services.ElasticsearchPopulator;
 import com.github.nkonev.blog.services.PostService;
 import com.github.nkonev.blog.services.SeoCacheService;
 import net.javacrumbs.shedlock.core.LockProvider;
@@ -43,11 +44,16 @@ public class TaskConfig {
     @Autowired
     private PostService postService;
 
+    @Autowired
+    private ElasticsearchPopulator elasticsearchPopulator;
+
     private static final String IMAGES_CLEAN_TASK = "imagesCleanTask";
     private static final String REFRESH_CACHE_CLEAN_TASK = "refreshCacheTask";
     private static final String REFRESH_INDEX_TASK = "refreshIndexTask";
 
     public static final Logger LOGGER_IMAGE_CLEAN_TASK = LoggerFactory.getLogger(IMAGES_CLEAN_TASK);
+    public static final Logger LOGGER_INDEX_REFRESH = LoggerFactory.getLogger(REFRESH_INDEX_TASK);
+
 
     @Bean
     public LockProvider lockProvider(LettuceConnectionFactory redisConnectionFactory) {
@@ -106,6 +112,10 @@ public class TaskConfig {
     @Scheduled(cron = "${custom.tasks.index.refresh.cron}")
     @SchedulerLock(name = REFRESH_INDEX_TASK)
     public void refreshIndex() {
-        postService.refreshFulltextIndex();
+        if (!elasticsearchPopulator.refreshInProgress()){
+            postService.refreshFulltextIndex();
+        } else {
+            LOGGER_INDEX_REFRESH.info("Skipping scheduled index refreshing because ElasticsearchPopulator in progress");
+        }
     }
 }
