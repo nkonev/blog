@@ -6,6 +6,7 @@ import com.github.nkonev.blog.utils.ResourceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Configuration;
@@ -17,12 +18,14 @@ import javax.annotation.PostConstruct;
 import java.util.Collection;
 import java.util.Optional;
 
+@Qualifier(ElasticsearchConfig.ELASTICSEARCH_CONFIG)
 @Configuration
 @EnableElasticsearchRepositories(basePackages = "com.github.nkonev.blog.repo.elasticsearch")
 @EntityScan(basePackages = "com.github.nkonev.blog.entity.elasticsearch")
 public class ElasticsearchConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ElasticsearchConfig.class);
+    public static final String ELASTICSEARCH_CONFIG = "elasticsearchConfig";
 
     @Autowired
     private ElasticsearchTemplate elasticsearchTemplate;

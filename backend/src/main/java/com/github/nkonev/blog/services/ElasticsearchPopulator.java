@@ -1,15 +1,20 @@
 package com.github.nkonev.blog.services;
 
+import com.github.nkonev.blog.config.ElasticsearchConfig;
 import com.github.nkonev.blog.entity.elasticsearch.Post;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.concurrent.TimeUnit;
 
+import static com.github.nkonev.blog.config.ElasticsearchConfig.ELASTICSEARCH_CONFIG;
+
+@DependsOn(ELASTICSEARCH_CONFIG)
 @Service
 public class ElasticsearchPopulator {
 
