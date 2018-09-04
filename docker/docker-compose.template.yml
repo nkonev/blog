@@ -147,7 +147,7 @@ services:
     logging:
       driver: "json-file"
 #      options:
-#        tag: rabbitmq
+#        tag: elasticsearch
     deploy:
       placement:
         constraints: [node.labels.blog.server.role == db]
