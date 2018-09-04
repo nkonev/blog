@@ -33,7 +33,6 @@ services:
       - CUSTOM_PRERENDER_ENABLE=true
       - CUSTOM_PRERENDER_PRERENDER-SERVICE-URL=http://rendertron:3000/render/
       - CUSTOM_PRERENDER_CRAWLER-USER-AGENTS=googlebot,prometheus
-#      - LOGGING_LEVEL_COM_GITHUB_GREENGERONG_PRERENDER-SEO-SERVICE=TRACE
       - SPRING_MAIL_HOST=smtp.yandex.ru
       - CUSTOM_EMAIL_FROM=username@yandex.ru
       - SPRING_MAIL_USERNAME=username
