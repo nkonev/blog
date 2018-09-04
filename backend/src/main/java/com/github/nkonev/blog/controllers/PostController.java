@@ -2,50 +2,27 @@ package com.github.nkonev.blog.controllers;
 
 import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.converter.PostConverter;
-import com.github.nkonev.blog.dto.*;
-import com.github.nkonev.blog.entity.jpa.Post;
-import com.github.nkonev.blog.entity.jpa.UserAccount;
-import com.github.nkonev.blog.exception.BadRequestException;
+import com.github.nkonev.blog.dto.PostDTO;
+import com.github.nkonev.blog.dto.PostDTOExtended;
+import com.github.nkonev.blog.dto.PostDTOWithAuthorization;
+import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
 import com.github.nkonev.blog.exception.DataNotFoundException;
-import com.github.nkonev.blog.repo.elasticsearch.IndexPostRepository;
 import com.github.nkonev.blog.repo.jpa.CommentRepository;
 import com.github.nkonev.blog.repo.jpa.PostRepository;
 import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
 import com.github.nkonev.blog.services.PostService;
 import com.github.nkonev.blog.utils.PageUtils;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.common.text.Text;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
-import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.core.SearchResultMapper;
-import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
-import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
-import org.springframework.data.elasticsearch.core.query.SearchQuery;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
 
-import static com.github.nkonev.blog.entity.elasticsearch.Post.FIELD_TEXT;
-import static com.github.nkonev.blog.entity.elasticsearch.Post.FIELD_TITLE;
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Transactional
 @RestController
