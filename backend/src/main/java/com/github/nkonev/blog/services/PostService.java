@@ -108,7 +108,7 @@ public class PostService {
 
     private final SearchResultMapper searchResultMapper = new SearchResultMapper() {
         private String getHighlightedOrOriginalField(SearchHit searchHit, String fieldName){
-            String field = (String) searchHit.getSource().get(fieldName);
+            String field = (String) searchHit.getSourceAsMap().get(fieldName);;
             HighlightField highlightedField = searchHit.getHighlightFields().get(fieldName);
             if (highlightedField!=null && highlightedField.getFragments()!=null && highlightedField.getFragments().length>0){
                 field = Arrays.stream(highlightedField.getFragments()).map(Text::toString).collect(Collectors.joining("... "));
