@@ -9,7 +9,7 @@ import com.github.nkonev.blog.dto.CommentDTO;
 import com.github.nkonev.blog.entity.jpa.Comment;
 import com.github.nkonev.blog.repo.jpa.CommentRepository;
 import com.github.nkonev.blog.utils.PageUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +75,7 @@ public class CommentControllerTest extends AbstractUtTestRunner {
 
     public static final long POST_WITH_COMMENTS = 101; // select distinct c.post_id from posts.comment c;
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testAnonymousCanGetCommentsAndItsLimiting() throws Exception {
         MvcResult getCommentsRequest = mockMvc.perform(
                 MockMvcRequestBuilders.get(Constants.Urls.API+ Constants.Urls.POST+"/"+POST_WITH_COMMENTS+"/"+ Constants.Urls.COMMENT)
@@ -133,7 +133,7 @@ public class CommentControllerTest extends AbstractUtTestRunner {
                 .andReturn();
     }
     
-    @Test
+    @org.junit.jupiter.api.Test
     public void testAnonymousCannotAddComment() throws Exception {
         MvcResult addCommentRequest = mockMvc.perform(
                 post(Constants.Urls.API+ Constants.Urls.POST+"/"+POST_UNDER_TEST+"/"+ Constants.Urls.COMMENT)
@@ -146,7 +146,7 @@ public class CommentControllerTest extends AbstractUtTestRunner {
         LOGGER.info(addCommentRequest.getResponse().getContentAsString());
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testAnonymousCannotUpdateComment() throws Exception {
         CommentDTO commentDTO = CommentDtoBuilder.startBuilding().id(FOREIGN_COMMENT_ID).build();
 
@@ -161,7 +161,7 @@ public class CommentControllerTest extends AbstractUtTestRunner {
         LOGGER.info(addCommentRequest.getResponse().getContentAsString());
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testAnonymousCannotDeleteComment() throws Exception {
         CommentDTO commentDTO = CommentDtoBuilder.startBuilding().id(FOREIGN_COMMENT_ID).build();
 
@@ -182,7 +182,7 @@ public class CommentControllerTest extends AbstractUtTestRunner {
     }
 
     @WithUserDetails(TestConstants.USER_BOB)
-    @Test
+    @org.junit.jupiter.api.Test
     public void testUserCannotUpdateForeignComment() throws Exception {
 
         MvcResult addCommentRequest = mockMvc.perform(
@@ -199,7 +199,7 @@ public class CommentControllerTest extends AbstractUtTestRunner {
     }
 
     @WithUserDetails(TestConstants.USER_BOB)
-    @Test
+    @org.junit.jupiter.api.Test
     public void testUserCannotDeleteForeignComment() throws Exception {
         CommentDTO commentDTO = CommentDtoBuilder.startBuilding().id(FOREIGN_COMMENT_ID).build();
 
@@ -216,7 +216,7 @@ public class CommentControllerTest extends AbstractUtTestRunner {
 
 
     @WithUserDetails(TestConstants.USER_BOB)
-    @Test
+    @org.junit.jupiter.api.Test
     public void testUserCannotRecreateExistsComment() throws Exception {
 
         CommentDTO commentDTO = CommentDtoBuilder.startBuilding().id(FOREIGN_COMMENT_ID).build();
@@ -233,7 +233,7 @@ public class CommentControllerTest extends AbstractUtTestRunner {
     }
 
     @WithUserDetails(TestConstants.USER_ADMIN)
-    @Test
+    @org.junit.jupiter.api.Test
     public void testAdminCanUpdateForeignComment() throws Exception {
         CommentDTO foreign = getForeignComment(FOREIGN_COMMENT_ID);
 
@@ -254,7 +254,7 @@ public class CommentControllerTest extends AbstractUtTestRunner {
     }
 
     @WithUserDetails(TestConstants.USER_ADMIN)
-    @Test
+    @org.junit.jupiter.api.Test
     public void testAdminCanDeleteForeignComment() throws Exception {
 
         MvcResult deleteCommentRequest = mockMvc.perform(

@@ -3,17 +3,19 @@ package com.github.nkonev.blog.pages;
 import com.codeborne.selenide.Condition;
 import com.github.nkonev.blog.CommonTestConstants;
 import com.github.nkonev.blog.Constants;
+import com.github.nkonev.blog.extensions.GreenMailExtension;
+import com.github.nkonev.blog.extensions.GreenMailExtensionFactory;
 import com.github.nkonev.blog.integration.AbstractItTestRunner;
 import com.github.nkonev.blog.pages.object.LoginModal;
 import com.github.nkonev.blog.repo.redis.UserConfirmationTokenRepository;
 import com.github.nkonev.blog.util.UrlParser;
-import com.icegreen.greenmail.junit.GreenMailRule;
+import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.util.Retriever;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import com.sun.mail.imap.IMAPMessage;
 import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +26,6 @@ import java.net.URI;
 
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 public class RegistrationIT extends AbstractItTestRunner {
 
@@ -34,8 +34,8 @@ public class RegistrationIT extends AbstractItTestRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RegistrationIT.class);
 
-    @Rule
-    public GreenMailRule greenMail = new GreenMailRule(ServerSetupTest.SMTP_IMAP);
+    @RegisterExtension
+    protected GreenMailExtension greenMail = GreenMailExtensionFactory.build();
 
     @Test
     public void testConfirmationSuccess() throws Exception {

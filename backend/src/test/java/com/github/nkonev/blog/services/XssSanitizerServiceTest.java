@@ -1,10 +1,10 @@
 package com.github.nkonev.blog.services;
 
 import com.github.nkonev.blog.AbstractUtTestRunner;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -15,13 +15,13 @@ public class XssSanitizerServiceTest extends AbstractUtTestRunner {
     @Autowired
     private XssSanitizerService xssSanitizerService;
 
-    @Before
+    @BeforeEach
     public void beforeXssTest() throws Exception {
         ServletRequestAttributes servletRequestAttributes = new ServletRequestAttributes(new MockHttpServletRequest());
         RequestContextHolder.setRequestAttributes(servletRequestAttributes);
     }
 
-    @After
+    @AfterEach
     public void afterXssTest() throws Exception {
         RequestContextHolder.resetRequestAttributes();
     }

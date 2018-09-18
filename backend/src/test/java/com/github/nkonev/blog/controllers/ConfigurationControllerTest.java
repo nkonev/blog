@@ -2,7 +2,7 @@ package com.github.nkonev.blog.controllers;
 
 import com.github.nkonev.blog.AbstractUtTestRunner;
 import com.github.nkonev.blog.Constants;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import static org.hamcrest.core.Is.is;

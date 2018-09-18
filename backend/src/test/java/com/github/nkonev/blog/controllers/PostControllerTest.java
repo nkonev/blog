@@ -15,6 +15,8 @@ import com.github.nkonev.blog.services.SeoCacheService;
 import com.github.nkonev.blog.utils.PageUtils;
 import org.hamcrest.core.StringStartsWith;
 import org.junit.*;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,12 +69,12 @@ public class PostControllerTest extends AbstractUtTestRunner {
     @Autowired
     private CustomConfig customConfig;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         mockServer = MockRestServiceServer.createServer(restTemplate);
     }
 
-    @After
+    @AfterEach
     public void tearDown(){
         redisTemplate.delete(RENDERTRON_HTML+"*");
     }
@@ -163,6 +165,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andReturn();
     }
 
+    @DisplayName("Префиксный поиск")
     @Test
     public void testPrefixSearch() throws Exception {
         MvcResult getPostsRequest = mockMvc.perform(
@@ -189,7 +192,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andReturn();
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void testContainsSearch() throws Exception {
         MvcResult getPostsRequest = mockMvc.perform(
@@ -345,9 +348,11 @@ public class PostControllerTest extends AbstractUtTestRunner {
         mockServer.verify();
     }
 
-    @Test(expected = AuthenticationCredentialsNotFoundException.class)
+    @Test
     public void testAnonymousCannotAddPostUnit() throws Exception {
-        postController.addPost(null, PostDtoBuilder.startBuilding().build());
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> {
+            postController.addPost(null, PostDtoBuilder.startBuilding().build());
+        });
     }
 
     @Test

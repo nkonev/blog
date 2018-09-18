@@ -6,7 +6,7 @@ import com.github.nkonev.blog.FailoverUtils;
 import com.github.nkonev.blog.integration.AbstractItTestRunner;
 import com.github.nkonev.blog.pages.object.LoginModal;
 import com.github.nkonev.blog.webdriver.IntegrationTestConstants;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import static com.codeborne.selenide.Selenide.*;
 
 /**

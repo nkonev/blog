@@ -6,7 +6,7 @@ import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.TestConstants;
 import com.github.nkonev.blog.security.SecurityConfig;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
@@ -25,7 +25,7 @@ public class BlogErrorControllerTest extends AbstractUtTestRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BlogErrorControllerTest.class);
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testAuth() throws Exception {
         // auth
         MvcResult loginResult = mockMvc.perform(
@@ -64,7 +64,7 @@ public class BlogErrorControllerTest extends AbstractUtTestRunner {
         Assert.assertNotNull(resp.get("message"));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testNotFoundJs() throws Exception {
         ResponseEntity<String> responseEntity = testRestTemplate.getForEntity(urlWithContextPath()+"/not-exists", String.class);
         String str = responseEntity.getBody();
@@ -93,7 +93,7 @@ public class BlogErrorControllerTest extends AbstractUtTestRunner {
         Assert.assertTrue(str.contains("<!doctype html>"));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void test404FallbackNoAccept() throws Exception {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(new ArrayList<>()); // explicitly set zero Accept values

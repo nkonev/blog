@@ -4,8 +4,9 @@ import com.github.nkonev.blog.AbstractUtTestRunner;
 import com.github.nkonev.blog.entity.jpa.Post;
 import com.github.nkonev.blog.repo.jpa.PostRepository;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import javax.validation.ConstraintViolationException;
 
@@ -15,12 +16,12 @@ public class PostRepositoryTest extends AbstractUtTestRunner {
 
     private Post target;
 
-    @Before
+    @BeforeEach
     public void beforePostRepositoryTest() {
         target = postRepository.findById(50L).orElseThrow(()->new IllegalArgumentException("test post not found"));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testLeft() throws Exception {
         Assert.assertNotNull(postRepository.getLeft(target.getId()));
     }
@@ -30,14 +31,18 @@ public class PostRepositoryTest extends AbstractUtTestRunner {
         Assert.assertNotNull(postRepository.getRight(target.getId()));
     }
 
-    @Test(expected = ConstraintViolationException.class)
+    @org.junit.jupiter.api.Test
     public void testLeftNull() throws Exception {
-        postRepository.getLeft(null);
+        Assertions.assertThrows(ConstraintViolationException.class, () -> {
+            postRepository.getLeft(null);
+        });
     }
 
-    @Test(expected = ConstraintViolationException.class)
+    @Test
     public void testRightNull() throws Exception {
-        postRepository.getRight(null);
+        Assertions.assertThrows(ConstraintViolationException.class,  () -> {
+            postRepository.getRight(null);
+        });
     }
 
     @Test

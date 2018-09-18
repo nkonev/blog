@@ -10,8 +10,8 @@ import com.github.nkonev.blog.dto.PostDTO;
 import com.github.nkonev.blog.repo.redis.UserConfirmationTokenRepository;
 import com.github.nkonev.blog.security.SecurityConfig;
 import com.github.nkonev.blog.utils.ContextPathHelper;
-import org.junit.Before;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,25 +23,22 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.servlet.server.AbstractServletWebServerFactory;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
-
 import java.net.HttpCookie;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static com.github.nkonev.blog.security.SecurityConfig.*;
+import static com.github.nkonev.blog.security.SecurityConfig.PASSWORD_PARAMETER;
+import static com.github.nkonev.blog.security.SecurityConfig.USERNAME_PARAMETER;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(
         classes = {Launcher.class, SwaggerConfig.class, UtConfig.class},
         webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT
@@ -137,7 +134,7 @@ public abstract class AbstractUtTestRunner {
                 .orElseThrow(RuntimeException::new); // todo revert
     }
 
-    @Before
+    @BeforeEach
     public void before() {
         userConfirmationTokenRepository.deleteAll();
     }

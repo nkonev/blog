@@ -247,3 +247,8 @@ curl -X GET    -H "Content-Type:application/json"    -d '{
      ]
 }'  'http://127.0.0.1:19200/post/_search' | jq
 ```
+
+# Install dependency
+```
+./mvnw -pl common-test clean install
+```

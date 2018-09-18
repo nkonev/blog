@@ -3,10 +3,10 @@ package com.github.nkonev.blog.integration;
 import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
 import com.github.nkonev.blog.webdriver.configuration.SeleniumConfiguration;
 import io.netty.handler.codec.http.HttpHeaderNames;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.Header;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,19 +25,19 @@ public abstract class FacebookEmulatorTests extends AbstractItTestRunner {
     @Autowired
     protected SeleniumConfiguration seleniumConfiguration;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() {
         mockServer = startClientAndServer(MOCK_SERVER_PORT);
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDownClass() throws Exception {
         mockServer.stop();
     }
 
     public static final String facebookLogin = "Nikita K";
 
-    @Before
+    @BeforeEach
     public void configureEmulator(){
         mockServer
                 .when(request().withPath("/mock/facebook/dialog/oauth")).respond(httpRequest -> {
@@ -80,7 +80,7 @@ public abstract class FacebookEmulatorTests extends AbstractItTestRunner {
         });
     }
 
-    @After
+    @AfterEach
     public void resetEmulator(){
         mockServer.reset();
     }

@@ -2,7 +2,7 @@ package com.github.nkonev.blog.controllers;
 
 import com.github.nkonev.blog.TestConstants;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class ImagePostContentUploadControllerTest extends AbstractImageUploadCon
 	private ImagePostContentUploadController imagePostContentUploadController;
 
 	@WithUserDetails(TestConstants.USER_NIKITA)
-	@Test
+	@org.junit.jupiter.api.Test
 	public void putImageWithWrongContentType() throws Exception {
 		byte[] img0 = {(byte)0xFF, (byte)0x01, (byte)0x1A};
 		MockMultipartFile mf0 = new MockMultipartFile(ImagePostTitleUploadController.IMAGE_PART, "lol-content.png", "image/ololo", img0);

@@ -4,9 +4,9 @@ import com.github.nkonev.blog.AbstractUtTestRunner;
 import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.config.CustomConfig;
 import org.hamcrest.core.StringContains;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,12 +48,12 @@ public class RendertronFilterTest extends AbstractUtTestRunner {
     @Autowired
     private CustomConfig customConfig;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         mockServer = MockRestServiceServer.createServer(restTemplate);
     }
 
-    @After
+    @AfterEach
     public void tearDown(){
         redisTemplate.delete(RENDERTRON_HTML+"*");
     }

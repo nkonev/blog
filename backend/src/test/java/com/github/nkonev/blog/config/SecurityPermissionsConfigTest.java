@@ -3,7 +3,7 @@ package com.github.nkonev.blog.config;
 import com.github.nkonev.blog.entity.jpa.UserRole;
 import com.github.nkonev.blog.security.SecurityPermissionsConfig;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.Collection;

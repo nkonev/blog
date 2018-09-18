@@ -10,13 +10,12 @@ import com.github.nkonev.blog.pages.object.Croppa;
 import com.github.nkonev.blog.pages.object.IndexPage;
 import com.github.nkonev.blog.pages.object.LoginModal;
 import com.github.nkonev.blog.pages.object.UserNav;
-import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
 import com.github.nkonev.blog.util.FileUtils;
 import com.github.nkonev.blog.webdriver.IntegrationTestConstants;
 import com.github.nkonev.blog.webdriver.configuration.SeleniumConfiguration;
 import com.github.nkonev.blog.webdriver.selenium.Browser;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
@@ -27,14 +26,13 @@ import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.util.StringUtils;
 
-import java.util.concurrent.TimeUnit;
+import org.junit.jupiter.api.Assumptions;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 import static com.github.nkonev.blog.pages.object.Croppa.rmImage;
 import static com.github.nkonev.blog.pages.object.IndexPage.POST_LIST;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assume.assumeThat;
 
 /**
  * Тест на страницу профиля
@@ -119,7 +117,7 @@ public class UserProfileIT extends FacebookEmulatorTests {
         }
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void userSeeThisIsYouAfterLogin() throws Exception {
         UserProfilePage userPage = new UserProfilePage(urlPrefix, driver);
         LoginModal loginModal = new LoginModal(user, password);
@@ -143,9 +141,9 @@ public class UserProfileIT extends FacebookEmulatorTests {
     }
 
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void userEdit() throws Exception {
-        assumeThat(seleniumConfiguration.getBrowser(), is(Browser.CHROME));
+        Assumptions.assumeTrue(Browser.CHROME.equals(seleniumConfiguration.getBrowser()), "Browser must be chrome");
 
         UserProfilePage userPage = new UserProfilePage(urlPrefix, driver);
         final String login = "generated_user_500";
@@ -254,7 +252,7 @@ public class UserProfileIT extends FacebookEmulatorTests {
 
     @Test
     public void testFacebookLogin() throws InterruptedException {
-        assumeThat(seleniumConfiguration.getBrowser(), is(Browser.CHROME));
+        Assumptions.assumeTrue(Browser.CHROME.equals(seleniumConfiguration.getBrowser()), "Browser must be chrome");
 
         IndexPage indexPage = new IndexPage(urlPrefix);
         indexPage.openPage();

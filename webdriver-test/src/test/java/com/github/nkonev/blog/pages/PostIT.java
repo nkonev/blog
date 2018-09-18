@@ -15,7 +15,7 @@ import com.github.nkonev.blog.webdriver.IntegrationTestConstants;
 import com.github.nkonev.blog.webdriver.configuration.SeleniumConfiguration;
 import com.github.nkonev.blog.webdriver.selenium.Browser;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -189,7 +189,7 @@ public class PostIT extends FacebookEmulatorTests {
         return Integer.valueOf(new URL(driver.getCurrentUrl()).getQuery().split("=")[1]);
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void addEditPost() throws Exception {
         LoginModal loginModal = new LoginModal(user, password);
         IndexPage indexPage = new IndexPage(urlPrefix);
@@ -283,7 +283,7 @@ public class PostIT extends FacebookEmulatorTests {
         FailoverUtils.assertPoll(()-> !deletablePageUrl.equals(driver.getCurrentUrl()), 10);
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testAddComments() throws MalformedURLException {
         PostViewPage postViewPage = new PostViewPage(urlPrefix);
         postViewPage.openPost(POST_WITHOUT_COMMENTS);
@@ -311,7 +311,7 @@ public class PostIT extends FacebookEmulatorTests {
         }
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void testAddEditAndDeleteComments() throws MalformedURLException {
         PostViewPage postViewPage = new PostViewPage(urlPrefix);
         postViewPage.openPost(POST_FOR_EDIT_COMMENTS);

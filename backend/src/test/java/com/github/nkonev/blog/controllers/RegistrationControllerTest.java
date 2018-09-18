@@ -6,17 +6,19 @@ import com.github.nkonev.blog.TestConstants;
 import com.github.nkonev.blog.dto.EditUserDTO;
 import com.github.nkonev.blog.entity.jpa.UserAccount;
 import com.github.nkonev.blog.entity.redis.UserConfirmationToken;
+import com.github.nkonev.blog.extensions.GreenMailExtension;
+import com.github.nkonev.blog.extensions.GreenMailExtensionFactory;
 import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
 import com.github.nkonev.blog.repo.redis.PasswordResetTokenRepository;
 import com.github.nkonev.blog.security.SecurityConfig;
 import com.github.nkonev.blog.util.UrlParser;
-import com.icegreen.greenmail.junit.GreenMailRule;
+import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.util.Retriever;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import com.sun.mail.imap.IMAPMessage;
 import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,17 +27,17 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.util.UriComponentsBuilder;
+
 import javax.mail.Message;
 import java.net.URI;
 import java.util.UUID;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
+//@DisplayName("Testing registration with GreenMail per test")
 public class RegistrationControllerTest extends AbstractUtTestRunner {
 
     @Autowired
@@ -46,8 +48,8 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RegistrationControllerTest.class);
 
-    @Rule
-    public GreenMailRule greenMail = new GreenMailRule(ServerSetupTest.SMTP_IMAP);
+    @RegisterExtension
+    protected GreenMailExtension greenMail = GreenMailExtensionFactory.build();
 
     @Test
     public void testConfirmationSuccess() throws Exception {
@@ -376,7 +378,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
         ;
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void resetPasswordSetNewPasswordValidation() throws Exception {
         String emptyPassword = null;
         PasswordResetController.PasswordResetDto passwordResetDto = new PasswordResetController.PasswordResetDto(UUID.randomUUID(), emptyPassword);

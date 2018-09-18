@@ -9,8 +9,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.nkonev.blog.CommonTestConstants;
 import com.github.nkonev.blog.Launcher;
 import com.github.nkonev.blog.webdriver.IntegrationTestConstants;
-import org.junit.Before;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,10 +24,11 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static com.codeborne.selenide.Selenide.clearBrowserCookies;
 import static com.github.nkonev.blog.util.FileUtils.getExistsFile;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(
         classes = {Launcher.class},
         webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT
@@ -58,7 +59,7 @@ public abstract class AbstractItTestRunner {
     @Autowired
     protected ObjectMapper objectMapper;
 
-    @Before
+    @BeforeEach
     public void before() {
         LOGGER.debug("Executing before");
         clearBrowserCookies();

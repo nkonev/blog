@@ -10,9 +10,9 @@ import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
 import com.github.nkonev.blog.integration.AbstractItTestRunner;
 import com.github.nkonev.blog.pages.object.IndexPage;
 import com.github.nkonev.blog.security.BlogUserDetailsService;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -44,7 +44,7 @@ public class IndexIT extends AbstractItTestRunner {
         return accountDetailsDTO;
     }
 
-    @After
+    @AfterEach
     public void after() {
         SecurityContextHolder.clearContext();
     }

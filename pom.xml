@@ -38,7 +38,7 @@
         <webdrivermanager.version>2.2.4</webdrivermanager.version>
         <shedlock.version>2.1.0</shedlock.version>
         <postgresql.version>42.2.5</postgresql.version>
-        <greenmail.version>1.5.7</greenmail.version>
+        <greenmail.version>1.5.9</greenmail.version>
         <mockserver.version>5.4.1</mockserver.version>
     </properties>
 
@@ -282,7 +282,6 @@
                 <groupId>com.icegreen</groupId>
                 <artifactId>greenmail</artifactId>
                 <version>${greenmail.version}</version>
-                <scope>test</scope>
                 <exclusions>
                     <exclusion>
                         <groupId>com.sun.mail</groupId>
@@ -318,6 +317,9 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <dependencies>
+    </dependencies>
 
     <reporting>
         <plugins>

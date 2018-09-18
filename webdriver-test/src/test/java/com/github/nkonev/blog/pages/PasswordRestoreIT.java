@@ -3,25 +3,28 @@ package com.github.nkonev.blog.pages;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import com.github.nkonev.blog.CommonTestConstants;
+import com.github.nkonev.blog.extensions.GreenMailExtension;
+import com.github.nkonev.blog.extensions.GreenMailExtensionFactory;
 import com.github.nkonev.blog.integration.AbstractItTestRunner;
 import com.github.nkonev.blog.pages.object.LoginModal;
 import com.github.nkonev.blog.util.UrlParser;
-import com.icegreen.greenmail.junit.GreenMailRule;
+import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.util.Retriever;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import com.sun.mail.imap.IMAPMessage;
 import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+
 import javax.mail.Message;
-import java.net.URI;
+
 import static com.codeborne.selenide.Selenide.$;
 
 public class PasswordRestoreIT extends AbstractItTestRunner {
 
-    @Rule
-    public GreenMailRule greenMail = new GreenMailRule(ServerSetupTest.SMTP_IMAP);
+    @RegisterExtension
+    protected GreenMailExtension greenMail = GreenMailExtensionFactory.build();
+
 
     @Test
     public void restorePassword() throws Exception {

@@ -17,8 +17,8 @@ import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
 import com.github.nkonev.blog.security.BlogUserDetailsService;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +55,7 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserProfileControllerTest.class);
 
     @WithUserDetails(TestConstants.USER_ALICE)
-    @Test
+    @org.junit.jupiter.api.Test
     public void testGetAliceProfileWhichNotContainsPassword() throws Exception {
         MvcResult getPostsRequest = mockMvc.perform(
                 get(Constants.Urls.API+ Constants.Urls.PROFILE)
@@ -71,7 +71,7 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
     }
 
     @WithUserDetails(TestConstants.USER_ALICE)
-    @Test
+    @org.junit.jupiter.api.Test
     public void fullyAuthenticatedUserCanChangeHerProfile() throws Exception {
         UserAccount userAccount = getUserFromBd(TestConstants.USER_ALICE);
         final String initialPassword = userAccount.getPassword();
@@ -107,7 +107,7 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
     }
 
     @WithUserDetails(TestConstants.USER_ALICE)
-    @Test
+    @org.junit.jupiter.api.Test
     public void fullyAuthenticatedUserCanChangeHerProfileAndPassword() throws Exception {
         UserAccount userAccount = getUserFromBd(TestConstants.USER_ALICE);
         final String initialPassword = userAccount.getPassword();
@@ -137,7 +137,7 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
     }
 
     @WithUserDetails(TestConstants.USER_ALICE)
-    @Test
+    @org.junit.jupiter.api.Test
     public void fullyAuthenticatedUserCannotChangeHerProfileWithoutEmail() throws Exception {
         UserAccount userAccount = getUserFromBd(TestConstants.USER_ALICE);
         final String newLogin = "new_alice12";
@@ -167,7 +167,7 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
      * Bob wants steal Alice's account by rewrite login and set her id
      * @throws Exception
      */
-    @Test
+    @org.junit.jupiter.api.Test
     @WithUserDetails(TestConstants.USER_BOB)
     public void fullyAuthenticatedUserCannotChangeForeignProfile() throws Exception {
         UserAccount foreignUserAccount = getUserFromBd(TestConstants.USER_ALICE);
@@ -194,7 +194,7 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
     }
 
     @WithUserDetails(TestConstants.USER_ALICE)
-    @Test
+    @org.junit.jupiter.api.Test
     public void fullyAuthenticatedUserCannotBringForeignLogin() throws Exception {
         UserAccount userAccount = getUserFromBd(TestConstants.USER_ALICE);
 
@@ -251,14 +251,14 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
     }
 
 
-    @Test
-    @Ignore
+    @org.junit.jupiter.api.Test
+    @Disabled
     public void adminCanChangeAnyProfile() {
 
     }
 
-    @Test
-    @Ignore
+    @org.junit.jupiter.api.Test
+    @Disabled
     public void adminCanSeeAnybodyProfileEmail() {
 
     }
@@ -268,7 +268,7 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
      * @throws Exception
      */
     @WithUserDetails(TestConstants.USER_ALICE)
-    @Test
+    @org.junit.jupiter.api.Test
     public void userCannotSeeAnybodyProfileEmail() throws Exception {
         UserAccount bob = getUserFromBd(TestConstants.USER_BOB);
         String bobEmail = bob.getEmail();
@@ -284,14 +284,14 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
 
     }
 
-    @Test
-    @Ignore
+    @org.junit.jupiter.api.Test
+    @Disabled
     public void userCanSeeOnlyOwnProfileEmail() {
 
     }
 
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void userCannotManageSessions() throws Exception {
         String xsrf = "xsrf";
 
@@ -312,7 +312,7 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
         Assert.assertEquals("Forbidden", resp.get("message"));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void moderatorCanManageSessions() throws Exception {
         String xsrf = "xsrf";
         String session = getSession(xsrf, username, password);
@@ -329,7 +329,7 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
     }
 
     @WithUserDetails(TestConstants.USER_ALICE)
-    @Test
+    @org.junit.jupiter.api.Test
     public void userCannotManageSessionsView() throws Exception {
 
         MvcResult mvcResult = mockMvc.perform(
@@ -344,7 +344,7 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
     }
 
     @WithUserDetails(TestConstants.USER_ADMIN)
-    @Test
+    @org.junit.jupiter.api.Test
     public void moderatorCanManageSessionsView() throws Exception {
 
         MvcResult mvcResult = mockMvc.perform(
@@ -359,7 +359,7 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
     }
 
     @WithUserDetails(TestConstants.USER_ADMIN)
-    @Test
+    @org.junit.jupiter.api.Test
     public void moderatorCanLock() throws Exception {
         final long userId = 10;
 
@@ -383,7 +383,7 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
     }
 
     @WithUserDetails(TestConstants.USER_ALICE)
-    @Test
+    @org.junit.jupiter.api.Test
     public void userCanNotLock() throws Exception {
         final long userId = 10;
 
@@ -402,7 +402,7 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
                 .andReturn();
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void userPosts() throws Exception {
         long userId = 2;
         MvcResult getPostRequest = mockMvc.perform(
@@ -420,7 +420,7 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
 
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void userSearchJohnSmithTrim() throws Exception {
         MvcResult getPostRequest = mockMvc.perform(
                 get(Constants.Urls.API+ Constants.Urls.USER).param("searchString", " John Smith")
@@ -434,7 +434,7 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
 
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void userSearchJohnSmithIgnoreCase() throws Exception {
         MvcResult getPostRequest = mockMvc.perform(
                 get(Constants.Urls.API+ Constants.Urls.USER).param("searchString", "john sMith")

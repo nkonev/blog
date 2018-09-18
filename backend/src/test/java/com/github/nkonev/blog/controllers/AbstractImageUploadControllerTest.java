@@ -4,7 +4,7 @@ import com.github.nkonev.blog.AbstractUtTestRunner;
 import com.github.nkonev.blog.TestConstants;
 import com.google.common.net.HttpHeaders;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.RequestEntity;
@@ -54,7 +54,7 @@ public abstract class AbstractImageUploadControllerTest extends AbstractUtTestRu
     }
 
     @WithUserDetails(TestConstants.USER_NIKITA)
-    @Test
+    @org.junit.jupiter.api.Test
     public void postImage() throws Exception {
 
         byte[] img0 = {(byte)0xFF, (byte)0x01, (byte)0x1A};
@@ -75,7 +75,7 @@ public abstract class AbstractImageUploadControllerTest extends AbstractUtTestRu
     protected abstract int clearAbandonedImage();
 
     @WithUserDetails(TestConstants.USER_NIKITA)
-    @Test
+    @org.junit.jupiter.api.Test
     public void postImageAndTwiceGet() throws Exception {
 
         byte[] img1 = {(byte)0xAA, (byte)0xBB, (byte)0xCC, (byte)0xDD, (byte)0xCC};
