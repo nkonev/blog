@@ -86,7 +86,7 @@ services:
       - backend
 
   postgresql:
-    image: postgres:10.4
+    image: postgres:10.5
     hostname: postgresql
     environment:
       - POSTGRES_PASSWORD=postgresqlPassword
