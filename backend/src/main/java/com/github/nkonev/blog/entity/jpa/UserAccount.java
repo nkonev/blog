@@ -27,7 +27,14 @@ public class UserAccount {
     private boolean locked;
     private boolean enabled; // synonym to "confirmed"
     private String email;
+
+    @NotNull
     @Enumerated(EnumType.STRING)
+    @Type(type = "pgsql_enum")
+    @Column(
+            name = "creation_type",
+            columnDefinition = "user_creation_type"
+    )
     private CreationType creationType;
     private String facebookId;
 
