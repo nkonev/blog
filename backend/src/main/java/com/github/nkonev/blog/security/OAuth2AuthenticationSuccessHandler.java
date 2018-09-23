@@ -2,17 +2,16 @@ package com.github.nkonev.blog.security;
 
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.util.MultiValueMap;
-import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import static com.github.nkonev.blog.security.OAuth2ClientContextFilterWithRedirectUrlFix.QUERY_PARAM_REDIRECT;
 
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
+    public static final String DEFAULT = "/";
     private final String base;
 
     public OAuth2AuthenticationSuccessHandler(String base) {
@@ -29,12 +28,17 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 .query(request.getQueryString())
                 .build();
         MultiValueMap<String, String> queryParams = uriComponents.getQueryParams();
-        String redirect = queryParams.getFirst(QUERY_PARAM_REDIRECT);
-        if (StringUtils.isEmpty(redirect)){
-            redirect = "/";
+        String stateEncoded = queryParams.getFirst("state");
+        if (stateEncoded == null) {
+            return DEFAULT;
+        }
+        String stateDecoded = URLDecoder.decode(stateEncoded, StandardCharsets.UTF_8);
+        String[] split = stateDecoded.split(",");
+        String redirect;
+        if (split.length != 2){
+            redirect = DEFAULT;
         } else {
-            redirect = URLDecoder.decode(redirect, StandardCharsets.UTF_8);
-            redirect = URLDecoder.decode(redirect, StandardCharsets.UTF_8);
+            redirect = split[1];
         }
         return redirect;
     }

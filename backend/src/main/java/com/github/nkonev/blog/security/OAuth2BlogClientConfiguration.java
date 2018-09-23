@@ -33,7 +33,7 @@ public class OAuth2BlogClientConfiguration {
 
     @Bean
     public FilterRegistrationBean oauth2ClientFilterRegistration() {
-        OAuth2ClientContextFilter filter = new OAuth2ClientContextFilterWithRedirectUrlFix(customConfig.getBaseUrl() + API_LOGIN_FACEBOOK);
+        OAuth2ClientContextFilter filter = new OAuth2ClientContextFilter();
 
         FilterRegistrationBean registration = new FilterRegistrationBean();
         registration.setFilter(filter);
