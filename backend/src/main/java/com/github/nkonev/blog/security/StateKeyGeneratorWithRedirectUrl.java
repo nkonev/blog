@@ -10,6 +10,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static com.github.nkonev.blog.security.OAuth2AuthenticationSuccessHandler.SEPARATOR;
+
 public class StateKeyGeneratorWithRedirectUrl extends DefaultStateKeyGenerator {
     private RandomValueStringGenerator generator = new RandomValueStringGenerator();
 
@@ -19,7 +21,7 @@ public class StateKeyGeneratorWithRedirectUrl extends DefaultStateKeyGenerator {
         if (currentHttpRequest!=null){
             String referer = currentHttpRequest.getHeader("Referer");
             if (!StringUtils.isEmpty(referer)){
-                return generator.generate()+","+referer;
+                return generator.generate()+SEPARATOR+referer;
             }
         }
         return generator.generate();

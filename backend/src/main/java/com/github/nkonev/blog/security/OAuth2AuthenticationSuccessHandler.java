@@ -12,34 +12,27 @@ import java.nio.charset.StandardCharsets;
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     public static final String DEFAULT = "/";
-    private final String base;
-
-    public OAuth2AuthenticationSuccessHandler(String base) {
-        this.base = base;
-    }
-
+    public static final String SEPARATOR = ",";
 
     @Override
     protected String determineTargetUrl(HttpServletRequest request,
                                         HttpServletResponse response) {
 
-        UriComponents uriComponents = UriComponentsBuilder
-                .fromHttpUrl(base)
+        UriComponents uriComponents = UriComponentsBuilder.newInstance()
                 .query(request.getQueryString())
                 .build();
+
         MultiValueMap<String, String> queryParams = uriComponents.getQueryParams();
         String stateEncoded = queryParams.getFirst("state");
         if (stateEncoded == null) {
             return DEFAULT;
         }
         String stateDecoded = URLDecoder.decode(stateEncoded, StandardCharsets.UTF_8);
-        String[] split = stateDecoded.split(",");
-        String redirect;
+        String[] split = stateDecoded.split(SEPARATOR);
         if (split.length != 2){
-            redirect = DEFAULT;
+            return DEFAULT;
         } else {
-            redirect = split[1];
+            return split[1];
         }
-        return redirect;
     }
 }

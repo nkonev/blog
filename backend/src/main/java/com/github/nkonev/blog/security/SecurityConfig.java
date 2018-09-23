@@ -130,8 +130,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @ConfigurationProperties("facebook.client")
     public AuthorizationCodeResourceDetails facebook() {
         AuthorizationCodeResourceDetails authorizationCodeResourceDetails = new AuthorizationCodeResourceDetails();
-        //authorizationCodeResourceDetails.setPreEstablishedRedirectUri(customConfig.getBaseUrl()+API_LOGIN_FACEBOOK);
-        authorizationCodeResourceDetails.setUseCurrentUri(true);
+        authorizationCodeResourceDetails.setPreEstablishedRedirectUri(customConfig.getBaseUrl()+API_LOGIN_FACEBOOK);
+        authorizationCodeResourceDetails.setUseCurrentUri(false);
         return authorizationCodeResourceDetails;
     }
 
@@ -158,7 +158,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         tokenServices.setAuthoritiesExtractor(new FacebookAuthoritiesExtractor());
         tokenServices.setRestTemplate(facebookTemplate);
         facebookFilter.setTokenServices(tokenServices);
-        facebookFilter.setAuthenticationSuccessHandler(new OAuth2AuthenticationSuccessHandler(customConfig.getBaseUrl()));
+        facebookFilter.setAuthenticationSuccessHandler(new OAuth2AuthenticationSuccessHandler());
         return facebookFilter;
     }
 

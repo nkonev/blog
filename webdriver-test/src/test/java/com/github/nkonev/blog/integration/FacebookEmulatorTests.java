@@ -9,7 +9,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.Header;
-import org.mockserver.model.HttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
@@ -79,10 +78,6 @@ public abstract class FacebookEmulatorTests extends AbstractItTestRunner {
             userAccount.setLocked(false);
             userAccountRepository.save(userAccount);
         });
-    }
-
-    private String getOneQueryParam(HttpRequest httpRequest, String name) {
-        return httpRequest.getQueryStringParameters().getEntries().stream().filter(parameter -> name.equals(parameter.getName().getValue())).findFirst().get().getValues().get(0).getValue();
     }
 
     @After
