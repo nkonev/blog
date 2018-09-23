@@ -5,9 +5,11 @@ import com.codeborne.selenide.SelenideElement;
 import com.github.nkonev.blog.CommonTestConstants;
 import com.github.nkonev.blog.FailoverUtils;
 import com.github.nkonev.blog.integration.AbstractItTestRunner;
+import com.github.nkonev.blog.integration.FacebookEmulatorTests;
 import com.github.nkonev.blog.pages.object.Croppa;
 import com.github.nkonev.blog.pages.object.IndexPage;
 import com.github.nkonev.blog.pages.object.LoginModal;
+import com.github.nkonev.blog.pages.object.UserNav;
 import com.github.nkonev.blog.repo.jpa.PostRepository;
 import com.github.nkonev.blog.webdriver.IntegrationTestConstants;
 import com.github.nkonev.blog.webdriver.configuration.SeleniumConfiguration;
@@ -21,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
@@ -28,7 +31,7 @@ import static com.codeborne.selenide.Selenide.open;
 import static com.github.nkonev.blog.util.FileUtils.getExistsFile;
 
 
-public class PostIT extends AbstractItTestRunner {
+public class PostIT extends FacebookEmulatorTests {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PostIT.class);
 
@@ -318,5 +321,20 @@ public class PostIT extends AbstractItTestRunner {
         commentEdit.deleteComment(0, newCommentText);
     }
 
+
+    @Test
+    public void facebookLoginFromPostPageReturnsToPostPage() throws Exception {
+        PostViewPage postViewPage = new PostViewPage(urlPrefix);
+        postViewPage.openPost(POST_FOR_EDIT_COMMENTS);
+
+        LoginModal loginModal = new LoginModal();
+        loginModal.openLoginModal();
+        loginModal.loginFacebook();
+
+        Assert.assertEquals(facebookLogin, UserNav.getLogin());
+
+        long postId = getPostId(URI.create(driver.getCurrentUrl()).toURL());
+        Assert.assertEquals(POST_FOR_EDIT_COMMENTS, postId);
+    }
 
 }

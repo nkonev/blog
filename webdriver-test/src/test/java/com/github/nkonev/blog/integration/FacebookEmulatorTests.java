@@ -9,7 +9,16 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.Header;
+import org.mockserver.model.HttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
+import static com.github.nkonev.blog.security.OAuth2ClientContextFilterWithRedirectUrlFix.QUERY_PARAM_REDIRECT;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
@@ -41,10 +50,16 @@ public abstract class FacebookEmulatorTests extends AbstractItTestRunner {
     public void configureEmulator(){
         mockServer
                 .when(request().withPath("/mock/facebook/dialog/oauth")).respond(httpRequest -> {
-            String state = httpRequest.getQueryStringParameters().getEntries().stream().filter(parameter -> "state".equals(parameter.getName().getValue())).findFirst().get().getValues().get(0).getValue();
+            String state = getOneQueryParam(httpRequest, "state");
+
+            UriComponents components = UriComponentsBuilder.fromHttpUrl(getOneQueryParam(httpRequest, "redirect_uri"))
+                    .build();
+            MultiValueMap<String, String> queryParams = components.getQueryParams();
+            String redirect = queryParams.getFirst(QUERY_PARAM_REDIRECT);
+
             return response().withHeaders(
                     new Header(HttpHeaderNames.CONTENT_TYPE.toString(), "text/html; charset=\"utf-8\""),
-                    new Header(HttpHeaderNames.LOCATION.toString(), urlPrefix+"/api/login/facebook?code=fake_code&state="+state)
+                    new Header(HttpHeaderNames.LOCATION.toString(), urlPrefix+"/api/login/facebook?"+QUERY_PARAM_REDIRECT+"="+redirect+"&code=fake_code&state="+state)
             ).withStatusCode(302);
         });
 
@@ -78,6 +93,10 @@ public abstract class FacebookEmulatorTests extends AbstractItTestRunner {
             userAccount.setLocked(false);
             userAccountRepository.save(userAccount);
         });
+    }
+
+    private String getOneQueryParam(HttpRequest httpRequest, String name) {
+        return httpRequest.getQueryStringParameters().getEntries().stream().filter(parameter -> name.equals(parameter.getName().getValue())).findFirst().get().getValues().get(0).getValue();
     }
 
     @After
