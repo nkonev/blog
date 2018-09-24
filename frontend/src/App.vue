@@ -13,7 +13,6 @@
                 <user-profile-nav v-bind:currentUser="currentUser"/>
             </nav>
             <router-view></router-view>
-            <vm-back-top :bottom="80" :right="18"></vm-back-top>
         </div>
     </div>
 </template>
@@ -26,7 +25,6 @@
     import userProfileNav from './components/UserProfileNav.vue'
     import store, {GET_USER, FETCH_USER_PROFILE} from './store'
     import {mapGetters} from 'vuex'
-    import VmBackTop from 'vue-multiple-back-top'
     import {API_CONFIG} from './constants'
     import bus, {LOGIN, LOGOUT} from './bus'
     import Notifications from './notifications'
@@ -40,7 +38,6 @@
 
     Vue.component('font-awesome-icon', FontAwesomeIcon);
     Vue.use(vmodal, { dialog: true });
-    Vue.component(VmBackTop.name, VmBackTop);
 
     export default {
         name: 'app',

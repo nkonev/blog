@@ -20,6 +20,7 @@
                 </span>
             </infinite-loading>
         </div>
+        <vm-back-top :bottom="80" :right="18"></vm-back-top>
         <post-add-fab/>
     </div>
 </template>
@@ -35,6 +36,7 @@
     import VueSticky from 'vue-sticky'
     import RandomPosts from "./RandomPosts.vue";
     import Notifications from "../notifications"
+    import VmBackTop from 'vue-multiple-back-top'
 
     // https://peachscript.github.io/vue-infinite-loading/#!/getting-started/with-filter
 
@@ -57,7 +59,8 @@
             InfiniteLoading,
             BlogSpinner,
             PostAddFab,
-            Search
+            Search,
+            'vm-back-top': VmBackTop
         },
         directives: {
             'sticky': VueSticky,
