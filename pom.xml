@@ -165,7 +165,7 @@
                 </configuration>
             </plugin>
 
-            <!-- for make second mnnw call working -->
+            <!-- for make second ./mvnw call working - evaluates ${revision} -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
