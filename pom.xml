@@ -37,7 +37,7 @@
         <postgresql.version>42.2.5</postgresql.version>
         <greenmail.version>1.5.7</greenmail.version>
         <maven.install.plugin.version>2.5.2</maven.install.plugin.version>
-        <jacoco-maven-plugin.version>0.8.1</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.2</jacoco-maven-plugin.version>
         <mockserver.version>5.4.1</mockserver.version>
     </properties>
 
