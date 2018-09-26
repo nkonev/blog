@@ -11,7 +11,7 @@
     <parent>
         <artifactId>blog.parent</artifactId>
         <groupId>com.github.nkonev.blog</groupId>
-        <version>1.0.3-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
 
     <properties>
@@ -104,13 +104,13 @@ https://github.com/bonigarcia/webdrivermanager
         <dependency>
             <groupId>com.github.nkonev.blog</groupId>
             <artifactId>backend</artifactId>
-            <version>1.0.3-SNAPSHOT</version>
+            <version>${revision}</version>
             <!--<scope>test</scope>-->
         </dependency>
         <dependency>
             <groupId>com.github.nkonev.blog</groupId>
             <artifactId>common-test</artifactId>
-            <version>1.0.3-SNAPSHOT</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.icegreen</groupId>
