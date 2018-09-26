@@ -164,6 +164,8 @@
                     <skip>true</skip>
                 </configuration>
             </plugin>
+
+            <!-- for make second mnnw call working -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
