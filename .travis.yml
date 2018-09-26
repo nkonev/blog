@@ -7,7 +7,7 @@ cache:
   - frontend/node
   - frontend/node_modules
   - $HOME/.cache/install-jdk
-jdk: openjdk10
+jdk: openjdk11
 services:
   - docker
 before_install:
