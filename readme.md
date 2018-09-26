@@ -14,7 +14,7 @@
 
 Q: Can I run it without docker ?
 
-A: Yes, you can by manually install PostgreSQL, RabbitMQ, Redis and configure it's connections in config or through commandline. 
+A: Yes, you can by manually install PostgreSQL, RabbitMQ, Redis, Elasticsearch and configure it's connections in config or through commandline. 
 
 
 
