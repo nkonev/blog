@@ -1,6 +1,6 @@
 # docker build -t blog:latest .
 # docker run blog:latest
-FROM openjdk:10-jre
+FROM openjdk:11-jre
 ARG APP_HOME=/opt/blog
 RUN mkdir -p ${APP_HOME}
 WORKDIR ${APP_HOME}
