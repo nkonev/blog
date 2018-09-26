@@ -22,7 +22,7 @@
     <parent>
         <artifactId>blog.parent</artifactId>
         <groupId>com.github.nkonev.blog</groupId>
-        <version>1.0.3-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
 
     <properties>

@@ -10,19 +10,19 @@
         <dependency>
             <groupId>com.github.nkonev.blog</groupId>
             <artifactId>backend</artifactId>
-            <version>1.0.3-SNAPSHOT</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.github.nkonev.blog</groupId>
             <artifactId>webdriver-test</artifactId>
-            <version>1.0.3-SNAPSHOT</version>
+            <version>${revision}</version>
         </dependency>
     </dependencies>
 
     <parent>
         <artifactId>blog.parent</artifactId>
         <groupId>com.github.nkonev.blog</groupId>
-        <version>1.0.3-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
 
     <properties>
