@@ -250,7 +250,7 @@
                                 <!-- this is just static file which'll be served by tomcat -->
                                 <move file="${project.build.outputDirectory}/static/${git-template-json}" tofile="${project.build.outputDirectory}/static/${git-json}"/>
                                 <!-- this file used by travis (see .travis.yml) for pick-up version and use it in docker push -->
-                                <echo file="${project.build.directory}/VERSION">${project.version}</echo>
+                                <echo file="${project.build.directory}/VERSIONFILE">${project.version}</echo>
                             </tasks>
                         </configuration>
                         <goals>
