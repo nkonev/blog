@@ -1,24 +1,27 @@
 package com.github.nkonev.blog.services;
 
-import com.github.nkonev.blog.config.ElasticsearchConfig;
 import com.github.nkonev.blog.entity.elasticsearch.Post;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.concurrent.TimeUnit;
-
 import static com.github.nkonev.blog.config.ElasticsearchConfig.ELASTICSEARCH_CONFIG;
+import static com.github.nkonev.blog.services.ElasticsearchPopulator.POPULATOR;
 
+@Qualifier(POPULATOR)
 @DependsOn(ELASTICSEARCH_CONFIG)
 @Service
 public class ElasticsearchPopulator {
 
     private static final Logger LOGGER  = LoggerFactory.getLogger(ElasticsearchPopulator.class);
+
+    public static final String POPULATOR = "elasticsearchPopulator";
 
     @Autowired
     private PostService postService;
@@ -36,8 +39,8 @@ public class ElasticsearchPopulator {
     private TimeUnit timeUnit;
 
     @PostConstruct
-    public void pc(){
-
+    public void pc() throws InterruptedException {
+        TimeUnit.MINUTES.sleep(5);
         if (refreshOnStart) {
             LOGGER.info("Will try to refresh elasticsearch index");
             final String key = getKey();

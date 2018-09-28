@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -25,6 +26,10 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import java.time.Duration;
 import java.util.concurrent.Executor;
 
+import static com.github.nkonev.blog.config.ElasticsearchConfig.ELASTICSEARCH_CONFIG;
+import static com.github.nkonev.blog.services.ElasticsearchPopulator.POPULATOR;
+
+@DependsOn(POPULATOR)
 @ConditionalOnProperty(value = "custom.tasks.enable", matchIfMissing = true)
 @Configuration
 public class TaskConfig {
