@@ -39,8 +39,7 @@ public class ElasticsearchPopulator {
     private TimeUnit timeUnit;
 
     @PostConstruct
-    public void pc() throws InterruptedException {
-        TimeUnit.MINUTES.sleep(5);
+    public void pc()  {
         if (refreshOnStart) {
             LOGGER.info("Will try to refresh elasticsearch index");
             final String key = getKey();
