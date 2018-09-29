@@ -1,10 +1,7 @@
 package com.github.nkonev.blog.services;
 
 import com.github.nkonev.blog.converter.PostConverter;
-import com.github.nkonev.blog.dto.PostDTO;
-import com.github.nkonev.blog.dto.PostDTOWithAuthorization;
-import com.github.nkonev.blog.dto.UserAccountDTO;
-import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
+import com.github.nkonev.blog.dto.*;
 import com.github.nkonev.blog.entity.jpa.Post;
 import com.github.nkonev.blog.entity.jpa.UserAccount;
 import com.github.nkonev.blog.exception.BadRequestException;
@@ -20,7 +17,6 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.elasticsearch.search.sort.FieldSortBuilder;
-import org.elasticsearch.search.sort.SortMode;
 import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +26,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.core.ResultsExtractor;
 import org.springframework.data.elasticsearch.core.SearchResultMapper;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
@@ -44,6 +39,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import javax.validation.constraints.NotNull;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -92,19 +89,52 @@ public class PostService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PostService.class);
 
-    private final RowMapper<PostDTO> rowMapper = (resultSet, i) -> new PostDTO(
-            resultSet.getLong("id"),
-            null,
-            null,
-            resultSet.getString("title_img"),
-            resultSet.getObject("create_date_time", LocalDateTime.class),
-            new UserAccountDTO(
-                    resultSet.getLong("owner_id"),
-                    resultSet.getString("owner_login"),
-                    resultSet.getString("owner_avatar"),
-                    resultSet.getString("owner_facebook_id")
-            )
-    );
+    private static class PostRowMapper implements RowMapper<PostDTO> {
+
+        private boolean setTitle, setPost;
+
+        public String getBaseSql() {
+            return "select " +
+                    "p.id, " +
+                    "p.title_img, " +
+                    (setTitle ? "p.title, " : "") +
+                    (setPost ? "p.text, "  : "") +
+                    "p.create_date_time," +
+                    "u.id as owner_id," +
+                    "u.username as owner_login," +
+                    "u.facebook_id as owner_facebook_id," +
+                    "u.avatar as owner_avatar, " +
+                    "(select count(*) from posts.comment c where c.post_id = p.id) as comment_count " +
+                    "  from posts.post p " +
+                    "    join auth.users u on p.owner_id = u.id ";
+        }
+
+        public PostRowMapper(boolean setTitle, boolean setPost) {
+            this.setTitle = setTitle;
+            this.setPost = setPost;
+        }
+
+        @Override
+        public PostDTO mapRow(ResultSet resultSet, int i) throws SQLException {
+            return new PostDTO(
+                    resultSet.getLong("id"),
+                    setTitle ? resultSet.getString("title") : null,
+                    setPost ? resultSet.getString("text") : null,
+                    resultSet.getString("title_img"),
+                    resultSet.getObject("create_date_time", LocalDateTime.class),
+                    resultSet.getInt("comment_count"),
+                    new UserAccountDTO(
+                            resultSet.getLong("owner_id"),
+                            resultSet.getString("owner_login"),
+                            resultSet.getString("owner_avatar"),
+                            resultSet.getString("owner_facebook_id")
+                    )
+            );
+        }
+    }
+
+    private final PostRowMapper rowMapperWithoutTextTitle = new PostRowMapper(false, false);
+    private final PostRowMapper rowMapper = new PostRowMapper(true, true);
 
     private final SearchResultMapper searchResultMapper = new SearchResultMapper() {
         private String getHighlightedOrOriginalField(SearchHit searchHit, String fieldName){
@@ -166,12 +196,17 @@ public class PostService {
     }
 
     public PostDTO convertToPostDTOWithCleanTags(Post post) {
-        PostDTO postDTO = postConverter.convertToPostDTOWithCleanTags(post);
+        PostDTO postDTO = postConverter.convertToPostDTO(post);
         com.github.nkonev.blog.entity.elasticsearch.Post byId = indexPostRepository
                 .findById(post.getId())
                 .orElseThrow(()->new DataNotFoundException("post not found in fulltext store"));
         postDTO.setText(byId.getText());
         return postDTO;
+    }
+
+    public PostDTO convertToPostDTOWithCleanTags(PostDTO post) {
+        PostConverter.cleanTags(post);
+        return post;
     }
 
     public List<PostDTO> getPosts(int page, int size, String searchString){
@@ -183,24 +218,15 @@ public class PostService {
 
         if (StringUtils.isEmpty(searchString)) {
             var params = new HashMap<String, Object>();
-            params.put("search_string", searchString);
             params.put("offset", PageUtils.getOffset(page, size));
             params.put("limit", size);
 
             postsResult = jdbcTemplate.query(
-                    "select " +
-                            "p.id, " +
-                            "p.title_img, " +
-                            "p.create_date_time," +
-                            "u.id as owner_id," +
-                            "u.username as owner_login," +
-                            "u.facebook_id as owner_facebook_id," +
-                            "u.avatar as owner_avatar \n" +
-                            "  from posts.post p join auth.users u on p.owner_id = u.id \n" +
-                            "  order by id desc " +
+                    rowMapperWithoutTextTitle.getBaseSql() +
+                            "  order by p.id desc " +
                             "limit :limit offset :offset\n",
                     params,
-                    rowMapper
+                    rowMapperWithoutTextTitle
             );
 
             postsResult.forEach(postDTO -> {
@@ -237,18 +263,10 @@ public class PostService {
                 params.put("id", fulltextPost.getId());
 
                 PostDTO postDTO = jdbcTemplate.queryForObject(
-                        "select " +
-                                "p.id, " +
-                                "p.title_img, " +
-                                "p.create_date_time," +
-                                "u.id as owner_id," +
-                                "u.username as owner_login," +
-                                "u.facebook_id as owner_facebook_id," +
-                                "u.avatar as owner_avatar \n" +
-                                "  from posts.post p join auth.users u on p.owner_id = u.id \n" +
+                        rowMapperWithoutTextTitle.getBaseSql() +
                                 " where p.id = :id",
                         params,
-                        rowMapper
+                        rowMapperWithoutTextTitle
                 );
                 if (postDTO == null){
                     throw new DataNotFoundException("post not found in db");
@@ -261,6 +279,31 @@ public class PostService {
         }
 
         return postsResult;
+    }
+
+    public Wrapper<PostDTO> findByOwnerId(Pageable springDataPage, Long userId) {
+        int limit = springDataPage.getPageSize();
+        long offset = springDataPage.getOffset();
+
+        var params = new HashMap<String, Object>();
+        params.put("offset", offset);
+        params.put("limit", limit);
+        params.put("userId", userId);
+
+        var postsResult = jdbcTemplate.query(
+                rowMapper.getBaseSql() +
+                        " where u.id = :userId " +
+                        "  order by p.id desc " +
+                        "limit :limit offset :offset\n",
+                params,
+                rowMapper
+        );
+
+        List<PostDTO> list = postsResult.stream()
+                .map(this::convertToPostDTOWithCleanTags)
+                .collect(Collectors.toList());
+        long count = jdbcTemplate.queryForObject("select count(*) from posts.post p where p.owner_id = :userId", Collections.singletonMap("userId", userId), long.class);
+        return new Wrapper<>(list, count);
     }
 
     public void deletePost(UserAccountDetailsDTO userAccount, long postId) {

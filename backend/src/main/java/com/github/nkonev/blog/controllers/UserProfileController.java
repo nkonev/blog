@@ -92,15 +92,7 @@ public class UserProfileController {
     ) {
         PageRequest springDataPage = PageRequest.of(PageUtils.fixPage(page), PageUtils.fixSize(size), Sort.Direction.DESC, "id");
 
-        Page<Post> resultPage = postRepository.findByOwnerId(springDataPage, userId);
-
-        return new Wrapper<>(
-                resultPage.getContent()
-                    .stream()
-                    .map(postService::convertToPostDTOWithCleanTags)
-                    .collect(Collectors.toList()),
-                resultPage.getTotalElements()
-        );
+        return postService.findByOwnerId(springDataPage, userId);
     }
 
 

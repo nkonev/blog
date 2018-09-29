@@ -143,7 +143,7 @@ services:
     - xpack.security.enabled=false
     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     volumes :
-    - es_data_dir:/usr/share/elasticsearch/data
+    - es_prod_data_dir:/usr/share/elasticsearch/data
     logging:
       driver: "json-file"
 #      options:
@@ -331,7 +331,7 @@ volumes:
   postgresql_prod_data_dir:
   redis_prod_data_dir:
   rabbitmq_prod_data_dir:
-  es_data_dir:
+  es_prod_data_dir:
   prometheus_data:
   grafana_data_prod_data_dir:
 

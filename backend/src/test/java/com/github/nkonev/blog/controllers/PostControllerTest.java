@@ -121,7 +121,12 @@ public class PostControllerTest extends AbstractUtTestRunner {
         )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(PageUtils.DEFAULT_SIZE))
+                .andExpect(jsonPath("$[0].commentCount").value(1))
+                .andExpect(jsonPath("$[1].commentCount").value(501))
+                .andExpect(jsonPath("$[2].commentCount").value(0))
                 .andReturn();
+        String getStr = getPostsRequest.getResponse().getContentAsString();
+        LOGGER.info(getStr);
     }
 
     @Test

@@ -86,6 +86,10 @@ public class PostConverter {
         return new com.github.nkonev.blog.entity.elasticsearch.Post(jpaPost.getId(), jpaPost.getTitle(), cleanHtmlTags(sanitizedHtml));
     }
 
+    public static void cleanTags(PostDTO postDTO) {
+        postDTO.setText(cleanHtmlTags(postDTO.getText()));;
+    }
+
     /**
      * Used in main page
      * @param html
@@ -98,13 +102,13 @@ public class PostConverter {
     /**
      * Used in main page
      */
-    public PostDTO convertToPostDTOWithCleanTags(Post post) {
+    public PostDTO convertToPostDTO(Post post) {
         if (post==null) {return null;}
 
         return new PostDTO(
                 post.getId(),
                 post.getTitle(),
-                null,
+                post.getText(),
                 post.getTitleImg(),
                 post.getCreateDateTime(),
                 UserAccountConverter.convertToUserAccountDTO(post.getOwner())

@@ -11,11 +11,22 @@ public class PostDTO {
     private String text;
     private String titleImg;
     private UserAccountDTO owner;
+    private Integer commentCount;
 
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern= ApiConstants.DATE_FORMAT)
     private LocalDateTime createDateTime;
 
     public PostDTO() { }
+
+    public PostDTO(long id, String title, String text, String titleImg, LocalDateTime createDateTime, Integer commentCount, UserAccountDTO owner) {
+        this.id = id;
+        this.title = title;
+        this.text = text;
+        this.titleImg = titleImg;
+        this.createDateTime = createDateTime;
+        this.commentCount = commentCount;
+        this.owner = owner;
+    }
 
     public PostDTO(long id, String title, String text, String titleImg, LocalDateTime createDateTime, UserAccountDTO owner) {
         this.id = id;
@@ -73,5 +84,13 @@ public class PostDTO {
 
     public void setOwner(UserAccountDTO owner) {
         this.owner = owner;
+    }
+
+    public Integer getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(Integer commentCount) {
+        this.commentCount = commentCount;
     }
 }
