@@ -41,15 +41,18 @@
     @import "../constants.styl"
 
     .random {
-        display: inline-block;
+        /*display: inline-block;
         border-radius 2px
         background-color whitesmoke
         position fixed
         right 10px
         top 220px
-        width 250px
+        width 250px*/
         margin 0 0
         padding 0.7em 1em 1em 1em
+        top 2em
+        right 2em
+        position fixed
 
         &-h1{
             margin 0 0 0.2em 0
@@ -61,6 +64,13 @@
             margin 0 0
             padding 0em 1em 0em 0em
             list-style-type: none;
+        }
+
+        li {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width 250px
         }
 
         a {

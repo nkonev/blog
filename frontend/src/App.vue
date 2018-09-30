@@ -12,7 +12,6 @@
                 <router-link class="router-link" to="/help">Help</router-link>
                 <user-profile-nav v-bind:currentUser="currentUser"/>
             </nav>
-            <random-posts v-if="showRandom"/>
             <router-view>
             </router-view>
         </div>
@@ -118,15 +117,19 @@
         -moz-osx-font-smoothing: grayscale;
 
         // center content
-        width $contentWidth
+        //width $contentWidth
         background-color: white;
-        position: absolute;
+        //position: absolute;
         left: 0;
         right: 0;
         margin: auto;
 
         color: #2c3e50;
         margin-top: 10px;
+
+        display: grid
+        grid-template-columns: 4fr
+        grid-gap: 2vw;
 
         #content {
             padding: 4px;

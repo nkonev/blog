@@ -8,7 +8,9 @@
             <template v-else>
                 <template v-if="!isLoading && !errorMessage">
                     <div v-if="postDTO.titleImg" class="img-container post-title">
-                        <img class="title-img" :src="postDTO.titleImg"/>
+                        <figure>
+                            <img class="title-img" :src="postDTO.titleImg"/>
+                        </figure>
                         <h1>{{postDTO.title}}</h1>
                     </div>
                     <div v-else class="post-title"><h1>{{postDTO.title}}</h1></div>
@@ -35,8 +37,8 @@
                 <post-add-fab/>
             </template>
             <!-- draw only if id == true (!=0) -->
-            <aside class="left" @click="goLeft()" v-if="postDTO.id && !isEditing && postDTO.left"><span><< left</span></aside>
-            <aside class="right" @click="goRight()" v-if="postDTO.id && !isEditing && postDTO.right"><span>right >></span></aside>
+            <aside class="left" @click="goLeft()" v-if="postDTO.id && !isEditing && postDTO.left"><span><</span></aside>
+            <aside class="right" @click="goRight()" v-if="postDTO.id && !isEditing && postDTO.right"><span>></span></aside>
 
             <CommentList v-show="!(isLoading || errorMessage || isEditing)"/>
         </template>
@@ -220,13 +222,12 @@
     aside {
         position fixed
         cursor pointer
-        background green
-        top 50%
-        opacity 0.6
-        padding 4px 6px
+        background #00dc38
+        top 60%
+        opacity 0.4
+        padding 4px 8px
         border-radius 2px
         color white
-        margin 2px
 
         font-size 1.8em
         filter none
@@ -339,8 +340,27 @@
 
             .title-img {
                 filter blur(2px) contrast(0.8) grayscale(0.3)
-                max-width 100%
+                //max-width 100%
+                object-fit: none; /* Do not scale the image */
+                object-position: center; /* Center the image within the element */
+                height: 384px;
+                //width: 384px;
+                width 100%
             }
+
+            /*figure{
+                height: 300px
+                overflow: hidden
+                background-position: center center;
+                background-repeat: no-repeat;
+                margin: 0
+            }
+            figure img {
+                display: block
+                width: 100%
+                object-fit: none
+                object-position: center
+            }*/
 
             h1 {
                 position: absolute;
