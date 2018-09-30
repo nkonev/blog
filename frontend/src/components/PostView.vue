@@ -35,8 +35,8 @@
                 <post-add-fab/>
             </template>
             <!-- draw only if id == true (!=0) -->
-            <aside class="left" @click="goLeft()" v-if="postDTO.id && !isEditing && postDTO.left"><span><< left</span></aside>
-            <aside class="right" @click="goRight()" v-if="postDTO.id && !isEditing && postDTO.right"><span>right >></span></aside>
+            <aside class="left" @click="goLeft()" v-if="postDTO.id && !isEditing && postDTO.left"><span><<</span></aside>
+            <aside class="right" @click="goRight()" v-if="postDTO.id && !isEditing && postDTO.right"><span>>></span></aside>
 
             <CommentList v-show="!(isLoading || errorMessage || isEditing)"/>
         </template>
@@ -338,13 +338,17 @@
             position: relative;
 
             .title-img {
-                filter blur(2px) contrast(0.8) grayscale(0.3)
-                max-width 100%
+                filter blur(1px) contrast(0.8) grayscale(0.3)
+
+                object-fit: cover;
+                object-position: center;
+                height: 300px;
+                width 100%
             }
 
             h1 {
                 position: absolute;
-                bottom: 40px;
+                bottom: 10px;
                 left: 0;
                 right 0;
                 //width: 90%;

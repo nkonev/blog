@@ -12,7 +12,7 @@
                 <router-link class="router-link" to="/help">Help</router-link>
                 <user-profile-nav v-bind:currentUser="currentUser"/>
             </nav>
-            <random-posts v-if="showRandom"/>
+            <!--<random-posts v-if="showRandom"/>-->
             <router-view>
             </router-view>
         </div>
