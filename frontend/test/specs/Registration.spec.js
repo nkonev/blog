@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Registration from "../../src/components/Registration.vue"
-import { mount } from '@vue/test-utils';
+import { mount, RouterLinkStub } from '@vue/test-utils';
 
 describe("Registration.vue", () => {
 
@@ -21,7 +21,7 @@ describe("Registration.vue", () => {
                 }});
             }
         };
-        const RegistrationWrapper = mount(Registration, { attachToDocument: false, mocks: { $http }});
+        const RegistrationWrapper = mount(Registration, { attachToDocument: false, mocks: { $http }, stubs: {RouterLink: RouterLinkStub }});
         expect(RegistrationWrapper).toBeDefined();
         expect(RegistrationWrapper.vm.submitEnabled).toBe(false);
 
@@ -53,7 +53,7 @@ describe("Registration.vue", () => {
     });
 
     it("email and password fail", (done) => {
-        const RegistrationWrapper = mount(Registration, { attachToDocument: false });
+        const RegistrationWrapper = mount(Registration, { attachToDocument: false, stubs: {RouterLink: RouterLinkStub } });
         expect(RegistrationWrapper).toBeDefined();
         expect(RegistrationWrapper.vm.submitEnabled).toBe(false);
 

@@ -102,7 +102,7 @@
                 });
             },
             onValidated(isValid, errors) {
-                console.log("Validation result: ", isValid, ", Errors:", errors);
+                // console.log("Validation result: ", isValid, ", Errors:", errors);
                 this.submitEnabled = isValid;
                 this.errorMessage = null;
             },

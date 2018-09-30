@@ -1,5 +1,5 @@
 import UserProfile from "../../src/components/UserProfile.vue"
-import { mount } from '@vue/test-utils';
+import { mount, RouterLinkStub } from '@vue/test-utils';
 import Vue from 'vue'
 
 describe("UserProfile.vue", () => {
@@ -34,6 +34,7 @@ describe("UserProfile.vue", () => {
                         done();
                     }
                 },
+                stubs: ['RouterLink', 'UserPostList' ]
             }
         );
 

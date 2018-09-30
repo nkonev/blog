@@ -73,6 +73,7 @@ describe("PostView.vue", () => {
         const instance = Vue.extend();
         PostViewWrapper = shallowMount(PostView, {
             mocks: { $router,  $route, $http: $httpLeft },
+            stubs: ['v-dialog'],
             instance
         });
         expect(PostViewWrapper).toBeDefined();
@@ -103,6 +104,7 @@ describe("PostView.vue", () => {
         const instance = Vue.extend();
         PostViewWrapper = shallowMount(PostView, {
             mocks: { $router,  $route, $http: $httpRight },
+            stubs: ['v-dialog'],
             instance
         });
         expect(PostViewWrapper).toBeDefined();
