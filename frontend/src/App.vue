@@ -36,7 +36,11 @@
     import { library } from '@fortawesome/fontawesome-svg-core'
     import { faFacebook } from '@fortawesome/free-brands-svg-icons'
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-
+    require('typeface-ubuntu')
+    require('typeface-roboto')
+    require('typeface-pt-sans')
+    require('typeface-roboto-condensed')
+    require('typeface-fira-sans-condensed')
     library.add(faFacebook);
 
     Vue.component('font-awesome-icon', FontAwesomeIcon);
@@ -113,7 +117,7 @@
         top: 0px
         border-radius 2px
 
-        font-family: 'Avenir', Helvetica, Arial, sans-serif;
+        font-family: 'Ubuntu', 'Avenir', Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
 
@@ -143,7 +147,7 @@
         nav {
             background white
             font-size 22px
-            font-family 'DejaVu Sans Mono', monospace
+            font-family 'Ubuntu', 'DejaVu Sans Mono', monospace
             font-weight bold
             a.router-link,
             span.router-link {
