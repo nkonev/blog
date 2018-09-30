@@ -39,6 +39,7 @@
             <aside class="right" @click="goRight()" v-if="postDTO.id && !isEditing && postDTO.right"><span>>></span></aside>
 
             <CommentList v-show="!(isLoading || errorMessage || isEditing)"/>
+            <vm-back-top v-if="!isEditing" :bottom="80" :right="18"></vm-back-top>
         </template>
         <template v-else>
             Error
@@ -58,6 +59,7 @@
     import CommentList from './CommentList.vue'
     import Owner from './Owner.vue'
     import {getPostId, getTimestampFromUtc} from '../utils'
+    import VmBackTop from 'vue-multiple-back-top'
     // Lazy load heavy component https://router.vuejs.org/en/advanced/lazy-loading.html. see also in .babelrc
     const PostEdit = () => import('./PostEdit.vue');
 
@@ -93,6 +95,7 @@
             PostAddFab,
             CommentList,
             Owner,
+            'vm-back-top': VmBackTop
         },
         computed:{
             createTime(){
