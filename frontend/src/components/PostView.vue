@@ -338,8 +338,6 @@
             position: relative;
 
             .title-img {
-                filter blur(1px) contrast(0.8) grayscale(0.3)
-
                 object-fit: cover;
                 object-position: center;
                 height: 300px;
@@ -375,14 +373,6 @@
                 transform none
             }
         }
-        .post {
-            .img-container {
-                .title-img {
-                    filter none
-                }
-            }
-        }
-
     }
 </style>
 
