@@ -4,9 +4,9 @@ import com.github.nkonev.blog.dto.PostDTO;
 import com.github.nkonev.blog.dto.PostDTOExtended;
 import com.github.nkonev.blog.dto.PostDTOWithAuthorization;
 import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
+import com.github.nkonev.blog.entity.elasticsearch.IndexPost;
 import com.github.nkonev.blog.entity.jpa.Post;
 import com.github.nkonev.blog.exception.BadRequestException;
-import com.github.nkonev.blog.exception.DataNotFoundException;
 import com.github.nkonev.blog.repo.jpa.PostRepository;
 import com.github.nkonev.blog.security.BlogSecurityService;
 import com.github.nkonev.blog.security.permissions.PostPermissions;
@@ -76,14 +76,17 @@ public class PostConverter {
         checkLength(sanitizedHtml);
         forUpdate.setText(sanitizedHtml);
         forUpdate.setTitle(cleanHtmlTags(postDTO.getTitle()));
-        forUpdate.setTitleImg(postDTO.getTitleImg());
-
+        if (Boolean.TRUE.equals(postDTO.getRemoveTitleImage())) {
+            forUpdate.setTitleImg("");
+        } else {
+            forUpdate.setTitleImg(postDTO.getTitleImg());
+        }
         return forUpdate;
     }
 
-    public static com.github.nkonev.blog.entity.elasticsearch.Post toElasticsearchPost(com.github.nkonev.blog.entity.jpa.Post jpaPost) {
+    public static IndexPost toElasticsearchPost(com.github.nkonev.blog.entity.jpa.Post jpaPost) {
         String sanitizedHtml = XssSanitizeUtil.sanitize(jpaPost.getText());
-        return new com.github.nkonev.blog.entity.elasticsearch.Post(jpaPost.getId(), jpaPost.getTitle(), cleanHtmlTags(sanitizedHtml));
+        return new IndexPost(jpaPost.getId(), jpaPost.getTitle(), cleanHtmlTags(sanitizedHtml));
     }
 
     public static void cleanTags(PostDTO postDTO) {

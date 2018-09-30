@@ -61,8 +61,8 @@ public class DeployIT {
 
     private void checkImageExistence() throws IOException {
         ProcessInfo processInfo = get(launch("docker images -q --filter reference=nkonev/blog:current-test"));
-        Assert.assertNotNull(processInfo.stdout, "Image not found");
-        Assert.assertFalse(processInfo.stdout.isEmpty(), "Image not found");
+        Assert.assertNotNull(processInfo.stdout, "Docker image not found");
+        Assert.assertFalse(processInfo.stdout.isEmpty(), "Docker image not found");
     }
 
     private void dropVolumes(String stackName) throws InterruptedException, IOException {

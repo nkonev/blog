@@ -17,3 +17,4 @@ classes
 node
 node_modules
 frontend/coverage
+.flattened-pom.xml

@@ -1,5 +1,7 @@
 <template>
     <div id="app">
+        <img class="bg" :src="config.imageBackground"/>
+
         <div id="content">
             <LoginModal></LoginModal>
             <auto-progress :includedUrls="['/api/post\\?.*', '/api/post/\\d+/comment.*', '/api/user\\?.*']"/>
@@ -10,6 +12,7 @@
                 <router-link class="router-link" to="/users">Users</router-link>
                 <a class="router-link" id="a-doc" href="/docs/index.html">API</a>
                 <router-link class="router-link" to="/help">Help</router-link>
+                <router-link v-show="config.showSettings" class="router-link" to="/settings">Settings</router-link>
                 <user-profile-nav v-bind:currentUser="currentUser"/>
             </nav>
             <!--<random-posts v-if="showRandom"/>-->
@@ -26,7 +29,7 @@
     import autoProgress from './lib/auto-progress.vue'
     import userProfileNav from './components/UserProfileNav.vue'
     import RandomPosts from "./components/RandomPosts.vue";
-    import store, {GET_USER, FETCH_USER_PROFILE} from './store'
+    import store, {GET_USER, FETCH_USER_PROFILE, FETCH_CONFIG, GET_CONFIG, GET_CONFIG_SHOW_SETTINGS} from './store'
     import {mapGetters} from 'vuex'
     import {API_CONFIG} from './constants'
     import bus, {LOGIN, LOGOUT} from './bus'
@@ -57,7 +60,7 @@
             showRandom(){
                 return isLargeScreen();
             },
-            ...mapGetters({currentUser: GET_USER}), // currentUser is here, 'getUser' -- in store.js
+            ...mapGetters({currentUser: GET_USER, config: GET_CONFIG}), // currentUser is here, 'getUser' -- in store.js
         },
         // used components for provide custom tags
         components: {
@@ -69,11 +72,7 @@
         mounted() {
             // attempt to initialize LoginModal
             store.dispatch(FETCH_USER_PROFILE);
-            this.$http.get(API_CONFIG).then((response) => {
-                this.$data.config = response.body
-            }, response => {
-                console.error("Error on get config", response);
-            });
+            store.dispatch(FETCH_CONFIG);
         },
         created() {
             bus.$on(LOGIN, this.onSuccessLogin);
@@ -83,18 +82,13 @@
             bus.$off(LOGIN, this.onSuccessLogin);
             bus.$off(LOGOUT, this.onSuccessLogout);
         },
-        data(){
-            return {
-                config: {}
-            }
-        },
         metaInfo(){
             return Vue.util.extend(
                 {
                     title: 'Welcome to'
                 },
                 {
-                    titleTemplate: this.$data.config.titleTemplate
+                    titleTemplate: this.config.titleTemplate
                 }
             );
         }
@@ -103,33 +97,59 @@
 
 <style lang="stylus">
     @import "./constants.styl"
-    @import "./buttons.styl"
+    @import "common.styl"
 
     body {
-        background-color: $strongblack
+        padding 0
+        margin 0
+
+        background-color #343434
+    }
+
+    html{
+        padding 0
+        margin 0
+    }
+
+    // https://css-tricks.com/perfect-full-page-background-image/
+    img.bg {
+        /* Set rules to fill background */
+        min-height: 100%;
+        min-width: 1024px;
+
+        /* Set up proportionate scaling */
+        width: 100%;
+        height: auto;
+
+        /* Set up positioning */
+        position: fixed;
+        top: 0;
+        left: 0;
     }
 
     #app {
-        top: 0px
-        border-radius 2px
-
-        font-family: 'Avenir', Helvetica, Arial, sans-serif;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-
-        // center content
-        width $contentWidth
-        background-color: white;
-        position: absolute;
-        left: 0;
-        right: 0;
-        margin: auto;
-
-        color: #2c3e50;
-        margin-top: 10px;
 
         #content {
             padding: 4px;
+
+            top: 0px
+            border-radius 2px
+
+            font-family: 'Avenir', Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+
+            // center content
+            width $contentWidth
+            background-color: white;
+            position: absolute
+            left: 0;
+            right: 0;
+            margin: auto;
+
+            color: #2c3e50;
+            margin-top: 10px;
+
         }
 
         .logo {

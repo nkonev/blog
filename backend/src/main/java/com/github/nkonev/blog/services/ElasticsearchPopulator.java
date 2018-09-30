@@ -1,6 +1,6 @@
 package com.github.nkonev.blog.services;
 
-import com.github.nkonev.blog.entity.elasticsearch.Post;
+import com.github.nkonev.blog.entity.elasticsearch.IndexPost;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +58,7 @@ public class ElasticsearchPopulator {
     }
 
     private String getKey() {
-        return "elasticsearch:"+ Post.INDEX+":build";
+        return "elasticsearch:"+ IndexPost.INDEX+":build";
     }
 
     public boolean refreshInProgress(){

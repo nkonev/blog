@@ -1,7 +1,7 @@
 package com.github.nkonev.blog.config;
 
 import com.github.nkonev.blog.converter.PostConverter;
-import com.github.nkonev.blog.entity.elasticsearch.Post;
+import com.github.nkonev.blog.entity.elasticsearch.IndexPost;
 import com.github.nkonev.blog.utils.ResourceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +15,6 @@ import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
 import javax.annotation.PostConstruct;
-import java.util.Collection;
-import java.util.Optional;
 
 @Qualifier(ElasticsearchConfig.ELASTICSEARCH_CONFIG)
 @Configuration
@@ -52,7 +50,7 @@ public class ElasticsearchConfig {
         if (dropFirst) {
             try {
                 LOGGER.info("Dropping elasticsearch index");
-                elasticsearchTemplate.deleteIndex(Post.INDEX);
+                elasticsearchTemplate.deleteIndex(IndexPost.INDEX);
             } catch (Exception e) {
                 LOGGER.error("Error during dropping elasticsearch index");
             }
@@ -62,10 +60,10 @@ public class ElasticsearchConfig {
             try {
                 LOGGER.info("Creating elasticsearch index");
                 final String settings = ResourceUtils.stringFromResource(indexSettings);
-                elasticsearchTemplate.createIndex(Post.INDEX, settings);
+                elasticsearchTemplate.createIndex(IndexPost.INDEX, settings);
 
                 final String mapping = ResourceUtils.stringFromResource(postMapping);
-                elasticsearchTemplate.putMapping(Post.INDEX, Post.TYPE, mapping);
+                elasticsearchTemplate.putMapping(IndexPost.INDEX, IndexPost.TYPE, mapping);
                 LOGGER.info("Successfully created elasticsearch index");
             } catch (Exception e) {
                 LOGGER.error("Error during create elasticsearch index", e);

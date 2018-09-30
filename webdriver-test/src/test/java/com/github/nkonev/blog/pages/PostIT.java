@@ -90,7 +90,7 @@ public class PostIT extends FacebookEmulatorTests {
             this.driver = driver;
         }
         public void setTitle(String newTitle) {
-            $("input.title").shouldBe(CLICKABLE).setValue(newTitle);
+            $("input.title-edit").shouldBe(CLICKABLE).setValue(newTitle);
         }
 
         public void setText(String newText) {

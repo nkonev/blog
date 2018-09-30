@@ -32,7 +32,7 @@
 
 <script>
     import Vue from 'vue'
-    import {FETCH_USER_PROFILE} from '../store'
+    import {FETCH_USER_PROFILE, FETCH_CONFIG} from '../store'
     import bus from '../bus'
     import {LOGIN} from '../bus'
     //import Spinner from 'vue-simple-spinner'
@@ -77,6 +77,7 @@
                     this.$modal.hide(LOGIN_MODAL);
 
                     this.$store.dispatch(FETCH_USER_PROFILE);
+                    this.$store.dispatch(FETCH_CONFIG);
                     bus.$emit(LOGIN, null);
                     this.loading = false;
                     if(this.$props.onSuccessCallback){
@@ -114,7 +115,7 @@
 <style lang="stylus" scoped>
     $background_color=#404142;
     $fbColor=#3B5998
-    @import "../buttons.styl"
+    @import "../common.styl"
 
     .box {
         background: white;

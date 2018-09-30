@@ -2,6 +2,7 @@ package com.github.nkonev.blog.config;
 
 import com.github.nkonev.blog.controllers.ImagePostContentUploadController;
 import com.github.nkonev.blog.controllers.ImagePostTitleUploadController;
+import com.github.nkonev.blog.controllers.ImageSettingsUploadController;
 import com.github.nkonev.blog.controllers.ImageUserAvatarUploadController;
 import com.github.nkonev.blog.services.ElasticsearchPopulator;
 import com.github.nkonev.blog.services.PostService;
@@ -42,6 +43,9 @@ public class TaskConfig {
 
     @Autowired
     private ImageUserAvatarUploadController imageUserAvatarUploadController;
+
+    @Autowired
+    private ImageSettingsUploadController imageSettingsUploadController;
 
     @Autowired
     private SeoCacheService seoCacheService;
@@ -102,9 +106,10 @@ public class TaskConfig {
         final int deletedPostContent = imagePostContentUploadController.clearPostContentImages();
         final int deletedPostTitles  = imagePostTitleUploadController.clearPostTitleImages();
         final int deletedAvatarImages = imageUserAvatarUploadController.clearAvatarImages();
+        final int deletedSettingsImages = imageSettingsUploadController.clearSettingsImages();
 
-        LOGGER_IMAGE_CLEAN_TASK.info("Cleared {} post content images(created before 1 day ago); {} post title images; {} user avatar images",
-                deletedPostContent, deletedPostTitles, deletedAvatarImages);
+        LOGGER_IMAGE_CLEAN_TASK.info("Cleared {} post content images(created before 1 day ago); {} post title images; {} user avatar images; {} settings images",
+                deletedPostContent, deletedPostTitles, deletedAvatarImages, deletedSettingsImages);
     }
 
 

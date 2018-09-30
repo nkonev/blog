@@ -20,7 +20,7 @@
 
 <script>
     import store from '../store'
-    import {UNSET_USER} from '../store'
+    import {UNSET_USER, FETCH_CONFIG} from '../store'
     import {LOGIN_MODAL} from '../constants'
     import bus from '../bus'
     import {LOGOUT} from '../bus'
@@ -45,7 +45,8 @@
                         this.$http.post('/api/logout').then(
                             response => {
                                 // ok
-                                store.commit(UNSET_USER);
+                                store.commit(UNSET_USER); // todo elaborate expired session handling
+                                store.dispatch(FETCH_CONFIG);
                                 bus.$emit(LOGOUT, null);
                             },
                             response => {

@@ -42,12 +42,6 @@ def writeAndLog(filePath, content) {
 ////////////////////////////////////////////////////////////// common snippets //////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-def FRONT_CONFIGURATION_SNIPPET =
-"""custom.frontend:
-    titleTemplate: "%s | owner's blog"
-    header: "Owner's blog"
-"""
-
 def DATA_STORE_SNIPPET = {boolean dropFirst, String ddlAuto ->
 return """
 spring.jpa:
@@ -88,7 +82,7 @@ spring.datasource:
 spring.flyway:
   locations: ${dropFirst ? 'classpath:/db/migration, classpath:/db/demo': 'classpath:/db/migration'}
   drop-first: ${dropFirst}
-  schemas: migrations, auth, posts, images, locks
+  schemas: migrations, auth, posts, images, settings
   out-of-order: true
 
 spring.redis.url: redis://172.22.0.3:6379/0
@@ -235,7 +229,6 @@ spring.resources.static-locations: file:backend/src/main/resources/static/, clas
 
 ${DATA_STORE_SNIPPET(false, 'validate')}
 ${MANAGEMENT_SNIPPET(false)}
-${FRONT_CONFIGURATION_SNIPPET}
 
 facebook:
   client:
@@ -272,7 +265,6 @@ ${WEBSERVER_SNIPPET}
 ${TEST_USERS_SNIPPET}
 ${DATA_STORE_SNIPPET(true, 'validate')}
 ${MANAGEMENT_SNIPPET(true)}
-${FRONT_CONFIGURATION_SNIPPET}
 custom.prerender.enable: true
 """;
 writeAndLog(BACKEND_TEST_YML_FILE, BACKEND_TEST_YML_CONTENT);
@@ -304,7 +296,6 @@ custom.it.user.id: 1
 ${TEST_USERS_SNIPPET}
 ${DATA_STORE_SNIPPET(true, 'none')}
 ${MANAGEMENT_SNIPPET(true)}
-${FRONT_CONFIGURATION_SNIPPET}
 
 facebook:
   client:

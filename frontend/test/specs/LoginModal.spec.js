@@ -55,6 +55,9 @@ describe("LoginModal.vue", () => {
                 console.log('Mocked fetchUserProfile');
                 done();
             },
+            fetchConfig: () => {
+                console.log('Mocked fetchConfig');
+            }
         };
         const store = new Vuex.Store({
             state: {},

@@ -3,10 +3,10 @@ package com.github.nkonev.blog.entity.elasticsearch;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
-import static com.github.nkonev.blog.entity.elasticsearch.Post.INDEX;
+import static com.github.nkonev.blog.entity.elasticsearch.IndexPost.INDEX;
 
-@Document(indexName = INDEX, type = Post.TYPE, createIndex = false)
-public class Post {
+@Document(indexName = INDEX, type = IndexPost.TYPE, createIndex = false)
+public class IndexPost {
 
     public static final String INDEX = "post";
 
@@ -22,9 +22,9 @@ public class Post {
 
     private String text;
 
-    public Post() { }
+    public IndexPost() { }
 
-    public Post(Long id, String title, String text) {
+    public IndexPost(Long id, String title, String text) {
         this.id = id;
         this.title = title;
         this.text = text;

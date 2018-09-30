@@ -54,7 +54,7 @@
 </script>
 
 <style lang="stylus">
-    @import "../buttons.styl"
+    @import "../common.styl"
     $lockBtnMargin=4px 8px
     $lockBtnWidth=80px
     .user {

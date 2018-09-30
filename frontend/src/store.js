@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {PROFILE_URL} from './constants'
+import {PROFILE_URL, API_CONFIG} from './constants'
 
 Vue.use(Vuex);
 
@@ -9,9 +9,28 @@ export const SET_USER = 'setUser';
 export const UNSET_USER = 'unsetUser';
 export const FETCH_USER_PROFILE = 'fetchUserProfile';
 
+export const GET_CONFIG = 'getConfig';
+export const SET_CONFIG = 'setConfig';
+export const UNSET_CONFIG = 'unsetConfig';
+export const FETCH_CONFIG = 'fetchConfig';
+
+export const GET_HEADER = 'getHeader';
+export const SET_HEADER = 'setHeader';
+
+export const GET_TITLE_TEMPLATE = 'getTitleTemplate';
+export const SET_TITLE_TEMPLATE = 'setTitleTemplate';
+
+export const GET_IMAGE_BACKGROUND = "getImageBackground";
+
 const store = new Vuex.Store({
     state: {
-        currentUser: null
+        currentUser: null,
+        config: {
+            header: null,
+            titleTemplate: null,
+            imageBackground: null
+        },
+        showSettings: false
     },
     mutations: {
         [SET_USER](state, payload) {
@@ -20,21 +39,58 @@ const store = new Vuex.Store({
         [UNSET_USER](state) {
             state.currentUser = null;
         },
+
+        [SET_CONFIG](state, payload) {
+            state.config = payload;
+        },
+        [UNSET_CONFIG](state) {
+            state.config = {};
+        },
+
+        [SET_HEADER](state, payload) {
+            state.config.header = payload;
+        },
+
+        [SET_TITLE_TEMPLATE](state, payload) {
+            state.config.titleTemplate = payload;
+        },
     },
     getters: {
         [GET_USER](state) {
             return state.currentUser;
-        }
+        },
+
+        [GET_CONFIG](state) {
+            return state.config;
+        },
+
+        [GET_HEADER](state) {
+            return state.config.header;
+        },
+        [GET_TITLE_TEMPLATE](state) {
+            return state.config.titleTemplate;
+        },
+        [GET_IMAGE_BACKGROUND](state) {
+            return state.config.imageBackground;
+        },
+
     },
     actions: {
         [FETCH_USER_PROFILE](context) {
             Vue.http.get(PROFILE_URL).then(response => {
-                const userProfile = response.body;
-                // console.info('User Profile:', userProfile);
-                context.commit(SET_USER, userProfile);
+                context.commit(SET_USER, response.body);
             }, response => {
                 // error callback
                 // console.error("Can\'t get user profile!", response);
+            });
+        },
+
+        [FETCH_CONFIG](context) {
+            Vue.http.get(API_CONFIG).then(response => {
+                context.commit(SET_CONFIG, response.body);
+            }, response => {
+                // error callback
+                console.error("Can\'t get config", response);
             });
         }
     }

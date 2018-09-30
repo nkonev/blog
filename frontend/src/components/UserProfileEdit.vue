@@ -21,6 +21,8 @@
                         @init="handleCroppaInit"
                         @file-size-exceed="handleCroppaFileSizeExceed"
                         @file-type-mismatch="handleCroppaFileTypeMismatch"
+                        @file-choose="handleCroppaFileChoose"
+                        @image-remove="handleCroppaImageRemove"
                 >
             </croppa>
             </div>
@@ -64,6 +66,7 @@
                     login: "",
                     password: "",
                     email: "",
+                    removeAvatar: false,
                 },
 
                 schema: {
@@ -111,6 +114,12 @@
             handleCroppaFileSizeExceed() {
                 // see :file-size-limit
                 alert('Image size must be < than 5 Mb');
+            },
+            handleCroppaFileChoose(){
+                this.model.removeAvatar = false;
+            },
+            handleCroppaImageRemove(){
+                this.model.removeAvatar = true;
             },
             save(){
                 this.startSending();

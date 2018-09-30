@@ -12,6 +12,8 @@ public class EditUserDTO {
 
     private String password; // password which user desires
 
+    private Boolean removeAvatar;
+
     @NotEmpty
     @Email
     private String email;
@@ -55,5 +57,13 @@ public class EditUserDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Boolean getRemoveAvatar() {
+        return removeAvatar;
+    }
+
+    public void setRemoveAvatar(Boolean removeAvatar) {
+        this.removeAvatar = removeAvatar;
     }
 }

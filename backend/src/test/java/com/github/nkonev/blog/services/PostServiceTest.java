@@ -1,7 +1,7 @@
 package com.github.nkonev.blog.services;
 
 import com.github.nkonev.blog.AbstractUtTestRunner;
-import com.github.nkonev.blog.entity.elasticsearch.Post;
+import com.github.nkonev.blog.entity.elasticsearch.IndexPost;
 import com.github.nkonev.blog.repo.elasticsearch.IndexPostRepository;
 import org.junit.Assert;
 import org.junit.Test;
@@ -17,7 +17,7 @@ public class PostServiceTest extends AbstractUtTestRunner {
 
     @Test
     public void testCleanOldElasticsearchGarbage(){
-        Post post = new Post();
+        IndexPost post = new IndexPost();
         post.setId(20000L);
         post.setText("trash text");
         post.setTitle("trash title");

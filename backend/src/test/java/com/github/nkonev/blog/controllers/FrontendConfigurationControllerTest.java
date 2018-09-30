@@ -19,8 +19,10 @@ public class FrontendConfigurationControllerTest extends AbstractUtTestRunner {
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
         )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.titleTemplate").value("%s | owner's blog"))
-                .andExpect(jsonPath("$.header").value("Owner's blog"))
+                .andExpect(jsonPath("$.titleTemplate").value("%s | nkonev's blog"))
+                .andExpect(jsonPath("$.header").value("Блог Конева Никиты"))
+                .andExpect(jsonPath("$.showSettings").value(false))
+                .andExpect(jsonPath("$.removeImageBackground").doesNotExist())
                 .andReturn();
 
     }

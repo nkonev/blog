@@ -1,22 +1,24 @@
 package com.github.nkonev.blog.dto;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
-
-@JsonAutoDetect(
-        fieldVisibility = JsonAutoDetect.Visibility.NONE,
-        getterVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY,
-        setterVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY
-)
-@Configuration
-@ConfigurationProperties(prefix="custom.frontend")
 public class FrontendConfigurationDTO {
     private String header;
 
     private String titleTemplate;
 
+    private String imageBackground;
+
+    private Boolean removeImageBackground;
+
+    private boolean showSettings;
+
     public FrontendConfigurationDTO() { }
+
+    public FrontendConfigurationDTO(String header, String titleTemplate, String imageBackground, boolean showSettings) {
+        this.header = header;
+        this.titleTemplate = titleTemplate;
+        this.imageBackground = imageBackground;
+        this.showSettings = showSettings;
+    }
 
     public String getTitleTemplate() {
         return titleTemplate;
@@ -32,5 +34,29 @@ public class FrontendConfigurationDTO {
 
     public void setHeader(String header) {
         this.header = header;
+    }
+
+    public String getImageBackground() {
+        return imageBackground;
+    }
+
+    public void setImageBackground(String imageBackground) {
+        this.imageBackground = imageBackground;
+    }
+
+    public boolean isShowSettings() {
+        return showSettings;
+    }
+
+    public void setShowSettings(boolean showSettings) {
+        this.showSettings = showSettings;
+    }
+
+    public Boolean getRemoveImageBackground() {
+        return removeImageBackground;
+    }
+
+    public void setRemoveImageBackground(Boolean removeImageBackground) {
+        this.removeImageBackground = removeImageBackground;
     }
 }

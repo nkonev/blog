@@ -16,6 +16,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.util.Optional;
+
 /**
  * Central entrypoint for access decisions
  */
@@ -139,5 +141,13 @@ public class BlogSecurityService {
 
     public boolean hasUserManagementPermission(UserAccountDetailsDTO userAccount) {
         return hasSessionManagementPermission(userAccount);
+    }
+
+    public boolean hasSettingsPermission(UserAccountDetailsDTO userAccount) {
+        return Optional
+                .ofNullable(userAccount)
+                .map(u -> u.getAuthorities()
+                        .contains(new SimpleGrantedAuthority(UserRole.ROLE_ADMIN.name())))
+                .orElse(false);
     }
 }

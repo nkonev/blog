@@ -167,7 +167,11 @@ public class UserAccountConverter {
             userAccount.setPassword(passwordEncoder.encode(password));
         }
         userAccount.setUsername(userAccountDTO.getLogin());
-        userAccount.setAvatar(userAccountDTO.getAvatar());
+        if (Boolean.TRUE.equals(userAccountDTO.getRemoveAvatar())){
+            userAccount.setAvatar(null);
+        } else {
+            userAccount.setAvatar(userAccountDTO.getAvatar());
+        }
         userAccount.setEmail(userAccountDTO.getEmail());
     }
 

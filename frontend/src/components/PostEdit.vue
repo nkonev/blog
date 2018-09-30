@@ -31,7 +31,7 @@
                     >
             </croppa >
         </div>
-        <input class="title" placeholder="Title of your megapost" type="text" autofocus v-model="editPostDTO.title"/>
+        <input class="title-edit" placeholder="Title of your megapost" type="text" autofocus v-model="editPostDTO.title"/>
         <vue-editor id="editor"
                     :editorOptions="editorOptions"
                     :placeholder="computePlaceholder()"
@@ -58,7 +58,7 @@
     import BlogSpinner from './BlogSpinner.vue'
     import {API_POST} from '../constants'
     import Croppa from 'vue-croppa'
-    import {isLargeScreen} from "../utils";
+    import {isLargeScreen, computedCropper} from "../utils";
     if (isLargeScreen()) {
         require("quill/dist/quill.bubble.css");
     } else {
@@ -113,17 +113,7 @@
                 chosenFile: null,
             }
         },
-        computed: {
-            cropperWidth(){
-                return isLargeScreen() ? 800 : screen.width - 25
-            },
-            cropperHeight(){
-                return isLargeScreen() ? 600 : this.cropperWidth;
-            },
-            cropperRemoveButtonSize(){
-                return isLargeScreen() ? 30 : 45;
-            },
-        },
+        computed: computedCropper,
         methods: {
             startSending() {
                 this.submitting = true;
@@ -203,6 +193,7 @@
                 alert('Image size must be < than 5 Mb');
             },
             handleCroppaFileChoose(e) {
+                this.editPostDTO.removeTitleImage = false;
                 console.debug('image chosen', e);
                 this.$data.chosenFile = e;
             },
@@ -210,6 +201,7 @@
                 document.querySelector(".post-edit-cropper canvas").style.border="dashed"
             },
             handleCroppaImageRemove() {
+                this.editPostDTO.removeTitleImage = true;
                 console.debug('image removed');
                 this.$data.chosenFile = null;
             },
@@ -258,25 +250,10 @@
 
 <style lang="stylus" scoped>
     @import "../constants.styl"
+    @import "../common.styl"
     .post-edit {
         &-cropper {
             text-align center
-        }
-        .title {
-            width 100%
-            margin-left 0px
-            margin-right 0px
-            padding-right 0px
-            padding-left 0.3em
-            border-style hidden
-            border-width 0px
-            box-sizing: border-box;
-
-            font-size 2em
-            font-weight $postTitleFontWeight
-            font-family $postTitleFontFamily
-            color $titleColor
-            background $titleBackground
         }
         div.quill-editor {
             margin-top: 0.3em

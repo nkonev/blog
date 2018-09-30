@@ -87,9 +87,21 @@ export const infinitePostsHandler = (that, getWithPaginationUrl, responseArrayEx
             $state.complete();
         }
     });
-}
+};
 
 
 export const isLargeScreen = () => {
     return screen.width > 969;
-}
+};
+
+export const computedCropper = {
+    cropperWidth(){
+        return isLargeScreen() ? 800 : screen.width - 25
+    },
+    cropperHeight(){
+        return isLargeScreen() ? 600 : this.cropperWidth;
+    },
+    cropperRemoveButtonSize(){
+        return isLargeScreen() ? 30 : 45;
+    },
+};

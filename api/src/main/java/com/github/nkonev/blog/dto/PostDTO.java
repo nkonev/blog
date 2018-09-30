@@ -13,6 +13,16 @@ public class PostDTO {
     private UserAccountDTO owner;
     private Integer commentCount;
 
+    public Boolean getRemoveTitleImage() {
+        return removeTitleImage;
+    }
+
+    public void setRemoveTitleImage(Boolean removeTitleImage) {
+        this.removeTitleImage = removeTitleImage;
+    }
+
+    private Boolean removeTitleImage;
+
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern= ApiConstants.DATE_FORMAT)
     private LocalDateTime createDateTime;
 

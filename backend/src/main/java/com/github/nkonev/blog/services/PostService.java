@@ -2,6 +2,7 @@ package com.github.nkonev.blog.services;
 
 import com.github.nkonev.blog.converter.PostConverter;
 import com.github.nkonev.blog.dto.*;
+import com.github.nkonev.blog.entity.elasticsearch.IndexPost;
 import com.github.nkonev.blog.entity.jpa.Post;
 import com.github.nkonev.blog.entity.jpa.UserAccount;
 import com.github.nkonev.blog.exception.BadRequestException;
@@ -46,7 +47,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.github.nkonev.blog.converter.PostConverter.toElasticsearchPost;
-import static com.github.nkonev.blog.entity.elasticsearch.Post.*;
+import static com.github.nkonev.blog.entity.elasticsearch.IndexPost.*;
 import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchPhrasePrefixQuery;
@@ -148,12 +149,12 @@ public class PostService {
 
         @Override
         public <T> AggregatedPage<T> mapResults(SearchResponse response, Class<T> clazz, Pageable pageable) {
-            List<com.github.nkonev.blog.entity.elasticsearch.Post> list = new ArrayList<>();
+            List<IndexPost> list = new ArrayList<>();
             for (SearchHit searchHit : response.getHits()) {
                 if (response.getHits().getHits().length <= 0) {
                     return new AggregatedPageImpl<T>((List<T>) list);
                 }
-                com.github.nkonev.blog.entity.elasticsearch.Post tempPost = new com.github.nkonev.blog.entity.elasticsearch.Post();
+                IndexPost tempPost = new IndexPost();
                 tempPost.setId(Long.valueOf(searchHit.getId()));
                 tempPost.setTitle(getHighlightedOrOriginalField(searchHit, FIELD_TITLE));
                 tempPost.setText(getHighlightedOrOriginalField(searchHit, FIELD_TEXT));
@@ -197,7 +198,7 @@ public class PostService {
 
     public PostDTO convertToPostDTOWithCleanTags(Post post) {
         PostDTO postDTO = postConverter.convertToPostDTO(post);
-        com.github.nkonev.blog.entity.elasticsearch.Post byId = indexPostRepository
+        IndexPost byId = indexPostRepository
                 .findById(post.getId())
                 .orElseThrow(()->new DataNotFoundException("post not found in fulltext store"));
         postDTO.setText(byId.getText());
@@ -230,7 +231,7 @@ public class PostService {
             );
 
             postsResult.forEach(postDTO -> {
-                com.github.nkonev.blog.entity.elasticsearch.Post fulltextPost = indexPostRepository
+                IndexPost fulltextPost = indexPostRepository
                         .findById(postDTO.getId())
                         .orElseThrow(() -> new DataNotFoundException("post not found in fulltext store"));
                 postDTO.setText(fulltextPost.getText());
@@ -254,10 +255,10 @@ public class PostService {
                     .withPageable(pageRequest)
                     .build();
             // https://stackoverflow.com/questions/37049764/how-to-provide-highlighting-with-spring-data-elasticsearch/37163711#37163711
-            Page<com.github.nkonev.blog.entity.elasticsearch.Post> fulltextResult = elasticsearchTemplate.queryForPage(searchQuery, com.github.nkonev.blog.entity.elasticsearch.Post.class, searchResultMapper);
+            Page<IndexPost> fulltextResult = elasticsearchTemplate.queryForPage(searchQuery, IndexPost.class, searchResultMapper);
 
             postsResult = new ArrayList<>();
-            for (com.github.nkonev.blog.entity.elasticsearch.Post fulltextPost: fulltextResult){
+            for (IndexPost fulltextPost: fulltextResult){
 
                 var params = new HashMap<String, Object>();
                 params.put("id", fulltextPost.getId());
@@ -320,7 +321,7 @@ public class PostService {
 
 
     public void refreshFulltextIndex(){
-        LOGGER.info("Starting refreshing elasticsearch index {}", com.github.nkonev.blog.entity.elasticsearch.Post.INDEX);
+        LOGGER.info("Starting refreshing elasticsearch index {}", IndexPost.INDEX);
         final Collection<Long> postIds = postRepository.findPostIds();
 
         for (Long id: postIds) {
@@ -358,6 +359,6 @@ public class PostService {
             LOGGER.info("Deleting orphan post id={} from index", id);
             indexPostRepository.deleteById(id);
         }
-        LOGGER.info("Finished refreshing elasticsearch index {}", com.github.nkonev.blog.entity.elasticsearch.Post.INDEX);
+        LOGGER.info("Finished refreshing elasticsearch index {}", IndexPost.INDEX);
     }
 }

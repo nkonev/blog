@@ -137,7 +137,7 @@ spring.datasource:
 spring.flyway:
   locations: classpath:/db/migration
   drop-first: false
-  schemas: migrations, auth, posts, images, locks
+  schemas: migrations, auth, posts, images, settings
   out-of-order: true
 
 spring.redis.url: redis://172.22.0.3:6379/0
@@ -156,10 +156,6 @@ management:
     ssl:
       enabled: false
     add-application-context-header: false
-
-custom.frontend:
-    titleTemplate: "%s | owner's blog"
-    header: "Owner's blog"
 
 
 facebook:

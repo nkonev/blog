@@ -1,5 +1,6 @@
 package com.github.nkonev.blog;
 
+import com.github.nkonev.blog.dto.FrontendConfigurationDTO;
 import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +28,7 @@ public class SwaggerConfig {
     @Bean
     public Docket restApi() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .ignoredParameterTypes(UserAccountDetailsDTO.class, URLStreamHandler.class, URL.class, Duration.class, InputStream.class)
+                .ignoredParameterTypes(UserAccountDetailsDTO.class, URLStreamHandler.class, URL.class, Duration.class, InputStream.class, FrontendConfigurationDTO.class)
                 .apiInfo(apiInfo())
                 .select()
                 .paths(input ->

@@ -44,5 +44,6 @@ public class Constants {
     public static class Schemas {
         public static final String AUTH = "auth";
         public static final String POSTS = "posts";
+        public static final String SETTINGS = "settings";
     }
 }
