@@ -66,7 +66,8 @@ describe("LoginModal.vue", () => {
                 mocks: {
                     $http: $httpSuccess
                 },
-                store, localVue
+                store, localVue,
+                stubs: ['font-awesome-icon']
             }
         );
         prepareWrapper(LoginModalWrapper);
@@ -105,7 +106,8 @@ describe("LoginModal.vue", () => {
                 mocks: {
                     $http: $httpFail
                 },
-                localVue
+                localVue,
+                stubs: ['font-awesome-icon']
             }
         );
         prepareWrapper(LoginModalWrapper);
