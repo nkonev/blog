@@ -4,6 +4,8 @@ import LoginModal from "../../src/components/LoginModal.vue";
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 const localVue = createLocalVue();
 localVue.use(Vuex);
+// we only ignore here because we render into <modal>
+Vue.config.isUnknownElement = () => {}
 
 // https://jasmine.github.io/2.0/introduction.html
 describe("LoginModal.vue", () => {
@@ -66,8 +68,7 @@ describe("LoginModal.vue", () => {
                 mocks: {
                     $http: $httpSuccess
                 },
-                store, localVue,
-                stubs: ['font-awesome-icon']
+                store, localVue
             }
         );
         prepareWrapper(LoginModalWrapper);
@@ -106,8 +107,7 @@ describe("LoginModal.vue", () => {
                 mocks: {
                     $http: $httpFail
                 },
-                localVue,
-                stubs: ['font-awesome-icon']
+                localVue
             }
         );
         prepareWrapper(LoginModalWrapper);
