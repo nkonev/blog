@@ -95,6 +95,9 @@
 
         .comment-command-buttons {
             margin-top 0.3em
+
+            display flex
+            flex-direction row
         }
 
     }
