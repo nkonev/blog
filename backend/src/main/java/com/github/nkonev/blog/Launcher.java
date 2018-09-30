@@ -11,8 +11,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
  */
 @EnableAsync
 @SpringBootApplication(
-        exclude = {SecurityAutoConfiguration.class, ThymeleafAutoConfiguration.class},
-        scanBasePackages = {"com.github.nkonev.blog", "org.springframework.boot.actuate.metrics.export.prometheus"}
+        scanBasePackages = {"com.github.nkonev.blog"}
 )
 public class Launcher {
 
