@@ -9,7 +9,7 @@
     export default {
         name: "Progressbar",
         components: { vueProgress },
-        props:['excludedUrls'],
+        props:['includedUrls'],
         mounted() {
             var progress = this.$refs.progressbar;
 
@@ -19,11 +19,15 @@
                 callback(){ }
             };
 
-            var excludedVal = this.$props.excludedUrls;
-            var excludedRegexp = excludedVal.map(currentVal => new RegExp(currentVal, "i"));
+            var includedVal = this.$props.includedUrls;
+            var includedRegexp = includedVal.map(currentVal => new RegExp(currentVal, "i"));
 
             var canUseProgress = function(url){
-                return !excludedRegexp.find(el => el.test(url))
+                if (includedVal) {
+                    return includedRegexp.find(el => el.test(url))
+                } else {
+                    return true
+                }
             };
 
             var startProgress = function(){
@@ -31,11 +35,8 @@
             };
 
             XMLHttpRequest.prototype.open = function(a='',b='') {
-                if (excludedVal) {
-                    if (canUseProgress(b)) {
-                        startProgress();
-                    }
-                } else {
+                if (canUseProgress(b)) {
+                    console.log('starting autoprogress for ', b)
                     startProgress();
                 }
                 listener.tempOpen.apply(this, arguments);
@@ -54,11 +55,7 @@
             };
 
             XMLHttpRequest.prototype.send = function(a='',b='') {
-                if (excludedVal) {
-                    if (canUseProgress(listener.url)) {
-                        doneProgress();
-                    }
-                } else {
+                if (canUseProgress(listener.url)) {
                     doneProgress();
                 }
 

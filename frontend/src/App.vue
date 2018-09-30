@@ -2,7 +2,7 @@
     <div id="app">
         <div id="content">
             <LoginModal></LoginModal>
-            <auto-progress :excludedUrls="['/api/profile', '/api/post/\\d+/comment.*', '/api/config', '/api/post/random']"/>
+            <auto-progress :includedUrls="['/api/post\\?.*', '/api/post/\\d+/comment.*', '/api/user\?.*']"/>
 
             <h1 class="logo">{{config.header}}</h1>
             <nav id="header-nav">
