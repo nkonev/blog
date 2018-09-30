@@ -12,7 +12,9 @@
                 <router-link class="router-link" to="/help">Help</router-link>
                 <user-profile-nav v-bind:currentUser="currentUser"/>
             </nav>
-            <router-view></router-view>
+            <random-posts v-if="showRandom"/>
+            <router-view>
+            </router-view>
         </div>
     </div>
 </template>
@@ -23,12 +25,13 @@
     import vmodal from 'vue-js-modal'
     import autoProgress from './lib/auto-progress.vue'
     import userProfileNav from './components/UserProfileNav.vue'
+    import RandomPosts from "./components/RandomPosts.vue";
     import store, {GET_USER, FETCH_USER_PROFILE} from './store'
     import {mapGetters} from 'vuex'
     import {API_CONFIG} from './constants'
     import bus, {LOGIN, LOGOUT} from './bus'
     import Notifications from './notifications'
-
+    import {isLargeScreen} from './utils'
     // https://www.endpoint.com/blog/2018/07/12/vue-fontawesome-facebook-twitter
     import { library } from '@fortawesome/fontawesome-svg-core'
     import { faFacebook } from '@fortawesome/free-brands-svg-icons'
@@ -50,12 +53,18 @@
             },
         },
         store,
-        computed: mapGetters({currentUser: GET_USER}), // currentUser is here, 'getUser' -- in store.js
+        computed: {
+            showRandom(){
+                return isLargeScreen();
+            },
+            ...mapGetters({currentUser: GET_USER}), // currentUser is here, 'getUser' -- in store.js
+        },
         // used components for provide custom tags
         components: {
             LoginModal,
             'auto-progress':autoProgress,
-            userProfileNav
+            userProfileNav,
+            RandomPosts,
         },
         mounted() {
             // attempt to initialize LoginModal
