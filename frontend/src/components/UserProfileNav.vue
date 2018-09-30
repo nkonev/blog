@@ -161,9 +161,7 @@
         span:hover {
             cursor pointer
             font-weight bold
-            transition: 0.1s all;
             filter brightness(3)
-            transform: scale(1.25, 1.25);
             background-color transparent
         }
 

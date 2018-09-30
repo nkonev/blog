@@ -167,8 +167,6 @@
                 background-color #003eff
                 border-radius 2px
                 opacity: 0.8
-                transform: scale(1.5, 1.5);
-                transition: 0.1s all;
                 z-index 1000
                 filter brightness(2)
                 box-shadow: 0 0 3em #003eff;
@@ -206,8 +204,6 @@
 
             nav {
                 a.router-link:hover {
-                    transform: none
-                    transition: none
                     box-shadow: none
                 }
             }
