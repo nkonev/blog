@@ -207,28 +207,35 @@
     }
 
     @media screen and (max-width: $contentWidth) {
-        #app {
-            width: 100%;
-            margin-top: 0px;
-
-            img#logo {
-                display: block;
-                margin: 0 auto;
-            }
-
-            .logo {
-                margin 0
-                padding 0
-                text-align center
-            }
-
-            nav {
-                a.router-link:hover {
-                    box-shadow: none
-                }
-            }
+        img.bg {
+            min-width 100%
         }
 
+        #app {
+            #content {
+                padding: 0px;
+                width: 100%;
+                margin-top: 0px;
+
+                img#logo {
+                    display: block;
+                    margin: 0 auto;
+                }
+
+                .logo {
+                    margin 0
+                    padding 0
+                    text-align center
+                }
+
+                nav {
+                    a.router-link:hover {
+                        box-shadow: none
+                    }
+                }
+            }
+
+        }
     }
 
     div.offline-indicator {
