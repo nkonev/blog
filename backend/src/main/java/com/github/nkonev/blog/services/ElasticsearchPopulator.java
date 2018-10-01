@@ -32,7 +32,7 @@ public class ElasticsearchPopulator {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
-    @Value("${custom.elasticsearch.refresh-on-start-key.timeout:10}")
+    @Value("${custom.elasticsearch.refresh-on-start-key.timeout:4}")
     private int timeout;
 
     @Value("${custom.elasticsearch.refresh-on-start-key.timeunit:MINUTES}")
@@ -49,7 +49,6 @@ public class ElasticsearchPopulator {
                 LOGGER.info("Probe is successful, so we'll refresh elasticsearch index");
                 redisTemplate.expire(key, timeout, timeUnit);
                 postService.refreshFulltextIndex();
-                redisTemplate.delete(key);
                 LOGGER.info("Successful delete probe");
             } else {
                 LOGGER.info("Probe isn't successful, so we won't refresh elasticsearch index");
