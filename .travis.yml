@@ -28,10 +28,10 @@ script:
   # if there isn't pointed explicitly PhantomJS will be used by default for both webdriver integration test and js unit test
   # We use 'install' phase because of use jars in subsequent tests
   - DATE_VERSION=`date +%Y%m%d.%H.%M`
-  - ./mvnw -Drevision=$DATE_VERSION -P frontend -P jacoco -P docker -P webdriver-chrome -P webdriver-firefox -Dcustom.selenium.headless=true clean install --no-snapshot-updates
+  - ./mvnw -Drevision=$DATE_VERSION -P frontend -P jacoco -P docker -P webdriver-chrome -P webdriver-firefox -Dcustom.selenium.headless=true clean package --no-snapshot-updates
   - (cd docker; docker-compose down)
   - docker pull nkonev/rendertron-docker
-  - ./mvnw -Drevision=$DATE_VERSION -pl deploy-test -P deploy-test clean test  --no-snapshot-updates
+  - ./mvnw -Drevision=$DATE_VERSION -pl deploy-test -P deploy-test test --no-snapshot-updates
   - rm -rf ~/.m2/repository/com/github/nkonev/blog
   - bash <(curl -s https://codecov.io/bash)
   - if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_TEST_RESULT" == "0" && "$TRAVIS_EVENT_TYPE" != "cron" ]]; then (
