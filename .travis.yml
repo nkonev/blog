@@ -24,6 +24,7 @@ install: "/bin/true" # workaround https://github.com/Swagger2Markup/swagger2mark
 before_script:
 after_acript:
 script:
+  - rm -rf ~/.m2/repository/com/github/nkonev/blog
   - (cd docker; docker-compose up -d)
   # if there isn't pointed explicitly PhantomJS will be used by default for both webdriver integration test and js unit test
   # We use 'install' phase because of use jars in subsequent tests
