@@ -14,7 +14,7 @@
 
 Q: Can I run it without docker ?
 
-A: Yes, you can by manually install PostgreSQL, RabbitMQ, Redis, Elasticsearch and configure it's connections in config or through commandline. 
+A: Yes, you can achieve it by manually install PostgreSQL, RabbitMQ, Redis, Elasticsearch and configure it's connections in config or through commandline. 
 
 
 
@@ -31,10 +31,9 @@ This will available after full package, e. g. after resource filtering of `git.t
 curl -i http://127.0.0.1:8080/git.json
 ```
 
-# Running on Windows without docker.
+# Running on Windows without docker
 
-First you should
-install redis, postgres, Rabbit MQ 
+First you should install redis, postgres, Rabbit MQ, Elasticsearch
 and manually setup them (create database, schema user for Postgres, install web stomp plugin and create user for RabbitMQ).
 
 Redis Windows x86 which works on my PC
