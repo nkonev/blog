@@ -36,9 +36,10 @@ curl -i http://127.0.0.1:8080/git.json
 First you should install redis, postgres, Rabbit MQ, Elasticsearch
 and manually setup them (create database, schema user for Postgres, install web stomp plugin and create user for RabbitMQ).
 
-Redis Windows x86 which works on my PC
+Redis Windows x86 which works on my PC (Windows 7 x86)
 http://bitsandpieces.it/redis-x86-32bit-builds-for-windows
-2.8.2104 http://fratuz610.s3.amazonaws.com/upload/public/redis-builds/x86/redis-windows-x86-2.8.2104.zip
+
+2.8.2104 http://fratuz610.s3.amazonaws.com/upload/public/redis-builds/x86/redis-windows-x86-2.8.2104.zip - requires enabled swapfile.
 
 run
 ```
