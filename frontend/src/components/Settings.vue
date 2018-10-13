@@ -1,39 +1,44 @@
 <template>
     <div>
-        <h1>Header</h1>
-        <input class="title-edit" placeholder="Header title" type="text" autofocus v-model="header"/>
+        <template v-if="configLoading">
+            <blog-spinner message="Loading config..."></blog-spinner>
+        </template>
+        <template v-else>
+            <h1>Header</h1>
+            <input class="title-edit" placeholder="Header title" type="text" autofocus v-model="header"/>
 
-        <h1>Title template</h1>
-        <input class="title-edit" placeholder="Title Template" type="text" v-model="titleTemplate"/>
+            <h1>Title template</h1>
+            <input class="title-edit" placeholder="Title Template" type="text" v-model="titleTemplate"/>
 
-        <h1>Background image</h1>
-        <!-- https://zhanziyang.github.io/vue-croppa/#/file-input -->
-        <div class="image-background-cropper">
-            <croppa v-model="myCroppa"
-                    :width="cropperWidth"
-                    :height="cropperHeight"
-                    :remove-button-size="cropperRemoveButtonSize"
+            <h1>Background image</h1>
+            <!-- https://zhanziyang.github.io/vue-croppa/#/file-input -->
+            <div class="image-background-cropper">
+                <croppa v-model="myCroppa"
+                        :width="cropperWidth"
+                        :height="cropperHeight"
+                        :remove-button-size="cropperRemoveButtonSize"
 
-                    :file-size-limit="5 * 1024 * 1024"
-                    :show-loading="true"
-                    placeholder="Choose background image"
-                    :initial-image="imageBackground"
-                    :placeholder-font-size="32"
-                    :disabled="false"
-                    :prevent-white-space="false"
-                    :show-remove-button="true"
-                    accept="image/*"
-                    @init="handleCroppaInit"
-                    @file-choose="handleCroppaFileChoose"
-                    @image-remove="handleCroppaImageRemove"
-                    @file-size-exceed="handleCroppaFileSizeExceed"
-                    @file-type-mismatch="handleCroppaFileTypeMismatch"
-            >
-            </croppa >
-        </div>
+                        :file-size-limit="5 * 1024 * 1024"
+                        :show-loading="true"
+                        placeholder="Choose background image"
+                        :initial-image="imageBackground"
+                        :placeholder-font-size="32"
+                        :disabled="false"
+                        :prevent-white-space="false"
+                        :show-remove-button="true"
+                        accept="image/*"
+                        @init="handleCroppaInit"
+                        @file-choose="handleCroppaFileChoose"
+                        @image-remove="handleCroppaImageRemove"
+                        @file-size-exceed="handleCroppaFileSizeExceed"
+                        @file-type-mismatch="handleCroppaFileTypeMismatch"
+                >
+                </croppa >
+            </div>
 
-        <button v-if="!submitting" class="blog-btn ok-btn" @click="onBtnSave">Save</button>
-        <blog-spinner v-if="submitting" message="Sending..."></blog-spinner>
+            <button v-if="!submitting" class="blog-btn ok-btn" @click="onBtnSave">Save</button>
+            <blog-spinner v-if="submitting" message="Sending..."></blog-spinner>
+        </template>
     </div>
 </template>
 
@@ -43,7 +48,7 @@
     import Croppa from 'vue-croppa'
     import {computedCropper} from "../utils";
     import {mapGetters} from 'vuex'
-    import store, {GET_CONFIG, GET_HEADER, SET_HEADER, GET_TITLE_TEMPLATE, SET_TITLE_TEMPLATE, SET_CONFIG, GET_IMAGE_BACKGROUND} from '../store'
+    import store, {GET_CONFIG, GET_HEADER, SET_HEADER, GET_TITLE_TEMPLATE, SET_TITLE_TEMPLATE, SET_CONFIG, GET_IMAGE_BACKGROUND, GET_CONFIG_LOADING, FETCH_CONFIG} from '../store'
 
     export default {
         components: {
@@ -61,7 +66,7 @@
         store,
         computed: {
             ...computedCropper,
-            ...mapGetters({storedConfigDto: GET_CONFIG}), // currentUser is here, 'getUser' -- in store.js
+            ...mapGetters({storedConfigDto: GET_CONFIG, configLoading: GET_CONFIG_LOADING}),
             header: {
                 get () {
                     return this.$store.getters[GET_HEADER]
@@ -116,7 +121,7 @@
                 const putFunction = () => {
                     this.$http.put('/api/config', formData)
                         .then(successResp => {
-                            console.error("successfully set config", successResp);
+                            console.log("successfully set config", successResp);
                             this.finishSending();
                             const newVal = successResp.body;
                             this.$store.commit(SET_CONFIG, newVal);
@@ -146,6 +151,13 @@
             finishSending() {
                 this.submitting = false;
             },
+        },
+        mounted(){
+            console.log("settings mounted");
+        },
+        beforeDestroy(){
+            console.log("fetching new config on destroy settings");
+            this.$store.dispatch(FETCH_CONFIG);
         }
     }
 </script>

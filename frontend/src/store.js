@@ -21,6 +21,10 @@ export const GET_TITLE_TEMPLATE = 'getTitleTemplate';
 export const SET_TITLE_TEMPLATE = 'setTitleTemplate';
 
 export const GET_IMAGE_BACKGROUND = "getImageBackground";
+export const SET_IMAGE_BACKGROUND = "setImageBackground";
+
+export const GET_CONFIG_LOADING = "getConfigLoading";
+export const SET_CONFIG_LOADING = "setConfigLoading";
 
 const store = new Vuex.Store({
     state: {
@@ -30,6 +34,7 @@ const store = new Vuex.Store({
             titleTemplate: null,
             imageBackground: null
         },
+        configLoading: true,
         showSettings: false
     },
     mutations: {
@@ -54,6 +59,12 @@ const store = new Vuex.Store({
         [SET_TITLE_TEMPLATE](state, payload) {
             state.config.titleTemplate = payload;
         },
+        [SET_CONFIG_LOADING](state, payload) {
+            state.configLoading = payload;
+        },
+        [SET_IMAGE_BACKGROUND](state, payload) {
+            state.config.imageBackground = payload;
+        }
     },
     getters: {
         [GET_USER](state) {
@@ -73,7 +84,9 @@ const store = new Vuex.Store({
         [GET_IMAGE_BACKGROUND](state) {
             return state.config.imageBackground;
         },
-
+        [GET_CONFIG_LOADING](state) {
+            return state.configLoading;
+        }
     },
     actions: {
         [FETCH_USER_PROFILE](context) {
@@ -86,10 +99,13 @@ const store = new Vuex.Store({
         },
 
         [FETCH_CONFIG](context) {
+            context.commit(SET_CONFIG_LOADING, true);
             Vue.http.get(API_CONFIG).then(response => {
                 context.commit(SET_CONFIG, response.body);
+                context.commit(SET_CONFIG_LOADING, false);
             }, response => {
                 // error callback
+                context.commit(SET_CONFIG_LOADING, false);
                 console.error("Can\'t get config", response);
             });
         }
