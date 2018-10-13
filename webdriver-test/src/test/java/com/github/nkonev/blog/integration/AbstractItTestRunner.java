@@ -6,6 +6,7 @@ package com.github.nkonev.blog.integration;
 
 import com.codeborne.selenide.Condition;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.nkonev.blog.CommonTestConstants;
 import com.github.nkonev.blog.Launcher;
 import com.github.nkonev.blog.webdriver.IntegrationTestConstants;
 import org.junit.Before;
@@ -19,10 +20,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import static com.codeborne.selenide.Selenide.clearBrowserCookies;
+import static com.github.nkonev.blog.util.FileUtils.getExistsFile;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(
@@ -61,4 +64,7 @@ public abstract class AbstractItTestRunner {
         clearBrowserCookies();
     }
 
+    protected String getPencilImage() throws IOException {
+        return getExistsFile("../"+ CommonTestConstants.TEST_IMAGE, CommonTestConstants.TEST_IMAGE).getCanonicalPath();
+    }
 }

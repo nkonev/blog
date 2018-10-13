@@ -285,7 +285,7 @@ spring.mvc.static-path-pattern: /**
 spring.resources.static-locations: file:../backend/src/main/resources/static/, classpath:/static/
 
 custom.selenium.implicitly-wait-timeout: 10
-custom.selenium.browser: PHANTOM
+custom.selenium.browser: CHROME
 custom.selenium.window-height: 900
 custom.selenium.window-width: 1600
 custom.selenium.selenide-condition-timeout: 10

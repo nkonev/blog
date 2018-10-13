@@ -17,7 +17,7 @@ public class IntegrationTestConstants {
 
     public static class Pages {
         public static final String INDEX_HTML = "/";
-        public static final String AUTOCOMPLETE = "/autocomplete";
+        public static final String SETTINGS = "/settings";
         public static final String USERS_LIST = "/users";
         public static final String USER = "/user";
     }

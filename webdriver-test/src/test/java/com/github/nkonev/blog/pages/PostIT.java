@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -225,7 +226,7 @@ public class PostIT extends FacebookEmulatorTests {
             postEditPage.setTitle(newTitle);
 
             if (seleniumConfiguration.getBrowser()== Browser.CHROME || seleniumConfiguration.getBrowser()==Browser.FIREFOX) {
-                postEditPage.setTitleImage(getExistsFile("../"+ CommonTestConstants.TEST_IMAGE, CommonTestConstants.TEST_IMAGE).getCanonicalPath());
+                postEditPage.setTitleImage(getPencilImage());
             }
             postEditPage.save();
 

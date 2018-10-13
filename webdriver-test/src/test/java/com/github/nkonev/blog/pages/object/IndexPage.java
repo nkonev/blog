@@ -3,6 +3,7 @@ package com.github.nkonev.blog.pages.object;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.github.nkonev.blog.integration.AbstractItTestRunner;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -51,6 +52,10 @@ public class IndexPage {
 
     public void clickAddPost() {
         $(ADD_POST).shouldBe(AbstractItTestRunner.CLICKABLE).click();
+    }
+
+    public void clickSettings(){
+        $(BODY).find(By.linkText("Settings")).shouldBe(AbstractItTestRunner.CLICKABLE).click();
     }
 
     public void clearSearchButton() {
