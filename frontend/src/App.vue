@@ -208,7 +208,10 @@
 
     @media screen and (max-width: $contentWidth) {
         img.bg {
-            min-width 100%
+            min-width auto
+            width auto
+            min-height 100%
+            height 100%
         }
 
         #app {
