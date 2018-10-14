@@ -10,6 +10,9 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 /**
  * Performs sending entity to email
  */
@@ -52,7 +55,7 @@ public class EmailService {
         msg.setTo(email);
 
         String text = registrationTextTemplate
-                .replace(REG_LINK_PLACEHOLDER, customConfig.getBaseUrl() + Constants.Urls.CONFIRM+ "?"+ Constants.Urls.UUID +"=" + userConfirmationToken.getUuid() + "&login=" + login)
+                .replace(REG_LINK_PLACEHOLDER, customConfig.getBaseUrl() + Constants.Urls.CONFIRM+ "?"+ Constants.Urls.UUID +"=" + userConfirmationToken.getUuid() + "&login=" + URLEncoder.encode(login, StandardCharsets.UTF_8))
                 .replace(LOGIN_PLACEHOLDER, login)
                 ;
         msg.setText(text);
@@ -67,7 +70,7 @@ public class EmailService {
         msg.setTo(email);
 
         String text = passwordResetTextTemplate
-                .replace(PASSWORD_RESET_LINK_PLACEHOLDER, customConfig.getBaseUrl() + Constants.Urls.PASSWORD_RESET+ "?"+ Constants.Urls.UUID +"=" + passwordResetToken.getUuid() + "&login=" + login)
+                .replace(PASSWORD_RESET_LINK_PLACEHOLDER, customConfig.getBaseUrl() + Constants.Urls.PASSWORD_RESET+ "?"+ Constants.Urls.UUID +"=" + passwordResetToken.getUuid() + "&login=" + URLEncoder.encode(login, StandardCharsets.UTF_8))
                 .replace(LOGIN_PLACEHOLDER, login);
         msg.setText(text);
 

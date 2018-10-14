@@ -66,8 +66,6 @@ public class PasswordResetController {
         UserAccount userAccount = userAccountOptional.get();
 
         Duration ttl = Duration.ofMinutes(passwordResetTokenTtlMinutes);
-        LocalDateTime expireTime = TimeUtil.getNowUTC().plus(ttl);
-
 
         PasswordResetToken passwordResetToken = new PasswordResetToken(uuid, userAccount.getId(), ttl.getSeconds());
 
