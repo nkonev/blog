@@ -60,7 +60,7 @@ public class PasswordResetController {
 
         Optional<UserAccount> userAccountOptional = userAccountRepository.findByEmail(email);
         if (!userAccountOptional.isPresent()) {
-            LOGGER.warn("Skipping sent request password reset email {} because this email is not found", email);
+            LOGGER.warn("Skipping sent request password reset email '{}' because this email is not found", email);
             return; // we care for for email leak
         }
         UserAccount userAccount = userAccountOptional.get();
