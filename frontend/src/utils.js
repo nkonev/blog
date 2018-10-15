@@ -99,7 +99,7 @@ export const computedCropper = {
         return isLargeScreen() ? 800 : screen.width - 25
     },
     cropperHeight(){
-        return isLargeScreen() ? 600 : this.cropperWidth * 600/800;
+        return isLargeScreen() ? 600 : this.cropperWidth * (600.0/800);
     },
     cropperRemoveButtonSize(){
         return isLargeScreen() ? 30 : 45;
