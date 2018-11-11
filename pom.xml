@@ -35,7 +35,7 @@
         <phantomjsdriver.version>1.4.4</phantomjsdriver.version>
         <webdrivermanager.version>2.2.4</webdrivermanager.version>
         <shedlock.version>1.1.1</shedlock.version>
-
+        <tomcat.version>9.0.13</tomcat.version>
         <postgresql.version>42.2.5</postgresql.version>
         <greenmail.version>1.5.7</greenmail.version>
         <maven.install.plugin.version>2.5.2</maven.install.plugin.version>
@@ -288,6 +288,46 @@
                 <version>${shedlock.version}</version>
             </dependency>
 
+					<dependency>
+				<groupId>org.apache.tomcat</groupId>
+				<artifactId>tomcat-catalina-jmx-remote</artifactId>
+				<version>${tomcat.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.tomcat</groupId>
+				<artifactId>tomcat-annotations-api</artifactId>
+				<version>${tomcat.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.tomcat</groupId>
+				<artifactId>tomcat-jdbc</artifactId>
+				<version>${tomcat.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.tomcat</groupId>
+				<artifactId>tomcat-jsp-api</artifactId>
+				<version>${tomcat.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.tomcat.embed</groupId>
+				<artifactId>tomcat-embed-core</artifactId>
+				<version>${tomcat.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.tomcat.embed</groupId>
+				<artifactId>tomcat-embed-el</artifactId>
+				<version>${tomcat.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.tomcat.embed</groupId>
+				<artifactId>tomcat-embed-jasper</artifactId>
+				<version>${tomcat.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.tomcat.embed</groupId>
+				<artifactId>tomcat-embed-websocket</artifactId>
+				<version>${tomcat.version}</version>
+</dependency>
 
             <!-- https://docs.spring.io/spring-boot/docs/2.0.0.M7/reference/htmlsingle/#using-boot-maven-without-a-parent -->
             <dependency>
