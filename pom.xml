@@ -94,6 +94,9 @@
                     <version>${maven.compiler.plugin.version}</version>
                     <configuration>
                         <release>${java.version}</release>
+                        <!-- for dummy IntelliJ -->
+                        <source>${java.version}1</source>
+                        <target>${java.version}</target>
                     </configuration>
                 </plugin>
 
