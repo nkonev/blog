@@ -65,6 +65,11 @@
             </snapshots>
         </repository>
         <repository>
+            <id>repository.spring.release</id>
+            <name>Spring GA Repository</name>
+            <url>http://repo.spring.io/release</url>
+        </repository>
+        <repository>
             <id>spring-milestones</id>
             <url>https://repo.spring.io/libs-milestone</url>
         </repository>
