@@ -1,13 +1,17 @@
 package com.github.nkonev.blog.security;
 
+import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.dto.CommentDTO;
+import com.github.nkonev.blog.dto.LockDTO;
 import com.github.nkonev.blog.dto.PostDTO;
 import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
 import com.github.nkonev.blog.entity.jpa.Comment;
 import com.github.nkonev.blog.entity.jpa.Post;
+import com.github.nkonev.blog.entity.jpa.UserAccount;
 import com.github.nkonev.blog.entity.jpa.UserRole;
 import com.github.nkonev.blog.repo.jpa.CommentRepository;
 import com.github.nkonev.blog.repo.jpa.PostRepository;
+import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
 import com.github.nkonev.blog.security.permissions.CommentPermissions;
 import com.github.nkonev.blog.security.permissions.PostPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +35,9 @@ public class BlogSecurityService {
 
     @Autowired
     private CommentRepository commentRepository;
+
+    @Autowired
+    private UserAccountRepository userAccountRepository;
 
     public boolean hasPostPermission(PostDTO dto, UserAccountDetailsDTO userAccount, PostPermissions permission) {
         Assert.notNull(dto, "PostDTO can't be null");
@@ -128,11 +135,12 @@ public class BlogSecurityService {
         }
     }
 
-    public boolean canLock(UserAccountDetailsDTO userAccount) {
+    public boolean canLock(UserAccountDetailsDTO userAccount, LockDTO lockDTO) {
         if (userAccount==null){
             return false;
         }
-        if (roleHierarchy.getReachableGrantedAuthorities(userAccount.getAuthorities()).contains(new SimpleGrantedAuthority(UserRole.ROLE_MODERATOR.name()))){
+        if (roleHierarchy.getReachableGrantedAuthorities(userAccount.getAuthorities()).contains(new SimpleGrantedAuthority(UserRole.ROLE_MODERATOR.name()))
+                && lockDTO!=null && !userAccount.getId().equals(lockDTO.getUserId())){
             return true;
         } else {
             return false;
@@ -148,6 +156,19 @@ public class BlogSecurityService {
                 .ofNullable(userAccount)
                 .map(u -> u.getAuthorities()
                         .contains(new SimpleGrantedAuthority(UserRole.ROLE_ADMIN.name())))
+                .orElse(false);
+    }
+
+    public boolean canDelete(UserAccountDetailsDTO userAccount, long userIdToDelete) {
+        UserAccount deleted = userAccountRepository.findByUsername(Constants.DELETED).orElseThrow();
+        if (deleted.getId().equals(userIdToDelete)){
+            return false;
+        }
+        return Optional
+                .ofNullable(userAccount)
+                .map(u -> u.getAuthorities()
+                        .contains(new SimpleGrantedAuthority(UserRole.ROLE_ADMIN.name())) &&
+                        !u.getId().equals(userIdToDelete))
                 .orElse(false);
     }
 }

@@ -8,7 +8,11 @@ import com.github.nkonev.blog.TestConstants;
 import com.github.nkonev.blog.converter.UserAccountConverter;
 import com.github.nkonev.blog.dto.EditUserDTO;
 import com.github.nkonev.blog.dto.LockDTO;
+import com.github.nkonev.blog.entity.jpa.CreationType;
+import com.github.nkonev.blog.entity.jpa.Post;
 import com.github.nkonev.blog.entity.jpa.UserAccount;
+import com.github.nkonev.blog.entity.jpa.UserRole;
+import com.github.nkonev.blog.repo.jpa.PostRepository;
 import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
 import com.github.nkonev.blog.security.BlogUserDetailsService;
 import org.hamcrest.CoreMatchers;
@@ -23,6 +27,7 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.test.web.servlet.MvcResult;
 import java.net.HttpCookie;
 import java.net.URI;
@@ -30,9 +35,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class UserProfileControllerTest extends AbstractUtTestRunner {
@@ -42,6 +45,9 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private PostRepository postRepository;
 
     @Autowired
     private BlogUserDetailsService blogUserDetailsService;
@@ -442,4 +448,53 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
 
     }
 
+    private long createUserForDelete(String login) {
+        UserAccount userAccount = new UserAccount(
+                CreationType.REGISTRATION,
+                login, null, null, false, false, true,
+                UserRole.ROLE_USER, login+"@example.com", null);
+        userAccount = userAccountRepository.save(userAccount);
+        Post post = new Post(null, "title_"+login, "text", "");
+        post.setOwner(userAccount);
+        post = postRepository.save(post);
+        TestTransaction.flagForCommit();
+        TestTransaction.end();
+        TestTransaction.start();
+        return userAccount.getId();
+    }
+
+    @WithUserDetails(TestConstants.USER_ADMIN)
+    @Test
+    public void adminCanDeleteUser() throws Exception {
+
+        long id = createUserForDelete("lol2");
+
+        MvcResult mvcResult = mockMvc.perform(
+                delete(Constants.Urls.API+ Constants.Urls.USER)
+                        .param("userId", ""+id)
+                        .with(csrf())
+        )
+                .andDo(result -> {
+                    LOGGER.info(result.getResponse().getContentAsString());
+                })
+                .andExpect(status().isOk())
+                .andReturn();
+    }
+
+    @WithUserDetails(TestConstants.USER_ALICE)
+    @Test
+    public void userCannotDeleteUser() throws Exception {
+        long id = createUserForDelete("lol1");
+
+        MvcResult mvcResult = mockMvc.perform(
+                delete(Constants.Urls.API+ Constants.Urls.USER)
+                .param("userId", ""+id)
+                        .with(csrf())
+        )
+                .andDo(result -> {
+                    LOGGER.info(result.getResponse().getContentAsString());
+                })
+                .andExpect(status().isForbidden())
+                .andReturn();
+    }
 }

@@ -84,11 +84,11 @@ public class UserListIT extends AbstractItTestRunner {
         $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("John Smith"));
 
         $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("generated_user_0"));
-        $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("generated_user_4"));
+        $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("generated_user_3"));
 
         usersPage.goNextPaginatorPage();
+        $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("generated_user_4"));
         $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("generated_user_5"));
-        $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("generated_user_6"));
 
         loginModal.logout();
         // $(UsersPage.USERS_CONTAINER_SELECTOR).shouldNotHave(Condition.text("generated_user_6"));
@@ -102,13 +102,13 @@ public class UserListIT extends AbstractItTestRunner {
 
         FailoverUtils.retry(2, () -> {
             usersPage.goNthPaginatorPage(4);
-            $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("generated_user_34"));
+            $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("generated_user_33"));
             return null;
         });
 
         FailoverUtils.retry(2, () -> {
             usersPage.goNthPaginatorPage(5);
-            $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("generated_user_40"));
+            $(UsersPage.USERS_CONTAINER_SELECTOR).shouldHave(Condition.text("generated_user_39"));
             return null;
         });
 

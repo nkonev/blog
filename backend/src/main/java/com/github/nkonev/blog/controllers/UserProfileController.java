@@ -6,6 +6,7 @@ import com.github.nkonev.blog.dto.*;
 import com.github.nkonev.blog.entity.jpa.Post;
 import com.github.nkonev.blog.entity.jpa.UserAccount;
 import com.github.nkonev.blog.exception.UserAlreadyPresentException;
+import com.github.nkonev.blog.repo.jpa.CommentRepository;
 import com.github.nkonev.blog.repo.jpa.PostRepository;
 import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
 import com.github.nkonev.blog.security.BlogSecurityService;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.MalformedURLException;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -54,6 +56,8 @@ public class UserProfileController {
     @Autowired
     private PostService postService;
 
+    @Autowired
+    private CommentRepository commentRepository;
     /**
      *
      * @param userAccount
@@ -165,15 +169,25 @@ public class UserProfileController {
         blogUserDetailsService.killSessions(userId);
     }
 
-    @PreAuthorize("@blogSecurityService.canLock(#userAccountDetailsDTO)")
+    @PreAuthorize("@blogSecurityService.canLock(#userAccountDetailsDTO, #lockDTO)")
     @PostMapping(Constants.Urls.USER + Constants.Urls.LOCK)
-    public UserAccountDTOExtended setLocked(@AuthenticationPrincipal UserAccountDetailsDTO userAccountDetailsDTO, @RequestBody LockDTO locked){
-        UserAccount userAccount = blogUserDetailsService.getUserAccount(locked.getUserId());
-        if (locked.isLock()){
-            blogUserDetailsService.killSessions(locked.getUserId());
+    public UserAccountDTOExtended setLocked(@AuthenticationPrincipal UserAccountDetailsDTO userAccountDetailsDTO, @RequestBody LockDTO lockDTO){
+        UserAccount userAccount = blogUserDetailsService.getUserAccount(lockDTO.getUserId());
+        if (lockDTO.isLock()){
+            blogUserDetailsService.killSessions(lockDTO.getUserId());
         }
-        userAccount.setLocked(locked.isLock());
+        userAccount.setLocked(lockDTO.isLock());
 
         return UserAccountConverter.convertToUserAccountDTOExtended(userAccount);
+    }
+
+    @PreAuthorize("@blogSecurityService.canDelete(#userAccountDetailsDTO, #userId)")
+    @DeleteMapping(Constants.Urls.USER)
+    public void deleteUser(@AuthenticationPrincipal UserAccountDetailsDTO userAccountDetailsDTO, @RequestParam("userId") long userId){
+        blogUserDetailsService.killSessions(userId);
+        UserAccount deleted = userAccountRepository.findByUsername(Constants.DELETED).orElseThrow();
+        postRepository.moveToAnotherUser(userId, deleted.getId());
+        commentRepository.moveToAnotherUser(userId, deleted.getId());
+        userAccountRepository.deleteById(userId);
     }
 }

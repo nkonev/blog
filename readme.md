@@ -16,6 +16,12 @@ Q: Can I run it without docker ?
 
 A: Yes, you can achieve it by manually install PostgreSQL, RabbitMQ, Redis, Elasticsearch and configure it's connections in config or through commandline. 
 
+Q: How to build frontend if I am backend developer ?
+
+A: 
+```bash
+./mvnw -P frontend generate-resources
+```
 
 
 ## Embedded documentation

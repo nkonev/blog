@@ -46,4 +46,6 @@ public class Constants {
         public static final String POSTS = "posts";
         public static final String SETTINGS = "settings";
     }
+
+    public static final String DELETED = "deleted";
 }
