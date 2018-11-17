@@ -463,7 +463,7 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
         return userAccount.getId();
     }
 
-    @WithUserDetails(TestConstants.USER_ADMIN)
+    /*@WithUserDetails(TestConstants.USER_ADMIN)
     @Test
     public void adminCanDeleteUser() throws Exception {
 
@@ -496,5 +496,5 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
                 })
                 .andExpect(status().isForbidden())
                 .andReturn();
-    }
+    }*/
 }
