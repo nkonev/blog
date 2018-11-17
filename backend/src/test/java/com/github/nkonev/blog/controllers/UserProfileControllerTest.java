@@ -457,13 +457,10 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
         Post post = new Post(null, "title_"+login, "text", "");
         post.setOwner(userAccount);
         post = postRepository.save(post);
-        TestTransaction.flagForCommit();
-        TestTransaction.end();
-        TestTransaction.start();
         return userAccount.getId();
     }
 
-    /*@WithUserDetails(TestConstants.USER_ADMIN)
+    @WithUserDetails(TestConstants.USER_ADMIN)
     @Test
     public void adminCanDeleteUser() throws Exception {
 
@@ -496,5 +493,5 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
                 })
                 .andExpect(status().isForbidden())
                 .andReturn();
-    }*/
+    }
 }
