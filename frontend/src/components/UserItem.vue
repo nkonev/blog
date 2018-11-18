@@ -10,7 +10,7 @@
                 <button v-else id="lock" @click="requestLock()" class="blog-btn lock-btn">Lock</button>
             </template>
             <template v-if="model.canDelete">
-                <button id="delete" @click="requestDelete()" class="blog-btn lock-btn">Delete</button>
+                <button id="delete" @click="openDeleteConfirmation(model.login)" class="blog-btn lock-btn">Delete</button>
             </template>
         </div>
     </div>
@@ -20,6 +20,7 @@
     import Vue from "vue"
     import Avatar from 'vue-avatar'
     const refreshEvent = "refreshEvent";
+    import {DIALOG} from '../constants'
 
     export default {
         name: 'user-item', // это имя компонента, которое м. б. тегом в другом компоненте
@@ -57,7 +58,29 @@
                         alert("Error on delete")
                     }
                 )
-            }
+            },
+            openDeleteConfirmation(login){
+                this.$modal.show(DIALOG, {
+                    title: 'User delete confirmation',
+                    text: 'Do you want to delete this user ' + login +'?',
+                    buttons: [
+                        {
+                            title: 'No',
+                            handler: () => {
+                                this.$modal.hide(DIALOG)
+                            }
+                        },
+                        {
+                            title: 'Yes',
+                            default: true,
+                            handler: () => {
+                                this.requestDelete();
+                                this.$modal.hide(DIALOG)
+                            }
+                        },
+                    ]
+                })
+            },
         },
         created(){
             this.model = Vue.util.extend({}, this.userDTO);

@@ -4,7 +4,7 @@
             <owner :owner="commentDTO.owner" :time="createDateTime"></owner>
             <span v-if="!isEditing" class="comment-manage-buttons">
                 <img class="edit-container-pen" src="../assets/pen.png" v-if="commentDTO.canEdit" @click="setEdit()"/>
-                <img class="remove-container-x" src="../assets/remove.png" v-if="commentDTO.canDelete" @click="doDelete()"/>
+                <img class="remove-container-x" src="../assets/remove.png" v-if="commentDTO.canDelete" @click="openDeleteConfirmation(commentDTO.id)"/>
             </span>
         </div>
 
@@ -19,6 +19,7 @@
     import bus, {COMMENT_CANCELED, COMMENT_UPDATED, COMMENT_DELETED} from '../bus'
     import {getPostId, getTimestampFromUtc} from '../utils'
     import Owner from './Owner.vue'
+    import {DIALOG} from '../constants'
 
     export default {
         name: 'comment-item',
@@ -48,7 +49,30 @@
                     }, failResponce => {
                         console.error(failResponce);
                     })
-            }
+            },
+            openDeleteConfirmation(id){
+                this.$modal.show(DIALOG, {
+                    title: 'Comment delete confirmation',
+                    text: 'Do you want to delete this comment #' + id +'?',
+                    buttons: [
+                        {
+                            title: 'No',
+                            handler: () => {
+                                this.$modal.hide(DIALOG)
+                            }
+                        },
+                        {
+                            title: 'Yes',
+                            default: true,
+                            handler: () => {
+                                this.doDelete();
+                                this.$modal.hide(DIALOG)
+                            }
+                        },
+                    ]
+                })
+            },
+
         },
         components:{
             CommentEdit,

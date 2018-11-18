@@ -14,3 +14,5 @@ export const PASSWORD_MIN_LENGTH = 6;
 
 export const POSTS_PAGE_SIZE = 20;
 export const POSTS_MAX_PAGES = 10;
+
+export const DIALOG = "dialog";

@@ -50,7 +50,7 @@
 
 <script>
     import Vue from 'vue'
-    import {API_POST} from '../constants'
+    import {API_POST, DIALOG} from '../constants'
     import bus, {LOGIN, LOGOUT, POST_SWITCHED} from '../bus'
     import {root, post} from '../routes'
     import postFactory from "../factories/PostDtoFactory"
@@ -62,8 +62,6 @@
     import VmBackTop from 'vue-multiple-back-top'
     // Lazy load heavy component https://router.vuejs.org/en/advanced/lazy-loading.html. see also in .babelrc
     const PostEdit = () => import('./PostEdit.vue');
-
-    const DIALOG = "dialog";
 
     export default {
         name: 'post-view',
