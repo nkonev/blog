@@ -25,6 +25,9 @@ public class PostConverter {
     @Autowired
     private PostRepository postRepository;
 
+    @Autowired
+    private UserAccountConverter userAccountConverter;
+
     public PostDTOWithAuthorization convertToDto(Post saved, UserAccountDetailsDTO userAccount) {
         Assert.notNull(saved, "Post can't be null");
 
@@ -33,7 +36,7 @@ public class PostConverter {
                 saved.getTitle(),
                 (saved.getText()),
                 saved.getTitleImg(),
-                UserAccountConverter.convertToUserAccountDTO(saved.getOwner()),
+                userAccountConverter.convertToUserAccountDTO(saved.getOwner()),
                 blogSecurityService.hasPostPermission(saved, userAccount, PostPermissions.EDIT),
                 blogSecurityService.hasPostPermission(saved, userAccount, PostPermissions.DELETE),
                 saved.getCreateDateTime()
@@ -51,7 +54,7 @@ public class PostConverter {
                 saved.getTitle(),
                 (saved.getText()),
                 saved.getTitleImg(),
-                UserAccountConverter.convertToUserAccountDTO(saved.getOwner()),
+                userAccountConverter.convertToUserAccountDTO(saved.getOwner()),
                 blogSecurityService.hasPostPermission(saved, userAccount, PostPermissions.EDIT),
                 blogSecurityService.hasPostPermission(saved, userAccount, PostPermissions.DELETE),
                 left != null ? left.getId() : null,
@@ -114,7 +117,7 @@ public class PostConverter {
                 post.getText(),
                 post.getTitleImg(),
                 post.getCreateDateTime(),
-                UserAccountConverter.convertToUserAccountDTO(post.getOwner())
+                userAccountConverter.convertToUserAccountDTO(post.getOwner())
         );
     }
 

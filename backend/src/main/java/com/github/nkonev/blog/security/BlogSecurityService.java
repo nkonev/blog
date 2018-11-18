@@ -128,27 +128,21 @@ public class BlogSecurityService {
         if (userAccount==null){
             return false;
         }
-        if (roleHierarchy.getReachableGrantedAuthorities(userAccount.getAuthorities()).contains(new SimpleGrantedAuthority(UserRole.ROLE_MODERATOR.name()))){
-            return true;
-        } else {
-            return false;
-        }
+        return roleHierarchy.getReachableGrantedAuthorities(userAccount.getAuthorities()).contains(new SimpleGrantedAuthority(UserRole.ROLE_MODERATOR.name()));
     }
 
     public boolean canLock(UserAccountDetailsDTO userAccount, LockDTO lockDTO) {
         if (userAccount==null){
             return false;
         }
-        if (roleHierarchy.getReachableGrantedAuthorities(userAccount.getAuthorities()).contains(new SimpleGrantedAuthority(UserRole.ROLE_MODERATOR.name()))
-                && lockDTO!=null && !userAccount.getId().equals(lockDTO.getUserId())){
+        if (lockDTO!=null && userAccount.getId().equals(lockDTO.getUserId())){
+            return false;
+        }
+        if (roleHierarchy.getReachableGrantedAuthorities(userAccount.getAuthorities()).contains(new SimpleGrantedAuthority(UserRole.ROLE_MODERATOR.name()))){
             return true;
         } else {
             return false;
         }
-    }
-
-    public boolean hasUserManagementPermission(UserAccountDetailsDTO userAccount) {
-        return hasSessionManagementPermission(userAccount);
     }
 
     public boolean hasSettingsPermission(UserAccountDetailsDTO userAccount) {
@@ -170,5 +164,30 @@ public class BlogSecurityService {
                         .contains(new SimpleGrantedAuthority(UserRole.ROLE_ADMIN.name())) &&
                         !u.getId().equals(userIdToDelete))
                 .orElse(false);
+    }
+
+    public boolean canLock(UserAccountDetailsDTO currentUser, UserAccount userAccount) {
+        return lockAndDelete(currentUser, userAccount);
+    }
+
+    public boolean canDelete(UserAccountDetailsDTO currentUser, UserAccount userAccount) {
+        return lockAndDelete(currentUser, userAccount);
+    }
+
+    private boolean lockAndDelete(UserAccountDetailsDTO currentUser, UserAccount userAccount) {
+        if (userAccount == null) {
+            return false;
+        }
+        if (currentUser == null) {
+            return  false;
+        }
+        UserAccount deleted = userAccountRepository.findByUsername(Constants.DELETED).orElseThrow();
+        if (deleted.getId().equals(userAccount.getId())){
+            return false;
+        }
+        if (userAccount.getId().equals(currentUser.getId())){
+            return false;
+        }
+        return roleHierarchy.getReachableGrantedAuthorities(currentUser.getAuthorities()).contains(new SimpleGrantedAuthority(UserRole.ROLE_ADMIN.name()));
     }
 }

@@ -6,9 +6,12 @@ import com.github.nkonev.blog.entity.jpa.CreationType;
 import com.github.nkonev.blog.entity.jpa.UserAccount;
 import com.github.nkonev.blog.entity.jpa.UserRole;
 import com.github.nkonev.blog.exception.BadRequestException;
+import com.github.nkonev.blog.security.BlogSecurityService;
 import com.github.nkonev.blog.security.LoginUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -17,7 +20,12 @@ import java.util.stream.Collectors;
 
 import static com.github.nkonev.blog.security.AuthorityUtils.getDefaultUserRole;
 
+@Component
 public class UserAccountConverter {
+    @Autowired
+    private BlogSecurityService blogSecurityService;
+
+
     public static UserAccountDetailsDTO convertToUserAccountDetailsDTO(UserAccount userAccount) {
         if (userAccount == null) { return null; }
         return new UserAccountDetailsDTO(
@@ -55,7 +63,7 @@ public class UserAccountConverter {
         return roles.stream().map(ur -> new SimpleGrantedAuthority(ur.name())).collect(Collectors.toSet());
     }
 
-    public static UserAccountDTO convertToUserAccountDTO(UserAccount userAccount) {
+    public UserAccountDTO convertToUserAccountDTO(UserAccount userAccount) {
         if (userAccount == null) { return null; }
         return new UserAccountDTO(
                 userAccount.getId(),
@@ -65,19 +73,24 @@ public class UserAccountConverter {
         );
     }
 
-    public static UserAccountDTOExtended convertToUserAccountDTOExtended(UserAccount userAccount) {
+    public UserAccountDTOExtended convertToUserAccountDTOExtended(UserAccountDetailsDTO currentUser, UserAccount userAccount) {
         if (userAccount == null) { return null; }
+        UserAccountDTOExtended.DataDTO dataDTO;
+        if (blogSecurityService.hasSessionManagementPermission(currentUser)){
+            dataDTO = new UserAccountDTOExtended.DataDTO(userAccount.isEnabled(), userAccount.isExpired(), userAccount.isLocked());
+        } else {
+            dataDTO = null;
+        }
         return new UserAccountDTOExtended(
                 userAccount.getId(),
                 userAccount.getUsername(),
                 userAccount.getAvatar(),
-                userAccount.isEnabled(),
-                userAccount.isExpired(),
-                userAccount.isLocked(),
-                userAccount.getFacebookId()
+                dataDTO,
+                userAccount.getFacebookId(),
+                blogSecurityService.canLock(currentUser, userAccount),
+                blogSecurityService.canDelete(currentUser, userAccount)
         );
     }
-
 
     public static UserAccountDTO convertToUserAccountDTO(UserAccountDetailsDTO userAccount) {
         if (userAccount == null) { return null; }

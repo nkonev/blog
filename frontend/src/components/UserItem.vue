@@ -5,9 +5,12 @@
             <router-link :to="{ name: 'user-profile', params: { id: model.id } }">{{ model.login }}</router-link>
         </div>
         <div class="user-management" v-if="model.managementData">
-            <template v-if="!(currentUser && currentUser.id==model.id)">
+            <template v-if="model.canLock">
                 <button v-if="model.managementData.locked" id="unlock" @click="requestUnlock()" class="blog-btn unlock-btn">Unlock</button>
                 <button v-else id="lock" @click="requestLock()" class="blog-btn lock-btn">Lock</button>
+            </template>
+            <template v-if="model.canDelete">
+                <button id="delete" @click="requestDelete()" class="blog-btn lock-btn">Delete</button>
             </template>
         </div>
     </div>
@@ -16,6 +19,7 @@
 <script>
     import Vue from "vue"
     import Avatar from 'vue-avatar'
+    const refreshEvent = "refreshEvent";
 
     export default {
         name: 'user-item', // это имя компонента, которое м. б. тегом в другом компоненте
@@ -42,6 +46,17 @@
             },
             requestUnlock(){
                 this.lock(false)
+            },
+            requestDelete(){
+                this.$http.delete('/api/user?userId='+this.model.id).then(
+                    response => {
+                        console.log("Successfully deleted");
+                        this.$emit(refreshEvent);
+                    },
+                    failResponse => {
+                        alert("Error on delete")
+                    }
+                )
             }
         },
         created(){

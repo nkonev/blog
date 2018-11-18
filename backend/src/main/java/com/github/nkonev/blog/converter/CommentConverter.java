@@ -20,6 +20,9 @@ public class CommentConverter {
     @Autowired
     private BlogSecurityService blogSecurityService;
 
+    @Autowired
+    private UserAccountConverter userAccountConverter;
+
     public Comment convertFromDto(CommentDTO commentDTO, long postId, Comment forUpdate) {
         Assert.notNull(commentDTO, "commentDTO can't be null");
         checkLength(commentDTO.getText());
@@ -45,7 +48,7 @@ public class CommentConverter {
         return new CommentDTOWithAuthorization(
                 comment.getId(),
                 comment.getText(),
-                UserAccountConverter.convertToUserAccountDTO(comment.getOwner()),
+                userAccountConverter.convertToUserAccountDTO(comment.getOwner()),
                 blogSecurityService.hasCommentPermission(comment, userAccount, CommentPermissions.EDIT),
                 blogSecurityService.hasCommentPermission(comment, userAccount, CommentPermissions.DELETE),
                 comment.getCreateDateTime()
@@ -67,7 +70,7 @@ public class CommentConverter {
         return new CommentDTOExtended(
                 comment.getId(),
                 comment.getText(),
-                UserAccountConverter.convertToUserAccountDTO(comment.getOwner()),
+                userAccountConverter.convertToUserAccountDTO(comment.getOwner()),
                 blogSecurityService.hasCommentPermission(comment, userAccount, CommentPermissions.EDIT),
                 blogSecurityService.hasCommentPermission(comment, userAccount, CommentPermissions.DELETE),
                 countInPost,

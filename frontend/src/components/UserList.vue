@@ -20,7 +20,7 @@
         ></paginate>
 
         <div v-if="users.length>0" id="user-list">
-            <user-item v-for="user in users" v-bind:userDTO="user" :key="user.id" :currentUser="currentUser"></user-item>
+            <user-item v-for="user in users" v-bind:userDTO="user" :key="user.id" :currentUser="currentUser" @refreshEvent="onRefreshEvent"></user-item>
         </div>
         <div v-else id="user-list">
             No data
@@ -92,6 +92,10 @@
                 this.reloadPage(initPage+1, str);
                 this.$refs.paginate.selected = initPage;
             },
+            onRefreshEvent(){
+                console.info("Refresh event in list");
+                this.reloadPage(this.initialPageIndex+1);
+            }
         },
         components: {
             Search,

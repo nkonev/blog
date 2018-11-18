@@ -58,6 +58,10 @@ public class UserProfileController {
 
     @Autowired
     private CommentRepository commentRepository;
+
+    @Autowired
+    private UserAccountConverter userAccountConverter;
+
     /**
      *
      * @param userAccount
@@ -101,11 +105,7 @@ public class UserProfileController {
 
 
     private Function<UserAccount, UserAccountDTO> getConvertToUserAccountDTO(UserAccountDetailsDTO currentUser) {
-        if (blogSecurityService.hasUserManagementPermission(currentUser)) {
-            return UserAccountConverter::convertToUserAccountDTOExtended;
-        } else {
-            return UserAccountConverter::convertToUserAccountDTO;
-        }
+        return userAccount -> userAccountConverter.convertToUserAccountDTOExtended(currentUser, userAccount);
     }
 
     @GetMapping(value = Constants.Urls.USER+ Constants.Urls.USER_ID)
@@ -117,7 +117,7 @@ public class UserProfileController {
         if (userAccount!=null && userAccount.getId().equals(userAccountEntity.getId())){
             return UserAccountConverter.getUserSelfProfile(userAccount);
         } else {
-            return UserAccountConverter.convertToUserAccountDTO(userAccountEntity);
+            return userAccountConverter.convertToUserAccountDTO(userAccountEntity);
         }
     }
 
@@ -178,7 +178,7 @@ public class UserProfileController {
         }
         userAccount.setLocked(lockDTO.isLock());
 
-        return UserAccountConverter.convertToUserAccountDTOExtended(userAccount);
+        return userAccountConverter.convertToUserAccountDTOExtended(userAccountDetailsDTO, userAccount);
     }
 
     @PreAuthorize("@blogSecurityService.canDelete(#userAccountDetailsDTO, #userId)")

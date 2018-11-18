@@ -5,11 +5,17 @@ public class UserAccountDTOExtended extends UserAccountDTO {
 
     private DataDTO managementData;
 
+    private boolean canLock;
+
+    private boolean canDelete;
+
     public UserAccountDTOExtended() { }
 
-    public UserAccountDTOExtended(Long id, String login, String avatar, boolean enabled, boolean expired, boolean locked, String facebookId) {
+    public UserAccountDTOExtended(Long id, String login, String avatar, DataDTO managementData, String facebookId, boolean canLock, boolean canDelete) {
         super(id, login, avatar, facebookId);
-        this.managementData = new DataDTO(enabled, expired, locked);
+        this.managementData = managementData;
+        this.canDelete = canDelete;
+        this.canLock = canLock;
     }
 
     public DataDTO getManagementData() {
@@ -18,6 +24,22 @@ public class UserAccountDTOExtended extends UserAccountDTO {
 
     public void setManagementData(DataDTO managementData) {
         this.managementData = managementData;
+    }
+
+    public boolean isCanLock() {
+        return canLock;
+    }
+
+    public void setCanLock(boolean canLock) {
+        this.canLock = canLock;
+    }
+
+    public boolean isCanDelete() {
+        return canDelete;
+    }
+
+    public void setCanDelete(boolean canDelete) {
+        this.canDelete = canDelete;
     }
 
 
