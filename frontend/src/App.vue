@@ -31,7 +31,6 @@
     import RandomPosts from "./components/RandomPosts.vue";
     import store, {GET_USER, FETCH_USER_PROFILE, FETCH_CONFIG, GET_CONFIG, GET_CONFIG_SHOW_SETTINGS} from './store'
     import {mapGetters} from 'vuex'
-    import {API_CONFIG} from './constants'
     import bus, {LOGIN, LOGOUT} from './bus'
     import Notifications from './notifications'
     import {isLargeScreen} from './utils'
