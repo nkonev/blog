@@ -1,6 +1,5 @@
 <template>
     <div class="post">
-        <v-dialog/>
         <template v-if="postDTO">
             <template v-if="isEditing">
                 <PostEdit :postDTO="postDTO" :onAfterSubmit="afterSubmit" :onCancel="cancel" />

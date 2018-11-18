@@ -1,6 +1,5 @@
 <template>
     <div class="comments">
-        <v-dialog/>
         <template v-if="comments.length>0">
             <h3 class="comments-header">Comments:</h3>
             <div id="comments-list">

@@ -81,7 +81,8 @@ public class PostIT extends FacebookEmulatorTests {
         }
 
         public void confirmDelete() {
-            $(".vue-dialog .vue-dialog-button:nth-child(2)").click();
+            waitForDialog();
+            clickYes();
         }
     }
 
@@ -169,8 +170,19 @@ public class PostIT extends FacebookEmulatorTests {
             SelenideElement comment = findComment(index);
             comment.find(".comment-manage-buttons .remove-container-x").click();
 
+            waitForDialog();
+            clickYes();
+
             $(COMMENT_LIST_SELECTOR).waitUntil(Condition.not(Condition.text(deletedText)), 7 * 1000, 1000);
         }
+    }
+
+    private static void clickYes() {
+        $(".vue-dialog .vue-dialog-buttons button:nth-of-type(2)").click();
+    }
+
+    private static void waitForDialog() {
+        $(".vue-dialog").waitUntil(Condition.visible, 7 * 1000, 1000);
     }
 
     private int getCommentPage() throws MalformedURLException {
