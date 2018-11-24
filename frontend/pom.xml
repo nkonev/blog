@@ -16,7 +16,7 @@
         <skipTests>false</skipTests>
         <frontend.maven.plugin.version>1.6</frontend.maven.plugin.version>
         <!-- https://nodejs.org/en/download/ -->
-        <node.js.version>v10.13.0</node.js.version>
+        <node.js.version>v10.1.0</node.js.version>
         <npm.version>6.4.1</npm.version>
     </properties>
 

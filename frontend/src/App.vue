@@ -160,10 +160,6 @@
             border-radius 2px
         }
 
-        h1 {
-            padding-bottom 0.2em !important
-        }
-
         nav {
             background white
             font-size 22px
