@@ -55,7 +55,15 @@ export const closeStompClient = obj => {
     obj.stompClient.disconnect();
 };
 
-export const infinitePostsHandler = (that, getWithPaginationUrl, responseArrayExtractor, onSuccess, $state) => {
+/**
+ *
+ * @param that should contains these properties: {posts: [], noMoreMessage: "", searchString: ""}
+ * @param getWithPaginationUrl
+ * @param responseArrayExtractor
+ * @param onSuccess
+ * @param $state
+ */
+export const infinitePostsHandlerWithSearch = (that, getWithPaginationUrl, responseArrayExtractor, onSuccess, $state) => {
     Vue.http.get(getWithPaginationUrl, {
         params: {
             page: Math.floor(that.posts.length / POSTS_PAGE_SIZE),

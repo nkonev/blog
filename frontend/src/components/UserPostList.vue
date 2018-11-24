@@ -25,7 +25,7 @@
     import InfiniteLoading from 'vue-infinite-loading';
     import BlogSpinner from './BlogSpinner.vue'
     import PostAddFab from './PostAddFab.vue'
-    import {infinitePostsHandler} from '../utils'
+    import {infinitePostsHandlerWithSearch} from '../utils'
 
 
     // https://peachscript.github.io/vue-infinite-loading/#!/getting-started/with-filter
@@ -48,7 +48,7 @@
         },
         methods: {
             infiniteHandler($state) {
-                infinitePostsHandler(this, `/api/user/${this.id}/posts`, res => res.data, res => {this.total = res.data.totalCount;}, $state);
+                infinitePostsHandlerWithSearch(this, `/api/user/${this.id}/posts`, res => res.data, res => {this.total = res.data.totalCount;}, $state);
             },
         },
         mounted(){

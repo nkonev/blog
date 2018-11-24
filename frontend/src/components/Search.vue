@@ -10,9 +10,9 @@
     import debounce from "lodash/debounce";
 
     // https://alligator.io/vuejs/component-communication/
-    const SEARCH_EVENT = 'SEARCH_EVENT'; // don't works as export (sic!)
+    const SEARCH_EVENT = 'searchEvent'; // don't works as export (sic!)
     export default {
-        props: ['placeholder'],
+        props: ['placeholder', 'initialString'],
         data() {
             return {
                 searchString: ''
@@ -31,7 +31,11 @@
         },
         created() {
             // https://forum-archive.vuejs.org/topic/5174/debounce-replacement-in-vue-2-0
-            this.onChangeSearchString = debounce(this.onChangeSearchString, 500);
+            this.onChangeSearchString = debounce(this.onChangeSearchString, 700);
+
+            if (this.initialString) {
+                this.searchString = this.initialString;
+            }
         },
     };
 </script>

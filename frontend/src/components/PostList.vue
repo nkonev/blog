@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Search @SEARCH_EVENT="onChangeSearchString" placeholder="Fulltext search by posts" v-sticky="{stickyTop: 0, zIndex: 2}"></Search>
+        <Search @searchEvent="onChangeSearchString" placeholder="Fulltext search by posts" :initialString="query" v-sticky="{stickyTop: 0, zIndex: 2}"></Search>
 
         <div class="post-list">
             <div v-if="posts.length>0">
@@ -31,10 +31,11 @@
     import BlogSpinner from './BlogSpinner.vue'
     import PostAddFab from './PostAddFab.vue'
     import Search from './Search.vue';
-    import {updateById, cutPost, initStompClient, closeStompClient, infinitePostsHandler} from '../utils'
+    import {updateById, cutPost, initStompClient, closeStompClient, infinitePostsHandlerWithSearch} from '../utils'
     import VueSticky from 'vue-sticky'
     import Notifications from "../notifications"
     import VmBackTop from 'vue-multiple-back-top'
+    import {root} from '../routes';
 
     // https://peachscript.github.io/vue-infinite-loading/#!/getting-started/with-filter
 
@@ -42,6 +43,9 @@
     let subscriptionInsert;
     let subscriptionUpdate;
     let subscriptionDelete;
+
+    const searchQueryParameter = 'q';
+
     export default {
         name: 'posts',
         data() {
@@ -64,7 +68,7 @@
         },
         methods: {
             infiniteHandler($state) {
-                infinitePostsHandler(this, API_POST, res => res, res => {}, $state);
+                infinitePostsHandlerWithSearch(this, API_POST, res => res, res => {}, $state);
             },
 
             onChangeSearchString(str) {
@@ -74,9 +78,22 @@
                 this.$nextTick(() => {
                     this.$refs.infiniteLoading.$emit('$InfiniteLoading:reset');
                 });
+
+                const routerNewState = {path: root};
+                if (str){
+                    routerNewState.query = {[searchQueryParameter]: str};
+                }
+                this.$router.push(routerNewState);
             },
         },
+        computed:{
+            query(){
+                return this.$route.query[searchQueryParameter];
+            }
+        },
         mounted(){
+            this.searchString = this.query;
+
             stompObj = initStompClient((frame) => {
                 // allowed prefixes here http://www.rabbitmq.com/stomp.html#d
                 // subscribe

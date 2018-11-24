@@ -14,7 +14,7 @@ describe('Search.vue', ()=>{
     });
 
     it('emit event', (done)=>{
-        wrapper.vm.$on('SEARCH_EVENT', (str)=>{
+        wrapper.vm.$on('searchEvent', (str)=>{
             expect(str).toBe('good day for die');
             done();
         });
@@ -29,7 +29,7 @@ describe('Search.vue', ()=>{
             searchString: 'dirty due previous search'
         });
 
-        wrapper.vm.$on('SEARCH_EVENT', (str)=>{
+        wrapper.vm.$on('searchEvent', (str)=>{
             expect(str).toBe('');
             done();
         });
