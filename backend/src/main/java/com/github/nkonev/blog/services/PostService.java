@@ -200,7 +200,7 @@ public class PostService {
         PostDTO postDTO = postConverter.convertToPostDTO(post);
         IndexPost byId = indexPostRepository
                 .findById(post.getId())
-                .orElseThrow(()->new DataNotFoundException("post not found in fulltext store"));
+                .orElseThrow(()->new DataNotFoundException("post "+post.getId()+" not found in fulltext store"));
         postDTO.setText(byId.getText());
         return postDTO;
     }
@@ -233,7 +233,7 @@ public class PostService {
             postsResult.forEach(postDTO -> {
                 IndexPost fulltextPost = indexPostRepository
                         .findById(postDTO.getId())
-                        .orElseThrow(() -> new DataNotFoundException("post not found in fulltext store"));
+                        .orElseThrow(() -> new DataNotFoundException("post "+postDTO.getId()+" not found in fulltext store during getPosts"));
                 postDTO.setText(fulltextPost.getText());
                 postDTO.setTitle(fulltextPost.getTitle());
             });

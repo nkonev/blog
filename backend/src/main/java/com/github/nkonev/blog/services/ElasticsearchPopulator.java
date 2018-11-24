@@ -29,6 +29,12 @@ public class ElasticsearchPopulator {
     @Value("${custom.elasticsearch.refresh-on-start:true}")
     private boolean refreshOnStart;
 
+    /**
+     * Set false in clustered environment for prevent twice refresh fulltext store on start two instances
+     */
+    @Value("${custom.elasticsearch.refresh-on-start-delete-probe:true}")
+    private boolean refreshOnStartDeleteProbe;
+
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
@@ -49,7 +55,11 @@ public class ElasticsearchPopulator {
                 LOGGER.info("Probe is successful, so we'll refresh elasticsearch index");
                 redisTemplate.expire(key, timeout, timeUnit);
                 postService.refreshFulltextIndex();
-                LOGGER.info("Successful delete probe");
+
+                if (refreshOnStartDeleteProbe) {
+                    redisTemplate.delete(key);
+                    LOGGER.info("Successful delete probe");
+                }
             } else {
                 LOGGER.info("Probe isn't successful, so we won't refresh elasticsearch index");
             }
