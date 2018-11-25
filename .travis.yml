@@ -26,7 +26,7 @@ before_script:
 after_acript:
 script:
   - (cd docker; docker-compose up -d)
-  - "wait-for-it.sh -t 120 172.24.0.2:5432 -- echo 'postgres is up'"
+  - "wait-for-it.sh -t 120 172.22.0.2:5432 -- echo 'postgres is up'"
   - "wait-for-it.sh -t 30 172.22.0.3:6379 -- echo 'redis is up'"
   - "wait-for-it.sh -t 30 172.22.0.4:61613 -- echo 'rabbitmq is up'"
   - "wait-for-it.sh -t 30 172.22.0.5:9300 -- echo 'elasticsearch is up'"
