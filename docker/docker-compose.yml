@@ -50,9 +50,9 @@ services:
     restart: unless-stopped
     ports:
       - 45672:15672
-      - 35672:5672
+#      - 35672:5672
       - 60613:61613
-      - 35674:15674
+#      - 35674:15674
     environment:
       - RABBITMQ_DEFAULT_USER=blog
       - RABBITMQ_DEFAULT_PASS=blogPazZw0rd
@@ -71,8 +71,8 @@ services:
     container_name: elasticsearch-blog-dev
     restart: unless-stopped
     ports:
-    - 19200:9200
-    - 19300:9300
+    - 29200:9200
+    - 29300:9300
     environment:
     - discovery.type=single-node
     - cluster.name=elasticsearch

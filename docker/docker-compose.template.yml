@@ -94,6 +94,8 @@ services:
     volumes :
       - ./postgresql_prod/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - postgresql_prod_data_dir:/var/lib/postgresql/data
+    ports:
+      - 15432:5432
     logging:
       driver: "json-file"
 #      options:
@@ -108,6 +110,8 @@ services:
     hostname: redis
     volumes :
       - redis_prod_data_dir:/data
+    ports:
+      - 16379:6379
     logging:
       driver: "json-file"
 #      options:
@@ -126,6 +130,9 @@ services:
       - RABBITMQ_NODENAME=my-rabbit
     volumes :
       - rabbitmq_prod_data_dir:/var/lib/rabbitmq/mnesia
+    ports:
+      - 45602:15672
+      - 60603:61613
     logging:
       driver: "json-file"
 #      options:
@@ -145,6 +152,9 @@ services:
     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     volumes :
     - es_prod_data_dir:/usr/share/elasticsearch/data
+    ports:
+      - 19200:9200
+      - 19300:9300
     logging:
       driver: "json-file"
 #      options:
@@ -162,6 +172,9 @@ services:
       driver: "json-file"
 #      options:
 #        tag: rendertron
+    ports:
+      - 13000:3000
+
     deploy:
       resources:
         limits:
