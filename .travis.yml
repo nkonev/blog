@@ -37,13 +37,6 @@ script:
   - ./mvnw -Drevision=$DATE_VERSION -P frontend -P jacoco -P docker -P webdriver-chrome -P webdriver-firefox -Dcustom.selenium.headless=true clean install --no-snapshot-updates
   - (cd docker; docker-compose down)
 
-  - (cd docker; docker stack deploy --compose-file docker-compose.template.yml TESTBLOGSTACK)
-  - "wait-for-it.sh -t 360 localhost:15432 -- echo 'postgres is up'"
-  - "wait-for-it.sh -t 30 localhost:16379 -- echo 'redis is up'"
-  - "wait-for-it.sh -t 30 localhost:60603 -- echo 'rabbitmq is up'"
-  - "wait-for-it.sh -t 30 localhost:19300 -- echo 'elasticsearch is up'"
-  - "wait-for-it.sh -t 30 localhost:13000 -- echo 'rendertron is up'"
-
   - ./mvnw -Drevision=$DATE_VERSION -pl deploy-test -P deploy-test clean test  --no-snapshot-updates
   - rm -rf ~/.m2/repository/com/github/nkonev/blog
   - bash <(curl -s https://codecov.io/bash)
