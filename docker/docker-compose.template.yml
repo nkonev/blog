@@ -106,7 +106,7 @@ services:
     networks:
       - backend
   redis:
-    image: redis:5.0-rc3
+    image: redis:5.0.1
     hostname: redis
     volumes :
       - redis_prod_data_dir:/data
