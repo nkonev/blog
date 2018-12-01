@@ -51,6 +51,7 @@ import java.util.stream.Collectors;
 
 import static com.github.nkonev.blog.converter.PostConverter.toElasticsearchPost;
 import static com.github.nkonev.blog.entity.elasticsearch.IndexPost.*;
+import static org.elasticsearch.common.unit.Fuzziness.fromEdits;
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 @Service
@@ -278,6 +279,10 @@ public class PostService {
 
                             .should(fuzzyQuery(FIELD_TEXT, searchString))
                             .should(fuzzyQuery(FIELD_TITLE, searchString))
+
+                            .should(wildcardQuery(FIELD_TEXT, "*"+stripNonAlpha(searchString)+"*"))
+                            .should(wildcardQuery(FIELD_TITLE, "*"+stripNonAlpha(searchString)+"*"))
+
                     )
                     .withHighlightFields(
                             new HighlightBuilder.Field(FIELD_TEXT).preTags("<b>").postTags("</b>").numOfFragments(highlightFieldTextNumOfFragments).fragmentSize(highlightFieldTextFragmentSize),
@@ -311,6 +316,10 @@ public class PostService {
         }
 
         return postsResult;
+    }
+
+    private String stripNonAlpha(String input) {
+        return input.replaceAll("\\P{L}+", "");
     }
 
     public Wrapper<PostDTO> findByOwnerId(Pageable springDataPage, Long userId) {
