@@ -261,11 +261,8 @@ public class PostService {
                     .withSort(new FieldSortBuilder(FIELD_ID).order(SortOrder.DESC))
                     .withIndices(INDEX)
                     .withQuery(boolQuery()
-                            .should(matchPhrasePrefixQuery(FIELD_TEXT, searchString))
-                            .should(matchPhrasePrefixQuery(FIELD_TITLE, searchString))
-
-                            .should(matchPhraseQuery(FIELD_TEXT, searchString).slop(searchFieldTextSlop))
-                            .should(matchPhraseQuery(FIELD_TITLE, searchString).slop(searchFieldTitleSlop))
+                            .should(matchPhrasePrefixQuery(FIELD_TEXT, searchString).slop(searchFieldTextSlop))
+                            .should(matchPhrasePrefixQuery(FIELD_TITLE, searchString).slop(searchFieldTextSlop))
                     )
                     .withHighlightFields(
                             new HighlightBuilder.Field(FIELD_TEXT).preTags("<b>").postTags("</b>").numOfFragments(highlightFieldTextNumOfFragments).fragmentSize(highlightFieldTextFragmentSize),
