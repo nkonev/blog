@@ -3,6 +3,7 @@ package com.github.nkonev.blog.config;
 import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.converter.PostConverter;
 import com.github.nkonev.blog.entity.elasticsearch.IndexPost;
+import com.github.nkonev.blog.services.PostService;
 import com.github.nkonev.blog.utils.ResourceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +15,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import javax.annotation.PostConstruct;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.concurrent.TimeUnit;
 
 @Qualifier(ElasticsearchConfig.ELASTICSEARCH_CONFIG)
 @Configuration
@@ -44,6 +50,23 @@ public class ElasticsearchConfig {
 
     @Value("classpath:/config/index-post-mapping.json")
     private Resource postMapping;
+
+    @Autowired
+    private PostService postService;
+
+    @Value("${custom.elasticsearch.refresh-on-start:true}")
+    private boolean refreshOnStart;
+
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
+
+    @Value(Constants.ELASTICSEARCH_REFRESH_ON_START_KEY_TIMEOUT)
+    private int timeout;
+
+    @Value(Constants.ELASTICSEARCH_REFRESH_ON_START_KEY_TIMEUNIT)
+    private TimeUnit timeUnit;
+
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss");
 
     @PostConstruct
     public void pc(){
@@ -74,6 +97,30 @@ public class ElasticsearchConfig {
                 }
             }
         }
+
+        if (refreshOnStart) {
+            LOGGER.info("Will try to refresh elasticsearch index");
+            final String key = getKey();
+
+            final boolean firstRun = Boolean.TRUE.equals(redisTemplate.opsForValue().setIfAbsent(key, LocalDateTime.now().format(formatter)));
+            String dateTimeString = redisTemplate.opsForValue().get(key);
+            LocalDateTime dateTime = LocalDateTime.parse(dateTimeString, formatter);
+
+            if (dateTime.plus(Duration.of(timeout, timeUnit.toChronoUnit())).isBefore(LocalDateTime.now()) || firstRun) {
+                LOGGER.info("Condition is successful, so we'll refresh elasticsearch index");
+                postService.refreshFulltextIndex(false);
+                redisTemplate.opsForValue().set(key, LocalDateTime.now().format(formatter));
+                if (dropFirst){
+                    redisTemplate.delete(key);
+                }
+            } else {
+                LOGGER.info("Condition isn't successful, so we won't refresh elasticsearch index");
+            }
+        }
+
+    }
+    private String getKey() {
+        return "elasticsearch:"+ IndexPost.INDEX+":build-time";
     }
 
 }

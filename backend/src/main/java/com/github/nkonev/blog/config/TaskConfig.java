@@ -4,7 +4,6 @@ import com.github.nkonev.blog.controllers.ImagePostContentUploadController;
 import com.github.nkonev.blog.controllers.ImagePostTitleUploadController;
 import com.github.nkonev.blog.controllers.ImageSettingsUploadController;
 import com.github.nkonev.blog.controllers.ImageUserAvatarUploadController;
-import com.github.nkonev.blog.services.ElasticsearchPopulator;
 import com.github.nkonev.blog.services.PostService;
 import com.github.nkonev.blog.services.SeoCacheService;
 import net.javacrumbs.shedlock.core.LockProvider;
@@ -19,18 +18,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import java.time.Duration;
 import java.util.concurrent.Executor;
 
-import static com.github.nkonev.blog.config.ElasticsearchConfig.ELASTICSEARCH_CONFIG;
-import static com.github.nkonev.blog.services.ElasticsearchPopulator.POPULATOR;
 
-@DependsOn(POPULATOR)
 @ConditionalOnProperty(value = "custom.tasks.enable", matchIfMissing = true)
 @Configuration
 public class TaskConfig {
@@ -52,9 +46,6 @@ public class TaskConfig {
 
     @Autowired
     private PostService postService;
-
-    @Autowired
-    private ElasticsearchPopulator elasticsearchPopulator;
 
     private static final String IMAGES_CLEAN_TASK = "imagesCleanTask";
     private static final String REFRESH_CACHE_CLEAN_TASK = "refreshCacheTask";
