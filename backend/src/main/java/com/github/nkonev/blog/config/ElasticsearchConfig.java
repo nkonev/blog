@@ -66,7 +66,11 @@ public class ElasticsearchConfig {
                 elasticsearchTemplate.putMapping(IndexPost.INDEX, IndexPost.TYPE, mapping);
                 LOGGER.info("Successfully created elasticsearch index");
             } catch (Exception e) {
-                LOGGER.error("Error during create elasticsearch index", e);
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.error("Error during create elasticsearch index", e);
+                } else {
+                    LOGGER.warn("Error during create elasticsearch index: " + e.getMessage());
+                }
             }
         }
     }
