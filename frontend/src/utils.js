@@ -94,6 +94,10 @@ export const infinitePostsHandlerWithSearch = (that, getWithPaginationUrl, respo
         } else {
             $state.complete();
         }
+    }, err => {
+        $state.complete();
+        console.log("Error during get posts", err);
+        alert("Error during get posts: " + err.bodyText);
     });
 };
 
