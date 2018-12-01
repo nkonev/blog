@@ -41,25 +41,6 @@
     </properties>
 
 
-    <repositories>
-        <repository>
-            <id>jcentral</id>
-            <name>bintray</name>
-            <url>http://jcenter.bintray.com</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>bintray-nkonev-m2</id>
-            <name>bintray-nkonev-m2</name>
-            <url>https://dl.bintray.com/nkonev/m2</url>
-        </repository>
-    </repositories>
-
     <build>
         <resources>
             <!-- copy properties such as liquibase.yml -->
