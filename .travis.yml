@@ -1,12 +1,16 @@
 sudo: required
 dist: trusty
 language: java
+before_cache:
+  - sudo service docker stop
+  - sudo chown -R travis ~/docker
 cache:
   directories:
   - "$HOME/.m2"
   - frontend/node
   - frontend/node_modules
   - $HOME/.cache/install-jdk
+  - ~/docker
 jdk: openjdk11
 services:
   - docker
@@ -14,7 +18,9 @@ before_install:
 #  - sudo apt-get install -y chromium-browser #https://www.ubuntuupdates.org/pm/google-chrome-stable
   - openssl aes-256-cbc -K $encrypted_8518ee46cc9c_key -iv $encrypted_8518ee46cc9c_iv -in ./.travis/id_rsa.enc -out ~/.ssh/id_rsa -d
   - chmod 600 ~/.ssh/id_rsa
-  - echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
+  - sudo service docker stop
+  - if [ "$(ls -A /home/travis/docker)" ]; then echo "/home/travis/docker already set"; else sudo mv /var/lib/docker /home/travis/docker; fi
+  - echo '{"experimental":true, "data-root": "/home/travis/docker"}' | sudo tee /etc/docker/daemon.json
   - sudo service docker restart
 # https://medium.com/@jonashavers/how-to-use-java-10-with-travis-ci-363c7dc2f708
   - java -version;
