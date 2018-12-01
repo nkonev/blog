@@ -176,6 +176,19 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andReturn();
     }
 
+    @Test
+    public void testSlopSearch() throws Exception {
+        MvcResult getPostsRequest = mockMvc.perform(
+                get(Constants.Urls.API+ Constants.Urls.POST+"?searchString=является начать")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(PageUtils.DEFAULT_SIZE))
+                .andExpect(jsonPath("$.[0].title").value("generated_post_100"))
+                .andExpect(jsonPath("$.[0].text").value("Lorem Ipsum <b>является</b> стандартной \"рыбой\" для текстов на латинице с <b>начала</b> XVI века."))
+                .andReturn();
+    }
+
     @Ignore
     @Test
     public void testContainsSearch() throws Exception {

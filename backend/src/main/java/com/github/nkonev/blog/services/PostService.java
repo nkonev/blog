@@ -48,9 +48,7 @@ import java.util.stream.Collectors;
 
 import static com.github.nkonev.blog.converter.PostConverter.toElasticsearchPost;
 import static com.github.nkonev.blog.entity.elasticsearch.IndexPost.*;
-import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
-import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
-import static org.elasticsearch.index.query.QueryBuilders.matchPhrasePrefixQuery;
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 @Service
 public class PostService {
@@ -85,8 +83,26 @@ public class PostService {
     @Autowired
     private SeoCacheService seoCacheService;
 
-    @Value("${cuastom.get.all.index.ids.chunk.size:20}")
+    @Value("${custom.elasticsearch.get.all.index.ids.chunk.size:20}")
     private int chunkSize;
+
+    @Value("${custom.elasticsearch.search.field.text.slop:24}")
+    private int searchFieldTextSlop;
+
+    @Value("${custom.elasticsearch.search.field.title.slop:8}")
+    private int searchFieldTitleSlop;
+
+    @Value("${custom.elasticsearch.highlight.field.text.num.of.fragments:5}")
+    private int highlightFieldTextNumOfFragments;
+
+    @Value("${custom.elasticsearch.highlight.field.title.num.of.fragments:1}")
+    private int highlightFieldTitleNumOfFragments;
+
+    @Value("${custom.elasticsearch.highlight.field.text.num.of.fragments:150}")
+    private int highlightFieldTextFragmentSize;
+
+    @Value("${custom.elasticsearch.highlight.field.title.num.of.fragments:150}")
+    private int highlightFieldTitleFragmentSize;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PostService.class);
 
@@ -247,10 +263,13 @@ public class PostService {
                     .withQuery(boolQuery()
                             .should(matchPhrasePrefixQuery(FIELD_TEXT, searchString))
                             .should(matchPhrasePrefixQuery(FIELD_TITLE, searchString))
+
+                            .should(matchPhraseQuery(FIELD_TEXT, searchString).slop(searchFieldTextSlop))
+                            .should(matchPhraseQuery(FIELD_TITLE, searchString).slop(searchFieldTitleSlop))
                     )
                     .withHighlightFields(
-                            new HighlightBuilder.Field(FIELD_TEXT).preTags("<b>").postTags("</b>").numOfFragments(5).fragmentSize(150),
-                            new HighlightBuilder.Field(FIELD_TITLE).preTags("<u>").postTags("</u>").numOfFragments(1).fragmentSize(150)
+                            new HighlightBuilder.Field(FIELD_TEXT).preTags("<b>").postTags("</b>").numOfFragments(highlightFieldTextNumOfFragments).fragmentSize(highlightFieldTextFragmentSize),
+                            new HighlightBuilder.Field(FIELD_TITLE).preTags("<u>").postTags("</u>").numOfFragments(highlightFieldTitleNumOfFragments).fragmentSize(highlightFieldTitleFragmentSize)
                     )
                     .withPageable(pageRequest)
                     .build();
