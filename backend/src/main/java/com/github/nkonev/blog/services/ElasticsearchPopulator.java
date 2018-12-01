@@ -1,5 +1,6 @@
 package com.github.nkonev.blog.services;
 
+import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.entity.elasticsearch.IndexPost;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,9 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeUnit;
 import static com.github.nkonev.blog.config.ElasticsearchConfig.ELASTICSEARCH_CONFIG;
 import static com.github.nkonev.blog.services.ElasticsearchPopulator.POPULATOR;
@@ -29,49 +33,44 @@ public class ElasticsearchPopulator {
     @Value("${custom.elasticsearch.refresh-on-start:true}")
     private boolean refreshOnStart;
 
-    /**
-     * Set false in clustered environment for prevent twice refresh fulltext store on start two instances
-     */
-    @Value("${custom.elasticsearch.refresh-on-start-delete-probe:true}")
-    private boolean refreshOnStartDeleteProbe;
+    @Value(Constants.CUSTOM_ELASTICSEARCH_DROP_FIRST)
+    private boolean dropFirst;
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
-    @Value("${custom.elasticsearch.refresh-on-start-key.timeout:4}")
+    @Value(Constants.ELASTICSEARCH_REFRESH_ON_START_KEY_TIMEOUT)
     private int timeout;
 
-    @Value("${custom.elasticsearch.refresh-on-start-key.timeunit:MINUTES}")
+    @Value(Constants.ELASTICSEARCH_REFRESH_ON_START_KEY_TIMEUNIT)
     private TimeUnit timeUnit;
+
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss");
 
     @PostConstruct
     public void pc()  {
         if (refreshOnStart) {
             LOGGER.info("Will try to refresh elasticsearch index");
             final String key = getKey();
-            final boolean wasSet = Boolean.TRUE.equals(redisTemplate.opsForValue().setIfAbsent(key, "true"));
 
-            if (wasSet) {
-                LOGGER.info("Probe is successful, so we'll refresh elasticsearch index");
-                redisTemplate.expire(key, timeout, timeUnit);
-                postService.refreshFulltextIndex();
+            final boolean firstRun = Boolean.TRUE.equals(redisTemplate.opsForValue().setIfAbsent(key, LocalDateTime.now().format(formatter)));
+            String dateTimeString = redisTemplate.opsForValue().get(key);
+            LocalDateTime dateTime = LocalDateTime.parse(dateTimeString, formatter);
 
-                if (refreshOnStartDeleteProbe) {
+            if (dateTime.plus(Duration.of(timeout, timeUnit.toChronoUnit())).isBefore(LocalDateTime.now()) || firstRun) {
+                LOGGER.info("Condition is successful, so we'll refresh elasticsearch index");
+                postService.refreshFulltextIndex(false);
+                redisTemplate.opsForValue().set(key, LocalDateTime.now().format(formatter));
+                if (dropFirst){
                     redisTemplate.delete(key);
-                    LOGGER.info("Successful delete probe");
                 }
             } else {
-                LOGGER.info("Probe isn't successful, so we won't refresh elasticsearch index");
+                LOGGER.info("Condition isn't successful, so we won't refresh elasticsearch index");
             }
         }
     }
 
     private String getKey() {
-        return "elasticsearch:"+ IndexPost.INDEX+":build";
+        return "elasticsearch:"+ IndexPost.INDEX+":build-time";
     }
-
-    public boolean refreshInProgress(){
-        return redisTemplate.opsForValue().get(getKey()) != null;
-    }
-
 }

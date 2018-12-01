@@ -1,5 +1,6 @@
 package com.github.nkonev.blog.config;
 
+import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.converter.PostConverter;
 import com.github.nkonev.blog.entity.elasticsearch.IndexPost;
 import com.github.nkonev.blog.utils.ResourceUtils;
@@ -31,7 +32,7 @@ public class ElasticsearchConfig {
     @Autowired
     private PostConverter postConverter;
 
-    @Value("${custom.elasticsearch.drop-first:true}")
+    @Value(Constants.CUSTOM_ELASTICSEARCH_DROP_FIRST)
     private boolean dropFirst;
 
 

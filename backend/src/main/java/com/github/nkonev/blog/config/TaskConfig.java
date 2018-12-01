@@ -122,10 +122,6 @@ public class TaskConfig {
     @Scheduled(cron = "${custom.tasks.index.refresh.cron}")
     @SchedulerLock(name = REFRESH_INDEX_TASK)
     public void refreshIndex() {
-        if (!elasticsearchPopulator.refreshInProgress()){
-            postService.refreshFulltextIndex();
-        } else {
-            LOGGER_INDEX_REFRESH.info("Skipping scheduled index refreshing because ElasticsearchPopulator in progress");
-        }
+        postService.refreshFulltextIndex(false);
     }
 }

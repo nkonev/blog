@@ -24,7 +24,7 @@ public class PostServiceTest extends AbstractUtTestRunner {
 
         post=indexPostRepository.save(post);
 
-        postService.refreshFulltextIndex();
+        postService.refreshFulltextIndex(true);
 
         Assert.assertFalse(indexPostRepository.findById(post.getId()).isPresent());
     }

@@ -1,5 +1,6 @@
 package com.github.nkonev.blog.services;
 
+import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.converter.PostConverter;
 import com.github.nkonev.blog.dto.*;
 import com.github.nkonev.blog.entity.elasticsearch.IndexPost;
@@ -33,6 +34,7 @@ import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPa
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilter;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -44,6 +46,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.github.nkonev.blog.converter.PostConverter.toElasticsearchPost;
@@ -103,6 +106,9 @@ public class PostService {
 
     @Value("${custom.elasticsearch.highlight.field.title.num.of.fragments:150}")
     private int highlightFieldTitleFragmentSize;
+
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PostService.class);
 
@@ -336,7 +342,17 @@ public class PostService {
     }
 
 
-    public void refreshFulltextIndex(){
+    @Value(Constants.ELASTICSEARCH_REFRESH_ON_START_KEY_TIMEOUT)
+    private int timeout;
+
+    @Value(Constants.ELASTICSEARCH_REFRESH_ON_START_KEY_TIMEUNIT)
+    private TimeUnit timeUnit;
+
+    private String getKey() {
+        return "elasticsearch:"+ IndexPost.INDEX+":building";
+    }
+
+    private void refreshFulltextIndex() {
         LOGGER.info("Starting refreshing elasticsearch index {}", IndexPost.INDEX);
         final Collection<Long> postIds = postRepository.findPostIds();
 
@@ -376,5 +392,23 @@ public class PostService {
             indexPostRepository.deleteById(id);
         }
         LOGGER.info("Finished refreshing elasticsearch index {}", IndexPost.INDEX);
+    }
+
+    public void refreshFulltextIndex(boolean ignoreInProgress){
+        final String key = getKey();
+        final boolean wasSet = Boolean.TRUE.equals(redisTemplate.opsForValue().setIfAbsent(key, "true"));
+
+        if (wasSet || ignoreInProgress) {
+            LOGGER.info("Probe is successful, so we'll refresh elasticsearch index");
+            redisTemplate.expire(key, timeout, timeUnit);
+
+            refreshFulltextIndex();
+
+            redisTemplate.delete(key);
+            LOGGER.info("Successful delete probe");
+        } else {
+            LOGGER.info("Probe isn't successful, so we won't refresh elasticsearch index");
+        }
+
     }
 }
