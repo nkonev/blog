@@ -107,6 +107,12 @@ public class PostService {
     @Value("${custom.elasticsearch.highlight.field.title.num.of.fragments:150}")
     private int highlightFieldTitleFragmentSize;
 
+    @Value(Constants.ELASTICSEARCH_REFRESH_ON_START_KEY_TIMEOUT)
+    private int timeout;
+
+    @Value(Constants.ELASTICSEARCH_REFRESH_ON_START_KEY_TIMEUNIT)
+    private TimeUnit timeUnit;
+
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
@@ -269,6 +275,9 @@ public class PostService {
                     .withQuery(boolQuery()
                             .should(matchPhrasePrefixQuery(FIELD_TEXT, searchString).slop(searchFieldTextSlop))
                             .should(matchPhrasePrefixQuery(FIELD_TITLE, searchString).slop(searchFieldTextSlop))
+
+                            .should(fuzzyQuery(FIELD_TEXT, searchString))
+                            .should(fuzzyQuery(FIELD_TITLE, searchString))
                     )
                     .withHighlightFields(
                             new HighlightBuilder.Field(FIELD_TEXT).preTags("<b>").postTags("</b>").numOfFragments(highlightFieldTextNumOfFragments).fragmentSize(highlightFieldTextFragmentSize),
@@ -342,11 +351,6 @@ public class PostService {
     }
 
 
-    @Value(Constants.ELASTICSEARCH_REFRESH_ON_START_KEY_TIMEOUT)
-    private int timeout;
-
-    @Value(Constants.ELASTICSEARCH_REFRESH_ON_START_KEY_TIMEUNIT)
-    private TimeUnit timeUnit;
 
     private String getKey() {
         return "elasticsearch:"+ IndexPost.INDEX+":building";

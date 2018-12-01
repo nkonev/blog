@@ -189,7 +189,6 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andReturn();
     }
 
-    @Ignore
     @Test
     public void testContainsSearch() throws Exception {
         MvcResult getPostsRequest = mockMvc.perform(
