@@ -69,7 +69,7 @@ public class ElasticsearchConfig {
                 if (LOGGER.isDebugEnabled()) {
                     LOGGER.error("Error during create elasticsearch index", e);
                 } else {
-                    LOGGER.warn("Error during create elasticsearch index: " + e.getMessage());
+                    LOGGER.info("Error during create elasticsearch index: " + e.getMessage());
                 }
             }
         }

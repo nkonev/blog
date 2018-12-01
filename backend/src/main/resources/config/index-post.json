@@ -8,7 +8,16 @@
       "ru_stemmer": {
         "type": "stemmer",
         "language": "russian"
+      },
+      "en_stop": {
+        "type": "stop",
+        "stopwords": "_english_"
+      },
+      "en_stemmer": {
+        "type": "stemmer",
+        "language": "english"
       }
+
     },
     "analyzer": {
       "my_analyzer": {
@@ -16,7 +25,9 @@
         "filter": [
           "lowercase",
           "ru_stop",
-          "ru_stemmer"
+          "ru_stemmer",
+          "en_stop",
+          "en_stemmer"
         ]
       }
     }
