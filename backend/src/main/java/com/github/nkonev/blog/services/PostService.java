@@ -291,7 +291,7 @@ public class PostService {
 
                 var params = new HashMap<String, Object>();
                 params.put("id", fulltextPost.getId());
-                LOGGER.info("Will search in postgres by id="+fulltextPost.getId());
+                LOGGER.debug("Will search in postgres by id="+fulltextPost.getId());
                 PostDTO postDTO = jdbcTemplate.queryForObject(
                         rowMapperWithoutTextTitle.getBaseSql() +
                                 " where p.id = :id",

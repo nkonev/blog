@@ -10,7 +10,7 @@
                 No data
             </div>
 
-            <infinite-loading @infinite="infiniteHandler" ref="infiniteLoading">
+            <infinite-loading @infinite="infiniteHandler" ref="infiniteLoading" :identifier="infiniteId">
                 <span slot="no-more">
                   {{ noMoreMessage }}
                 </span>
@@ -53,6 +53,8 @@
                 posts: [ ],
                 searchString: '',
                 noMoreMessage: 'There is no more posts :(',
+                infiniteId: new Date(),
+
             }
         },
         components: {
@@ -76,7 +78,7 @@
                 this.searchString = str;
                 this.posts = [];
                 this.$nextTick(() => {
-                    this.$refs.infiniteLoading.$emit('$InfiniteLoading:reset');
+                    this.infiniteId+=1;
                 });
 
                 const routerNewState = {path: root};
@@ -125,7 +127,7 @@
                         console.debug("found and deleted");
                     }
                     if (this.posts.length === 0) {
-                        this.$refs.infiniteLoading.$emit('$InfiniteLoading:reset');
+                        this.infiniteId+=1;
                     }
                 });
             });

@@ -3,12 +3,12 @@
         <h1>Users</h1>
         <Search @searchEvent="onChangeSearchString" placeholder="Contain search by login"></Search>
         <paginate
+                v-model="currentPage"
                 :page-count="pageCount"
                 :margin-pages="2"
                 :click-handler="reloadPage"
                 :page-range="4"
                 :initial-page="initialPageIndex"
-                ref="paginate"
                 :container-class="'pagination'"
                 :page-class="'page-item'"
                 :page-link-class="'page-link-item'"
@@ -47,6 +47,7 @@
             return {
                 users: [],
                 pageCount: 0,
+                currentPage: 1,
             }
         },
         store,
@@ -69,6 +70,7 @@
                     response => {
                         this.pageCount = Math.ceil(response.body.totalCount / PAGE_SIZE);
                         this.users = response.body.data;
+                        this.currentPage = pageNum;
                     }, response => {
                         console.error(response);
                         // alert(response);
@@ -89,7 +91,6 @@
                 this.users = [];
                 const initPage = 0;
                 this.reloadPage(initPage+1, str);
-                this.$refs.paginate.selected = initPage;
             },
             onRefreshEvent(){
                 console.info("Refresh event in list");

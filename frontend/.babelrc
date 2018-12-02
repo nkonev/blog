@@ -1,14 +1,13 @@
 {
   "presets": [
-    ["env", { "modules": false }],
-    "stage-2"
+    "@babel/preset-env"
   ],
   "env": {
     "test": {
       "presets": [
-        ["env",  { "targets": { "node": 8 }}]
+        ["@babel/preset-env", { "targets": { "node": "current" }}]
       ]
     }
   },
-  "plugins": ["syntax-dynamic-import", "dynamic-import-webpack"]
+  "plugins": ["dynamic-import-webpack"]
 }

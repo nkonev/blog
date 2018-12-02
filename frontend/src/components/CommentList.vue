@@ -6,12 +6,12 @@
                 <comment-item v-for="comment in comments" v-bind:commentDTO="comment" :key="comment.id"></comment-item>
             </div>
             <paginate
+                    v-model="currentPage"
                     :page-count="pageCount"
                     :margin-pages="2"
                     :click-handler="reloadPage"
                     :page-range="4"
                     :initial-page="initialPageIndex"
-                    ref="paginate"
                     :container-class="'pagination'"
                     :page-class="'page-item'"
                     :page-link-class="'page-link-item'"
@@ -46,16 +46,17 @@
             return {
                 comments: [],
                 pageCount: 0,
+                currentPage: 1,
             }
         },
         methods: {
-            reloadPage: function(pageNum) {
+            reloadPage(pageNum) {
                 this.$router.push({query: {page: pageNum}});
                 console.log("opening comment page ", pageNum);
-
                 this.fetchComments(pageNum);
             },
             onPostSwitched(){
+                console.log("onPostSwitched");
                 this.fetchComments();
             },
             /**
@@ -69,6 +70,7 @@
                     response => {
                         this.pageCount = this.getPageCount(response.body.totalCount);
                         this.comments = response.body.data;
+                        this.currentPage = pageNum;
                     }, response => {
                         console.error(response);
                         // alert(response);
@@ -90,17 +92,11 @@
 
                 const nextPage = this.shouldSwitch(newComment.commentsInPost) ? this.pageCount+1 : this.pageCount;
                 this.reloadPage(nextPage);
-                if (this.$refs.paginate) {
-                    this.$refs.paginate.selected = nextPage-1;
-                }
             },
             deleteComment(newCommentCount){
                 this.pageCount = this.getPageCount(newCommentCount);
                 const nextPage = this.shouldSwitch(newCommentCount) ? this.initialPageIndex : this.initialPageIndex +1;
                 this.reloadPage(nextPage);
-                if (this.$refs.paginate) {
-                    this.$refs.paginate.selected = nextPage-1;
-                }
             }
         },
         computed: {

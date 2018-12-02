@@ -115,11 +115,14 @@
                 // see :file-size-limit
                 alert('Image size must be < than 5 Mb');
             },
-            handleCroppaFileChoose(){
+            handleCroppaFileChoose(e){
+                console.debug('image chosen', e);
                 this.model.removeAvatar = false;
+                this.$data.chosenFile = e;
             },
             handleCroppaImageRemove(){
                 this.model.removeAvatar = true;
+                this.$data.chosenFile = null;
             },
             save(){
                 this.startSending();
@@ -140,8 +143,8 @@
                         }
                     )
                 };
-                if (this.profileAvatarCroppa.getChosenFile()){
-                    this.profileAvatarCroppa.promisedBlob(this.profileAvatarCroppa.getChosenFile().type).then(blob => {
+                if (this.$data.chosenFile){
+                    this.profileAvatarCroppa.promisedBlob(this.$data.chosenFile.type).then(blob => {
                         const formData = new FormData();
                         formData.append('image', blob); // multipart part with name 'image'
                         this.$http.post('/api/image/user/avatar', formData)
