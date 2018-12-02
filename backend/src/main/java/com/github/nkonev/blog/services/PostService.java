@@ -276,13 +276,6 @@ public class PostService {
                     .withQuery(boolQuery()
                             .should(matchPhrasePrefixQuery(FIELD_TEXT, searchString).slop(searchFieldTextSlop))
                             .should(matchPhrasePrefixQuery(FIELD_TITLE, searchString).slop(searchFieldTextSlop))
-
-                            .should(fuzzyQuery(FIELD_TEXT, searchString))
-                            .should(fuzzyQuery(FIELD_TITLE, searchString))
-
-                            .should(wildcardQuery(FIELD_TEXT, "*"+stripNonAlpha(searchString)+"*"))
-                            .should(wildcardQuery(FIELD_TITLE, "*"+stripNonAlpha(searchString)+"*"))
-
                     )
                     .withHighlightFields(
                             new HighlightBuilder.Field(FIELD_TEXT).preTags("<b>").postTags("</b>").numOfFragments(highlightFieldTextNumOfFragments).fragmentSize(highlightFieldTextFragmentSize),
@@ -298,7 +291,7 @@ public class PostService {
 
                 var params = new HashMap<String, Object>();
                 params.put("id", fulltextPost.getId());
-
+                LOGGER.info("Will search in postgres by id="+fulltextPost.getId());
                 PostDTO postDTO = jdbcTemplate.queryForObject(
                         rowMapperWithoutTextTitle.getBaseSql() +
                                 " where p.id = :id",
@@ -316,10 +309,6 @@ public class PostService {
         }
 
         return postsResult;
-    }
-
-    private String stripNonAlpha(String input) {
-        return input.replaceAll("\\P{L}+", "");
     }
 
     public Wrapper<PostDTO> findByOwnerId(Pageable springDataPage, Long userId) {
