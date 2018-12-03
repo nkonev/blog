@@ -192,7 +192,12 @@
 </script>
 
 <style lang="stylus" scoped>
+    @import "../constants.styl"
+
     .profile-edit {
+        display flex
+        flex-direction column
+
         &-msg{
             text-align center
             font-size xx-large
@@ -202,19 +207,26 @@
         }
 
         &-info {
-            //display flex
-            //flex-direction row
+            display flex
+            flex-direction row
             //flex-wrap wrap
-            //justify-content space-around
-            display block
+            justify-content space-around
+            align-items stretch
+            height 100%
+            width: 100%
 
             &-avatar-container {
                 text-align center
-                float left
-                //width 100%
             }
 
             &-form {
+                height 100%
+            }
+        }
+
+        @media screen and (max-width: $contentWidth - 300) {
+            &-info {
+                flex-wrap wrap
             }
         }
 
