@@ -91,6 +91,8 @@ spring.data.redis.repositories.enabled: false
 spring.data.elasticsearch.cluster-name: elasticsearch
 spring.data.elasticsearch.clusterNodes: 172.22.0.5:9300
 spring.data.elasticsearch.repositories.enabled: false
+spring.data.elasticsearch.properties.client.transport.nodes_sampler_interval: 40s
+spring.data.elasticsearch.properties.client.transport.ping_timeout: 40s
 """};
 
 def MANAGEMENT_SNIPPET = { boolean test ->
