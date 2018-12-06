@@ -34,8 +34,11 @@
                 <post-add-fab/>
             </template>
             <!-- draw only if id == true (!=0) -->
-            <aside class="left" @click="goLeft()" v-if="postDTO.id && !isEditing && postDTO.left"><span><<</span></aside>
-            <aside class="right" @click="goRight()" v-if="postDTO.id && !isEditing && postDTO.right"><span>>></span></aside>
+
+            <div class="sides">
+            <aside class="left" @click="goLeft()" v-if="postDTO.id && !isEditing && postDTO.left"><font-awesome-icon icon="arrow-left" /></aside>
+            <aside class="right" @click="goRight()" v-if="postDTO.id && !isEditing && postDTO.right"><font-awesome-icon icon="arrow-right" /></aside>
+            </div>
 
             <CommentList v-show="!(isLoading || errorMessage || isEditing)"/>
             <vm-back-top v-if="!isEditing && isLargeScreen" :bottom="80" :right="18"></vm-back-top>
@@ -220,6 +223,11 @@
     $leftAfterTransform=30px
     $rightAfterTransform=30px
 
+    .sides {
+        display flex
+        flex-direction row
+        justify-content space-between
+    }
 
     aside {
         position fixed
@@ -227,7 +235,7 @@
         background green
         top 50%
         opacity 0.6
-        padding 4px 6px
+        padding 8px 8px 2px 8px
         border-radius 2px
         color white
         margin 2px
@@ -236,18 +244,15 @@
         filter none
 
         &.left {
-            float left
             left $leftAfterTransform
         }
         &.right {
-            float right
             right $rightAfterTransform
         }
         &:hover {
             opacity 1.0
             color white
             transition: 0.1s all;
-            transform: scale(1.5, 1.5);
             box-shadow: 0 0 40px green;
             filter brightness(1.5)
             &.left {
