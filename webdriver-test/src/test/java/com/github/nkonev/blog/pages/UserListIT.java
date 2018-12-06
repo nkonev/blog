@@ -57,7 +57,7 @@ public class UserListIT extends AbstractItTestRunner {
         }
 
         /**
-         * Переходин пагинатором на страницу. Данная страница должна быть видна.
+         * Переходим пагинатором на страницу. Данная страница должна быть видна.
          * @param paginatorPage
          */
         public void goNthPaginatorPage(int paginatorPage) {

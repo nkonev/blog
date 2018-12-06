@@ -31,6 +31,10 @@ public class IndexPage {
         open(urlPrefix+INDEX_HTML);
     }
 
+    public void openPage(String query) {
+        open(urlPrefix+INDEX_HTML+"?q="+query);
+    }
+
     public void contains(String s) {
         $(POST_LIST).shouldHave(Condition.text(s));
     }

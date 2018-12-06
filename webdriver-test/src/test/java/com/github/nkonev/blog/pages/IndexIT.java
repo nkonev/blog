@@ -1,6 +1,7 @@
 package com.github.nkonev.blog.pages;
 
 import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.Selenide;
 import com.github.nkonev.blog.CommonTestConstants;
 import com.github.nkonev.blog.controllers.PostController;
 import com.github.nkonev.blog.dto.PostDTO;
@@ -83,12 +84,35 @@ public class IndexIT extends AbstractItTestRunner {
         IndexPage indexPage = new IndexPage(urlPrefix);
         indexPage.openPage();
 
-        indexPage.setSearchString("generated_post_65"); // request that respond one result
+        final String searchQuery = "generated_post_65";
 
-        indexPage.contains("generated_post_65");
+        indexPage.setSearchString(searchQuery); // request that respond one result
+
+        indexPage.contains(searchQuery);
 
         indexPage.sendEnd();
 
         Assert.assertEquals(1, indexPage.posts().size());
     }
+
+    @Test
+    public void testUrlChangingDuringSearch() throws Exception {
+
+        IndexPage indexPage = new IndexPage(urlPrefix);
+        indexPage.openPage();
+
+        final String searchQuery = "generated_post_66";
+        indexPage.setSearchString(searchQuery); // request that respond one result
+
+        indexPage.contains(searchQuery);
+
+        String url = driver.getCurrentUrl();
+        Assert.assertTrue(url.endsWith(searchQuery));
+
+
+
+        indexPage.openPage(searchQuery);
+        indexPage.contains(searchQuery);
+    }
+
 }
