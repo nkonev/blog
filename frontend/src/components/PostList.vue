@@ -19,7 +19,7 @@
                 </span>
             </infinite-loading>
         </div>
-        <vm-back-top :bottom="80" :right="18"></vm-back-top>
+        <vm-back-top v-if="isLargeScreen" :bottom="80" :right="18"></vm-back-top>
         <post-add-fab/>
     </div>
 </template>
@@ -36,6 +36,7 @@
     import Notifications from "../notifications"
     import VmBackTop from 'vue-multiple-back-top'
     import {root} from '../routes';
+    import {isLargeScreen} from '../utils'
 
     // https://peachscript.github.io/vue-infinite-loading/#!/getting-started/with-filter
 
@@ -91,7 +92,10 @@
         computed:{
             query(){
                 return this.$route.query[searchQueryParameter];
-            }
+            },
+            isLargeScreen(){
+                return isLargeScreen();
+            },
         },
         mounted(){
             this.searchString = this.query;

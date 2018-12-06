@@ -16,6 +16,7 @@
                 </span>
             </infinite-loading>
         </div>
+        <vm-back-top v-if="isLargeScreen" :bottom="80" :right="18"></vm-back-top>
         <post-add-fab/>
     </div>
 </template>
@@ -26,7 +27,8 @@
     import BlogSpinner from './BlogSpinner.vue'
     import PostAddFab from './PostAddFab.vue'
     import {infinitePostsHandlerWithSearch} from '../utils'
-
+    import VmBackTop from 'vue-multiple-back-top'
+    import {isLargeScreen} from '../utils'
 
     // https://peachscript.github.io/vue-infinite-loading/#!/getting-started/with-filter
 
@@ -45,10 +47,16 @@
             InfiniteLoading,
             BlogSpinner,
             PostAddFab,
+            'vm-back-top': VmBackTop
         },
         methods: {
             infiniteHandler($state) {
                 infinitePostsHandlerWithSearch(this, `/api/user/${this.id}/posts`, res => res.data, res => {this.total = res.data.totalCount;}, $state);
+            },
+        },
+        computed: {
+            isLargeScreen(){
+                return isLargeScreen();
             },
         },
         mounted(){

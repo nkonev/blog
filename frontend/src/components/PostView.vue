@@ -38,7 +38,7 @@
             <aside class="right" @click="goRight()" v-if="postDTO.id && !isEditing && postDTO.right"><span>>></span></aside>
 
             <CommentList v-show="!(isLoading || errorMessage || isEditing)"/>
-            <vm-back-top v-if="!isEditing" :bottom="80" :right="18"></vm-back-top>
+            <vm-back-top v-if="!isEditing && isLargeScreen" :bottom="80" :right="18"></vm-back-top>
         </template>
         <template v-else>
             Error
@@ -59,6 +59,7 @@
     import Owner from './Owner.vue'
     import {getPostId, getTimestampFromUtc} from '../utils'
     import VmBackTop from 'vue-multiple-back-top'
+    import {isLargeScreen} from '../utils'
     // Lazy load heavy component https://router.vuejs.org/en/advanced/lazy-loading.html. see also in .babelrc
     const PostEdit = () => import('./PostEdit.vue');
 
@@ -97,7 +98,10 @@
         computed:{
             createTime(){
                 return getTimestampFromUtc(this.postDTO.createDateTime);
-            }
+            },
+            isLargeScreen(){
+                return isLargeScreen();
+            },
         },
         methods: {
             getId(){
