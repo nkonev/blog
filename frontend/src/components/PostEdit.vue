@@ -10,26 +10,24 @@
 
         <!-- https://zhanziyang.github.io/vue-croppa/#/file-input -->
         <div class="post-edit-cropper">
-            <croppa v-model="myCroppa"
-                    :width="cropperWidth"
-                    :height="cropperHeight"
-                    :remove-button-size="cropperRemoveButtonSize"
-                    :file-size-limit="5 * 1024 * 1024"
-                    :show-loading="true"
-                    placeholder="Choose title image"
-                    :initial-image="editPostDTO.titleImg"
-                    :placeholder-font-size="32"
-                    :disabled="false"
-                    :prevent-white-space="false"
-                    :show-remove-button="true"
-                    accept="image/*"
-                    @init="handleCroppaInit"
-                    @file-choose="handleCroppaFileChoose"
-                    @image-remove="handleCroppaImageRemove"
-                    @file-size-exceed="handleCroppaFileSizeExceed"
-                    @file-type-mismatch="handleCroppaFileTypeMismatch"
-                    >
-            </croppa >
+            <vueCropper
+                    ref="cropper"
+                    :img="option.img"
+                    :outputSize="option.size"
+                    :outputType="option.outputType"
+                    :info="true"
+                    :full="option.full"
+                    :canMove="option.canMove"
+                    :canMoveBox="option.canMoveBox"
+                    :fixedBox="option.fixedBox"
+                    :original="option.original"
+                    :autoCrop="option.autoCrop"
+                    :autoCropWidth="option.autoCropWidth"
+                    :autoCropHeight="option.autoCropHeight"
+                    :centerBox="option.centerBox"
+                    :high="option.high"
+                    :infoTrue="option.infoTrue"
+            ></vueCropper>
         </div>
         <input class="title-edit" placeholder="Title of your megapost" type="text" autofocus v-model="editPostDTO.title"/>
         <vue-editor id="editor"
@@ -53,11 +51,10 @@
 
 <script>
     import VueEditor from '../lib/VueEditor.vue'
-    import 'vue-croppa/dist/vue-croppa.css'
     import Vue from 'vue'
     import BlogSpinner from './BlogSpinner.vue'
     import {API_POST} from '../constants'
-    import Croppa from 'vue-croppa'
+    import {VueCropper} from 'vue-cropper'
     import {isLargeScreen, computedCropper} from "../utils";
     if (isLargeScreen()) {
         require("quill/dist/quill.bubble.css");
@@ -109,11 +106,27 @@
                     }
                 },
                 editPostDTO: {}, // will be overriden below in created()
-                myCroppa: {},
+                option: {
+                    img: "https://nkonev.name/api/image/settings/000e3920-4e79-4424-9277-affc965050aa.png",
+                    size: 1,
+                    full: false,
+                    outputType: "png",
+                    canMove: true,
+                    fixedBox: false,
+                    original: false,
+                    canMoveBox: true,
+                    autoCrop: true,
+                    // 只有自动截图开启 宽度高度才生效
+                    autoCropWidth: 200,
+                    autoCropHeight: 150,
+                    centerBox: false,
+                    high: true,
+                    cropData: {},
+                    enlarge: 1
+                },
                 chosenFile: null,
             }
         },
-        computed: computedCropper,
         methods: {
             startSending() {
                 this.submitting = true;
@@ -231,7 +244,7 @@
         components: {
             VueEditor,
             BlogSpinner,
-            'croppa': Croppa.component
+            VueCropper
         },
         watch: {
             'editPostDTO': {
@@ -254,6 +267,8 @@
     .post-edit {
         &-cropper {
             text-align center
+            height 300px
+            width 300px
         }
         div.quill-editor {
             margin-top: 0.3em

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import UserProfile from './components/UserProfile.vue'
+//import UserProfile from './components/UserProfile.vue'
 import Error404 from './components/Error404.vue'
 import Error401 from './components/Error401.vue'
 import Error403 from './components/Error403.vue'
@@ -15,7 +15,7 @@ import ResendRegistrationConfirmationToken from './components/ResendRegistration
 import PasswordRestore from './components/PasswordRestore.vue'
 import PasswordReset from './components/PasswordReset.vue'
 import Help from './components/Help.vue'
-import Settings from './components/Settings.vue'
+//import Settings from './components/Settings.vue'
 import {root, root_name, users, useProfileName, post} from './routes'
 const PostView = () => import('./components/PostView.vue');
 const PostEdit = () => import('./components/PostEdit.vue');
@@ -30,7 +30,7 @@ const router = new Router({
     // https://router.vuejs.org/en/api/options.html#routes
     routes: [
         { name: root_name, path: root, component: PostList},
-        { name: useProfileName, path: '/user/:id?', component: UserProfile, props: true, },
+        //{ name: useProfileName, path: '/user/:id?', component: UserProfile, props: true, },
         { path: users, component: UserList},
         { path: '/registration', component: Registration },
         { path: '/post/add', component: PostEdit, props: {
@@ -51,7 +51,7 @@ const router = new Router({
         { path: '/help', component: Help},
         { path: '/password-restore', component: PasswordRestore },
         { path: '/password-reset', component: PasswordReset },
-        { path: '/settings', component: Settings},
+        //{ path: '/settings', component: Settings},
         { path: '/unauthorized', component: Error401 },
         { path: '/forbidden', component: Error403 },
         { path: '*', component: Error404 },

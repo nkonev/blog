@@ -105,15 +105,3 @@ export const infinitePostsHandlerWithSearch = (that, getWithPaginationUrl, respo
 export const isLargeScreen = () => {
     return screen.width > 969;
 };
-
-export const computedCropper = {
-    cropperWidth(){
-        return isLargeScreen() ? 800 : screen.width - 25
-    },
-    cropperHeight(){
-        return isLargeScreen() ? 600 : Math.round(this.cropperWidth * (600.0/800));
-    },
-    cropperRemoveButtonSize(){
-        return isLargeScreen() ? 30 : 45;
-    },
-};
