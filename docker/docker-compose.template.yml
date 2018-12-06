@@ -148,7 +148,7 @@ services:
     - discovery.type=single-node
     - cluster.name=elasticsearch
     - xpack.security.enabled=false
-    - "ES_JAVA_OPTS=-Xms128m -Xmx512m"
+    - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     volumes :
     - es_prod_data_dir:/usr/share/elasticsearch/data
     ports:
