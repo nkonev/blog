@@ -84,7 +84,7 @@ public class UserProfileIT extends FacebookEmulatorTests {
         }
 
         public void assertThisIsYou() {
-            $(".user-profile .user-profile-view-me .me").waitUntil(Condition.text("This is you"), USER_PROFILE_WAIT);
+            $(".user-profile .user-profile-view-info-me .me").waitUntil(Condition.text("This is you"), USER_PROFILE_WAIT);
         }
 
         public String getAvatarUrl() {
@@ -98,17 +98,17 @@ public class UserProfileIT extends FacebookEmulatorTests {
             $(".profile-edit button.save").click();
         }
         public void assertLogin(String expected){
-            $(".user-profile .login").shouldHave(text((expected)));
+            $(".user-profile .user-profile-view-info-data .login").shouldHave(text((expected)));
         }
         public void assertMsg(long expectedId){
-            $(".user-profile-view-msg").shouldHave(Condition.text("Viewing profile #" + expectedId));
+            $(".user-profile-msg").shouldHave(Condition.text("Viewing profile #" + expectedId));
         }
 
         public void setEmail(String email) {
             $(".profile-edit-info input#e-mail").setValue(email);
         }
         public void assertEmail(String expected){
-            $(".user-profile .email").shouldHave(text((expected)));
+            $(".user-profile .user-profile-view-info-data .email").shouldHave(text((expected)));
         }
     }
 
@@ -181,8 +181,8 @@ public class UserProfileIT extends FacebookEmulatorTests {
 
     @Test
     public void testUserProfileCorrectlyUpdatedWhenUrlSwitched() {
-        UserListIT.UsersPage userPage = new UserListIT.UsersPage(urlPrefix);
-        userPage.openPage();
+        UserListIT.UsersPage userListPage = new UserListIT.UsersPage(urlPrefix);
+        userListPage.openPage();
 
         LoginModal loginModal = new LoginModal(user, password);
         loginModal.openLoginModal();

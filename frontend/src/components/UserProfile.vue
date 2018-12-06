@@ -1,25 +1,28 @@
 <template>
     <div class="user-profile">
         <template v-if="dto">
-            <div v-if="!isEditing" class="user-profile-view">
-                <div class="user-profile-view-msg">Viewing profile #{{ id }}</div>
+            <template v-if="!isEditing">
+                <div class="user-profile-msg">Viewing profile #{{ id }}</div>
 
-                <div class="user-profile-view-avatar"><img class="avatar" :src="dto.avatar"></div>
+                <div class="user-profile-view">
+                    <div class="user-profile-view-avatar"><img class="avatar" :src="dto.avatar"></div>
 
-                <div v-if="me" class="user-profile-view-me">
-                    <span class="me">This is you</span>
-                    <span class="manage-buttons">
-                        <img class="edit-container-pen" src="../assets/pen.png" @click="edit()"/>
-                    </span>
-                </div>
-
-                <div class="user-profile-view-info">
-                    <div class="login">{{ dto.login }}</div>
-                    <div v-if="dto.email" class="email">{{dto.email}}</div>
+                    <div class="user-profile-view-info">
+                        <div v-if="me" class="user-profile-view-info-me">
+                            <span class="me">This is you</span>
+                            <span class="manage-buttons">
+                                <img class="edit-container-pen" src="../assets/pen.png" @click="edit()"/>
+                            </span>
+                        </div>
+                        <div class="user-profile-view-info-data">
+                            <div class="login">{{ dto.login }}</div>
+                            <div v-if="dto.email" class="email">{{dto.email}}</div>
+                        </div>
+                    </div>
                 </div>
 
                 <UserPostList :id="id"/>
-            </div>
+            </template>
             <div v-else>
                 <UserProfileEdit :dto="dto" @CANCELED="onCancel" @SAVED="onSaved"></UserProfileEdit>
             </div>
@@ -134,45 +137,49 @@
     }
 
     .user-profile {
-        &-view {
-            &-msg{
-                text-align center
-                font-size xx-large
-                font-family monospace
-                margin-bottom: 1em;
-                margin-top: 0.5em;
-            }
+        &-msg{
+            text-align center
+            font-size xx-large
+            font-family monospace
+            margin-bottom: 1em;
+            margin-top: 0.5em;
+        }
 
-            &-me {
-                display flex
-                flex-direction row
-                align-items center
-                span.me {
-                    margin-left 0.5em
-                    font-family monospace
-                    font-size 1.3em
-                }
-            }
+        &-view {
+            display flex
+            flex-direction row
 
             &-info {
-                display flex
-                flex-direction column
-                flex-wrap wrap
-                justify-content space-around
-                font-size 1.5 em
-                padding  0.3em
-            }
-            &-avatar {
-                float left
+                &-me {
+                    display flex
+                    flex-direction row
+                    align-items center
+
+                    span.me {
+                        margin-left 0.5em
+                        font-family monospace
+                        font-size 1.3em
+                    }
+                }
+
+                &-data {
+                    display flex
+                    flex-direction column
+                    flex-wrap wrap
+                    justify-content space-around
+                    font-size 1.5em
+                    padding 0.3em
+                }
             }
         }
     }
 
-    @media screen and (max-width: $contentWidth) {
+    @media screen and (max-width: $contentWidth - 200) {
         .user-profile {
             &-view {
+                flex-direction column
                 &-avatar {
-                    float none
+                    text-align center
                 }
             }
         }
