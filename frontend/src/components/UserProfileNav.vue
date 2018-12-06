@@ -126,7 +126,6 @@
     .dropdown {
         position: relative;
         display: inline-block;
-        //float:left;
 
         /* Show the dropdown menu on hover */
         &:hover .dropdown-content {

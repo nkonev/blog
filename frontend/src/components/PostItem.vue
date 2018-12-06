@@ -73,9 +73,6 @@
         }
 
         .text-wrapper {
-            //clear: both
-            // height auto
-            // float: right;
             min-height 100px
             max-height 600px;
             font-size $postBodyFontSize

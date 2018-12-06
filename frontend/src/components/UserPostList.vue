@@ -64,7 +64,6 @@
 <style lang="stylus" scoped>
     .post-list {
         display: block;
-        clear: left;
 
         h1 {
             text-align center
