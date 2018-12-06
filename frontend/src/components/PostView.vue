@@ -235,10 +235,11 @@
         background green
         top 50%
         opacity 0.6
-        padding 8px 8px 2px 8px
+        padding 4px 6px
         border-radius 2px
         color white
         margin 2px
+        line-height: 1em
 
         font-size 1.8em
         filter none
