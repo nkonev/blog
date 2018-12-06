@@ -25,21 +25,20 @@
         <maven.jxr.report.plugin.version>2.5</maven.jxr.report.plugin.version>
         <maven.clean.plugin.version>3.0.0</maven.clean.plugin.version>
         <java.version>11</java.version>
-        <spring.boot.version>2.1.0.RELEASE</spring.boot.version>
-        <spring.security.oauth2.version>2.1.0.RELEASE</spring.security.oauth2.version>
 	    <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
         <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
+        <maven.install.plugin.version>2.5.2</maven.install.plugin.version>
+        <jacoco-maven-plugin.version>0.8.2</jacoco-maven-plugin.version>
 
+        <spring.boot.version>2.1.1.RELEASE</spring.boot.version>
+        <spring.security.oauth2.version>2.1.1.RELEASE</spring.security.oauth2.version>
         <selenium.override.version>3.13.0</selenium.override.version>
         <selenide.version>4.12.2</selenide.version>
         <phantomjsdriver.version>1.4.4</phantomjsdriver.version>
         <webdrivermanager.version>2.2.4</webdrivermanager.version>
-        <shedlock.version>1.1.1</shedlock.version>
-
+        <shedlock.version>2.1.0</shedlock.version>
         <postgresql.version>42.2.5</postgresql.version>
         <greenmail.version>1.5.7</greenmail.version>
-        <maven.install.plugin.version>2.5.2</maven.install.plugin.version>
-        <jacoco-maven-plugin.version>0.8.2</jacoco-maven-plugin.version>
         <mockserver.version>5.4.1</mockserver.version>
     </properties>
 
