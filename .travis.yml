@@ -20,6 +20,7 @@ before_install:
   - java -version;
     echo $JAVA_HOME;
   - sudo bash -c "curl https://raw.githubusercontent.com/vishnubob/wait-for-it/8ed92e8cab83cfed76ff012ed4a36cef74b28096/wait-for-it.sh > /sbin/wait-for-it.sh && chmod +x /sbin/wait-for-it.sh"
+  - sudo sysctl -w vm.max_map_count=524288
 install: "/bin/true" # workaround https://github.com/Swagger2Markup/swagger2markup-maven-plugin/pull/24
 # https://docs.travis-ci.com/user/gui-and-headless-browsers/
 before_script:
