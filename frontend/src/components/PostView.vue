@@ -36,8 +36,8 @@
             <!-- draw only if id == true (!=0) -->
 
             <div class="sides">
-            <aside class="left" @click="goLeft()" v-if="postDTO.id && !isEditing && postDTO.left"><font-awesome-icon icon="arrow-left" /></aside>
-            <aside class="right" @click="goRight()" v-if="postDTO.id && !isEditing && postDTO.right"><font-awesome-icon icon="arrow-right" /></aside>
+            <aside class="left" @click="goLeft()" v-if="postDTO.id && !isEditing && postDTO.left" :title="postDTO.left.title"><font-awesome-icon icon="arrow-left" /></aside>
+            <aside class="right" @click="goRight()" v-if="postDTO.id && !isEditing && postDTO.right" :title="postDTO.right.title"><font-awesome-icon icon="arrow-right" /></aside>
             </div>
 
             <CommentList v-show="!(isLoading || errorMessage || isEditing)"/>
@@ -157,10 +157,10 @@
                 this.fetchData();
             },
             goLeft() {
-                this.goto(this.postDTO.left);
+                this.goto(this.postDTO.left.id);
             },
             goRight() {
-                this.goto(this.postDTO.right);
+                this.goto(this.postDTO.right.id);
             },
             openDeleteConfirmation(){
                 this.$modal.show(DIALOG, {

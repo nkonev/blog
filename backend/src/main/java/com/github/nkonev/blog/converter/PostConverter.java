@@ -1,9 +1,6 @@
 package com.github.nkonev.blog.converter;
 
-import com.github.nkonev.blog.dto.PostDTO;
-import com.github.nkonev.blog.dto.PostDTOExtended;
-import com.github.nkonev.blog.dto.PostDTOWithAuthorization;
-import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
+import com.github.nkonev.blog.dto.*;
 import com.github.nkonev.blog.entity.elasticsearch.IndexPost;
 import com.github.nkonev.blog.entity.jpa.Post;
 import com.github.nkonev.blog.exception.BadRequestException;
@@ -57,8 +54,8 @@ public class PostConverter {
                 userAccountConverter.convertToUserAccountDTO(saved.getOwner()),
                 blogSecurityService.hasPostPermission(saved, userAccount, PostPermissions.EDIT),
                 blogSecurityService.hasPostPermission(saved, userAccount, PostPermissions.DELETE),
-                left != null ? left.getId() : null,
-                right != null ? right.getId() : null,
+                left != null ? new PostPreview(left.getId(), left.getTitle()) : null,
+                right != null ? new PostPreview(right.getId(), right.getTitle()) : null,
                 saved.getCreateDateTime()
         );
     }
