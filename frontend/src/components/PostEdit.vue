@@ -127,9 +127,7 @@
                 const sendPost = url => {
                     if (this.editPostDTO.id) {
                         // edit / update
-                        if (url) {
-                            this.editPostDTO.titleImg = url;
-                        }
+                        this.editPostDTO.titleImg = url;
                         this.$http.put(API_POST, this.editPostDTO, {}).then(response => {
                             this.finishSending();
                             if (this.$props.onAfterSubmit){
@@ -171,7 +169,7 @@
                             })
                     });
                 } else {
-                    sendPost('');
+                    sendPost(null);
                 }
             },
             onBtnCancel() {

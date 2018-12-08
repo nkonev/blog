@@ -80,7 +80,7 @@ public class PostConverter {
         forUpdate.setText(sanitizedHtml);
         forUpdate.setTitle(cleanHtmlTags(postDTO.getTitle()));
         if (Boolean.TRUE.equals(postDTO.getRemoveTitleImage())) {
-            forUpdate.setTitleImg("");
+            forUpdate.setTitleImg(null);
         } else {
             forUpdate.setTitleImg(postDTO.getTitleImg());
         }
