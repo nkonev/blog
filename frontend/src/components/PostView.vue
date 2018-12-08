@@ -190,9 +190,9 @@
                 this.$http.delete(API_POST+'/'+this.getId(), { }).then((response) => {
                     this.isLoading = false;
                     if (this.postDTO.right) {
-                        this.goto(this.postDTO.right);
+                        this.goto(this.postDTO.right.id);
                     } else if (this.postDTO.left) {
-                        this.goto(this.postDTO.left);
+                        this.goto(this.postDTO.left.id);
                     } else {
                         this.$router.push({ name: root });
                     }
