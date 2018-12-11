@@ -124,10 +124,9 @@
             onBtnSave() {
                 this.startSending();
 
-                const sendPost = url => {
+                const sendPost = () => {
                     if (this.editPostDTO.id) {
                         // edit / update
-                        this.editPostDTO.titleImg = url;
                         this.$http.put(API_POST, this.editPostDTO, {}).then(response => {
                             this.finishSending();
                             if (this.$props.onAfterSubmit){
@@ -139,7 +138,6 @@
                         });
                     } else {
                         // create
-                        this.editPostDTO.titleImg = url;
                         this.$http.post(API_POST, this.editPostDTO, {}).then(response => {
                             this.finishSending();
                             if (this.$props.onAfterSubmit){
@@ -158,7 +156,8 @@
                         formData.append('image', blob); // multipart part with name 'image'
                         this.$http.post('/api/image/post/title', formData)
                             .then(successResp => {
-                                return successResp.body.relativeUrl
+                                this.editPostDTO.titleImg = successResp.body.relativeUrl;
+                                return
                             }, failResp => {
                                 throw "failed to upload title img"
                             })
@@ -169,7 +168,7 @@
                             })
                     });
                 } else {
-                    sendPost(null);
+                    sendPost();
                 }
             },
             onBtnCancel() {
