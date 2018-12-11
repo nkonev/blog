@@ -2,6 +2,7 @@ package com.github.nkonev.blog;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.elasticsearch.rest.RestClientAutoConfiguration;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
@@ -9,7 +10,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
  */
 @EnableAsync
 @SpringBootApplication(
-        scanBasePackages = {"com.github.nkonev.blog"}
+        scanBasePackages = {"com.github.nkonev.blog"},
+        exclude = {RestClientAutoConfiguration.class}
 )
 public class Launcher {
 
