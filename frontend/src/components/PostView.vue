@@ -16,7 +16,7 @@
 
                         <div class="manage-buttons" v-if="postDTO.canEdit || postDTO.canDelete">
                             <img class="edit-container-pen" src="../assets/pen.png" v-if="postDTO.canEdit" @click="setEdit()"/>
-                            <img class="remove-container-x" src="../assets/remove.png" v-if="postDTO.canDelete" @click="openDeleteConfirmation()"/>
+                            <img class="remove-container-x" src="../assets/remove.png" v-if="postDTO.canDelete" @click="openDeleteConfirmation(postDTO.id)"/>
                         </div>
                     </div>
                     <div class="ql-container ql-bubble">
@@ -162,10 +162,10 @@
             goRight() {
                 this.goto(this.postDTO.right.id);
             },
-            openDeleteConfirmation(){
+            openDeleteConfirmation(id){
                 this.$modal.show(DIALOG, {
                     title: 'Post delete confirmation',
-                    text: 'Do you want to delete this post?',
+                    text: 'Do you want to delete this post #' + id +'?',
                     buttons: [
                         {
                             title: 'No',
