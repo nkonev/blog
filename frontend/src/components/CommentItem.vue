@@ -57,13 +57,13 @@
                     buttons: [
                         {
                             title: 'No',
+                            default: true,
                             handler: () => {
                                 this.$modal.hide(DIALOG)
                             }
                         },
                         {
                             title: 'Yes',
-                            default: true,
                             handler: () => {
                                 this.doDelete();
                                 this.$modal.hide(DIALOG)
