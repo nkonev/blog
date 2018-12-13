@@ -16,6 +16,6 @@ public class XssHtmlChangeListener implements HtmlChangeListener<Object> {
 
     @Override
     public void discardedAttributes(Object context, String tagName, String... attributeNames) {
-        LOGGER.warn("" + context + " tagName='"+tagName+"' , attributeNames=" + Arrays.toString(attributeNames) + "");
+        LOGGER.warn("" + context + " tagName='"+tagName+"', attributeNames=" + Arrays.toString(attributeNames) + "");
     }
 }

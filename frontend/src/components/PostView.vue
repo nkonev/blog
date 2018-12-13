@@ -335,6 +335,11 @@
             margin-bottom $postBodyMarginBottom
         }
 
+        .ql-video {
+            width 100%
+            height 480px
+        }
+
         &-error {
             font-size 4em
         }

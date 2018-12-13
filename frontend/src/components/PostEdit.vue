@@ -81,7 +81,7 @@
     // https://quilljs.com/docs/modules/toolbar/
     const toolbarOptions = [
         ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
-        ['link', 'image'],
+        ['link', 'image', 'video'],
         ['blockquote', 'code-block'],
 
         [{ 'header': 1 }, { 'header': 2 }],               // custom button values
