@@ -97,7 +97,7 @@
     $lockBtnWidth=80px
     .user {
         border-color rgba(0, 176, 88, 0.56)
-        border-width 2px;
+        border-width 1px;
         border-style dashed
         margin 2px;
 

@@ -128,10 +128,4 @@
 
 <style lang="stylus">
     @import "./pageable.styl"
-
-    #user-list {
-        .user {
-            border-width 1px
-        }
-    }
 </style>

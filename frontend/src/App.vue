@@ -138,6 +138,9 @@
 
             top: 0px
             border-radius 2px
+            border-width 1px
+            border-color lightgrey
+            border-style solid
 
             font-family: 'Avenir', Helvetica, Arial, sans-serif;
             -webkit-font-smoothing: antialiased;

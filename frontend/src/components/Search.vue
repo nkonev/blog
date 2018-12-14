@@ -41,12 +41,14 @@
 </script>
 
 <style lang="stylus" scoped>
+    @import "../constants.styl"
     .search {
         margin-top 0px;
         margin-bottom 0px;
         display flex
         flex-direction row
         align-items center
+        width 100%
     }
 
     input.search-input {
@@ -70,6 +72,12 @@
         &:hover {
             transition: 0.2s all;
             color red
+        }
+    }
+
+    @media screen and (max-width: $contentWidth) {
+        input.search-input {
+            width 94%
         }
     }
 </style>
