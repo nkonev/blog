@@ -39,6 +39,7 @@ script:
 
   - ./mvnw -Drevision=$DATE_VERSION -pl deploy-test -P deploy-test clean test  --no-snapshot-updates
   - rm -rf ~/.m2/repository/com/github/nkonev/blog
+  - rm -rf $TRAVIS_BUILD_DIR/frontend/node_modules/.cache
   - bash <(curl -s https://codecov.io/bash)
   - if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_TEST_RESULT" == "0" && "$TRAVIS_EVENT_TYPE" != "cron" ]]; then (
       echo "Will push docker image";
