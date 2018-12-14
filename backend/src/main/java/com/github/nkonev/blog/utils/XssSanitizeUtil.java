@@ -3,7 +3,12 @@ package com.github.nkonev.blog.utils;
 import org.owasp.html.HtmlPolicyBuilder;
 import org.owasp.html.PolicyFactory;
 
+import java.util.regex.Pattern;
+
 public class XssSanitizeUtil {
+
+    private static final Pattern IFRAME_SRC_PATTERN = Pattern.compile("^(https://www\\.youtube\\.com.*)|(https://coub\\.com/.*)|(https://player\\.vimeo\\.com.*)$");
+
     // https://www.owasp.org/index.php/OWASP_Java_HTML_Sanitizer_Project
     private static final PolicyFactory SANITIZER_POLICY = new HtmlPolicyBuilder()
             .allowElements(
@@ -21,7 +26,8 @@ public class XssSanitizeUtil {
             .allowAttributes("class").onElements("p")
             .allowAttributes("style", "class").onElements("span")
             .allowAttributes("class").onElements("li")
-            .allowAttributes("class", "allowfullscreen", "src", "frameborder").onElements("iframe")
+            .allowAttributes("src").matching(IFRAME_SRC_PATTERN).onElements("iframe")
+            .allowAttributes("class", "allowfullscreen", "frameborder").onElements("iframe")
             .requireRelNofollowOnLinks()
             .toFactory();
     private static final XssHtmlChangeListener XSS_HTML_CHANGE_LISTENER = new XssHtmlChangeListener();
