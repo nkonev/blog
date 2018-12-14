@@ -7,6 +7,9 @@
             <h1>Header</h1>
             <input class="title-edit" placeholder="Header title" type="text" autofocus v-model="header"/>
 
+            <h1>Sub header</h1>
+            <input class="title-edit" placeholder="Sub header" type="text" v-model="subHeader"/>
+
             <h1>Title template</h1>
             <input class="title-edit" placeholder="Title Template" type="text" v-model="titleTemplate"/>
 
@@ -48,7 +51,7 @@
     import Croppa from 'vue-croppa'
     import {computedCropper} from "../utils";
     import {mapGetters} from 'vuex'
-    import store, {GET_CONFIG, GET_HEADER, SET_HEADER, GET_TITLE_TEMPLATE, SET_TITLE_TEMPLATE, SET_CONFIG, GET_IMAGE_BACKGROUND, GET_CONFIG_LOADING, FETCH_CONFIG} from '../store'
+    import store, {GET_CONFIG, GET_HEADER, SET_HEADER, GET_SUBHEADER, SET_SUBHEADER, GET_TITLE_TEMPLATE, SET_TITLE_TEMPLATE, SET_CONFIG, GET_IMAGE_BACKGROUND, GET_CONFIG_LOADING, FETCH_CONFIG} from '../store'
 
     export default {
         components: {
@@ -73,6 +76,14 @@
                 },
                 set (value) {
                     this.$store.commit(SET_HEADER, value)
+                }
+            },
+            subHeader: {
+                get () {
+                    return this.$store.getters[GET_SUBHEADER]
+                },
+                set (value) {
+                    this.$store.commit(SET_SUBHEADER, value)
                 }
             },
             titleTemplate: {

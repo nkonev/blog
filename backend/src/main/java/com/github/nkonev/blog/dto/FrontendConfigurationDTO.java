@@ -3,6 +3,8 @@ package com.github.nkonev.blog.dto;
 public class FrontendConfigurationDTO {
     private String header;
 
+    private String subHeader;
+
     private String titleTemplate;
 
     private String imageBackground;
@@ -13,8 +15,9 @@ public class FrontendConfigurationDTO {
 
     public FrontendConfigurationDTO() { }
 
-    public FrontendConfigurationDTO(String header, String titleTemplate, String imageBackground, boolean showSettings) {
+    public FrontendConfigurationDTO(String header, String subHeader, String titleTemplate, String imageBackground, boolean showSettings) {
         this.header = header;
+        this.subHeader = subHeader;
         this.titleTemplate = titleTemplate;
         this.imageBackground = imageBackground;
         this.showSettings = showSettings;
@@ -58,5 +61,13 @@ public class FrontendConfigurationDTO {
 
     public void setRemoveImageBackground(Boolean removeImageBackground) {
         this.removeImageBackground = removeImageBackground;
+    }
+
+    public String getSubHeader() {
+        return subHeader;
+    }
+
+    public void setSubHeader(String subHeader) {
+        this.subHeader = subHeader;
     }
 }

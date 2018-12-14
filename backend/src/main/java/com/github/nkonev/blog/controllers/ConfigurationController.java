@@ -31,15 +31,17 @@ public class ConfigurationController {
 
     private static final String IMAGE_BACKGROUND = "image.background";
     private static final String HEADER = "header";
+    private static final String SUB_HEADER = "header.sub";
     private static final String TITLE_TEMPLATE = "title.template";
 
     @GetMapping(API+CONFIG)
     public FrontendConfigurationDTO getConfig(@AuthenticationPrincipal UserAccountDetailsDTO userAccount){
         String imageBackground = runtimeSettingsRepository.findById(IMAGE_BACKGROUND).orElseThrow().getValue();
         String header = runtimeSettingsRepository.findById(HEADER).orElseThrow().getValue();
+        String subHeader = runtimeSettingsRepository.findById(SUB_HEADER).orElseThrow().getValue();
         String titleTemplate = runtimeSettingsRepository.findById(TITLE_TEMPLATE).orElseThrow().getValue();
         boolean showSettings = blogSecurityService.hasSettingsPermission(userAccount);
-        return new FrontendConfigurationDTO(header, titleTemplate, imageBackground, showSettings);
+        return new FrontendConfigurationDTO(header, subHeader, titleTemplate, imageBackground, showSettings);
     }
 
     @Transactional
@@ -67,6 +69,10 @@ public class ConfigurationController {
         // update header
         var runtimeSettingsHeader = runtimeSettingsRepository.findById(HEADER).orElseThrow();
         runtimeSettingsHeader.setValue(dto.getHeader());
+
+        // update subheader
+        var runtimeSettingsSubHeader = runtimeSettingsRepository.findById(SUB_HEADER).orElseThrow();
+        runtimeSettingsSubHeader.setValue(dto.getSubHeader());
 
         // update title
         var runtimeTitleTemplate = runtimeSettingsRepository.findById(TITLE_TEMPLATE).orElseThrow();

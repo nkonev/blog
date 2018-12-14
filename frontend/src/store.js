@@ -17,6 +17,9 @@ export const FETCH_CONFIG = 'fetchConfig';
 export const GET_HEADER = 'getHeader';
 export const SET_HEADER = 'setHeader';
 
+export const GET_SUBHEADER = 'getSubHeader';
+export const SET_SUBHEADER = 'setSubHeader';
+
 export const GET_TITLE_TEMPLATE = 'getTitleTemplate';
 export const SET_TITLE_TEMPLATE = 'setTitleTemplate';
 
@@ -31,6 +34,7 @@ const store = new Vuex.Store({
         currentUser: null,
         config: {
             header: null,
+            subHeader: null,
             titleTemplate: null,
             imageBackground: null
         },
@@ -55,6 +59,9 @@ const store = new Vuex.Store({
         [SET_HEADER](state, payload) {
             state.config.header = payload;
         },
+        [SET_SUBHEADER](state, payload) {
+            state.config.subHeader = payload;
+        },
 
         [SET_TITLE_TEMPLATE](state, payload) {
             state.config.titleTemplate = payload;
@@ -77,6 +84,9 @@ const store = new Vuex.Store({
 
         [GET_HEADER](state) {
             return state.config.header;
+        },
+        [GET_SUBHEADER](state) {
+            return state.config.subHeader;
         },
         [GET_TITLE_TEMPLATE](state) {
             return state.config.titleTemplate;

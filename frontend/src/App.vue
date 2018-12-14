@@ -6,7 +6,10 @@
             <LoginModal></LoginModal>
             <auto-progress :includedUrls="['/api/post\\?.*', '/api/post/\\d+/comment.*', '/api/user\\?.*']"/>
 
-            <h1 class="logo">{{config.header}}</h1>
+            <div class="logo">
+                <h1>{{config.header}}</h1>
+                <h4>{{config.subHeader}}</h4>
+            </div>
             <nav id="header-nav">
                 <router-link class="router-link" to="/" exact>Posts</router-link>
                 <router-link class="router-link" to="/users">Users</router-link>
@@ -154,11 +157,21 @@
         }
 
         .logo {
-            padding 0.4em 0 0.4em 0.7em
             margin 0 0 0 0
             background-color dimgrey
             color white
             border-radius 2px
+            padding 0 0 0 0
+
+            h1 {
+                padding 0.4em 0 0em 8px
+                margin 0 0 0 0
+            }
+            h4 {
+                margin 0 0 0 0
+                padding 0em 0 0.4em 8px
+                font-family 'DejaVu Sans Mono', monospace
+            }
         }
 
         nav {
