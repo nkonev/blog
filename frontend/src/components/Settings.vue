@@ -32,6 +32,7 @@
                         accept="image/*"
                         @init="handleCroppaInit"
                         @file-choose="handleCroppaFileChoose"
+                        @loading-end="handleLoadingEnd"
                         @image-remove="handleCroppaImageRemove"
                         @file-size-exceed="handleCroppaFileSizeExceed"
                         @file-type-mismatch="handleCroppaFileTypeMismatch"
@@ -51,7 +52,7 @@
     import Croppa from 'vue-croppa'
     import {computedCropper} from "../utils";
     import {mapGetters} from 'vuex'
-    import store, {GET_CONFIG, GET_HEADER, SET_HEADER, GET_SUBHEADER, SET_SUBHEADER, GET_TITLE_TEMPLATE, SET_TITLE_TEMPLATE, SET_CONFIG, GET_IMAGE_BACKGROUND, GET_CONFIG_LOADING, FETCH_CONFIG} from '../store'
+    import store, {GET_CONFIG, GET_HEADER, SET_HEADER, GET_SUBHEADER, SET_SUBHEADER, GET_TITLE_TEMPLATE, SET_TITLE_TEMPLATE, SET_CONFIG, GET_IMAGE_BACKGROUND, SET_IMAGE_BACKGROUND, GET_CONFIG_LOADING, FETCH_CONFIG} from '../store'
 
     export default {
         components: {
@@ -101,6 +102,11 @@
         methods: {
             handleCroppaInit(){
                 document.querySelector(".image-background-cropper canvas").style.border="dashed"
+            },
+            handleLoadingEnd(){
+                const dataUrl = document.querySelector(".image-background-cropper canvas").toDataURL();
+                //console.debug('image chosen', dataUrl);
+                this.$store.commit(SET_IMAGE_BACKGROUND, dataUrl);
             },
             handleCroppaFileChoose(e){
                 this.removeImageBackground = false;
