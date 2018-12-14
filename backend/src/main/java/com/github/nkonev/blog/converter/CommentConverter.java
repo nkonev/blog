@@ -8,7 +8,7 @@ import com.github.nkonev.blog.entity.jpa.Comment;
 import com.github.nkonev.blog.exception.BadRequestException;
 import com.github.nkonev.blog.security.BlogSecurityService;
 import com.github.nkonev.blog.security.permissions.CommentPermissions;
-import com.github.nkonev.blog.utils.XssSanitizeUtil;
+import com.github.nkonev.blog.services.XssSanitizerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -23,6 +23,9 @@ public class CommentConverter {
     @Autowired
     private UserAccountConverter userAccountConverter;
 
+    @Autowired
+    private XssSanitizerService xssSanitizerService;
+
     public Comment convertFromDto(CommentDTO commentDTO, long postId, Comment forUpdate) {
         Assert.notNull(commentDTO, "commentDTO can't be null");
         checkLength(commentDTO.getText());
@@ -30,7 +33,7 @@ public class CommentConverter {
             forUpdate = new Comment();
             forUpdate.setPostId(postId);
         }
-        forUpdate.setText(XssSanitizeUtil.sanitize(commentDTO.getText()));
+        forUpdate.setText(xssSanitizerService.sanitize(commentDTO.getText()));
         return forUpdate;
     }
 

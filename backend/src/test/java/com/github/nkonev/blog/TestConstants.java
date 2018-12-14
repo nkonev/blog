@@ -18,4 +18,6 @@ public class TestConstants {
     public static final String USER_ADMIN  = CommonTestConstants.USER_ADMIN;
     public static final String USER_BOB = CommonTestConstants.USER_BOB;
     public static final String USER_NIKITA = CommonTestConstants.USER_NIKITA;
+
+    public static final String ALLOW_IFRAME_SRC_STRING = "^(https://www\\.youtube\\.com.*)|(https://coub\\.com/.*)|(https://player\\.vimeo\\.com.*)$";
 }

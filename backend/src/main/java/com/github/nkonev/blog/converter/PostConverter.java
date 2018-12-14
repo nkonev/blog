@@ -7,7 +7,7 @@ import com.github.nkonev.blog.exception.BadRequestException;
 import com.github.nkonev.blog.repo.jpa.PostRepository;
 import com.github.nkonev.blog.security.BlogSecurityService;
 import com.github.nkonev.blog.security.permissions.PostPermissions;
-import com.github.nkonev.blog.utils.XssSanitizeUtil;
+import com.github.nkonev.blog.services.XssSanitizerService;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +24,9 @@ public class PostConverter {
 
     @Autowired
     private UserAccountConverter userAccountConverter;
+
+    @Autowired
+    private XssSanitizerService xssSanitizerService;
 
     public PostDTOWithAuthorization convertToDto(Post saved, UserAccountDetailsDTO userAccount) {
         Assert.notNull(saved, "Post can't be null");
@@ -72,7 +75,7 @@ public class PostConverter {
         Assert.notNull(postDTO, "postDTO can't be null");
 
         if (forUpdate == null){ forUpdate = new Post(); }
-        String sanitizedHtml = XssSanitizeUtil.sanitize(postDTO.getText());
+        String sanitizedHtml = xssSanitizerService.sanitize(postDTO.getText());
         checkLength(sanitizedHtml);
         forUpdate.setText(sanitizedHtml);
         forUpdate.setTitle(cleanHtmlTags(postDTO.getTitle()));
@@ -84,8 +87,8 @@ public class PostConverter {
         return forUpdate;
     }
 
-    public static IndexPost toElasticsearchPost(com.github.nkonev.blog.entity.jpa.Post jpaPost) {
-        String sanitizedHtml = XssSanitizeUtil.sanitize(jpaPost.getText());
+    public IndexPost toElasticsearchPost(com.github.nkonev.blog.entity.jpa.Post jpaPost) {
+        String sanitizedHtml = xssSanitizerService.sanitize(jpaPost.getText());
         return new IndexPost(jpaPost.getId(), jpaPost.getTitle(), cleanHtmlTags(sanitizedHtml));
     }
 

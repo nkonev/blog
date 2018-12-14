@@ -49,7 +49,6 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static com.github.nkonev.blog.converter.PostConverter.toElasticsearchPost;
 import static com.github.nkonev.blog.entity.elasticsearch.IndexPost.*;
 import static org.elasticsearch.common.unit.Fuzziness.fromEdits;
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -202,7 +201,7 @@ public class PostService {
         UserAccount ua = userAccountRepository.findById(userAccount.getId()).orElseThrow(()->new IllegalArgumentException("User account not found")); // Hibernate caches it
         fromWeb.setOwner(ua);
         Post saved = postRepository.saveAndFlush(fromWeb);
-        indexPostRepository.save(toElasticsearchPost(saved));
+        indexPostRepository.save(postConverter.toElasticsearchPost(saved));
 
         webSocketService.sendInsertPostEvent(postDTO);
         seoCacheListenerProxy.rewriteCachedPage(saved.getId());
@@ -216,7 +215,7 @@ public class PostService {
         Post found = postRepository.findById(postDTO.getId()).orElseThrow(()->new IllegalArgumentException("Post with id " + postDTO.getId() + " not found"));
         Post updatedEntity = postConverter.convertToPost(postDTO, found);
         Post saved = postRepository.saveAndFlush(updatedEntity);
-        indexPostRepository.save(toElasticsearchPost(saved));
+        indexPostRepository.save(postConverter.toElasticsearchPost(saved));
 
         webSocketService.sendUpdatePostEvent(postDTO);
         seoCacheListenerProxy.rewriteCachedPage(saved.getId());
@@ -363,7 +362,7 @@ public class PostService {
             if (post.isPresent()) {
                 com.github.nkonev.blog.entity.jpa.Post jpaPost = post.get();
                 LOGGER.info("Copying PostgreSQL -> Elasticsearch post id={}", id);
-                indexPostRepository.save(PostConverter.toElasticsearchPost(jpaPost));
+                indexPostRepository.save(postConverter.toElasticsearchPost(jpaPost));
             }
         }
 

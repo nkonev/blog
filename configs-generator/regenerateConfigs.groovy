@@ -193,6 +193,12 @@ custom:
       cron: "0 0 */2 * * *"
   prerender:
     prerenderServiceUrl: http://rendertron.example.com:3000/
+  xss:
+    iframe:
+      allow:
+        src:
+          pattern: '^(https://www\\.youtube\\.com.*)|(https://coub\\.com/.*)|(https://player\\.vimeo\\.com.*)\$'
+
 """
     return str
 }
