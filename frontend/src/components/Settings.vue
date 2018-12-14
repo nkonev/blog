@@ -131,7 +131,9 @@
 
                 const formData = new FormData();
 
-                const dtoContent = JSON.stringify({...this.storedConfigDto, removeImageBackground: this.removeImageBackground}); // содержимое нового файла...
+                const objToPut = {...this.storedConfigDto, removeImageBackground: this.removeImageBackground};
+                delete objToPut.imageBackground; //  don't pass unnecessary value
+                const dtoContent = JSON.stringify(objToPut); // содержимое нового файла...
                 const dtoBlob = new Blob([dtoContent], { type: "application/json"});
                 formData.append('dto', dtoBlob);
 
