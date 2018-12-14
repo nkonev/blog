@@ -103,17 +103,20 @@ export const infinitePostsHandlerWithSearch = (that, getWithPaginationUrl, respo
 
 
 export const isLargeScreen = () => {
-    return screen.width > 969;
+    return window.innerWidth > 969;
 };
 
 export const computedCropper = {
+    innerWidth(){
+        return window.innerWidth - 65
+    },
     cropperWidth(){
-        return isLargeScreen() ? 800 : screen.width - 25
+        return isLargeScreen() ? 800 : computedCropper.innerWidth()
     },
     cropperHeight(){
-        return isLargeScreen() ? 600 : Math.round(this.cropperWidth * (600.0/800));
+        return isLargeScreen() ? 600 : Math.round(computedCropper.cropperWidth() * (600.0/800));
     },
     cropperRemoveButtonSize(){
-        return isLargeScreen() ? 30 : 45;
-    },
+        return !isLargeScreen() ? 30 : 45;
+    }
 };

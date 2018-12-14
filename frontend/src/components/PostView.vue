@@ -266,6 +266,7 @@
         }
     }
 
+
     .post {
         &-title {
             h1 {
@@ -337,7 +338,7 @@
 
         .ql-video {
             width 100%
-            height 480px
+            height 540px
         }
 
         &-error {
@@ -388,7 +389,24 @@
                 transform none
             }
         }
+
     }
+
+
+    @media screen and (max-width: $contentWidth) {
+        .post {
+            &-content {
+                .ql-video {
+                    width 100%
+                    height 420px
+                }
+            }
+        }
+    }
+
+
+
+
 </style>
 
 <style lang="stylus">
