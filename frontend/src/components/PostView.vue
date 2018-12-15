@@ -218,8 +218,9 @@
     }
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
     @import "../constants.styl"
+    @import "./qlVideo.styl"
     $leftAfterTransform=30px
     $rightAfterTransform=30px
 
@@ -336,11 +337,6 @@
             margin-bottom $postBodyMarginBottom
         }
 
-        .ql-video {
-            width 100%
-            height 540px
-        }
-
         &-error {
             font-size 4em
         }
@@ -391,22 +387,6 @@
         }
 
     }
-
-
-    @media screen and (max-width: $contentWidth) {
-        .post {
-            &-content {
-                .ql-video {
-                    width 100%
-                    height 420px
-                }
-            }
-        }
-    }
-
-
-
-
 </style>
 
 <style lang="stylus">
