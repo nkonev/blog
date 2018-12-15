@@ -220,7 +220,6 @@
 
 <style lang="stylus" scoped>
     @import "../constants.styl"
-    @import "./qlVideo.styl"
     $leftAfterTransform=30px
     $rightAfterTransform=30px
 
@@ -390,5 +389,6 @@
 </style>
 
 <style lang="stylus">
+    @import "./qlVideo.styl"
     @import "~quill/dist/quill.bubble.css"
 </style>
