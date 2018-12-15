@@ -86,7 +86,7 @@ services:
       - backend
 
   postgresql:
-    image: postgres:10.5
+    image: postgres:11.1
     hostname: postgresql
     environment:
       - POSTGRES_PASSWORD=postgresqlPassword
@@ -199,7 +199,7 @@ services:
     networks:
       - backend
   postgresql_exporter:
-    image: wrouesnel/postgres_exporter:v0.4.6
+    image: wrouesnel/postgres_exporter:v0.4.7
     hostname: postgresql_exporter
     ports:
       - 9187:9187
