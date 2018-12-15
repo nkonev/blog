@@ -42,7 +42,7 @@ scrape_configs:
     port: 3010
 
 - job_name: 'rendertron'
-  metrics_path: /metrics
+  metrics_path: /probe
   params:
     module: ['get_as_prometheus']
     target: ['http://blog:8098']
