@@ -19,7 +19,7 @@ groups:
       severity: page
     annotations:
       summary: "Rendertron not renders index page"
-      description: "Please check if rendertron is alive & blackbox exporter send correct useragent which configured in java blog application too"
+      description: "We cannot get cached prerendered pages as crawler. Please check if rendertron is alive & blackbox exporter send correct useragent which configured in java blog application too"
 
 - name: blog_log_events
   rules:

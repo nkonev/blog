@@ -40,7 +40,8 @@ scrape_configs:
     refresh_interval: 30s
     type: A
     port: 3010
-# https://github.com/prometheus/blackbox_exporter/blob/master/README.md#local-build
+# https://github.com/prometheus/blackbox_exporter/blob/master/README.md
+# wget -O - 'http://localhost:9115/probe?target=https://nkonev.name&module=get_as_prometheus'
 - job_name: 'rendertron'
   metrics_path: /probe
   params:
