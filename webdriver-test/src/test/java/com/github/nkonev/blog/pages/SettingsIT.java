@@ -29,13 +29,13 @@ public class SettingsIT extends AbstractItTestRunner {
 
         settingsPage.waitForBackgroundImageWillSet();
 
-        Assert.assertTrue($(SettingsPage.IMG_BG).getAttribute("src").endsWith(".png"));
+        Assert.assertFalse($(SettingsPage.IMG_BG).getAttribute("src").isEmpty());
 
         Selenide.refresh();
 
         settingsPage.waitForBackgroundImageWillSet();
 
-        Assert.assertTrue($(SettingsPage.IMG_BG).getAttribute("src").endsWith(".png"));
+        Assert.assertFalse($(SettingsPage.IMG_BG).getAttribute("src").isEmpty());
     }
 
 
