@@ -39,8 +39,9 @@ Vue.http.interceptors.push((request, next) => {
             if (request.url!==PROFILE_URL) {
                 vm.$modal.show(LOGIN_MODAL);
             }
-        } else if (response.status === 500) {
-            Notifications.unexpectedError();
+        } else if (!(response.status >= 200 && response.status < 300)) {
+            console.error("Unexpected error", response);
+            Notifications.unexpectedError(request.method, request.url, response.status);
         }
     });
 });

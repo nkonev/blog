@@ -23,8 +23,8 @@ miniToastr.init({types: {
 
 
 export default {
-    unexpectedError() {
-        VueNotifications.error({title: 'Unexpected server error', message: 'Unexpected server error occurred. Try later.'})
+    unexpectedError(m, b, s) {
+        VueNotifications.error({title: 'Unexpected server error', message: 'Unexpected server error occurred on '+m+' '+b + ' ' + s})
     },
     successfulLogin(){
         VueNotifications.info({message: 'You are successfully logged in'})
