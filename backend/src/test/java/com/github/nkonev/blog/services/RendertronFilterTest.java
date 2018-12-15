@@ -27,8 +27,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @TestPropertySource(properties = {
-        "custom.prerender.enable=true",
-        "custom.prerender.crawlerUserAgents=YaBot",
+        "custom.rendertron.enable=true",
+        "custom.rendertron.crawlerUserAgents=YaBot",
         "custom.seo.script=classpath:seo.html",
         "server.port=9082",
         "management.server.port=3012",

@@ -1,7 +1,7 @@
 package com.github.nkonev.blog.services;
 
 import com.github.nkonev.blog.config.CustomConfig;
-import com.github.nkonev.blog.config.PrerenderConfig;
+import com.github.nkonev.blog.config.RendertronConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,28 +19,23 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static com.github.nkonev.blog.utils.ResourceUtils.stringFromResource;
 import static com.github.nkonev.blog.utils.ResourceUtils.stringFromResourceOrNullIfNotExists;
 import static com.github.nkonev.blog.utils.SeoCacheKeyUtils.getRedisKeyHtml;
 import static com.github.nkonev.blog.utils.ServletUtils.getPath;
-import static com.github.nkonev.blog.utils.ServletUtils.nullToEmpty;
 import static org.springframework.util.StringUtils.isEmpty;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@ConditionalOnProperty(com.github.nkonev.blog.Constants.CUSTOM_PRERENDER_ENABLE)
+@ConditionalOnProperty(com.github.nkonev.blog.Constants.CUSTOM_RENDERTRON_ENABLE)
 public class RendertronFilter extends GenericFilterBean {
 
     @Autowired
-    private PrerenderConfig prerenderConfig;
+    private RendertronConfig rendertronConfig;
 
     @Autowired
     private CustomConfig customConfig;
@@ -59,7 +54,7 @@ public class RendertronFilter extends GenericFilterBean {
                 "facebookexternalhit", "twitterbot", "rogerbot", "linkedinbot", "embedly", "quora link preview",
                 "showyoubo", "outbrain", "pinterest", "developers.google.com/+/web/snippet", "slackbot", "vkShare",
                 "W3C_Validator", "redditbot", "Applebot", "yandex", "Googlebot"));
-        final String crawlerUserAgentsFromConfig = prerenderConfig.getCrawlerUserAgents();
+        final String crawlerUserAgentsFromConfig = rendertronConfig.getCrawlerUserAgents();
         if (!isEmpty(crawlerUserAgentsFromConfig)) {
             crawlerUserAgents.addAll(Arrays.asList(crawlerUserAgentsFromConfig.trim().split(",")));
         }
@@ -72,7 +67,7 @@ public class RendertronFilter extends GenericFilterBean {
                 ".jpeg", ".gif", ".pdf", ".doc", ".txt", ".ico", ".rss", ".zip", ".mp3", ".rar", ".exe", ".wmv",
                 ".doc", ".avi", ".ppt", ".mpg", ".mpeg", ".tif", ".wav", ".mov", ".psd", ".ai", ".xls", ".mp4",
                 ".m4a", ".swf", ".dat", ".dmg", ".iso", ".flv", ".m4v", ".torrent", ".woff", ".ttf"));
-        final String extensionsToIgnoreFromConfig = prerenderConfig.getIgnoreExtensions();
+        final String extensionsToIgnoreFromConfig = rendertronConfig.getIgnoreExtensions();
         if (!isEmpty(extensionsToIgnoreFromConfig)) {
             extensionsToIgnore.addAll(Arrays.asList(extensionsToIgnoreFromConfig.trim().split(",")));
         }
@@ -106,10 +101,10 @@ public class RendertronFilter extends GenericFilterBean {
     }
 
     private boolean isInBlackList(String path) {
-        if (prerenderConfig.getBlacklistPaths() == null) {
+        if (rendertronConfig.getBlacklistPaths() == null) {
             return false;
         } else {
-            return prerenderConfig.getBlacklistPaths().contains(path);
+            return rendertronConfig.getBlacklistPaths().contains(path);
         }
     }
 
@@ -153,7 +148,7 @@ public class RendertronFilter extends GenericFilterBean {
     }
 
     private boolean isPrerenderUserAgent(String userAgent) {
-        return userAgent != null && userAgent.contains(prerenderConfig.getPrerenderUserAgent());
+        return userAgent != null && userAgent.contains(rendertronConfig.getUserAgent());
     }
 
     public String getSeoScript() {

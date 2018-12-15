@@ -41,10 +41,10 @@ scrape_configs:
     type: A
     port: 3010
 
-- job_name: 'prerender'
+- job_name: 'rendertron'
   metrics_path: /probe
   params:
-    module: ['prerender']
+    module: ['get_as_prometheus']
     target: ['http://blog:8098']
   static_configs:
     - targets:

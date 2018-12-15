@@ -191,8 +191,8 @@ custom:
       cron: "0 */30 * * * *"
     index.refresh:
       cron: "0 0 */2 * * *"
-  prerender:
-    prerenderServiceUrl: http://rendertron.example.com:3000/
+  rendertron:
+    serviceUrl: http://rendertron.example.com:3000/
   xss:
     iframe:
       allow:
@@ -273,7 +273,7 @@ ${WEBSERVER_SNIPPET}
 ${TEST_USERS_SNIPPET}
 ${DATA_STORE_SNIPPET(true, 'validate')}
 ${MANAGEMENT_SNIPPET(true)}
-custom.prerender.enable: true
+custom.rendertron.enable: true
 """;
 writeAndLog(BACKEND_TEST_YML_FILE, BACKEND_TEST_YML_CONTENT);
 

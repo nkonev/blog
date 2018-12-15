@@ -6,7 +6,7 @@ package com.github.nkonev.blog;
  */
 public class Constants {
 
-    public static final String CUSTOM_PRERENDER_ENABLE = "custom.prerender.enable";
+    public static final String CUSTOM_RENDERTRON_ENABLE = "custom.rendertron.enable";
     public static final String ELASTICSEARCH_REFRESH_ON_START_KEY_TIMEOUT = "${custom.elasticsearch.refresh-on-start-key.timeout:4}";
     public static final String ELASTICSEARCH_REFRESH_ON_START_KEY_TIMEUNIT = "${custom.elasticsearch.refresh-on-start-key.timeunit:MINUTES}";
     public static final String CUSTOM_ELASTICSEARCH_DROP_FIRST = "${custom.elasticsearch.drop-first:true}";

@@ -1,6 +1,6 @@
 # https://github.com/prometheus/blackbox_exporter/blob/master/example.yml
 modules:
-  prerender:
+  get_as_prometheus:
     prober: http
     timeout: 20s
     http:

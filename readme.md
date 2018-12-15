@@ -246,7 +246,7 @@ docker exec -it $(docker ps --filter label=com.docker.swarm.service.name=BLOGSTA
 
 
 # SEO
-First configure `custom.prerender.prerenderServiceUrl` - setup correct url of Rendertron installation. See also dockerized [build](https://hub.docker.com/r/nkonev/rendertron-docker/).
+First configure `custom.rendertron.serviceUrl` - setup correct url of Rendertron installation. See also dockerized [build](https://hub.docker.com/r/nkonev/rendertron-docker/).
 
 ## How to add SEO metrics scripts
 

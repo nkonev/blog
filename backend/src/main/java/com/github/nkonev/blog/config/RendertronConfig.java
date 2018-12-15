@@ -3,23 +3,22 @@ package com.github.nkonev.blog.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
-@ConfigurationProperties("custom.prerender")
-public class PrerenderConfig {
+@ConfigurationProperties("custom.rendertron")
+public class RendertronConfig {
     private String crawlerUserAgents;
-    private String prerenderServiceUrl;
+    private String serviceUrl;
     private String ignoreExtensions;
     private List<String> blacklistPaths = Collections.singletonList("/error");
     private TimeUnit cacheExpireTimeUnit = TimeUnit.MINUTES;
     private long cacheExpire = 30;
-    private String prerenderUserAgent = "HeadlessChrome";
+    private String userAgent = "HeadlessChrome";
 
-    public PrerenderConfig() { }
+    public RendertronConfig() { }
 
     public String getCrawlerUserAgents() {
         return crawlerUserAgents;
@@ -30,12 +29,12 @@ public class PrerenderConfig {
     }
 
 
-    public String getPrerenderServiceUrl() {
-        return prerenderServiceUrl;
+    public String getServiceUrl() {
+        return serviceUrl;
     }
 
-    public void setPrerenderServiceUrl(String prerenderServiceUrl) {
-        this.prerenderServiceUrl = prerenderServiceUrl;
+    public void setServiceUrl(String serviceUrl) {
+        this.serviceUrl = serviceUrl;
     }
 
     public String getIgnoreExtensions() {
@@ -66,7 +65,7 @@ public class PrerenderConfig {
     public String toString() {
         return "PrerenderConfig{" +
                 "crawlerUserAgents='" + crawlerUserAgents + '\'' +
-                ", prerenderServiceUrl='" + prerenderServiceUrl + '\'' +
+                ", serviceUrl='" + serviceUrl + '\'' +
                 ", ignoreExtensions='" + ignoreExtensions + '\'' +
                 ", cacheExpireTimeUnit=" + cacheExpireTimeUnit +
                 ", cacheExpire=" + cacheExpire +
@@ -81,11 +80,11 @@ public class PrerenderConfig {
         this.blacklistPaths = blacklistPaths;
     }
 
-    public String getPrerenderUserAgent() {
-        return prerenderUserAgent;
+    public String getUserAgent() {
+        return userAgent;
     }
 
-    public void setPrerenderUserAgent(String prerenderUserAgent) {
-        this.prerenderUserAgent = prerenderUserAgent;
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
     }
 }

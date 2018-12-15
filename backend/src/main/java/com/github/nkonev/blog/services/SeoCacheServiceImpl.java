@@ -2,7 +2,7 @@ package com.github.nkonev.blog.services;
 
 import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.config.CustomConfig;
-import com.github.nkonev.blog.config.PrerenderConfig;
+import com.github.nkonev.blog.config.RendertronConfig;
 import com.github.nkonev.blog.repo.jpa.PostRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,14 +20,14 @@ import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import static com.github.nkonev.blog.Constants.CUSTOM_PRERENDER_ENABLE;
+import static com.github.nkonev.blog.Constants.CUSTOM_RENDERTRON_ENABLE;
 import static com.github.nkonev.blog.utils.SeoCacheKeyUtils.getRedisKeyForIndex;
 import static com.github.nkonev.blog.utils.SeoCacheKeyUtils.getRedisKeyHtml;
 import static com.github.nkonev.blog.utils.SeoCacheKeyUtils.getRedisKeyHtmlForPost;
 import static com.github.nkonev.blog.utils.ServletUtils.getPath;
 import static com.github.nkonev.blog.utils.ServletUtils.getQuery;
 
-@ConditionalOnProperty(CUSTOM_PRERENDER_ENABLE)
+@ConditionalOnProperty(CUSTOM_RENDERTRON_ENABLE)
 @Primary
 @Service
 public class SeoCacheServiceImpl implements SeoCacheService {
@@ -36,7 +36,7 @@ public class SeoCacheServiceImpl implements SeoCacheService {
     private RedisTemplate<String, String> redisTemplate;
 
     @Autowired
-    private PrerenderConfig prerenderConfig;
+    private RendertronConfig rendertronConfig;
 
     @Autowired
     private CustomConfig customConfig;
@@ -56,7 +56,7 @@ public class SeoCacheServiceImpl implements SeoCacheService {
 
     private void setHtml(String key, String value){
         redisTemplate.opsForValue().set(key, value);
-        redisTemplate.expire(key, prerenderConfig.getCacheExpire(), prerenderConfig.getCacheExpireTimeUnit());
+        redisTemplate.expire(key, rendertronConfig.getCacheExpire(), rendertronConfig.getCacheExpireTimeUnit());
         LOGGER.info("Successfully set {} bytes html for key {}", value.getBytes()!=null?value.getBytes().length:0, key);
     }
 
@@ -78,7 +78,7 @@ public class SeoCacheServiceImpl implements SeoCacheService {
      * @return
      */
     private String getRendrered(String path, String query){
-        final String rendertronUrl = prerenderConfig.getPrerenderServiceUrl() + customConfig.getBaseUrl() + path + query;
+        final String rendertronUrl = rendertronConfig.getServiceUrl() + customConfig.getBaseUrl() + path + query;
         try {
             final RequestEntity<Void> requestEntity = RequestEntity.<Void>get(new URI(rendertronUrl))
                     .accept(MediaType.TEXT_HTML)
