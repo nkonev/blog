@@ -126,10 +126,7 @@
             },
             save(){
                 this.startSending();
-                const sendProfile = (url) => {
-                    if (url) {
-                        this.model.avatar = url;
-                    }
+                const sendProfile = () => {
                     this.errorMessage = null;
                     this.$http.post(PROFILE_URL, this.model).then(
                         successResp => {
@@ -149,7 +146,8 @@
                         formData.append('image', blob); // multipart part with name 'image'
                         this.$http.post('/api/image/user/avatar', formData)
                             .then(successResp => {
-                                return successResp.body.relativeUrl
+                                this.model.avatar = successResp.body.relativeUrl;
+                                return;
                             }, failResp => {
                                 throw "failed to upload title img"
                             })
@@ -161,7 +159,7 @@
                     });
                 } else {
                     console.log('avatar not selected');
-                    sendProfile('');
+                    sendProfile();
                 }
             },
             cancel() {

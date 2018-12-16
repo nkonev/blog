@@ -12,9 +12,22 @@ import java.util.concurrent.TimeUnit;
 public class Croppa {
     public static void setImage(String absoluteFilePath) {
         WebDriver driver = WebDriverRunner.getWebDriver();
-        final By croppaId = By.cssSelector(".croppa-container input");
-        final Wait<WebDriver> wait = new FluentWait<WebDriver>(driver).withMessage("croppa upload element was not found").withTimeout(10, TimeUnit.SECONDS).pollingEvery(1, TimeUnit.SECONDS);
-        wait.until(webDriver -> ExpectedConditions.visibilityOf(driver.findElement(croppaId)));
-        driver.findElement(croppaId).sendKeys(absoluteFilePath);
+        {
+            final By croppaId = By.cssSelector(".croppa-container svg");
+            new FluentWait<>(driver).withMessage("croppa remove button element was not found")
+                    .withTimeout(10, TimeUnit.SECONDS)
+                    .pollingEvery(1, TimeUnit.SECONDS)
+                    .until(webDriver -> ExpectedConditions.visibilityOf(driver.findElement(croppaId)));
+            driver.findElement(croppaId).click();
+        }
+
+        {
+            final By croppaId = By.cssSelector(".croppa-container input");
+            new FluentWait<>(driver).withMessage("croppa upload element was not found")
+                    .withTimeout(10, TimeUnit.SECONDS)
+                    .pollingEvery(1, TimeUnit.SECONDS)
+                    .until(webDriver -> ExpectedConditions.visibilityOf(driver.findElement(croppaId)));
+            driver.findElement(croppaId).sendKeys(absoluteFilePath);
+        }
     }
 }
