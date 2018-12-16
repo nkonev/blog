@@ -31,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
+import static com.github.nkonev.blog.pages.object.Croppa.rmImage;
 import static com.github.nkonev.blog.pages.object.IndexPage.POST_LIST;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assume.assumeThat;
@@ -112,6 +113,10 @@ public class UserProfileIT extends FacebookEmulatorTests {
         public void assertEmail(String expected){
             $(".user-profile .user-profile-view-info-data .email").shouldHave(text((expected)));
         }
+
+        public void removeImage() {
+            Croppa.rmImage();
+        }
     }
 
     @Test
@@ -161,6 +166,7 @@ public class UserProfileIT extends FacebookEmulatorTests {
 
         long countBefore = getUserAvatarCount();
 
+        userPage.removeImage();
         userPage.setAvatarImage(FileUtils.getExistsFile("../"+ CommonTestConstants.TEST_IMAGE, CommonTestConstants.TEST_IMAGE).getCanonicalPath());
 
         final String renamed = "generated_user_500_edit";

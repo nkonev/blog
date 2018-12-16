@@ -10,7 +10,7 @@ import org.openqa.selenium.support.ui.Wait;
 import java.util.concurrent.TimeUnit;
 
 public class Croppa {
-    public static void setImage(String absoluteFilePath) {
+    public static void rmImage() {
         WebDriver driver = WebDriverRunner.getWebDriver();
         {
             final By croppaId = By.cssSelector(".croppa-container svg");
@@ -20,7 +20,10 @@ public class Croppa {
                     .until(webDriver -> ExpectedConditions.visibilityOf(driver.findElement(croppaId)));
             driver.findElement(croppaId).click();
         }
+    }
 
+    public static void setImage(String absoluteFilePath) {
+        WebDriver driver = WebDriverRunner.getWebDriver();
         {
             final By croppaId = By.cssSelector(".croppa-container input");
             new FluentWait<>(driver).withMessage("croppa upload element was not found")
