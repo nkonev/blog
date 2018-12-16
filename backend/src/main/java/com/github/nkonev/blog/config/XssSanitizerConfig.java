@@ -22,7 +22,7 @@ public class XssSanitizerConfig {
                         "h1","h2","h3","h4","h5","h6",
                         "ol", "ul", "li",
                         "sub", "sup",
-                        "span", "img", "code", "iframe"
+                        "span", "img", "code", "iframe", "div"
                 )
                 .allowUrlProtocols("https", "http")
                 .allowAttributes("href", "target").onElements("a")
@@ -33,6 +33,7 @@ public class XssSanitizerConfig {
                 .allowAttributes("class").onElements("li")
                 .allowAttributes("src").matching(pattern).onElements("iframe")
                 .allowAttributes("class", "allowfullscreen", "frameborder").onElements("iframe")
+                .allowAttributes("class").onElements("div")
                 .requireRelNofollowOnLinks()
                 .toFactory();
     }

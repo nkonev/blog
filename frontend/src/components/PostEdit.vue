@@ -270,7 +270,7 @@
 
 <style lang="stylus">
     @import "../constants.styl"
-    @import "./qlVideo.styl"
+    @import "../lib/QuillVideo.styl"
 
     .ql-editor {
         font-size $postBodyFontSize

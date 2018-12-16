@@ -389,6 +389,6 @@
 </style>
 
 <style lang="stylus">
-    @import "./qlVideo.styl"
+    @import "../lib/QuillVideo.styl"
     @import "~quill/dist/quill.bubble.css"
 </style>

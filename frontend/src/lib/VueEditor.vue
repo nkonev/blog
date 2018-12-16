@@ -8,7 +8,9 @@
 <script>
 import VQuill from 'quill'
 import merge from 'lodash.merge'
-const Quill = window.Quill || VQuill
+import Video from './QuillVideo'
+const Quill = window.Quill || VQuill;
+
 
 export default {
   name: 'vue-editor',
@@ -105,7 +107,10 @@ export default {
     },
 
     prepareModules() {
-      this.registerCustomModules()
+      this.registerCustomModules();
+      Quill.register({
+        'formats/video': Video
+      });
     },
 
     registerCustomModules() {
