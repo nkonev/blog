@@ -124,14 +124,7 @@ public abstract class AbstractUtTestRunner {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        return mvcResult.getResponse().getHeaders("Set-Cookie").stream()
-                .map(s -> s.split(";"))
-                .flatMap(Arrays::stream)
-                .map(String::trim)
-                .filter(s -> s.startsWith("SESSION="))
-                .map(s -> s.substring("SESSION=".length()))
-                .reduce((first, second) -> second)
-                .orElseThrow(RuntimeException::new); // todo revert
+        return mvcResult.getResponse().getCookie(CommonTestConstants.COOKIE_SESSION).getValue();
     }
 
     @BeforeEach
