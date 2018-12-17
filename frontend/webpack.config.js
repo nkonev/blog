@@ -73,19 +73,12 @@ module.exports = {
             var currentdate = new Date();
             console.log("Built with environment:", NODE_ENV, "at", currentdate.toLocaleString());
         }),
-        new webpack.ProvidePlugin({
-            // "$":"jquery",
-            // "jQuery":"jquery",
-            // "window.jQuery":"jquery"
-        }),
     ],
 
     resolve: {
         alias: {
-            // 'jquery': require.resolve('jquery'), // for uniform.js
-            // 'vue': path.resolve(path.join(__dirname, 'node_modules', 'vue/dist/vue.js')), // fix "Vue is not constructor" in vue-online
             'vue$': path.resolve(path.join(__dirname, 'node_modules', 'vue/dist/vue.esm.js')), // it's important, else you will get "You are using the runtime-only build of Vue where the template compiler is not available. Either pre-compile the templates into render functions, or use the compiler-included build."
-            //'@': path.resolve(__dirname, 'src')
+            '@': path.resolve(__dirname, 'src')
         },
         extensions: ['.js', '.vue']
     },
