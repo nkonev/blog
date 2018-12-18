@@ -249,14 +249,6 @@ facebook:
     clientAuthenticationScheme: form
   resource:
     userInfoUri: https://graph.facebook.com/me?fields=id,name,picture
-
----
-# Profile for demo data
-spring:
-  profiles: demo
-  flyway:
-    locations: classpath:/db/migration, classpath:/db/demo
-
 """;
 writeAndLog(BACKEND_MAIN_YML_FILE, BACKEND_MAIN_YML_CONTENT);
 
