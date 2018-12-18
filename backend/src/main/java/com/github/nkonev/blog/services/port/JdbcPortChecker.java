@@ -15,7 +15,7 @@ public class JdbcPortChecker extends AbstractPortChecker{
 
     public static final String NAME="jdbcPortChecker";
 
-    @Value("${port.check.jsbc.max.count:64}")
+    @Value("${port.check.jdbc.max.count:64}")
     private int maxCount;
 
     @Autowired
