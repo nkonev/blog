@@ -23,7 +23,7 @@ UPDATE auth.users SET role = 'ROLE_ADMIN' WHERE id = (SELECT id FROM auth.users 
 
 -- insert additional users and roles
 INSERT INTO auth.users(username, password, avatar, email) VALUES
-	('forgive-password-user', '$2a$10$e3pEnL2d3RB7jBrlEA3B9eUhayb/bmEG1V35h.4EhdReUAMzlAWxS', NULL, 'forgive-password-user@example.com');
+	('forgot-password-user', '$2a$10$e3pEnL2d3RB7jBrlEA3B9eUhayb/bmEG1V35h.4EhdReUAMzlAWxS', NULL, 'forgot-password-user@example.com');
 
 
 INSERT INTO posts.post (title, text, title_img, owner_id)

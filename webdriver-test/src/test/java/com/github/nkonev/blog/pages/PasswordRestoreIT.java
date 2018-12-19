@@ -28,8 +28,8 @@ public class PasswordRestoreIT extends AbstractItTestRunner {
 
     @Test
     public void restorePassword() throws Exception {
-        final String user = "forgive-password-user";
-        final String email = "forgive-password-user@example.com";
+        final String user = "forgot-password-user";
+        final String email = "forgot-password-user@example.com";
         final String newPassword = "olololo1234";
         Selenide.open(urlPrefix + "/password-restore");
 
