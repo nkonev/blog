@@ -25,6 +25,8 @@ public class ElasticsearchPortChecker extends AbstractPortChecker {
 
     @PostConstruct
     public void checkPorts(){
+        LOGGER.info("Will check elasticsearch connection");
+
         String clusterNodes = elasticsearchProperties.getClusterNodes();
         String[] nodes = StringUtils.delimitedListToStringArray(clusterNodes, ",");
         for (String node: nodes) {
@@ -33,9 +35,11 @@ public class ElasticsearchPortChecker extends AbstractPortChecker {
             String host = segments[0].trim();
             int port = Integer.valueOf(segments[1].trim());
 
-            LOGGER.info("Checking node {}", node);
+            LOGGER.info("Checking transport node {}", node);
             check(maxCount, host, port);
         }
+
+        LOGGER.info("Elasticsearch connection is ok");
     }
 
     @Override

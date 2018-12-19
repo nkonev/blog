@@ -52,7 +52,6 @@ public class TaskConfig {
     private static final String REFRESH_INDEX_TASK = "refreshIndexTask";
 
     public static final Logger LOGGER_IMAGE_CLEAN_TASK = LoggerFactory.getLogger(IMAGES_CLEAN_TASK);
-    public static final Logger LOGGER_INDEX_REFRESH = LoggerFactory.getLogger(REFRESH_INDEX_TASK);
 
 
     @Bean
