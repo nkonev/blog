@@ -27,6 +27,8 @@ public class Post {
     @Generated(GenerationTime.INSERT)
     private LocalDateTime createDateTime;
 
+    private LocalDateTime editDateTime;
+
     public Post() { }
 
     public Post(Long id, String title, String text, String titleImg) {
@@ -87,5 +89,13 @@ public class Post {
 
     public void setCreateDateTime(LocalDateTime createDateTime) {
         this.createDateTime = createDateTime;
+    }
+
+    public LocalDateTime getEditDateTime() {
+        return editDateTime;
+    }
+
+    public void setEditDateTime(LocalDateTime editDateTime) {
+        this.editDateTime = editDateTime;
     }
 }

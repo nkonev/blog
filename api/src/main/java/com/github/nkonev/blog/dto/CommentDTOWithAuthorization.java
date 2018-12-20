@@ -15,9 +15,10 @@ public class CommentDTOWithAuthorization extends CommentDTO {
             UserAccountDTO owner,
             boolean canEdit,
             boolean canDelete,
-            LocalDateTime createDateTime
+            LocalDateTime createDateTime,
+            LocalDateTime editDateTime
     ) {
-        super(id, text, createDateTime);
+        super(id, text, createDateTime, editDateTime);
         this.owner = owner;
         this.canEdit = canEdit;
         this.canDelete = canDelete;

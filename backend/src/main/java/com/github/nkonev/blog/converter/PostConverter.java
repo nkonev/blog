@@ -39,7 +39,8 @@ public class PostConverter {
                 userAccountConverter.convertToUserAccountDTO(saved.getOwner()),
                 blogSecurityService.hasPostPermission(saved, userAccount, PostPermissions.EDIT),
                 blogSecurityService.hasPostPermission(saved, userAccount, PostPermissions.DELETE),
-                saved.getCreateDateTime()
+                saved.getCreateDateTime(),
+                saved.getEditDateTime()
         );
     }
 
@@ -59,7 +60,8 @@ public class PostConverter {
                 blogSecurityService.hasPostPermission(saved, userAccount, PostPermissions.DELETE),
                 left != null ? new PostPreview(left.getId(), left.getTitle()) : null,
                 right != null ? new PostPreview(right.getId(), right.getTitle()) : null,
-                saved.getCreateDateTime()
+                saved.getCreateDateTime(),
+                saved.getEditDateTime()
         );
     }
 
@@ -117,6 +119,7 @@ public class PostConverter {
                 post.getText(),
                 post.getTitleImg(),
                 post.getCreateDateTime(),
+                post.getEditDateTime(),
                 userAccountConverter.convertToUserAccountDTO(post.getOwner())
         );
     }

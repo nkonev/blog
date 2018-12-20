@@ -45,6 +45,7 @@ import javax.validation.constraints.NotNull;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -129,6 +130,7 @@ public class PostService {
                     (setTitle ? "p.title, " : "") +
                     (setPost ? "p.text, "  : "") +
                     "p.create_date_time," +
+                    "p.edit_date_time," +
                     "u.id as owner_id," +
                     "u.username as owner_login," +
                     "u.facebook_id as owner_facebook_id," +
@@ -151,6 +153,7 @@ public class PostService {
                     setPost ? resultSet.getString("text") : null,
                     resultSet.getString("title_img"),
                     resultSet.getObject("create_date_time", LocalDateTime.class),
+                    resultSet.getObject("edit_date_time", LocalDateTime.class),
                     resultSet.getInt("comment_count"),
                     new UserAccountDTO(
                             resultSet.getLong("owner_id"),
@@ -214,6 +217,7 @@ public class PostService {
         Assert.notNull(userAccount, "UserAccountDetailsDTO can't be null");
         Post found = postRepository.findById(postDTO.getId()).orElseThrow(()->new IllegalArgumentException("Post with id " + postDTO.getId() + " not found"));
         Post updatedEntity = postConverter.convertToPost(postDTO, found);
+        updatedEntity.setEditDateTime(LocalDateTime.now(ZoneOffset.UTC));
         Post saved = postRepository.saveAndFlush(updatedEntity);
         indexPostRepository.save(postConverter.toElasticsearchPost(saved));
 

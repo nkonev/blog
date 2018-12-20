@@ -88,7 +88,8 @@ public class PostControllerTest extends AbstractUtTestRunner {
                         "default new post title",
                         "default new post text",
                         "https://postgrespro.ru/img/logo_mono.png",
-                        LocalDateTime.now(ZoneOffset.UTC),
+                        null,
+                        null,
                         new UserAccountDTO()
                 );
             }
@@ -221,7 +222,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andRespond(withSuccess(newIndexRendered, MediaType.TEXT_HTML));
 
         UserAccountDetailsDTO userAccountDetailsDTO = (UserAccountDetailsDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        postController.updatePost(userAccountDetailsDTO, new PostDTO(50L, "edited for search host port", "A new host for test www.google.com:80 with port too", "", null, null));
+        postController.updatePost(userAccountDetailsDTO, new PostDTO(50L, "edited for search host port", "A new host for test www.google.com:80 with port too", "", null, null, null));
         postRepository.flush();
 
         MvcResult getPostsRequest = mockMvc.perform(
@@ -289,6 +290,8 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andExpect(jsonPath("$.owner.login").value(TestConstants.USER_ALICE))
                 .andExpect(jsonPath("$.canEdit").value(true))
                 .andExpect(jsonPath("$.canDelete").value(false))
+                .andExpect(jsonPath("$.createDateTime").isNotEmpty())
+                .andExpect(jsonPath("$.editDateTime").isEmpty())
                 .andReturn();
 
         Assert.assertFalse(oldDataIndex.equals(redisTemplate.opsForValue().get(getRedisKeyForIndex())));
@@ -334,6 +337,8 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andExpect(jsonPath("$.owner.login").value(TestConstants.USER_ALICE))
                 .andExpect(jsonPath("$.canEdit").value(true))
                 .andExpect(jsonPath("$.canDelete").value(false))
+                .andExpect(jsonPath("$.createDateTime").isNotEmpty())
+                .andExpect(jsonPath("$.editDateTime").isNotEmpty())
                 .andReturn();
         LOGGER.info(updatePostRequest.getResponse().getContentAsString());
         Assert.assertFalse(oldCachedPost.equals(redisTemplate.opsForValue().get(getRedisKeyHtmlForPost(added.getId()))));
@@ -347,6 +352,55 @@ public class PostControllerTest extends AbstractUtTestRunner {
 
         mockServer.verify();
     }
+
+    /*@WithUserDetails(TestConstants.USER_ALICE)
+    @Test
+    public void testEditDateSetsAfterEdit() throws Exception {
+        final String newPostRendered = "<body>Post Rendered</body>";
+        mockServer.expect(ExpectedCount.times(2), requestTo(new StringStartsWith("http://rendertron.example.com:3000/"+customConfig.getBaseUrl()+"/post/")))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess(newPostRendered, MediaType.TEXT_HTML));
+
+        final String newIndexRendered = "<body>Index Rendered</body>";
+        mockServer.expect(ExpectedCount.times(2), requestTo("http://rendertron.example.com:3000/"+customConfig.getBaseUrl()))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess(newIndexRendered, MediaType.TEXT_HTML));
+
+        MvcResult addPostRequest = mockMvc.perform(
+                post(Constants.Urls.API+ Constants.Urls.POST)
+                        .content(objectMapper.writeValueAsString(PostDtoBuilder.startBuilding().build()))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .with(csrf())
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.owner.login").value(TestConstants.USER_ALICE))
+                .andExpect(jsonPath("$.canEdit").value(true))
+                .andExpect(jsonPath("$.canDelete").value(false))
+                .andReturn();
+
+
+        String addStr = addPostRequest.getResponse().getContentAsString();
+        LOGGER.info(addStr);
+        PostDTO added = objectMapper.readValue(addStr, PostDTO.class);
+
+        // check Alice can update her post
+        final String updatedTitle = "updated title";
+        added.setTitle(updatedTitle);
+        MvcResult updatePostRequest = mockMvc.perform(
+                put(Constants.Urls.API+ Constants.Urls.POST)
+                        .content(objectMapper.writeValueAsString(added))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .with(csrf())
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value(updatedTitle))
+                .andExpect(jsonPath("$.owner.login").value(TestConstants.USER_ALICE))
+                .andExpect(jsonPath("$.canEdit").value(true))
+                .andExpect(jsonPath("$.canDelete").value(false))
+                .andReturn();
+        LOGGER.info(updatePostRequest.getResponse().getContentAsString());
+    }*/
+
 
     @Test
     public void testAnonymousCannotAddPostUnit() throws Exception {

@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -97,6 +99,7 @@ public class CommentController {
         Comment found = commentRepository.findById(commentDTO.getId()).orElseThrow(()-> new IllegalArgumentException("Comment with id " + commentDTO.getId() + " not found"));
 
         Comment updatedEntity = commentConverter.convertFromDto(commentDTO, 0, found);
+        updatedEntity.setEditDateTime(LocalDateTime.now(ZoneOffset.UTC));
         Comment saved = commentRepository.save(updatedEntity);
 
         return commentConverter.convertToDtoExtended(saved, userAccount, count);

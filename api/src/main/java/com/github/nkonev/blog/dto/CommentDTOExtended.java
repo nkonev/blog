@@ -14,9 +14,10 @@ public class CommentDTOExtended extends CommentDTOWithAuthorization {
             boolean canEdit,
             boolean canDelete,
             long commentsInPost,
-            LocalDateTime createDateTime
+            LocalDateTime createDateTime,
+            LocalDateTime editDateTime
     ) {
-        super(id, text, owner, canEdit, canDelete, createDateTime);
+        super(id, text, owner, canEdit, canDelete, createDateTime, editDateTime);
         this.commentsInPost = commentsInPost;
     }
 

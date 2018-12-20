@@ -47,7 +47,8 @@ public class CommentControllerTest extends AbstractUtTestRunner {
                 commentDTO = new CommentDTO(
                         0,
                         "default comment",
-                        LocalDateTime.now(ZoneOffset.UTC)
+                        null,
+                        null
                 );
             }
             public CommentDTO build() {
@@ -103,6 +104,8 @@ public class CommentControllerTest extends AbstractUtTestRunner {
                 .andExpect(jsonPath("$.owner.login").value(TestConstants.USER_ALICE))
                 .andExpect(jsonPath("$.canEdit").value(true))
                 .andExpect(jsonPath("$.canDelete").value(true))
+                .andExpect(jsonPath("$.createDateTime").isNotEmpty())
+                .andExpect(jsonPath("$.editDateTime").isEmpty())
                 .andReturn();
         String addStr = addCommentRequest.getResponse().getContentAsString();
         LOGGER.info(addStr);
@@ -122,6 +125,8 @@ public class CommentControllerTest extends AbstractUtTestRunner {
                 .andExpect(jsonPath("$.owner.login").value(TestConstants.USER_ALICE))
                 .andExpect(jsonPath("$.canEdit").value(true))
                 .andExpect(jsonPath("$.canDelete").value(true))
+                .andExpect(jsonPath("$.createDateTime").isNotEmpty())
+                .andExpect(jsonPath("$.editDateTime").isNotEmpty())
                 .andReturn();
         LOGGER.info(updateCommentRequest.getResponse().getContentAsString());
 

@@ -12,38 +12,26 @@ public class PostDTO {
     private String titleImg;
     private UserAccountDTO owner;
     private Integer commentCount;
-
-    public Boolean getRemoveTitleImage() {
-        return removeTitleImage;
-    }
-
-    public void setRemoveTitleImage(Boolean removeTitleImage) {
-        this.removeTitleImage = removeTitleImage;
-    }
-
     private Boolean removeTitleImage;
-
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern= ApiConstants.DATE_FORMAT)
     private LocalDateTime createDateTime;
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern= ApiConstants.DATE_FORMAT)
+    private LocalDateTime editDateTime;
 
     public PostDTO() { }
 
-    public PostDTO(long id, String title, String text, String titleImg, LocalDateTime createDateTime, Integer commentCount, UserAccountDTO owner) {
-        this.id = id;
-        this.title = title;
-        this.text = text;
-        this.titleImg = titleImg;
-        this.createDateTime = createDateTime;
+    public PostDTO(long id, String title, String text, String titleImg, LocalDateTime createDateTime, LocalDateTime editDateTime, Integer commentCount, UserAccountDTO owner) {
+        this(id, title, text, titleImg, createDateTime, editDateTime, owner);
         this.commentCount = commentCount;
-        this.owner = owner;
     }
 
-    public PostDTO(long id, String title, String text, String titleImg, LocalDateTime createDateTime, UserAccountDTO owner) {
+    public PostDTO(long id, String title, String text, String titleImg, LocalDateTime createDateTime, LocalDateTime editDateTime, UserAccountDTO owner) {
         this.id = id;
         this.title = title;
         this.text = text;
         this.titleImg = titleImg;
         this.createDateTime = createDateTime;
+        this.editDateTime = editDateTime;
         this.owner = owner;
     }
 
@@ -54,6 +42,14 @@ public class PostDTO {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public Boolean getRemoveTitleImage() {
+        return removeTitleImage;
+    }
+
+    public void setRemoveTitleImage(Boolean removeTitleImage) {
+        this.removeTitleImage = removeTitleImage;
     }
 
     public String getTitle() {
@@ -102,5 +98,13 @@ public class PostDTO {
 
     public void setCommentCount(Integer commentCount) {
         this.commentCount = commentCount;
+    }
+
+    public LocalDateTime getEditDateTime() {
+        return editDateTime;
+    }
+
+    public void setEditDateTime(LocalDateTime editDateTime) {
+        this.editDateTime = editDateTime;
     }
 }

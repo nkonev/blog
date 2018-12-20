@@ -12,12 +12,16 @@ public class CommentDTO {
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern= ApiConstants.DATE_FORMAT)
     private LocalDateTime createDateTime;
 
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern= ApiConstants.DATE_FORMAT)
+    private LocalDateTime editDateTime;
+
     public CommentDTO() { }
 
-    public CommentDTO(long id, String text, LocalDateTime createDateTime) {
+    public CommentDTO(long id, String text, LocalDateTime createDateTime, LocalDateTime editDateTime) {
         this.id = id;
         this.text = text;
         this.createDateTime = createDateTime;
+        this.editDateTime = editDateTime;
     }
 
     public long getId() {
@@ -42,5 +46,13 @@ public class CommentDTO {
 
     public void setCreateDateTime(LocalDateTime createDateTime) {
         this.createDateTime = createDateTime;
+    }
+
+    public LocalDateTime getEditDateTime() {
+        return editDateTime;
+    }
+
+    public void setEditDateTime(LocalDateTime editDateTime) {
+        this.editDateTime = editDateTime;
     }
 }
