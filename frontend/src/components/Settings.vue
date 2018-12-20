@@ -117,6 +117,7 @@
                 console.debug('image removed');
                 this.removeImageBackground = true;
                 this.$data.chosenFile = null;
+                this.$store.commit(SET_IMAGE_BACKGROUND, null);
             },
             handleCroppaFileSizeExceed(){
                 // see :file-size-limit
