@@ -109,17 +109,13 @@
         }
 
         .comment-counter {
-            display flex
-            flex-direction row
-            align-items center
-            flex-wrap wrap
             color white
-
-            justify-content center
             background-color #979797
             border-radius 2px
             padding-left 0.2em
             padding-right 0.2em
+            margin-left 0.2em
+            margin-right 0.2em
         }
 
         hr {
