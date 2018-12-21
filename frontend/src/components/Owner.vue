@@ -13,6 +13,7 @@
             <span class="time"> at {{createTime}}</span>
         </div>
         <span v-if="editTime" class="time-container">edited at {{editTime}}</span>
+        <slot></slot>
     </div>
 </template>
 
