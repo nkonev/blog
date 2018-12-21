@@ -6,8 +6,10 @@ const def = () => {
         titleImg: '',
         canEdit: false,
         canDelete: false,
-        left: 0,
-        right: 0,
+        left: null,
+        right: null,
+        createDateTime: null,
+        editDateTime: null
     }
 };
 

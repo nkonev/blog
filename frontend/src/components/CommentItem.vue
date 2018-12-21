@@ -1,7 +1,7 @@
 <template>
     <div class="comment">
         <div class="comment-head">
-            <owner :owner="commentDTO.owner" :time="createDateTime"></owner>
+            <owner :owner="commentDTO.owner" :createTime="createDateTime" :editTime="editDateTime"></owner>
             <span v-if="!isEditing" class="comment-manage-buttons">
                 <img class="edit-container-pen" src="../assets/pen.png" v-if="commentDTO.canEdit" @click="setEdit()"/>
                 <img class="remove-container-x" src="../assets/remove.png" v-if="commentDTO.canDelete" @click="openDeleteConfirmation(commentDTO.id)"/>
@@ -31,7 +31,10 @@
         },
         computed:{
             createDateTime(){
-                return getTimestampFromUtc(this.commentDTO.createDateTime);
+                return this.commentDTO.createDateTime ? getTimestampFromUtc(this.commentDTO.createDateTime) : null;
+            },
+            editDateTime(){
+                return this.commentDTO.editDateTime ? getTimestampFromUtc(this.commentDTO.editDateTime) : null;
             }
         },
         methods: {
@@ -99,16 +102,25 @@
         &-head{
             display flex
             flex-direction row
-            justify-content space-between
             flex-wrap wrap
+        }
 
+        .user-info {
+            flex-grow 9
+        }
+
+        &-content {
+            margin-top 0.2em
+            margin-left 0.8em
+            margin-right 0.8em
         }
 
         .comment-manage-buttons {
-            margin-left: auto
+            flex-grow 1
             display flex
             flex-direction row
             align-items center
+            justify-content end
 
             img {
                 margin 0 0.25em

@@ -1,14 +1,18 @@
 <template>
     <div class="user-info" >
-        <span v-if="prepend" class="prepend">{{prepend}}</span>
 
-        <router-link :to="`/user/${owner.id}`">
-            <avatar :src="owner.avatar" :username="owner.login" :size="40"/>
-        </router-link>
-        <router-link :to="`/user/${owner.id}`">
-            <span>{{owner.login}}</span>
-        </router-link>
-        <span class="time"> at {{time}}</span>
+        <div class="time-container">
+            <span class="prepend">written by </span>
+
+            <router-link :to="`/user/${owner.id}`">
+                <avatar :src="owner.avatar" :username="owner.login" :size="40"/>
+            </router-link>
+            <router-link :to="`/user/${owner.id}`">
+                <span>{{owner.login}}</span>
+            </router-link>
+            <span class="time"> at {{createTime}}</span>
+        </div>
+        <span v-if="editTime" class="time-container">edited at {{editTime}}</span>
     </div>
 </template>
 
@@ -16,7 +20,7 @@
     import Avatar from 'vue-avatar'
 
     export default {
-        props: ['prepend', 'owner', 'time'],
+        props: ['owner', 'createTime', 'editTime'],
         components:{
             Avatar
         }
@@ -30,19 +34,14 @@
         display flex
         flex-direction row
         align-items center
+        justify-content space-between
         flex-wrap wrap
         color grey
 
-        .prepend {
-            margin-left 1em
-            margin-right 0.8em
-            //display flex
-            //align-items center
-        }
-
-        span {
-            margin-left 6px
-            margin-right 6px
+        .time-container {
+            display flex
+            flex-direction row
+            align-items center
         }
 
         span.time {
@@ -54,12 +53,10 @@
     @media screen and (max-width: $contentWidth) {
         .user-info {
             justify-content flex-start
-            .prepend {
-                margin-left 0.6em
-                margin-right 0
-            }
-
         }
 
+        span:nth-child(even) {
+            margin-top 0.4em
+        }
     }
 </style>

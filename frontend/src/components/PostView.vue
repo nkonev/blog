@@ -12,7 +12,7 @@
                     </div>
                     <div v-else class="post-title"><h1>{{postDTO.title}}</h1></div>
                     <div class="post-head">
-                        <owner v-if="postDTO.owner" prepend="written by" :owner="postDTO.owner" :time="createTime"></owner>
+                        <owner v-if="postDTO.owner" :owner="postDTO.owner" :createTime="createTime" :editTime="editTime"></owner>
 
                         <div class="manage-buttons" v-if="postDTO.canEdit || postDTO.canDelete">
                             <img class="edit-container-pen" src="../assets/pen.png" v-if="postDTO.canEdit" @click="setEdit()"/>
@@ -100,7 +100,10 @@
         },
         computed:{
             createTime(){
-                return getTimestampFromUtc(this.postDTO.createDateTime);
+                return this.postDTO.createDateTime ? getTimestampFromUtc(this.postDTO.createDateTime) : null;
+            },
+            editTime(){
+                return this.postDTO.editDateTime ? getTimestampFromUtc(this.postDTO.editDateTime) : null;
             },
             isLargeScreen(){
                 return isLargeScreen();
@@ -296,11 +299,16 @@
                 box-shadow: 0 0 2em red;
             }
 
+            .user-info {
+                flex-grow 9
+            }
+
             .manage-buttons {
-                margin-left: auto
+                flex-grow 1
                 display flex
                 flex-direction row
                 align-items center
+                justify-content end
 
                 img {
                     margin 0 0.5em
