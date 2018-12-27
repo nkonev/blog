@@ -31,6 +31,7 @@ import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.test.web.servlet.MvcResult;
 import java.net.HttpCookie;
 import java.net.URI;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
@@ -452,7 +453,7 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
         UserAccount userAccount = new UserAccount(
                 CreationType.REGISTRATION,
                 login, null, null, false, false, true,
-                UserRole.ROLE_USER, login+"@example.com", null);
+                Collections.singletonList(UserRole.ROLE_USER), login+"@example.com", null);
         userAccount = userAccountRepository.save(userAccount);
         Post post = new Post(null, "title_"+login, "text", "");
         post.setOwner(userAccount);

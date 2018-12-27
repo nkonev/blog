@@ -19,7 +19,7 @@ INSERT INTO auth.users (username, password, avatar, email)
 	FROM generate_series(0, 1000) AS i;
 
 
-UPDATE auth.users SET role = 'ROLE_ADMIN' WHERE id = (SELECT id FROM auth.users WHERE username = 'admin');
+UPDATE auth.users SET roles = '{ROLE_ADMIN}' WHERE id = (SELECT id FROM auth.users WHERE username = 'admin');
 
 -- insert additional users and roles
 INSERT INTO auth.users(username, password, avatar, email) VALUES

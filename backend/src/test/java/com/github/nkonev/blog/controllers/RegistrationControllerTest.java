@@ -12,9 +12,7 @@ import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
 import com.github.nkonev.blog.repo.redis.PasswordResetTokenRepository;
 import com.github.nkonev.blog.security.SecurityConfig;
 import com.github.nkonev.blog.util.UrlParser;
-import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.util.Retriever;
-import com.icegreen.greenmail.util.ServerSetupTest;
 import com.sun.mail.imap.IMAPMessage;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
@@ -230,7 +228,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
         Assert.assertEquals(TestConstants.USER_ALICE, userAccountBefore.getUsername());
         Assert.assertEquals(userAccountBefore.getUsername(), userAccountAfter.getUsername());
         Assert.assertEquals(userAccountBefore.getPassword(), userAccountAfter.getPassword());
-        Assert.assertEquals(userAccountBefore.getRole(), userAccountAfter.getRole());
+        Assert.assertEquals(userAccountBefore.getRoles(), userAccountAfter.getRoles());
     }
 
 

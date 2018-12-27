@@ -1,17 +1,24 @@
 package com.github.nkonev.blog.entity.jpa;
 
 import com.github.nkonev.blog.Constants;
+import com.vladmihalcea.hibernate.type.array.EnumArrayType;
+import com.vladmihalcea.hibernate.type.array.internal.EnumArrayTypeDescriptor;
 import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Collection;
 
 @TypeDefs({
         @TypeDef(
                 name = "pgsql_enum",
                 typeClass = PostgreSQLEnumType.class
+        ),
+        @TypeDef(
+                name = "pgsql_array",
+                typeClass = EnumArrayType.class
         )
 })
 @Entity
@@ -39,17 +46,17 @@ public class UserAccount {
     private String facebookId;
 
     @NotNull
-    @Enumerated(EnumType.STRING)
-    @Type(type = "pgsql_enum")
+    //@Enumerated(EnumType.STRING)
+    @Type(type = "pgsql_array", parameters = {@org.hibernate.annotations.Parameter(name = "sql_array_type", value = "auth.user_role")})
     @Column(
-            name = "role",
-            columnDefinition = "user_role"
+            name = "roles",
+            columnDefinition = "\"auth\".\"_user_role\"" // first _ means array
     )
-    private UserRole role; // synonym to "authority"
+    private UserRole roles[]; // synonym to "authority"
 
     public UserAccount() { }
 
-    public UserAccount(CreationType creationType, String username, String password, String avatar, boolean expired, boolean locked, boolean enabled, UserRole role, String email, String facebookId) {
+    public UserAccount(CreationType creationType, String username, String password, String avatar, boolean expired, boolean locked, boolean enabled, Collection<UserRole> roles, String email, String facebookId) {
         this.creationType = creationType;
         this.username = username;
         this.password = password;
@@ -57,7 +64,7 @@ public class UserAccount {
         this.expired = expired;
         this.locked = locked;
         this.enabled = enabled;
-        this.role = role;
+        this.roles = roles.toArray(UserRole[]::new);
         this.email = email;
         this.facebookId = facebookId;
     }
@@ -126,14 +133,6 @@ public class UserAccount {
         this.email = email;
     }
 
-    public UserRole getRole() {
-        return role;
-    }
-
-    public void setRole(UserRole role) {
-        this.role = role;
-    }
-
     public String getFacebookId() {
         return facebookId;
     }
@@ -148,5 +147,13 @@ public class UserAccount {
 
     public void setCreationType(CreationType creationType) {
         this.creationType = creationType;
+    }
+
+    public UserRole[] getRoles() {
+        return roles;
+    }
+
+    public void setRoles(UserRole[] roles) {
+        this.roles = roles;
     }
 }

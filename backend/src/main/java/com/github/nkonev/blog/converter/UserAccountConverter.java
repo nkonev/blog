@@ -36,7 +36,7 @@ public class UserAccountConverter {
                 userAccount.isExpired(),
                 userAccount.isLocked(),
                 userAccount.isEnabled(),
-                Collections.singletonList(convertRole(userAccount.getRole())),
+                convertRoles(Arrays.asList(userAccount.getRoles())),
                 userAccount.getEmail(),
                 userAccount.getFacebookId()
         );
@@ -59,7 +59,7 @@ public class UserAccountConverter {
     }
 
     private static Collection<SimpleGrantedAuthority> convertRoles(Collection<UserRole> roles) {
-        if (roles==null) {return null;}
+        if (roles==null) {return new ArrayList<>();}
         return roles.stream().map(ur -> new SimpleGrantedAuthority(ur.name())).collect(Collectors.toSet());
     }
 
@@ -134,7 +134,7 @@ public class UserAccountConverter {
                 expired,
                 locked,
                 enabled,
-                newUserRole,
+                Collections.singletonList(newUserRole),
                 userAccountDTO.getEmail(),
                 null
         );
@@ -160,7 +160,7 @@ public class UserAccountConverter {
                 expired,
                 locked,
                 enabled,
-                newUserRole,
+                Collections.singletonList(newUserRole),
                 null,
                 facebookId
         );
