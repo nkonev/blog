@@ -1,6 +1,6 @@
 package com.github.nkonev.blog.controllers;
 
-import com.github.nkonev.blog.dto.FrontendConfigurationDTO;
+import com.github.nkonev.blog.dto.SettingsDTO;
 import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
 import com.github.nkonev.blog.repo.jpa.RuntimeSettingsRepository;
 import com.github.nkonev.blog.security.BlogSecurityService;
@@ -35,21 +35,21 @@ public class ConfigurationController {
     private static final String TITLE_TEMPLATE = "title.template";
 
     @GetMapping(API+CONFIG)
-    public FrontendConfigurationDTO getConfig(@AuthenticationPrincipal UserAccountDetailsDTO userAccount){
+    public SettingsDTO getConfig(@AuthenticationPrincipal UserAccountDetailsDTO userAccount){
         String imageBackground = runtimeSettingsRepository.findById(IMAGE_BACKGROUND).orElseThrow().getValue();
         String header = runtimeSettingsRepository.findById(HEADER).orElseThrow().getValue();
         String subHeader = runtimeSettingsRepository.findById(SUB_HEADER).orElseThrow().getValue();
         String titleTemplate = runtimeSettingsRepository.findById(TITLE_TEMPLATE).orElseThrow().getValue();
         boolean showSettings = blogSecurityService.hasSettingsPermission(userAccount);
-        return new FrontendConfigurationDTO(header, subHeader, titleTemplate, imageBackground, showSettings);
+        return new SettingsDTO(header, subHeader, titleTemplate, imageBackground, showSettings);
     }
 
     @Transactional
     @PutMapping(value = API+CONFIG, consumes = {"multipart/form-data"})
     @PreAuthorize("@blogSecurityService.hasSettingsPermission(#userAccount)")
-    public FrontendConfigurationDTO putConfig(
+    public SettingsDTO putConfig(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount,
-            @RequestPart(value = DTO_PART) FrontendConfigurationDTO dto,
+            @RequestPart(value = DTO_PART) SettingsDTO dto,
             @RequestPart(value = IMAGE_PART, required = false) MultipartFile imagePart
     ) throws SQLException {
         var runtimeSettingsBackgroundImage = runtimeSettingsRepository.findById(IMAGE_BACKGROUND).orElseThrow();

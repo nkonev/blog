@@ -1,6 +1,6 @@
 package com.github.nkonev.blog.dto;
 
-public class FrontendConfigurationDTO {
+public class SettingsDTO {
     private String header;
 
     private String subHeader;
@@ -13,9 +13,9 @@ public class FrontendConfigurationDTO {
 
     private boolean showSettings;
 
-    public FrontendConfigurationDTO() { }
+    public SettingsDTO() { }
 
-    public FrontendConfigurationDTO(String header, String subHeader, String titleTemplate, String imageBackground, boolean showSettings) {
+    public SettingsDTO(String header, String subHeader, String titleTemplate, String imageBackground, boolean showSettings) {
         this.header = header;
         this.subHeader = subHeader;
         this.titleTemplate = titleTemplate;

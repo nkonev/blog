@@ -1,8 +1,6 @@
 package com.github.nkonev.blog.dto;
 
 
-import java.net.URL;
-
 /**
  * Class which displays in user's profile page. It will be POSTed as EditUserDTO
  */
