@@ -149,3 +149,4 @@ management:
     add-application-context-header: false
 
 custom.rendertron.enable: true
+custom.rendertron.enable.async.cache.refresh: false

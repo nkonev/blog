@@ -163,7 +163,7 @@ management:
       enabled: false
     add-application-context-header: false
 
-
+custom.rendertron.enable.async.cache.refresh: false
 facebook:
   client:
     clientId: 1684113965162824
