@@ -14,7 +14,7 @@ import java.sql.SQLException;
 import static com.github.nkonev.blog.Constants.Urls.*;
 
 @RestController
-public class ConfigurationController {
+public class SettingsController {
 
     @Autowired
     private RuntimeSettingsRepository runtimeSettingsRepository;
