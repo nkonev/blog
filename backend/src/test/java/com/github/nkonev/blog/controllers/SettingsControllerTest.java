@@ -21,7 +21,7 @@ public class SettingsControllerTest extends AbstractUtTestRunner {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.titleTemplate").value("%s | nkonev's blog"))
                 .andExpect(jsonPath("$.header").value("Блог Конева Никиты"))
-                .andExpect(jsonPath("$.showSettings").value(false))
+                .andExpect(jsonPath("$.canShowSettings").value(false))
                 .andExpect(jsonPath("$.removeImageBackground").doesNotExist())
                 .andReturn();
 

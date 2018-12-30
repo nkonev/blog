@@ -1,5 +1,6 @@
 package com.github.nkonev.blog.controllers;
 
+import com.github.nkonev.blog.config.ApplicationConfig;
 import com.github.nkonev.blog.dto.SettingsDTO;
 import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
 import com.github.nkonev.blog.repo.jpa.RuntimeSettingsRepository;
@@ -25,6 +26,9 @@ public class SettingsController {
     @Autowired
     private ImageSettingsUploadController imageSettingsUploadController;
 
+    @Autowired
+    private ApplicationController applicationConfig;
+
     public static final String IMAGE_PART = "image";
     public static final String DTO_PART = "dto";
 
@@ -40,8 +44,8 @@ public class SettingsController {
         String header = runtimeSettingsRepository.findById(HEADER).orElseThrow().getValue();
         String subHeader = runtimeSettingsRepository.findById(SUB_HEADER).orElseThrow().getValue();
         String titleTemplate = runtimeSettingsRepository.findById(TITLE_TEMPLATE).orElseThrow().getValue();
-        boolean showSettings = blogSecurityService.hasSettingsPermission(userAccount);
-        return new SettingsDTO(header, subHeader, titleTemplate, imageBackground, showSettings);
+        boolean canShowSettings = blogSecurityService.hasSettingsPermission(userAccount);
+        return new SettingsDTO(header, subHeader, titleTemplate, imageBackground, canShowSettings, applicationConfig.isEnableApplications());
     }
 
     @Transactional

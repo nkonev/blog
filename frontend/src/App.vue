@@ -15,7 +15,8 @@
                 <router-link class="router-link" to="/users">Users</router-link>
                 <a class="router-link" id="a-doc" href="/docs/index.html">API</a>
                 <router-link class="router-link" to="/help">Help</router-link>
-                <router-link v-show="config.showSettings" class="router-link" to="/settings">Settings</router-link>
+                <router-link v-show="config.canShowSettings" class="router-link" to="/settings">Settings</router-link>
+                <router-link v-show="config.canShowApplications" class="router-link" to="/applications">Applications</router-link>
                 <user-profile-nav v-bind:currentUser="currentUser"/>
             </nav>
             <!--<random-posts v-if="showRandom"/>-->

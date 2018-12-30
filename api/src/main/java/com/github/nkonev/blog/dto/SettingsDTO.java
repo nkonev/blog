@@ -11,16 +11,19 @@ public class SettingsDTO {
 
     private Boolean removeImageBackground;
 
-    private boolean showSettings;
+    private boolean canShowSettings;
+
+    private boolean canShowApplications;
 
     public SettingsDTO() { }
 
-    public SettingsDTO(String header, String subHeader, String titleTemplate, String imageBackground, boolean showSettings) {
+    public SettingsDTO(String header, String subHeader, String titleTemplate, String imageBackground, boolean canShowSettings, boolean enableApplications) {
         this.header = header;
         this.subHeader = subHeader;
         this.titleTemplate = titleTemplate;
         this.imageBackground = imageBackground;
-        this.showSettings = showSettings;
+        this.canShowSettings = canShowSettings;
+        this.canShowApplications = enableApplications;
     }
 
     public String getTitleTemplate() {
@@ -47,12 +50,12 @@ public class SettingsDTO {
         this.imageBackground = imageBackground;
     }
 
-    public boolean isShowSettings() {
-        return showSettings;
+    public boolean isCanShowSettings() {
+        return canShowSettings;
     }
 
-    public void setShowSettings(boolean showSettings) {
-        this.showSettings = showSettings;
+    public void setCanShowSettings(boolean canShowSettings) {
+        this.canShowSettings = canShowSettings;
     }
 
     public Boolean getRemoveImageBackground() {
@@ -69,5 +72,13 @@ public class SettingsDTO {
 
     public void setSubHeader(String subHeader) {
         this.subHeader = subHeader;
+    }
+
+    public boolean isCanShowApplications() {
+        return canShowApplications;
+    }
+
+    public void setCanShowApplications(boolean canShowApplications) {
+        this.canShowApplications = canShowApplications;
     }
 }
