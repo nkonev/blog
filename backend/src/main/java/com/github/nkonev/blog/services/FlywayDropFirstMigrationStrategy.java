@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.flyway.FlywayMigrationStrategy;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CleanFlywayMigrationStrategy implements FlywayMigrationStrategy {
+public class FlywayDropFirstMigrationStrategy implements FlywayMigrationStrategy {
 
     @Value("${spring.flyway.drop-first:false}")
     private boolean dropFirst;
