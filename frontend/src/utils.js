@@ -19,7 +19,7 @@ export const getPostId = (vue) => {
 };
 
 export const getTimestampFromUtc = (utcString) => {
-    const gmtDateTime = moment.utc(utcString, "YYYY-MM-DD HH:mm:ss.SSS");
+    const gmtDateTime = moment.utc(utcString, "YYYY-MM-DDTHH:mm:ss.SSSZ");
     const local = gmtDateTime.local().format('YYYY-MM-DD HH:mm:ss');
     return local;
 };
