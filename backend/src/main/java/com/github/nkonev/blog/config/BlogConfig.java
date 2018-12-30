@@ -20,10 +20,9 @@ import org.springframework.core.io.Resource;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
-import java.util.Scanner;
 
 @Configuration
-public class AppConfig {
+public class BlogConfig {
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -33,7 +32,7 @@ public class AppConfig {
     @Value("classpath:/static/git.json")
     private Resource resource;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AppConfig.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BlogConfig.class);
 
     @PostConstruct
     public void pc() throws Exception {

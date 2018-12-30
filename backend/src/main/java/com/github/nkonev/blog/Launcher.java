@@ -1,8 +1,10 @@
 package com.github.nkonev.blog;
 
+import com.github.nkonev.blog.config.ApplicationConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.elasticsearch.rest.RestClientAutoConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
@@ -13,6 +15,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
         scanBasePackages = {"com.github.nkonev.blog"},
         exclude = {RestClientAutoConfiguration.class}
 )
+@EnableConfigurationProperties({ApplicationConfig.class})
 public class Launcher {
 
     static {
