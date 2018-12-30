@@ -266,6 +266,7 @@ ${TEST_USERS_SNIPPET}
 ${DATA_STORE_SNIPPET(true, 'validate')}
 ${MANAGEMENT_SNIPPET(true)}
 custom.rendertron.enable: true
+custom.rendertron.enable.async.cache.refresh: false
 """;
 writeAndLog(BACKEND_TEST_YML_FILE, BACKEND_TEST_YML_CONTENT);
 
@@ -296,7 +297,7 @@ custom.it.user.id: 1
 ${TEST_USERS_SNIPPET}
 ${DATA_STORE_SNIPPET(true, 'none')}
 ${MANAGEMENT_SNIPPET(true)}
-
+custom.rendertron.enable.async.cache.refresh: false
 facebook:
   client:
     clientId: 1684113965162824
