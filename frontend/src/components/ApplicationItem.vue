@@ -10,15 +10,6 @@
 <script>
     export default {
         props: ['application'],
-        mounted() {
-            setTimeout(() => this.scrollFix(this.$route.hash), 1)
-        },
-        methods: {
-            scrollFix: function(hashbang)
-            {
-                location.href = hashbang;
-            }
-        }
     }
 </script>
 
