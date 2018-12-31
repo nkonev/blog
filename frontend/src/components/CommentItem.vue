@@ -1,6 +1,7 @@
 <template>
     <div class="comment">
-        <div class="comment-head">
+        <div class="comment-head" :id="commentDTO.id">
+            <a :href="'#'+this.commentDTO.id">#</a>
             <owner :owner="commentDTO.owner" :createTime="createDateTime" :editTime="editDateTime"></owner>
             <span v-if="!isEditing" class="comment-manage-buttons">
                 <img class="edit-container-pen" src="../assets/pen.png" v-if="commentDTO.canEdit" @click="setEdit()"/>
@@ -113,6 +114,12 @@
             margin-top 0.2em
             margin-left 0.8em
             margin-right 0.8em
+        }
+
+        a{
+            display flex
+            flex-direction row
+            align-items center
         }
 
         .comment-manage-buttons {

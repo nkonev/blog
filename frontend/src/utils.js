@@ -118,3 +118,14 @@ export const computedCropper = {
         return !isLargeScreen() ? 30 : 45;
     }
 };
+
+export const fixScroll = () => {
+    if (window.location.hash) {
+        Vue.nextTick(()=>{
+            const hash = window.location.hash.substring(1, window.location.hash.length);
+            //console.log("hash", hash);
+            const element_to_scroll_to = document.getElementById(hash);
+            element_to_scroll_to.scrollIntoView();
+        })
+    }
+}

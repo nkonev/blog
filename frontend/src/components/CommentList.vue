@@ -35,7 +35,7 @@
     import {PAGE_SIZE} from "../constants";
     import Paginate from 'vuejs-paginate';
     import bus, {POST_SWITCHED, COMMENT_UPDATED, COMMENT_ADD, COMMENT_DELETED} from '../bus'
-    import {updateById, getPostId} from '../utils'
+    import {updateById, getPostId, fixScroll} from '../utils'
     import CommentEdit from './CommentEdit.vue'
 
     Vue.component('paginate', Paginate);
@@ -71,6 +71,7 @@
                         this.pageCount = this.getPageCount(response.body.totalCount);
                         this.comments = response.body.data;
                         this.currentPage = pageNum;
+                        fixScroll();
                     }, response => {
                         console.error(response);
                         // alert(response);

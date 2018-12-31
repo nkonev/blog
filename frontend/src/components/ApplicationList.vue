@@ -6,7 +6,7 @@
 
 <script>
     import ApplicationItem from "./ApplicationItem.vue"
-
+    import {fixScroll} from '../utils.js'
     export default {
         data(){
             return {
@@ -17,6 +17,7 @@
             this.$http.get('/api/application').then(
                 response => {
                     this.applications = response.body;
+                    fixScroll();
                 },
                 failResponse => {
 
