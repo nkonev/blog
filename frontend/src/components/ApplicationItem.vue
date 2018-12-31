@@ -1,6 +1,6 @@
 <template>
     <div class="application">
-        <router-link :to="'/applications#'+this.application.id"><h2 :id="this.application.id">{{this.application.title}}</h2></router-link>
+        <h2 :id="this.application.id"><router-link :to="'/applications#'+this.application.id">#</router-link> {{this.application.title}}</h2>
         <div class="application-container" >
             <iframe :src="this.application.srcUrl"/>
         </div>
