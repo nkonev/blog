@@ -1,5 +1,5 @@
 <template>
-    <div class="applications">
+    <div class="application-list">
         <ApplicationItem v-for="application in applications" v-bind:application="application" :key="application.id"></ApplicationItem>
     </div>
 </template>

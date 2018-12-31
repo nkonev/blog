@@ -16,7 +16,7 @@ import PasswordRestore from './components/PasswordRestore.vue'
 import PasswordReset from './components/PasswordReset.vue'
 import Help from './components/Help.vue'
 import Settings from './components/Settings.vue'
-import Applications from './components/Applications.vue'
+import ApplicationList from './components/ApplicationList.vue'
 import {root, root_name, users, useProfileName, post} from './routes'
 const PostView = () => import('./components/PostView.vue');
 const PostEdit = () => import('./components/PostEdit.vue');
@@ -53,7 +53,7 @@ const router = new Router({
         { path: '/password-restore', component: PasswordRestore },
         { path: '/password-reset', component: PasswordReset },
         { path: '/settings', component: Settings},
-        { path: '/applications', component: Applications},
+        { path: '/applications', component: ApplicationList},
         { path: '/unauthorized', component: Error401 },
         { path: '/forbidden', component: Error403 },
         { path: '*', component: Error404 },
