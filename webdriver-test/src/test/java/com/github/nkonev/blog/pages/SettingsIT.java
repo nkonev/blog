@@ -25,6 +25,8 @@ public class SettingsIT extends AbstractItTestRunner {
 
         SettingsPage settingsPage = new SettingsPage(urlPrefix);
         settingsPage.setBackgroundImage(getPencilImage());
+        settingsPage.waitForBackgroundImageWillSet();
+
         settingsPage.clickSave();
 
         settingsPage.waitForBackgroundImageWillSet();

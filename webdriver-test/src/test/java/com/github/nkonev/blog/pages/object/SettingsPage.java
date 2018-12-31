@@ -36,6 +36,6 @@ public class SettingsPage {
     }
 
     public void waitForBackgroundImageWillSet() {
-        $(SettingsPage.IMG_BG).waitUntil(Condition.attribute("src"), 10000);
+        $(SettingsPage.IMG_BG).waitUntil(Condition.have(Condition.attribute("src")), 10000);
     }
 }
