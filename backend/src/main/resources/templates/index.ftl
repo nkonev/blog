@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Blog</title>
     <link rel="stylesheet" href="/build/main.css">
     <link rel="stylesheet" href="/build/vendor.css">
     <#if seoScript?has_content>
@@ -21,9 +21,9 @@
     <meta name="theme-color" content="#ffffff">
 </head>
 <body>
-<div id="app-container"></div>
+    <div id="app-container"></div>
 
-<script type="application/javascript" src="/build/vendor.js"></script>
-<script type="application/javascript" src="/build/main.js"></script>
+    <script type="application/javascript" src="/build/vendor.js"></script>
+    <script type="application/javascript" src="/build/main.js"></script>
 </body>
 </html>
