@@ -2,7 +2,7 @@
     <div class="application">
         <h2 :id="this.application.id"><a :href="'#'+this.application.id">#</a> {{this.application.title}}</h2>
         <div class="application-container" >
-            <iframe :src="this.application.srcUrl"/>
+            <iframe scrolling="no" :src="this.application.srcUrl"/>
         </div>
     </div>
 </template>
