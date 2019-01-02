@@ -20,7 +20,7 @@
                         </button>
                     </form>
                     <form class="social form-vk" action="/api/login/vkontakte" v-if="!loading && !formError" @click="setSpinner">
-                        <button id="btn-submit-vk" class="blog-btn login-btn-social login-btn-social-vk" type="submit">
+                        <button id="btn-submit-vkontakte" class="blog-btn login-btn-social login-btn-social-vk" type="submit">
                             <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'vk' }" style="width: 28px; height:28px; margin-right: 1em" ></font-awesome-icon>
                             <span>Vkontakte</span>
                         </button>

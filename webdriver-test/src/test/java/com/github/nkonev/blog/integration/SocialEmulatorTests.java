@@ -14,10 +14,12 @@ import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
-public abstract class FacebookEmulatorTests extends AbstractItTestRunner {
-    private static final int MOCK_SERVER_PORT = 10080;
+public abstract class SocialEmulatorTests extends AbstractItTestRunner {
+    private static final int MOCK_SERVER_FACEBOOK_PORT = 10080;
+    private static final int MOCK_SERVER_VKONTAKTE_PORT = 10081;
 
-    protected static ClientAndServer mockServer;
+    private static ClientAndServer mockServerFacebook;
+    private static ClientAndServer mockServerVkontakte;
 
     @Autowired
     protected UserAccountRepository userAccountRepository;
@@ -27,19 +29,20 @@ public abstract class FacebookEmulatorTests extends AbstractItTestRunner {
 
     @BeforeAll
     public static void setUpClass() {
-        mockServer = startClientAndServer(MOCK_SERVER_PORT);
+        mockServerFacebook = startClientAndServer(MOCK_SERVER_FACEBOOK_PORT);
+        mockServerVkontakte = startClientAndServer(MOCK_SERVER_VKONTAKTE_PORT);
     }
 
     @AfterAll
     public static void tearDownClass() throws Exception {
-        mockServer.stop();
+        mockServerFacebook.stop();
     }
 
     public static final String facebookLogin = "Nikita K";
 
     @BeforeEach
-    public void configureEmulator(){
-        mockServer
+    public void configureFacebookEmulator(){
+        mockServerFacebook
                 .when(request().withPath("/mock/facebook/dialog/oauth")).respond(httpRequest -> {
             String state = httpRequest.getQueryStringParameters().getEntries().stream().filter(parameter -> "state".equals(parameter.getName().getValue())).findFirst().get().getValues().get(0).getValue();
             return response().withHeaders(
@@ -48,7 +51,7 @@ public abstract class FacebookEmulatorTests extends AbstractItTestRunner {
             ).withStatusCode(302);
         });
 
-        mockServer
+        mockServerFacebook
                 .when(request().withPath("/mock/facebook/oauth/access_token"))
                 .respond(response().withHeaders(
                         new Header(HttpHeaderNames.CONTENT_TYPE.toString(), "application/json")
@@ -59,7 +62,7 @@ public abstract class FacebookEmulatorTests extends AbstractItTestRunner {
                                 "}")
                 );
 
-        mockServer
+        mockServerFacebook
                 .when(request().withPath("/mock/facebook/me"))
                 .respond(response().withHeaders(
                         new Header(HttpHeaderNames.CONTENT_TYPE.toString(), "application/json")
@@ -81,7 +84,49 @@ public abstract class FacebookEmulatorTests extends AbstractItTestRunner {
     }
 
     @AfterEach
-    public void resetEmulator(){
-        mockServer.reset();
+    public void resetFacebookEmulator(){
+        mockServerFacebook.reset();
     }
+
+
+    @BeforeEach
+    public void configureVkontakteEmulator(){
+        mockServerVkontakte
+                .when(request().withPath("/mock/vkontakte/authorize")).respond(httpRequest -> {
+            String state = httpRequest.getQueryStringParameters().getEntries().stream().filter(parameter -> "state".equals(parameter.getName().getValue())).findFirst().get().getValues().get(0).getValue();
+            return response().withHeaders(
+                    new Header(HttpHeaderNames.CONTENT_TYPE.toString(), "text/html; charset=\"utf-8\""),
+                    new Header(HttpHeaderNames.LOCATION.toString(), urlPrefix+"/api/login/vkontakte?code=fake_code&state="+state)
+            ).withStatusCode(302);
+        });
+
+        mockServerVkontakte
+                .when(request().withPath("/mock/vkontakte/access_token"))
+                .respond(response().withHeaders(
+                        new Header(HttpHeaderNames.CONTENT_TYPE.toString(), "application/json")
+                        ).withStatusCode(200).withBody("{\n" +
+                                "  \"access_token\": \"fake-access-token\", \n" +
+                                "  \"token_type\": \"bearer\",\n" +
+                                "  \"expires_in\":  3600\n" +
+                                "}")
+                );
+
+        mockServerVkontakte
+                .when(request().withPath("/mock/vkontakte/method/users.get"))
+                .respond(response().withHeaders(
+                        new Header(HttpHeaderNames.CONTENT_TYPE.toString(), "application/json")
+                        ).withStatusCode(200).withBody("{\"response\": [{\"id\": 1212, \"first_name\": \"Никита\", \"last_name\": \"Конев\"}]}")
+                );
+
+        userAccountRepository.findByUsername(facebookLogin).ifPresent(userAccount -> {
+            userAccount.setLocked(false);
+            userAccountRepository.save(userAccount);
+        });
+    }
+
+    @AfterEach
+    public void resetVkontakteEmulator(){
+        mockServerVkontakte.reset();
+    }
+
 }

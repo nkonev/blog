@@ -72,4 +72,9 @@ public class LoginModal {
         modal.shouldHave(text("Please login"));
         return modal;
     }
+
+    public void loginVkontakte() {
+        SelenideElement modal = getValidModal();
+        modal.find("#btn-submit-vkontakte").click();
+    }
 }

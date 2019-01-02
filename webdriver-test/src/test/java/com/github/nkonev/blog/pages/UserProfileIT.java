@@ -5,7 +5,7 @@ import com.codeborne.selenide.Selenide;
 import com.github.nkonev.blog.CommonTestConstants;
 import com.github.nkonev.blog.FailoverUtils;
 import com.github.nkonev.blog.entity.jpa.UserAccount;
-import com.github.nkonev.blog.integration.FacebookEmulatorTests;
+import com.github.nkonev.blog.integration.SocialEmulatorTests;
 import com.github.nkonev.blog.pages.object.Croppa;
 import com.github.nkonev.blog.pages.object.IndexPage;
 import com.github.nkonev.blog.pages.object.LoginModal;
@@ -30,7 +30,6 @@ import org.junit.jupiter.api.Assumptions;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
-import static com.github.nkonev.blog.pages.object.Croppa.rmImage;
 import static com.github.nkonev.blog.pages.object.IndexPage.POST_LIST;
 import static org.hamcrest.Matchers.is;
 
@@ -38,7 +37,7 @@ import static org.hamcrest.Matchers.is;
  * Тест на страницу профиля
  * Created by nik on 06.06.17.
  */
-public class UserProfileIT extends FacebookEmulatorTests {
+public class UserProfileIT extends SocialEmulatorTests {
 
     @Value(IntegrationTestConstants.USER_ID)
     private int userId;
@@ -274,5 +273,30 @@ public class UserProfileIT extends FacebookEmulatorTests {
         userPage.setEmail("new-email-for-facebook-user@gmail.not");
         userPage.save();
         userPage.assertEmail("new-email-for-facebook-user@gmail.not");
+    }
+
+    @Test
+    public void testVkontakteLogin() throws InterruptedException {
+        Assumptions.assumeTrue(Browser.CHROME.equals(seleniumConfiguration.getBrowser()), "Browser must be chrome");
+
+        IndexPage indexPage = new IndexPage(urlPrefix);
+        indexPage.openPage();
+
+        LoginModal loginModal = new LoginModal();
+        loginModal.openLoginModal();
+        loginModal.loginVkontakte();
+
+        final String vkontakteLogin = "Никита Конев";
+        Assert.assertEquals(vkontakteLogin, UserNav.getLogin());
+
+        // now we attempt to change email
+        UserProfilePage userPage = new UserProfilePage(urlPrefix, driver);
+        UserAccount userAccount = userAccountRepository.findByUsername(vkontakteLogin).orElseThrow();
+        userPage.openPage(userAccount.getId().intValue());
+        userPage.assertThisIsYou();
+        userPage.edit();
+        userPage.setEmail("new-email-for-vkontakte-user@gmail.not");
+        userPage.save();
+        userPage.assertEmail("new-email-for-vkontakte-user@gmail.not");
     }
 }

@@ -6,7 +6,7 @@ import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.dto.LockDTO;
 import com.github.nkonev.blog.dto.SuccessfulLoginDTO;
 import com.github.nkonev.blog.entity.jpa.UserAccount;
-import com.github.nkonev.blog.integration.FacebookEmulatorTests;
+import com.github.nkonev.blog.integration.SocialEmulatorTests;
 import com.github.nkonev.blog.pages.object.IndexPage;
 import com.github.nkonev.blog.pages.object.LoginModal;
 import com.github.nkonev.blog.utils.ContextPathHelper;
@@ -39,7 +39,7 @@ import static com.github.nkonev.blog.security.SecurityConfig.*;
 import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.HttpHeaders.COOKIE;
 
-public class SessionIT extends FacebookEmulatorTests {
+public class SessionIT extends SocialEmulatorTests {
 
 
     @Autowired

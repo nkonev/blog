@@ -322,5 +322,17 @@ facebook:
     clientAuthenticationScheme: form
   resource:
     userInfoUri: http://127.0.0.1:10080/mock/facebook/me?fields=id,name,picture
+vkontakte:
+  client:
+    clientId: 6805077
+    clientSecret: provide-it
+    userAuthorizationUri: http://127.0.0.1:10081/mock/vkontakte/authorize
+    accessTokenUri: http://127.0.0.1:10081/mock/vkontakte/access_token
+    tokenName: access_token
+    authenticationScheme: query
+    clientAuthenticationScheme: form
+    grant-type: authorization_code
+  resource:
+    userInfoUri: http://127.0.0.1:10081/mock/vkontakte/method/users.get?v=5.92
 """;
 writeAndLog(INTEGRATION_TEST_YML_FILE, WEBDRIVER_TEST_YML_CONTENT);

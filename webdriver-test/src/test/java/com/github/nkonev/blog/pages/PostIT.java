@@ -2,10 +2,8 @@ package com.github.nkonev.blog.pages;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
-import com.github.nkonev.blog.CommonTestConstants;
 import com.github.nkonev.blog.FailoverUtils;
-import com.github.nkonev.blog.integration.AbstractItTestRunner;
-import com.github.nkonev.blog.integration.FacebookEmulatorTests;
+import com.github.nkonev.blog.integration.SocialEmulatorTests;
 import com.github.nkonev.blog.pages.object.Croppa;
 import com.github.nkonev.blog.pages.object.IndexPage;
 import com.github.nkonev.blog.pages.object.LoginModal;
@@ -22,17 +20,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 import static com.codeborne.selenide.Selenide.open;
-import static com.github.nkonev.blog.util.FileUtils.getExistsFile;
 
 
-public class PostIT extends FacebookEmulatorTests {
+public class PostIT extends SocialEmulatorTests {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PostIT.class);
 
