@@ -211,6 +211,7 @@ def BACKEND_MAIN_YML_CONTENT =
 """${AUTOGENERATE_SNIPPET}
 logging.level.root: INFO
 #logging.level.org.springframework.core.env.PropertySourcesPropertyResolver: DEBUG
+#logging.level.org.springframework.security.oauth2: DEBUG
 logging.level.org.springframework.web.socket: WARN
 logging.level.org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: WARN
 #logging.level.org.apache.tomcat.jdbc.pool: TRACE
@@ -259,7 +260,6 @@ vkontakte:
     tokenName: access_token
     authenticationScheme: query
     clientAuthenticationScheme: form
-    grant-type: authorization_code
   resource:
     userInfoUri: https://api.vk.com/method/users.get?v=5.92
 """;
@@ -331,7 +331,6 @@ vkontakte:
     tokenName: access_token
     authenticationScheme: query
     clientAuthenticationScheme: form
-    grant-type: authorization_code
   resource:
     userInfoUri: http://127.0.0.1:10081/mock/vkontakte/method/users.get?v=5.92
 """;
