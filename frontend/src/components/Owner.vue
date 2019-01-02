@@ -2,7 +2,7 @@
     <div class="user-info" >
 
         <div class="time-container">
-            <span class="prepend">written by </span>
+            <span v-if="!hideWrittenBy" class="prepend">written by </span>
 
             <router-link :to="`/user/${owner.id}`">
                 <avatar :src="owner.avatar" :username="owner.login" :size="40"/>
@@ -21,7 +21,7 @@
     import Avatar from 'vue-avatar'
 
     export default {
-        props: ['owner', 'createTime', 'editTime'],
+        props: ['owner', 'createTime', 'editTime', 'hideWrittenBy'],
         components:{
             Avatar
         }
@@ -49,9 +49,12 @@
             margin 0 0.4em
         }
 
+        span.prepend {
+            margin-right 0.8em
+        }
+
         .vue-avatar--wrapper {
             margin-right 0.3em
-            margin-left 0.8em
         }
     }
 

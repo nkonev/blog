@@ -2,7 +2,7 @@
     <div class="comment">
         <div class="comment-head" :id="commentDTO.id">
             <a :href="'#'+this.commentDTO.id">#</a>
-            <owner :owner="commentDTO.owner" :createTime="createDateTime" :editTime="editDateTime"></owner>
+            <owner :owner="commentDTO.owner" :createTime="createDateTime" :editTime="editDateTime" :hideWrittenBy="true"></owner>
             <span v-if="!isEditing" class="comment-manage-buttons">
                 <img class="edit-container-pen" src="../assets/pen.png" v-if="commentDTO.canEdit" @click="setEdit()"/>
                 <img class="remove-container-x" src="../assets/remove.png" v-if="commentDTO.canDelete" @click="openDeleteConfirmation(commentDTO.id)"/>
