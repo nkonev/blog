@@ -12,12 +12,21 @@
                         <button id="btn-submit" class="blog-btn login-btn" type="submit" :disabled="loading" @click.prevent="doLogin">Login!</button>
                     </div>
                 </form>
-                <form action="/api/login/facebook" v-if="!loading && !formError" @click="setSpinner">
-                    <button id="btn-submit-facebook" class="blog-btn login-btn-facebook" type="submit">
-                        <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'facebook' }" style="width: 28px; height:28px; margin-right: 1em" ></font-awesome-icon>
-                        <span>Facebook</span>
-                    </button>
-                </form>
+                <div class="buttons-container">
+                    <form class="social form-fb" action="/api/login/facebook" v-if="!loading && !formError" @click="setSpinner">
+                        <button id="btn-submit-facebook" class="blog-btn login-btn-social login-btn-social-fb" type="submit">
+                            <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'facebook' }" style="width: 28px; height:28px; margin-right: 1em" ></font-awesome-icon>
+                            <span>Facebook</span>
+                        </button>
+                    </form>
+                    <form class="social form-vk" action="/api/login/vkontakte" v-if="!loading && !formError" @click="setSpinner">
+                        <button id="btn-submit-vk" class="blog-btn login-btn-social login-btn-social-vk" type="submit">
+                            <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'vk' }" style="width: 28px; height:28px; margin-right: 1em" ></font-awesome-icon>
+                            <span>Vkontakte</span>
+                        </button>
+                    </form>
+                </div>
+
 
                 <BlogSpinner v-show="loading" class="send-spinner" :speed="0.3" :size="72"></BlogSpinner>
 
@@ -115,6 +124,7 @@
 <style lang="stylus" scoped>
     $background_color=#404142;
     $fbColor=#3B5998
+    $vkColor=#45668e
     @import "../common.styl"
 
     .box {
@@ -203,7 +213,25 @@
             }
         }
 
-        .login-btn-facebook{
+        .buttons-container {
+            width 100%
+            display: flex
+            flex-direction row
+            justify-content space-between
+
+            .form-fb {
+                display block
+                width 49%
+            }
+
+            .form-vk {
+                display block
+                width 49%
+            }
+
+        }
+
+        .login-btn-social{
             width 100%
             height: 36px
             background: white;
@@ -216,9 +244,14 @@
             span {
                 align-items center
             }
-            &:hover:enabled {
+            &-fb:hover:enabled {
                 border-color: $fbColor
                 background: $fbColor
+                color: white;
+            }
+            &-vk:hover:enabled {
+                border-color: $vkColor
+                background: $vkColor
                 color: white;
             }
             &:disabled{
