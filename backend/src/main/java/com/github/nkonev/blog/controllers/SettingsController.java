@@ -33,7 +33,7 @@ public class SettingsController {
     public static final String DTO_PART = "dto";
 
 
-    private static final String IMAGE_BACKGROUND = "image.background";
+    public static final String IMAGE_BACKGROUND = "image.background";
     private static final String HEADER = "header";
     private static final String SUB_HEADER = "header.sub";
     private static final String TITLE_TEMPLATE = "title.template";
