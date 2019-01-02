@@ -36,6 +36,7 @@ public abstract class SocialEmulatorTests extends AbstractItTestRunner {
     @AfterAll
     public static void tearDownClass() throws Exception {
         mockServerFacebook.stop();
+        mockServerVkontakte.stop();
     }
 
     public static final String facebookLogin = "Nikita K";
