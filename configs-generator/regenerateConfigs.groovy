@@ -249,6 +249,19 @@ facebook:
     clientAuthenticationScheme: form
   resource:
     userInfoUri: https://graph.facebook.com/me?fields=id,name,picture
+
+vkontakte:
+  client:
+    clientId: 6805077
+    clientSecret: provide-it
+    userAuthorizationUri: https://oauth.vk.com/authorize
+    accessTokenUri: https://oauth.vk.com/access_token
+    tokenName: access_token
+    authenticationScheme: query
+    clientAuthenticationScheme: form
+    grant-type: authorization_code
+  resource:
+    userInfoUri: https://api.vk.com/method/users.get?v=5.92
 """;
 writeAndLog(BACKEND_MAIN_YML_FILE, BACKEND_MAIN_YML_CONTENT);
 

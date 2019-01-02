@@ -452,7 +452,7 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
         UserAccount userAccount = new UserAccount(
                 CreationType.REGISTRATION,
                 login, null, null, false, false, true,
-                UserRole.ROLE_USER, login+"@example.com", null);
+                UserRole.ROLE_USER, login+"@example.com", null, null);
         userAccount = userAccountRepository.save(userAccount);
         Post post = new Post(null, "title_"+login, "text", "");
         post.setOwner(userAccount);

@@ -30,8 +30,11 @@ import org.springframework.security.oauth2.client.token.grant.code.Authorization
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.web.filter.CompositeFilter;
 
 import javax.servlet.Filter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * http://websystique.com/springmvc/spring-mvc-4-and-spring-security-4-integration-example/
@@ -49,6 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public static final String PASSWORD_PARAMETER = "password";
     public static final String REMEMBER_ME_PARAMETER = "remember-me";
     public static final String API_LOGIN_FACEBOOK = "/api/login/facebook";
+    public static final String API_LOGIN_VKONTAKTE = "/api/login/vkontakte";
 
     @Autowired
     private CustomConfig customConfig;
@@ -127,6 +131,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
+    @ConfigurationProperties("vkontakte.client")
+    public AuthorizationCodeResourceDetails vkontakte() {
+        AuthorizationCodeResourceDetails authorizationCodeResourceDetails = new AuthorizationCodeResourceDetails();
+        authorizationCodeResourceDetails.setPreEstablishedRedirectUri(customConfig.getBaseUrl()+API_LOGIN_VKONTAKTE);
+        authorizationCodeResourceDetails.setUseCurrentUri(false);
+        return authorizationCodeResourceDetails;
+    }
+
+    @Bean
+    @ConfigurationProperties("vkontakte.resource")
+    public ResourceServerProperties vkontakteResource() {
+        return new ResourceServerProperties();
+    }
+
+    @Bean
     @ConfigurationProperties("facebook.client")
     public AuthorizationCodeResourceDetails facebook() {
         AuthorizationCodeResourceDetails authorizationCodeResourceDetails = new AuthorizationCodeResourceDetails();
@@ -144,22 +163,52 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private FacebookPrincipalExtractor facebookPrincipalExtractor;
 
+    @Autowired
+    private VkontaktePrincipalExtractor vkontaktePrincipalExtractor;
+
     // https://spring.io/guides/tutorials/spring-boot-oauth2/#_social_login_github for compose facebook with github
     private Filter ssoFilter() {
-        OAuth2ClientAuthenticationProcessingFilter facebookFilter = new OAuth2ClientAuthenticationProcessingFilter(API_LOGIN_FACEBOOK);
-        OAuth2RestTemplate facebookTemplate = new OAuth2RestTemplate(facebook(), oauth2ClientContext);
-        AuthorizationCodeAccessTokenProvider authorizationCodeAccessTokenProviderWithUrl = new AuthorizationCodeAccessTokenProvider();
-        authorizationCodeAccessTokenProviderWithUrl.setStateKeyGenerator(new StateKeyGeneratorWithRedirectUrl());
-        facebookTemplate.setAccessTokenProvider(authorizationCodeAccessTokenProviderWithUrl);
-        facebookFilter.setRestTemplate(facebookTemplate);
-        UserInfoTokenServices tokenServices = new CheckedUserInfoTokenServices(
-                facebookResource().getUserInfoUri(), facebook().getClientId(),
-                facebookPrincipalExtractor, blogPreAuthenticationChecks(), blogPostAuthenticationChecks());
-        tokenServices.setAuthoritiesExtractor(new FacebookAuthoritiesExtractor());
-        tokenServices.setRestTemplate(facebookTemplate);
-        facebookFilter.setTokenServices(tokenServices);
-        facebookFilter.setAuthenticationSuccessHandler(new OAuth2AuthenticationSuccessHandler());
-        return facebookFilter;
+        CompositeFilter filter = new CompositeFilter();
+        List<Filter> filters = new ArrayList<>();
+
+        {
+            OAuth2ClientAuthenticationProcessingFilter facebookFilter = new OAuth2ClientAuthenticationProcessingFilter(API_LOGIN_FACEBOOK);
+            OAuth2RestTemplate facebookTemplate = new OAuth2RestTemplate(facebook(), oauth2ClientContext);
+            AuthorizationCodeAccessTokenProvider authorizationCodeAccessTokenProviderWithUrl = new AuthorizationCodeAccessTokenProvider();
+            authorizationCodeAccessTokenProviderWithUrl.setStateKeyGenerator(new StateKeyGeneratorWithRedirectUrl());
+            facebookTemplate.setAccessTokenProvider(authorizationCodeAccessTokenProviderWithUrl);
+            facebookFilter.setRestTemplate(facebookTemplate);
+            UserInfoTokenServices tokenServices = new CheckedUserInfoTokenServices(
+                    facebookResource().getUserInfoUri(), facebook().getClientId(),
+                    facebookPrincipalExtractor, blogPreAuthenticationChecks(), blogPostAuthenticationChecks());
+            tokenServices.setAuthoritiesExtractor(new FacebookAuthoritiesExtractor());
+            tokenServices.setRestTemplate(facebookTemplate);
+            facebookFilter.setTokenServices(tokenServices);
+            facebookFilter.setAuthenticationSuccessHandler(new OAuth2AuthenticationSuccessHandler());
+
+            filters.add(facebookFilter);
+        }
+
+        {
+            OAuth2ClientAuthenticationProcessingFilter vkontakteFilter = new OAuth2ClientAuthenticationProcessingFilter(API_LOGIN_VKONTAKTE);
+            OAuth2RestTemplate vkontakteTemplate = new OAuth2RestTemplate(vkontakte(), oauth2ClientContext);
+            AuthorizationCodeAccessTokenProvider authorizationCodeAccessTokenProviderWithUrl = new AuthorizationCodeAccessTokenProvider();
+            authorizationCodeAccessTokenProviderWithUrl.setStateKeyGenerator(new StateKeyGeneratorWithRedirectUrl());
+            vkontakteTemplate.setAccessTokenProvider(authorizationCodeAccessTokenProviderWithUrl);
+            vkontakteFilter.setRestTemplate(vkontakteTemplate);
+            UserInfoTokenServices tokenServices = new CheckedUserInfoTokenServices(
+                    vkontakteResource().getUserInfoUri(), vkontakte().getClientId(),
+                    vkontaktePrincipalExtractor, blogPreAuthenticationChecks(), blogPostAuthenticationChecks());
+            tokenServices.setAuthoritiesExtractor(new VkontakteAuthoritiesExtractor());
+            tokenServices.setRestTemplate(vkontakteTemplate);
+            vkontakteFilter.setTokenServices(tokenServices);
+            vkontakteFilter.setAuthenticationSuccessHandler(new OAuth2AuthenticationSuccessHandler());
+
+            filters.add(vkontakteFilter);
+
+        }
+        filter.setFilters(filters);
+        return filter;
     }
 
     // https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#data-configuration

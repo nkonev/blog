@@ -10,40 +10,35 @@ import org.springframework.boot.autoconfigure.security.oauth2.resource.Principal
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @Component
 @Transactional
-public class FacebookPrincipalExtractor implements PrincipalExtractor {
+public class VkontaktePrincipalExtractor implements PrincipalExtractor {
 
     @Autowired
     private UserAccountRepository userAccountRepository;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FacebookPrincipalExtractor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(VkontaktePrincipalExtractor.class);
 
-    public static final String LOGIN_PREFIX = "facebook_";
-
-    private String getAvatarUrl(Map<String, Object> map){
-        try {
-            return (String) ((Map<String, Object>) ((Map<String, Object>) map.get("picture")).get("data")).get("url");
-        } catch (Exception e){
-            LOGGER.info("Cannot get image url from {}, returning null", map);
-            return null;
-        }
-    }
+    public static final String LOGIN_PREFIX = "vkontakte_";
 
     @Override
     public Object extractPrincipal(Map<String, Object> map) {
-        String facebookId = getId(map);
-        String maybeImageUrl = getAvatarUrl(map);
-        Assert.notNull(facebookId, "facebookId cannot be null");
+        List l = (List) map.get("response");
+        Map<String, Object> m = (Map<String, Object>) l.get(0);
+
+        String vkontakteId = getId(m);
+        Assert.notNull(vkontakteId, "vkontakteId cannot be null");
 
         UserAccount userAccount;
-        Optional<UserAccount> userAccountOpt = userAccountRepository.findByFacebookId(facebookId);
+        Optional<UserAccount> userAccountOpt = userAccountRepository.findByVkontakteId(vkontakteId);
         if (!userAccountOpt.isPresent()){
-            String login = getLogin(map);
-            userAccount = UserAccountConverter.buildUserAccountEntityForFacebookInsert(facebookId, login, maybeImageUrl);
+            String login = getLogin(m);
+            userAccount = UserAccountConverter.buildUserAccountEntityForVkontakteInsert(vkontakteId, login);
             userAccount = userAccountRepository.save(userAccount);
         } else {
             userAccount = userAccountOpt.get();
@@ -52,20 +47,31 @@ public class FacebookPrincipalExtractor implements PrincipalExtractor {
         return UserAccountConverter.convertToUserAccountDetailsDTO(userAccount);
     }
 
+    private String getId(Map<String, Object> m) {
+        return ((Integer) m.get("id")).toString();
+    }
+
     private String getLogin(Map<String, Object> map) {
-        String login = (String) map.get("name");
-        Assert.hasLength(login, "facebook name cannot be null");
+        String firstName = (String) map.get("first_name");
+        String lastName = (String) map.get("last_name");
+        String login = "";
+        if (firstName!=null) {
+            firstName = firstName.trim();
+            login += firstName;
+            login += " ";
+        }
+        if (lastName!=null) {
+            lastName = lastName.trim();
+            login += lastName;
+        }
+        Assert.hasLength(login, "vkontakte name cannot be null");
         login = login.trim();
-        String facebookId = getId(map);
+        String vkontakteId = getId(map);
         if (userAccountRepository.findByUsername(login).isPresent()){
             LOGGER.info("User with login '{}' already present in database, so we' ll generate login", login);
-            return LOGIN_PREFIX+facebookId;
+            return LOGIN_PREFIX+vkontakteId;
         } else {
             return login;
         }
-    }
-
-    private String getId(Map<String, Object> map) {
-        return (String) map.get("id");
     }
 }

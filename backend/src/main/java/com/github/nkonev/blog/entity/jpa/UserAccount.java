@@ -37,6 +37,7 @@ public class UserAccount {
     )
     private CreationType creationType;
     private String facebookId;
+    private String vkontakteId;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -49,7 +50,7 @@ public class UserAccount {
 
     public UserAccount() { }
 
-    public UserAccount(CreationType creationType, String username, String password, String avatar, boolean expired, boolean locked, boolean enabled, UserRole role, String email, String facebookId) {
+    public UserAccount(CreationType creationType, String username, String password, String avatar, boolean expired, boolean locked, boolean enabled, UserRole role, String email, String facebookId, String vkontakteId) {
         this.creationType = creationType;
         this.username = username;
         this.password = password;
@@ -60,6 +61,7 @@ public class UserAccount {
         this.role = role;
         this.email = email;
         this.facebookId = facebookId;
+        this.vkontakteId = vkontakteId;
     }
 
     public Long getId() {
@@ -148,5 +150,13 @@ public class UserAccount {
 
     public void setCreationType(CreationType creationType) {
         this.creationType = creationType;
+    }
+
+    public String getVkontakteId() {
+        return vkontakteId;
+    }
+
+    public void setVkontakteId(String vkontakteId) {
+        this.vkontakteId = vkontakteId;
     }
 }

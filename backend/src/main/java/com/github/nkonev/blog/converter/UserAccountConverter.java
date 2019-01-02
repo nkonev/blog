@@ -136,6 +136,7 @@ public class UserAccountConverter {
                 enabled,
                 newUserRole,
                 userAccountDTO.getEmail(),
+                null,
                 null
         );
     }
@@ -162,9 +163,33 @@ public class UserAccountConverter {
                 enabled,
                 newUserRole,
                 null,
-                facebookId
+                facebookId,
+                null
         );
     }
+
+    public static UserAccount buildUserAccountEntityForVkontakteInsert(String vkontakteId, String login) {
+        final boolean expired = false;
+        final boolean locked = false;
+        final boolean enabled = true;
+
+        final UserRole newUserRole = getDefaultUserRole();
+
+        return new UserAccount(
+                CreationType.VKONTAKTE,
+                login,
+                null,
+                null,
+                expired,
+                locked,
+                enabled,
+                newUserRole,
+                null,
+                null,
+                vkontakteId
+        );
+    }
+
 
     private static void validateLoginAndEmail(EditUserDTO userAccountDTO){
         Assert.hasLength(userAccountDTO.getLogin(), "login should have length");
