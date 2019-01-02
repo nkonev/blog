@@ -48,6 +48,11 @@
         span.time {
             margin 0 0.4em
         }
+
+        .vue-avatar--wrapper {
+            margin-right 0.3em
+            margin-left 0.8em
+        }
     }
 
 
