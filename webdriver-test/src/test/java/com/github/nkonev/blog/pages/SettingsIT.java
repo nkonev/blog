@@ -42,11 +42,15 @@ public class SettingsIT extends AbstractItTestRunner {
             return null;
         });
 
-        Selenide.refresh();
 
-        settingsPage.waitForBackgroundImageWillSet();
+        FailoverUtils.retry(3, () -> {
+            Selenide.refresh();
 
-        Assert.assertFalse($(SettingsPage.IMG_BG).getAttribute("src").isEmpty());
+            settingsPage.waitForBackgroundImageWillSet();
+
+            Assert.assertFalse($(SettingsPage.IMG_BG).getAttribute("src").isEmpty());
+            return null;
+        });
     }
 
 
