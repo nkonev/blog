@@ -128,7 +128,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //        http.rememberMe().rememberMeParameter(REMEMBER_ME_PARAMETER).tokenRepository(tokenRepository)
 //                .tokenValiditySeconds(86400);
         http.headers().cacheControl().disable(); // see also com.github.nkonev.blog.controllers.AbstractImageUploadController#shouldReturnLikeCache
-        http.headers().httpStrictTransportSecurity().includeSubDomains(true).maxAgeInSeconds(31536000);
     }
 
     @Bean
