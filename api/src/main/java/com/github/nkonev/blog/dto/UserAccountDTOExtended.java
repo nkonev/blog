@@ -1,5 +1,7 @@
 package com.github.nkonev.blog.dto;
 
+import java.time.LocalDateTime;
+
 public class UserAccountDTOExtended extends UserAccountDTO {
     private static final long serialVersionUID = 6613889927056965939L;
 
@@ -11,8 +13,8 @@ public class UserAccountDTOExtended extends UserAccountDTO {
 
     public UserAccountDTOExtended() { }
 
-    public UserAccountDTOExtended(Long id, String login, String avatar, DataDTO managementData, String facebookId, String vkontakteId, boolean canLock, boolean canDelete) {
-        super(id, login, avatar, facebookId, vkontakteId);
+    public UserAccountDTOExtended(Long id, String login, String avatar, DataDTO managementData, LocalDateTime lastLoginDateTime, String facebookId, String vkontakteId, boolean canLock, boolean canDelete) {
+        super(id, login, avatar, lastLoginDateTime, facebookId, vkontakteId);
         this.managementData = managementData;
         this.canDelete = canDelete;
         this.canLock = canLock;

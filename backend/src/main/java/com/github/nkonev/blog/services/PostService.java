@@ -160,6 +160,7 @@ public class PostService {
                             resultSet.getLong("owner_id"),
                             resultSet.getString("owner_login"),
                             resultSet.getString("owner_avatar"),
+                            null,
                             resultSet.getString("owner_facebook_id"),
                             resultSet.getString("owner_vkontakte_id")
                     )

@@ -5,6 +5,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -34,10 +35,11 @@ public class UserAccountDetailsDTO extends UserAccountDTO implements UserDetails
             boolean enabled,
             Collection<GrantedAuthority> roles,
             String email,
+            LocalDateTime lastLoginDateTime,
             String facebookId,
             String vkontakteId
     ) {
-        super(id, login, avatar, facebookId, vkontakteId);
+        super(id, login, avatar, lastLoginDateTime, facebookId, vkontakteId);
         this.password = password;
         this.expired = expired;
         this.locked = locked;

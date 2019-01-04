@@ -1,7 +1,11 @@
 package com.github.nkonev.blog.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.github.nkonev.blog.ApiConstants;
+
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * Created by nik on 22.06.17.
@@ -17,14 +21,18 @@ public class UserAccountDTO implements Serializable {
 
     private String avatar;
 
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern= ApiConstants.DATE_FORMAT)
+    private LocalDateTime lastLoginDateTime;
+
     private String facebookId;
 
     private String vkontakteId;
 
-    public UserAccountDTO(Long id, String login, String avatar, String facebookId, String vkontakteId) {
+    public UserAccountDTO(Long id, String login, String avatar, LocalDateTime lastLoginDateTime, String facebookId, String vkontakteId) {
         this.id = id;
         this.login = login;
         this.avatar = avatar;
+        this.lastLoginDateTime = lastLoginDateTime;
         this.facebookId = facebookId;
         this.vkontakteId = vkontakteId;
     }
@@ -70,5 +78,13 @@ public class UserAccountDTO implements Serializable {
 
     public void setVkontakteId(String vkontakteId) {
         this.vkontakteId = vkontakteId;
+    }
+
+    public LocalDateTime getLastLoginDateTime() {
+        return lastLoginDateTime;
+    }
+
+    public void setLastLoginDateTime(LocalDateTime lastLoginDateTime) {
+        this.lastLoginDateTime = lastLoginDateTime;
     }
 }

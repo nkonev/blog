@@ -17,6 +17,7 @@
                         <div class="user-profile-view-info-data">
                             <div class="login">{{ dto.login }}</div>
                             <div v-if="dto.email" class="email">{{dto.email}}</div>
+                            <div class="last-login">{{ lastLogin }}</div>
                         </div>
                     </div>
                 </div>
@@ -38,6 +39,7 @@
     import UserProfileEdit from './UserProfileEdit.vue'
     import bus, {LOGIN, LOGOUT} from '../bus'
     import UserPostList from "./UserPostList.vue"
+    import {getTimestampFromUtc} from '../utils.js'
 
     export default {
         name: 'user-profile', // это имя компонента, которое м. б. тегом в другом компоненте
@@ -58,6 +60,11 @@
                     return false;
                 }
             },
+            lastLogin(){
+                if (this.dto.lastLoginDateTime) {
+                    return 'Last login at ' + getTimestampFromUtc(this.dto.lastLoginDateTime)
+                }
+            }
         },
         methods:{
             edit(){
@@ -169,6 +176,11 @@
                     justify-content space-around
                     font-size 1.5em
                     padding 0.3em
+
+                    .last-login {
+                        color: grey
+                        font-size small
+                    }
                 }
             }
         }

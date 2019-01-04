@@ -38,6 +38,7 @@ public class UserAccountConverter {
                 userAccount.isEnabled(),
                 Collections.singletonList(convertRole(userAccount.getRole())),
                 userAccount.getEmail(),
+                userAccount.getLastLoginDateTime(),
                 userAccount.getFacebookId(),
                 userAccount.getVkontakteId()
         );
@@ -50,6 +51,7 @@ public class UserAccountConverter {
                 userAccount.getUsername(),
                 userAccount.getAvatar(),
                 userAccount.getEmail(),
+                userAccount.getLastLoginDateTime(),
                 userAccount.getFacebookId(),
                 userAccount.getVkontakteId()
         );
@@ -71,6 +73,7 @@ public class UserAccountConverter {
                 userAccount.getId(),
                 userAccount.getUsername(),
                 userAccount.getAvatar(),
+                userAccount.getLastLoginDateTime(),
                 userAccount.getFacebookId(),
                 userAccount.getVkontakteId()
         );
@@ -89,6 +92,7 @@ public class UserAccountConverter {
                 userAccount.getUsername(),
                 userAccount.getAvatar(),
                 dataDTO,
+                userAccount.getLastLoginDateTime(),
                 userAccount.getFacebookId(),
                 userAccount.getVkontakteId(),
                 blogSecurityService.canLock(currentUser, userAccount),
@@ -102,6 +106,7 @@ public class UserAccountConverter {
                 userAccount.getId(),
                 userAccount.getUsername(),
                 userAccount.getAvatar(),
+                userAccount.getLastLoginDateTime(),
                 userAccount.getFacebookId(),
                 userAccount.getVkontakteId()
         );

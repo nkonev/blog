@@ -304,7 +304,7 @@
             }
 
             .manage-buttons {
-                flex-grow 1
+                //flex-grow 1
                 display flex
                 flex-direction row
                 align-items center
