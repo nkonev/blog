@@ -116,6 +116,10 @@ public class UserProfileIT extends SocialEmulatorTests {
         public void removeImage() {
             Croppa.rmImage();
         }
+
+        public void assertLastLoginPresent() {
+            $(".user-profile .user-profile-view-info-data .last-login").shouldHave(Condition.text("20"));
+        }
     }
 
     @org.junit.jupiter.api.Test
@@ -310,5 +314,6 @@ public class UserProfileIT extends SocialEmulatorTests {
         UserAccount userAccountUpdated = userAccountRepository.findByUsername(vkontakteLogin).orElseThrow();
         LocalDateTime lastLoginSecond = userAccountUpdated.getLastLoginDateTime();
         Assert.assertNotEquals(lastLoginSecond, lastLoginFirst);
+        userPage.assertLastLoginPresent();
     }
 }
