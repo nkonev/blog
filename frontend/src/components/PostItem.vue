@@ -81,6 +81,7 @@
             max-height 600px;
             font-size $postBodyFontSize
             font-family $postBodyFontFamily
+            line-height: 1.4em;
 
             .post-head{
                 display flex
