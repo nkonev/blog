@@ -11,8 +11,8 @@ public class UserAccountDTOExtended extends UserAccountDTO {
 
     public UserAccountDTOExtended() { }
 
-    public UserAccountDTOExtended(Long id, String login, String avatar, DataDTO managementData, String facebookId, boolean canLock, boolean canDelete) {
-        super(id, login, avatar, facebookId);
+    public UserAccountDTOExtended(Long id, String login, String avatar, DataDTO managementData, String facebookId, String vkontakteId, boolean canLock, boolean canDelete) {
+        super(id, login, avatar, facebookId, vkontakteId);
         this.managementData = managementData;
         this.canDelete = canDelete;
         this.canLock = canLock;

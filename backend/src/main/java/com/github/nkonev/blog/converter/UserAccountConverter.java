@@ -38,7 +38,8 @@ public class UserAccountConverter {
                 userAccount.isEnabled(),
                 Collections.singletonList(convertRole(userAccount.getRole())),
                 userAccount.getEmail(),
-                userAccount.getFacebookId()
+                userAccount.getFacebookId(),
+                userAccount.getVkontakteId()
         );
     }
 
@@ -49,7 +50,8 @@ public class UserAccountConverter {
                 userAccount.getUsername(),
                 userAccount.getAvatar(),
                 userAccount.getEmail(),
-                userAccount.getFacebookId()
+                userAccount.getFacebookId(),
+                userAccount.getVkontakteId()
         );
     }
 
@@ -69,7 +71,8 @@ public class UserAccountConverter {
                 userAccount.getId(),
                 userAccount.getUsername(),
                 userAccount.getAvatar(),
-                userAccount.getFacebookId()
+                userAccount.getFacebookId(),
+                userAccount.getVkontakteId()
         );
     }
 
@@ -87,6 +90,7 @@ public class UserAccountConverter {
                 userAccount.getAvatar(),
                 dataDTO,
                 userAccount.getFacebookId(),
+                userAccount.getVkontakteId(),
                 blogSecurityService.canLock(currentUser, userAccount),
                 blogSecurityService.canDelete(currentUser, userAccount)
         );
@@ -98,7 +102,8 @@ public class UserAccountConverter {
                 userAccount.getId(),
                 userAccount.getUsername(),
                 userAccount.getAvatar(),
-                userAccount.getFacebookId()
+                userAccount.getFacebookId(),
+                userAccount.getVkontakteId()
         );
     }
 

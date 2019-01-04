@@ -34,9 +34,10 @@ public class UserAccountDetailsDTO extends UserAccountDTO implements UserDetails
             boolean enabled,
             Collection<GrantedAuthority> roles,
             String email,
-            String facebookId
+            String facebookId,
+            String vkontakteId
     ) {
-        super(id, login, avatar, facebookId);
+        super(id, login, avatar, facebookId, vkontakteId);
         this.password = password;
         this.expired = expired;
         this.locked = locked;

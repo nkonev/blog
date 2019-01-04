@@ -12,8 +12,8 @@ public class UserSelfProfileDTO extends UserAccountDTO {
 
     public UserSelfProfileDTO() { }
 
-    public UserSelfProfileDTO(Long id, String login, String avatar, String email, String facebookId) {
-        super(id, login, avatar, facebookId);
+    public UserSelfProfileDTO(Long id, String login, String avatar, String email, String facebookId, String vkontakteId) {
+        super(id, login, avatar, facebookId, vkontakteId);
         this.email = email;
     }
 

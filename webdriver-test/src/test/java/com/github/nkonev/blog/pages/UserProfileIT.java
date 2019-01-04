@@ -28,6 +28,8 @@ import org.springframework.util.StringUtils;
 
 import org.junit.jupiter.api.Assumptions;
 
+import java.time.LocalDateTime;
+
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 import static com.github.nkonev.blog.pages.object.IndexPage.POST_LIST;
@@ -293,10 +295,20 @@ public class UserProfileIT extends SocialEmulatorTests {
         UserProfilePage userPage = new UserProfilePage(urlPrefix, driver);
         UserAccount userAccount = userAccountRepository.findByUsername(vkontakteLogin).orElseThrow();
         userPage.openPage(userAccount.getId().intValue());
+        LocalDateTime lastLoginFirst = userAccount.getLastLoginDateTime();
         userPage.assertThisIsYou();
         userPage.edit();
         userPage.setEmail("new-email-for-vkontakte-user@gmail.not");
         userPage.save();
         userPage.assertEmail("new-email-for-vkontakte-user@gmail.not");
+
+        loginModal.logout();
+
+        loginModal.openLoginModal();
+        loginModal.loginVkontakte();
+
+        UserAccount userAccountUpdated = userAccountRepository.findByUsername(vkontakteLogin).orElseThrow();
+        LocalDateTime lastLoginSecond = userAccountUpdated.getLastLoginDateTime();
+        Assert.assertNotEquals(lastLoginSecond, lastLoginFirst);
     }
 }

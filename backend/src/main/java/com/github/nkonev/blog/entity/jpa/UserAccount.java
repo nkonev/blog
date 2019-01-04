@@ -7,6 +7,7 @@ import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @TypeDefs({
         @TypeDef(
@@ -47,6 +48,8 @@ public class UserAccount {
             columnDefinition = "user_role"
     )
     private UserRole role; // synonym to "authority"
+
+    private LocalDateTime lastLoginDateTime;
 
     public UserAccount() { }
 
@@ -158,5 +161,13 @@ public class UserAccount {
 
     public void setVkontakteId(String vkontakteId) {
         this.vkontakteId = vkontakteId;
+    }
+
+    public void setLastLoginDateTime(LocalDateTime lastLoginDateTime) {
+        this.lastLoginDateTime = lastLoginDateTime;
+    }
+
+    public LocalDateTime getLastLoginDateTime() {
+        return lastLoginDateTime;
     }
 }

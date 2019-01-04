@@ -11,6 +11,7 @@ import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointR
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -166,6 +167,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private VkontaktePrincipalExtractor vkontaktePrincipalExtractor;
 
+    @Autowired
+    private ApplicationContext applicationContext;
+
     // https://spring.io/guides/tutorials/spring-boot-oauth2/#_social_login_github for compose facebook with github
     private Filter ssoFilter() {
         CompositeFilter filter = new CompositeFilter();
@@ -173,6 +177,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         {
             OAuth2ClientAuthenticationProcessingFilter facebookFilter = new OAuth2ClientAuthenticationProcessingFilter(API_LOGIN_FACEBOOK);
+            facebookFilter.setApplicationEventPublisher(applicationContext);
             OAuth2RestTemplate facebookTemplate = new OAuth2RestTemplate(facebook(), oauth2ClientContext);
             AuthorizationCodeAccessTokenProvider authorizationCodeAccessTokenProviderWithUrl = new AuthorizationCodeAccessTokenProvider();
             authorizationCodeAccessTokenProviderWithUrl.setStateKeyGenerator(new StateKeyGeneratorWithRedirectUrl());
@@ -191,6 +196,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         {
             OAuth2ClientAuthenticationProcessingFilter vkontakteFilter = new OAuth2ClientAuthenticationProcessingFilter(API_LOGIN_VKONTAKTE);
+            vkontakteFilter.setApplicationEventPublisher(applicationContext);
             OAuth2RestTemplate vkontakteTemplate = new OAuth2RestTemplate(vkontakte(), oauth2ClientContext);
             AuthorizationCodeAccessTokenProvider authorizationCodeAccessTokenProviderWithUrl = new AuthorizationCodeAccessTokenProvider();
             authorizationCodeAccessTokenProviderWithUrl.setStateKeyGenerator(new StateKeyGeneratorWithRedirectUrl());

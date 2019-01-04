@@ -19,11 +19,14 @@ public class UserAccountDTO implements Serializable {
 
     private String facebookId;
 
-    public UserAccountDTO(Long id, String login, String avatar, String facebookId) {
+    private String vkontakteId;
+
+    public UserAccountDTO(Long id, String login, String avatar, String facebookId, String vkontakteId) {
         this.id = id;
         this.login = login;
         this.avatar = avatar;
         this.facebookId = facebookId;
+        this.vkontakteId = vkontakteId;
     }
 
 
@@ -59,5 +62,13 @@ public class UserAccountDTO implements Serializable {
 
     public void setFacebookId(String facebookId) {
         this.facebookId = facebookId;
+    }
+
+    public String getVkontakteId() {
+        return vkontakteId;
+    }
+
+    public void setVkontakteId(String vkontakteId) {
+        this.vkontakteId = vkontakteId;
     }
 }

@@ -134,6 +134,7 @@ public class PostService {
                     "u.id as owner_id," +
                     "u.username as owner_login," +
                     "u.facebook_id as owner_facebook_id," +
+                    "u.vkontakte_id as owner_vkontakte_id," +
                     "u.avatar as owner_avatar, " +
                     "(select count(*) from posts.comment c where c.post_id = p.id) as comment_count " +
                     "  from posts.post p " +
@@ -159,7 +160,8 @@ public class PostService {
                             resultSet.getLong("owner_id"),
                             resultSet.getString("owner_login"),
                             resultSet.getString("owner_avatar"),
-                            resultSet.getString("owner_facebook_id")
+                            resultSet.getString("owner_facebook_id"),
+                            resultSet.getString("owner_vkontakte_id")
                     )
             );
         }
