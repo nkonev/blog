@@ -115,7 +115,7 @@ public class UserProfileController {
         ) {
         UserAccount userAccountEntity = userAccountRepository.findById(userId).orElseThrow(() -> new RuntimeException("user with id="+ userId + " not found"));
         if (userAccount!=null && userAccount.getId().equals(userAccountEntity.getId())){
-            return UserAccountConverter.getUserSelfProfile(userAccount);
+            return UserAccountConverter.getUserSelfProfile(userAccount, userAccountEntity);
         } else {
             return userAccountConverter.convertToUserAccountDTO(userAccountEntity);
         }

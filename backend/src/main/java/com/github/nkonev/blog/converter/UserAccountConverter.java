@@ -44,14 +44,14 @@ public class UserAccountConverter {
         );
     }
 
-    public static UserSelfProfileDTO getUserSelfProfile(UserAccountDetailsDTO userAccount) {
+    public static UserSelfProfileDTO getUserSelfProfile(UserAccountDetailsDTO userAccount, UserAccount userAccountEntity) {
         if (userAccount == null) { return null; }
         return new UserSelfProfileDTO (
                 userAccount.getId(),
                 userAccount.getUsername(),
                 userAccount.getAvatar(),
                 userAccount.getEmail(),
-                userAccount.getLastLoginDateTime(),
+                userAccountEntity.getLastLoginDateTime(),
                 userAccount.getFacebookId(),
                 userAccount.getVkontakteId()
         );
