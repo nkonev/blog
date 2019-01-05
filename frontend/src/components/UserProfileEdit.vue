@@ -35,6 +35,7 @@
 
         <div class="profile-edit-buttons">
             <button class="save blog-btn ok-btn" @click="save" v-bind:disabled="!submitEnabled">Save</button>
+            <button @click="requestDelete()" class="delete blog-btn delete-btn">Delete account</button>
             <button @click="cancel" class="blog-btn">Cancel</button>
         </div>
         <error v-if="errorMessage" :message="errorMessage"></error>
@@ -45,8 +46,9 @@
     import Vue from 'vue'
     import Error from './Error.vue'
     import Croppa from 'vue-croppa'
-    import store, {FETCH_USER_PROFILE} from '../store'
-    import {PROFILE_URL, PASSWORD_MIN_LENGTH} from '../constants'
+    import store, {FETCH_USER_PROFILE, UNSET_USER} from '../store'
+    import {root_name} from '../routes'
+    import {PROFILE_URL, PASSWORD_MIN_LENGTH, DIALOG} from '../constants'
     import VueFormGenerator from "vue-form-generator";
     import "vue-form-generator/dist/vfg.css";  // optional full css additions
     import 'vue-croppa/dist/vue-croppa.css'
@@ -92,7 +94,7 @@
                         inputType: "email",
                         label: "E-mail",
                         model: "email",
-                        required: true,
+                        required: false,
                         placeholder: "User's e-mail address",
                         validator: VueFormGenerator.validators.email
                     }]
@@ -105,6 +107,36 @@
             }
         },
         methods:{
+            requestDelete(){
+                this.$modal.show(DIALOG, {
+                    title: 'Account delete confirmation',
+                    text: 'Do you want to delete your account ?',
+                    buttons: [
+                        {
+                            title: 'No',
+                            default: true,
+                            handler: () => {
+                                this.$modal.hide(DIALOG)
+                            }
+                        },
+                        {
+                            title: 'Yes',
+                            handler: () => {
+                                this.doDelete();
+                                store.commit(UNSET_USER);
+                                this.$modal.hide(DIALOG)
+                            }
+                        },
+                    ]
+                })
+            },
+            doDelete(){
+                this.$http.delete("/api/profile").then(value => {
+                    this.$router.push({ name: root_name });
+                }, reason => {
+                    console.error("Error during delete account", reason);
+                });
+            },
             handleCroppaInit(e){
                 document.querySelector(".profile-edit-info-avatar-container canvas").style.border="dashed"
             },

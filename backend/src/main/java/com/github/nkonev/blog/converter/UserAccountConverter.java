@@ -220,7 +220,7 @@ public class UserAccountConverter {
     }
 
     public static void updateUserAccountEntity(EditUserDTO userAccountDTO, UserAccount userAccount, PasswordEncoder passwordEncoder) {
-        validateLoginAndEmail(userAccountDTO);
+        Assert.hasLength(userAccountDTO.getLogin(), "login should have length");
         validateAndTrimLogin(userAccountDTO);
         String password = userAccountDTO.getPassword();
         if (!StringUtils.isEmpty(password)) {
@@ -233,7 +233,11 @@ public class UserAccountConverter {
         } else {
             userAccount.setAvatar(userAccountDTO.getAvatar());
         }
-        userAccount.setEmail(userAccountDTO.getEmail());
+        if (userAccountDTO.getEmail()!=null) {
+            String email = userAccountDTO.getEmail();
+            email = email.trim();
+            userAccount.setEmail(email);
+        }
     }
 
     public static EditUserDTO convertToEditUserDto(UserAccount userAccount) {

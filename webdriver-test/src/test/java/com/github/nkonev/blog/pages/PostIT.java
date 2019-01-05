@@ -4,10 +4,7 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
 import com.github.nkonev.blog.FailoverUtils;
 import com.github.nkonev.blog.integration.SocialEmulatorTests;
-import com.github.nkonev.blog.pages.object.Croppa;
-import com.github.nkonev.blog.pages.object.IndexPage;
-import com.github.nkonev.blog.pages.object.LoginModal;
-import com.github.nkonev.blog.pages.object.UserNav;
+import com.github.nkonev.blog.pages.object.*;
 import com.github.nkonev.blog.repo.jpa.PostRepository;
 import com.github.nkonev.blog.webdriver.IntegrationTestConstants;
 import com.github.nkonev.blog.webdriver.configuration.SeleniumConfiguration;
@@ -77,8 +74,8 @@ public class PostIT extends SocialEmulatorTests {
         }
 
         public void confirmDelete() {
-            waitForDialog();
-            clickYes();
+            Dialog.waitForDialog();
+            Dialog.clickYes();
         }
     }
 
@@ -166,19 +163,11 @@ public class PostIT extends SocialEmulatorTests {
             SelenideElement comment = findComment(index);
             comment.find(".comment-manage-buttons .remove-container-x").click();
 
-            waitForDialog();
-            clickYes();
+            Dialog.waitForDialog();
+            Dialog.clickYes();
 
             $(COMMENT_LIST_SELECTOR).waitUntil(Condition.not(Condition.text(deletedText)), 7 * 1000, 1000);
         }
-    }
-
-    private static void clickYes() {
-        $(".vue-dialog .vue-dialog-buttons button:nth-of-type(2)").click();
-    }
-
-    private static void waitForDialog() {
-        $(".vue-dialog").waitUntil(Condition.visible, 7 * 1000, 1000);
     }
 
     private int getCommentPage() throws MalformedURLException {

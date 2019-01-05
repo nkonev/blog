@@ -14,7 +14,6 @@ public class EditUserDTO {
 
     private Boolean removeAvatar;
 
-    @NotEmpty
     @Email
     private String email;
 

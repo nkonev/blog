@@ -6,10 +6,7 @@ import com.github.nkonev.blog.CommonTestConstants;
 import com.github.nkonev.blog.FailoverUtils;
 import com.github.nkonev.blog.entity.jpa.UserAccount;
 import com.github.nkonev.blog.integration.SocialEmulatorTests;
-import com.github.nkonev.blog.pages.object.Croppa;
-import com.github.nkonev.blog.pages.object.IndexPage;
-import com.github.nkonev.blog.pages.object.LoginModal;
-import com.github.nkonev.blog.pages.object.UserNav;
+import com.github.nkonev.blog.pages.object.*;
 import com.github.nkonev.blog.util.FileUtils;
 import com.github.nkonev.blog.webdriver.IntegrationTestConstants;
 import com.github.nkonev.blog.webdriver.configuration.SeleniumConfiguration;
@@ -119,6 +116,15 @@ public class UserProfileIT extends SocialEmulatorTests {
 
         public void assertLastLoginPresent() {
             $(".user-profile .user-profile-view-info-data .last-login").shouldHave(Condition.text("20"));
+        }
+
+        public void delete() {
+            $(".profile-edit button.delete").click();
+        }
+
+        public void confirmDelete() {
+            Dialog.waitForDialog();
+            Dialog.clickYes();
         }
     }
 
@@ -282,7 +288,8 @@ public class UserProfileIT extends SocialEmulatorTests {
     }
 
     @Test
-    public void testVkontakteLogin() throws InterruptedException {
+    public void testVkontakteLoginAndDelete() throws Exception {
+        long countInitial = userAccountRepository.count();
         Assumptions.assumeTrue(Browser.CHROME.equals(seleniumConfiguration.getBrowser()), "Browser must be chrome");
 
         IndexPage indexPage = new IndexPage(urlPrefix);
@@ -294,6 +301,9 @@ public class UserProfileIT extends SocialEmulatorTests {
 
         final String vkontakteLogin = "Никита Конев";
         Assert.assertEquals(vkontakteLogin, UserNav.getLogin());
+
+        long countBefore = userAccountRepository.count();
+        Assert.assertEquals(countInitial+1, countBefore);
 
         // now we attempt to change email
         UserProfilePage userPage = new UserProfilePage(urlPrefix, driver);
@@ -315,5 +325,15 @@ public class UserProfileIT extends SocialEmulatorTests {
         LocalDateTime lastLoginSecond = userAccountUpdated.getLastLoginDateTime();
         Assert.assertNotEquals(lastLoginSecond, lastLoginFirst);
         userPage.assertLastLoginPresent();
+
+        userPage.edit();
+        userPage.delete();
+        userPage.confirmDelete();
+
+        FailoverUtils.retry(10, () -> {
+            long countAfter = userAccountRepository.count();
+            Assert.assertEquals(countBefore-1, countAfter);
+            return null;
+        });
     }
 }

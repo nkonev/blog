@@ -13,12 +13,15 @@ import com.github.nkonev.blog.security.BlogSecurityService;
 import com.github.nkonev.blog.security.BlogUserDetailsService;
 import com.github.nkonev.blog.services.PostService;
 import com.github.nkonev.blog.utils.PageUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.session.Session;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,6 +64,8 @@ public class UserProfileController {
 
     @Autowired
     private UserAccountConverter userAccountConverter;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserProfileController.class);
 
     /**
      *
@@ -135,7 +140,7 @@ public class UserProfileController {
 
         // check email already present
         if (exists.getEmail()!=null && !exists.getEmail().equals(userAccountDTO.getEmail()) && userAccountRepository.findByEmail(userAccountDTO.getEmail()).isPresent()) {
-            // throw new UserAlreadyPresentException("User with email '" + userAccountDTO.getEmail() + "' is already present");
+            LOGGER.error("editProfile: user with email '{}' already present. exiting...", exists.getEmail());
             return UserAccountConverter.convertToEditUserDto(exists); // we care for email leak...
         }
         // check login already present
@@ -189,7 +194,7 @@ public class UserProfileController {
 
     @PreAuthorize("@blogSecurityService.canSelfDelete(#userAccountDetailsDTO)")
     @DeleteMapping(Constants.Urls.PROFILE)
-    public void selfDeleteUser(@AuthenticationPrincipal UserAccountDetailsDTO userAccountDetailsDTO){
+    public void selfDeleteUser(@AuthenticationPrincipal UserAccountDetailsDTO userAccountDetailsDTO, javax.servlet.http.HttpSession session){
         long userId = userAccountDetailsDTO.getId();
         deleteCommon(userId);
     }
