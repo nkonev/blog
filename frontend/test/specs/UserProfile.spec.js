@@ -13,7 +13,8 @@ describe("UserProfile.vue", () => {
                     success( {
                         body: {
                             id: 2,
-                            login: 'testor'
+                            login: 'testor',
+                            oauthIdentifiers: {}
                         }
                     })
                 }, fail => {
