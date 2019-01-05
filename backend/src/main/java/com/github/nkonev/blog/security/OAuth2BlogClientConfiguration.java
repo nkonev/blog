@@ -31,6 +31,9 @@ public class OAuth2BlogClientConfiguration {
     @Autowired
     private CustomConfig customConfig;
 
+    public static final String FACEBOOK_OAUTH2_CLIENT_CONTEXT = "facebookOauth2ClientContext";
+    public static final String VKONTAKTE_OAUTH2_CLIENT_CONTEXT = "vkontakteOauth2ClientContext";
+
     @Bean
     public FilterRegistrationBean oauth2ClientFilterRegistration() {
         OAuth2ClientContextFilter filter = new OAuth2ClientContextFilter();
@@ -60,12 +63,17 @@ public class OAuth2BlogClientConfiguration {
         @Qualifier("accessTokenRequest")
         private AccessTokenRequest accessTokenRequest;
 
-        @Bean
+        @Bean(FACEBOOK_OAUTH2_CLIENT_CONTEXT)
         @Scope(value = "session", proxyMode = ScopedProxyMode.INTERFACES)
-        public OAuth2ClientContext oauth2ClientContext() {
+        public OAuth2ClientContext vkontakteOauth2ClientContext() {
             return new DefaultOAuth2ClientContext(accessTokenRequest);
         }
 
+        @Bean(VKONTAKTE_OAUTH2_CLIENT_CONTEXT)
+        @Scope(value = "session", proxyMode = ScopedProxyMode.INTERFACES)
+        public OAuth2ClientContext facebookOauth2ClientContext() {
+            return new DefaultOAuth2ClientContext(accessTokenRequest);
+        }
     }
 
 }

@@ -7,6 +7,7 @@ import com.github.nkonev.blog.entity.jpa.UserRole;
 import com.github.nkonev.blog.security.checks.BlogPostAuthenticationChecks;
 import com.github.nkonev.blog.security.checks.BlogPreAuthenticationChecks;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
@@ -36,6 +37,9 @@ import org.springframework.web.filter.CompositeFilter;
 import javax.servlet.Filter;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.github.nkonev.blog.security.OAuth2BlogClientConfiguration.FACEBOOK_OAUTH2_CLIENT_CONTEXT;
+import static com.github.nkonev.blog.security.OAuth2BlogClientConfiguration.VKONTAKTE_OAUTH2_CLIENT_CONTEXT;
 
 /**
  * http://websystique.com/springmvc/spring-mvc-4-and-spring-security-4-integration-example/
@@ -70,8 +74,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private BlogUserDetailsService blogUserDetailsService;
 
+    @Qualifier(FACEBOOK_OAUTH2_CLIENT_CONTEXT)
     @Autowired
-    private OAuth2ClientContext oauth2ClientContext;
+    private OAuth2ClientContext facebookOauth2ClientContext;
+
+    @Qualifier(VKONTAKTE_OAUTH2_CLIENT_CONTEXT)
+    @Autowired
+    private OAuth2ClientContext vkontakteOauth2ClientContext;
 
     @Bean
     public CsrfTokenRepository csrfTokenRepository() {
@@ -178,7 +187,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         {
             OAuth2ClientAuthenticationProcessingFilter facebookFilter = new OAuth2ClientAuthenticationProcessingFilter(API_LOGIN_FACEBOOK);
             facebookFilter.setApplicationEventPublisher(applicationContext);
-            OAuth2RestTemplate facebookTemplate = new OAuth2RestTemplate(facebook(), oauth2ClientContext);
+            OAuth2RestTemplate facebookTemplate = new OAuth2RestTemplate(facebook(), facebookOauth2ClientContext);
             AuthorizationCodeAccessTokenProvider authorizationCodeAccessTokenProviderWithUrl = new AuthorizationCodeAccessTokenProvider();
             authorizationCodeAccessTokenProviderWithUrl.setStateKeyGenerator(new StateKeyGeneratorWithRedirectUrl());
             facebookTemplate.setAccessTokenProvider(authorizationCodeAccessTokenProviderWithUrl);
@@ -197,7 +206,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         {
             OAuth2ClientAuthenticationProcessingFilter vkontakteFilter = new OAuth2ClientAuthenticationProcessingFilter(API_LOGIN_VKONTAKTE);
             vkontakteFilter.setApplicationEventPublisher(applicationContext);
-            OAuth2RestTemplate vkontakteTemplate = new OAuth2RestTemplate(vkontakte(), oauth2ClientContext);
+            OAuth2RestTemplate vkontakteTemplate = new OAuth2RestTemplate(vkontakte(), vkontakteOauth2ClientContext);
             AuthorizationCodeAccessTokenProvider authorizationCodeAccessTokenProviderWithUrl = new AuthorizationCodeAccessTokenProvider();
             authorizationCodeAccessTokenProviderWithUrl.setStateKeyGenerator(new StateKeyGeneratorWithRedirectUrl());
             vkontakteTemplate.setAccessTokenProvider(authorizationCodeAccessTokenProviderWithUrl);
