@@ -73,6 +73,9 @@ public class UserAccount {
     }
 
     public OauthIdentifiers getOauthIdentifiers() {
+        if (oauthIdentifiers == null){
+            oauthIdentifiers = new OauthIdentifiers();
+        }
         return oauthIdentifiers;
     }
 

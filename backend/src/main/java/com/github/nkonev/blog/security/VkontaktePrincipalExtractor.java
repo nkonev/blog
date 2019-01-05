@@ -1,12 +1,15 @@
 package com.github.nkonev.blog.security;
 
 import com.github.nkonev.blog.converter.UserAccountConverter;
+import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
 import com.github.nkonev.blog.entity.jpa.UserAccount;
+import com.github.nkonev.blog.exception.UserAlreadyPresentException;
 import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -33,6 +36,25 @@ public class VkontaktePrincipalExtractor implements PrincipalExtractor {
 
         String vkontakteId = getId(m);
         Assert.notNull(vkontakteId, "vkontakteId cannot be null");
+
+        if (SecurityContextHolder.getContext().getAuthentication()!=null && SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof UserAccountDetailsDTO) {
+            // we already authenticated - so it' s binding
+            UserAccountDetailsDTO principal = (UserAccountDetailsDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            LOGGER.info("Will merge vkontakteId to exists user '{}', id={}", principal.getUsername(), principal.getId());
+
+            Optional<UserAccount> maybeUserAccount = userAccountRepository.findByOauthIdentifiersVkontakteId(vkontakteId);
+            if (maybeUserAccount.isPresent() && !maybeUserAccount.get().getId().equals(principal.getId())){
+                LOGGER.error("With vkontakteId={} already present another user '{}', id={}", vkontakteId, maybeUserAccount.get().getUsername(), maybeUserAccount.get().getId());
+                throw new UserAlreadyPresentException();
+            }
+
+            principal.getOauthIdentifiers().setVkontakteId(vkontakteId);
+
+            UserAccount userAccount = userAccountRepository.findById(principal.getId()).orElseThrow();
+            userAccount.getOauthIdentifiers().setVkontakteId(vkontakteId);
+            LOGGER.info("vkontakteId successfully merged to exists user '{}', id={}", principal.getUsername(), principal.getId());
+            return principal;
+        }
 
         UserAccount userAccount;
         Optional<UserAccount> userAccountOpt = userAccountRepository.findByOauthIdentifiersVkontakteId(vkontakteId);
