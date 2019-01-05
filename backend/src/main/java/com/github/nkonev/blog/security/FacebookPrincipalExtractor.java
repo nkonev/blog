@@ -78,6 +78,7 @@ public class FacebookPrincipalExtractor implements PrincipalExtractor {
         String login = (String) map.get("name");
         Assert.hasLength(login, "facebook name cannot be null");
         login = login.trim();
+        login = login.replaceAll(" +", " ");
         String facebookId = getId(map);
         if (userAccountRepository.findByUsername(login).isPresent()){
             LOGGER.info("User with login '{}' already present in database, so we' ll generate login", login);
