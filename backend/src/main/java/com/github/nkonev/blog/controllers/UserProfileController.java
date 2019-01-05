@@ -188,7 +188,7 @@ public class UserProfileController {
     }
 
     @PreAuthorize("@blogSecurityService.canSelfDelete(#userAccountDetailsDTO)")
-    @DeleteMapping(Constants.Urls.USER)
+    @DeleteMapping(Constants.Urls.PROFILE)
     public void selfDeleteUser(@AuthenticationPrincipal UserAccountDetailsDTO userAccountDetailsDTO){
         long userId = userAccountDetailsDTO.getId();
         deleteCommon(userId);
