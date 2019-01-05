@@ -184,6 +184,17 @@ public class UserProfileController {
     @PreAuthorize("@blogSecurityService.canDelete(#userAccountDetailsDTO, #userId)")
     @DeleteMapping(Constants.Urls.USER)
     public void deleteUser(@AuthenticationPrincipal UserAccountDetailsDTO userAccountDetailsDTO, @RequestParam("userId") long userId){
+        deleteCommon(userId);
+    }
+
+    @PreAuthorize("@blogSecurityService.canSelfDelete(#userAccountDetailsDTO)")
+    @DeleteMapping(Constants.Urls.USER)
+    public void selfDeleteUser(@AuthenticationPrincipal UserAccountDetailsDTO userAccountDetailsDTO){
+        long userId = userAccountDetailsDTO.getId();
+        deleteCommon(userId);
+    }
+
+    private void deleteCommon(@RequestParam("userId") long userId) {
         blogUserDetailsService.killSessions(userId);
         UserAccount deleted = userAccountRepository.findByUsername(Constants.DELETED).orElseThrow();
         postRepository.moveToAnotherUser(userId, deleted.getId());

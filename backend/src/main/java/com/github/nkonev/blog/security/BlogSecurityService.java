@@ -166,6 +166,11 @@ public class BlogSecurityService {
                 .orElse(false);
     }
 
+    public boolean canSelfDelete(UserAccountDetailsDTO userAccount) {
+        return Optional
+                .ofNullable(userAccount).isPresent();
+    }
+
     public boolean canLock(UserAccountDetailsDTO currentUser, UserAccount userAccount) {
         return lockAndDelete(currentUser, userAccount);
     }
