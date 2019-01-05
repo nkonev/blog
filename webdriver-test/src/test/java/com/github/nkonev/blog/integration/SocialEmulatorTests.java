@@ -40,6 +40,8 @@ public abstract class SocialEmulatorTests extends AbstractItTestRunner {
     }
 
     public static final String facebookLogin = "Nikita K";
+    public final String vkontakteLogin = "Никита Конев";
+
 
     @BeforeEach
     public void configureFacebookEmulator(){

@@ -29,6 +29,9 @@ import java.time.LocalDateTime;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
+import static com.github.nkonev.blog.CommonTestConstants.COMMON_PASSWORD;
+import static com.github.nkonev.blog.pages.object.Buttons.FB;
+import static com.github.nkonev.blog.pages.object.Buttons.VK;
 import static com.github.nkonev.blog.pages.object.IndexPage.POST_LIST;
 import static org.hamcrest.Matchers.is;
 
@@ -51,6 +54,7 @@ public class UserProfileIT extends SocialEmulatorTests {
         private static final String BODY = "body";
 
         private static final Logger LOGGER = LoggerFactory.getLogger(UserProfilePage.class);
+        public static final String USER_PROFILE_VIEW_INFO_DATA = ".user-profile-view-info-data";
         private String urlPrefix;
         private WebDriver driver;
         private static final int USER_PROFILE_WAIT = 20000;
@@ -126,6 +130,22 @@ public class UserProfileIT extends SocialEmulatorTests {
             Dialog.waitForDialog();
             Dialog.clickYes();
         }
+
+        public static final String PROFILE_EDIT_FORM_BINDING = ".profile-edit-info-form-binding";
+
+        public void bindFacebook() {
+            $(PROFILE_EDIT_FORM_BINDING).find(FB).click();
+        }
+        public void bindVkontakte() {
+            $(PROFILE_EDIT_FORM_BINDING).find(VK).click();
+        }
+
+        public void assertHasFacebook() {
+            $(USER_PROFILE_VIEW_INFO_DATA).find("a.oauth-fb").has(Condition.exist);
+        }
+        public void assertHasVkontakte() {
+            $(USER_PROFILE_VIEW_INFO_DATA).find("a.oauth-vk").has(Condition.exist);
+        }
     }
 
     @org.junit.jupiter.api.Test
@@ -161,7 +181,7 @@ public class UserProfileIT extends SocialEmulatorTests {
         final long userId = userAccountRepository.findByUsername(login).orElseThrow(()-> new RuntimeException("user Not found")).getId();
         userPage.openPage((int)userId);
 
-        LoginModal loginModal = new LoginModal(login, "generated_user_password");
+        LoginModal loginModal = new LoginModal(login, COMMON_PASSWORD);
         loginModal.openLoginModal();
         loginModal.login();
 
@@ -299,7 +319,6 @@ public class UserProfileIT extends SocialEmulatorTests {
         loginModal.openLoginModal();
         loginModal.loginVkontakte();
 
-        final String vkontakteLogin = "Никита Конев";
         Assert.assertEquals(vkontakteLogin, UserNav.getLogin());
 
         long countBefore = userAccountRepository.count();
@@ -335,5 +354,49 @@ public class UserProfileIT extends SocialEmulatorTests {
             Assert.assertEquals(countBefore-1, countAfter);
             return null;
         });
+    }
+
+    @Test
+    public void testBindIdToAccoundAndConflict() throws Exception {
+        IndexPage indexPage = new IndexPage(urlPrefix);
+        indexPage.openPage();
+
+        long countInitial = userAccountRepository.count();
+        //Assumptions.assumeTrue(Browser.CHROME.equals(seleniumConfiguration.getBrowser()), "Browser must be chrome");
+
+        UserProfilePage userPage = new UserProfilePage(urlPrefix, driver);
+        final String login600 = "generated_user_600";
+
+        LoginModal loginModal600 = new LoginModal(login600, COMMON_PASSWORD);
+        loginModal600.openLoginModal();
+        loginModal600.login();
+        UserAccount userAccount = userAccountRepository.findByUsername(login600).orElseThrow();
+        userPage.openPage(userAccount.getId().intValue());
+        userPage.assertThisIsYou();
+        userPage.edit();
+
+        userPage.bindFacebook();
+        long countAfter = userAccountRepository.count();
+        userPage.openPage(userAccount.getId().intValue());
+        userPage.assertHasFacebook();
+
+        Assert.assertEquals(countInitial, countAfter);
+        loginModal600.logout();
+
+        {
+            LoginModal loginModalVk = new LoginModal();
+            loginModalVk.openLoginModal();
+            loginModalVk.loginVkontakte();
+
+            Assert.assertEquals(vkontakteLogin, UserNav.getLogin());
+
+            loginModalVk.logout();
+        }
+
+        loginModal600.openLoginModal();
+        loginModal600.login();
+        userPage.edit();
+        userPage.bindVkontakte();
+        $("body").has(Condition.text("Somebody already taken this vkontakte id"));
     }
 }

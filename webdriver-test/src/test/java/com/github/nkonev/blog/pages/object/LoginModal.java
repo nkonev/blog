@@ -14,6 +14,8 @@ import java.util.concurrent.TimeUnit;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
+import static com.github.nkonev.blog.pages.object.Buttons.FB;
+import static com.github.nkonev.blog.pages.object.Buttons.VK;
 
 /**
  * Created by nik on 12.07.17.
@@ -63,7 +65,7 @@ public class LoginModal {
 
     public void loginFacebook() {
         SelenideElement modal = getValidModal();
-        modal.find("#btn-submit-facebook").click();
+        modal.find(FB).click();
     }
 
     private SelenideElement getValidModal() {
@@ -75,6 +77,6 @@ public class LoginModal {
 
     public void loginVkontakte() {
         SelenideElement modal = getValidModal();
-        modal.find("#btn-submit-vkontakte").click();
+        modal.find(VK).click();
     }
 }
