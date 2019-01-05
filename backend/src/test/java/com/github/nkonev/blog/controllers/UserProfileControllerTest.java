@@ -138,15 +138,14 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
 
     @WithUserDetails(TestConstants.USER_ALICE)
     @org.junit.jupiter.api.Test
-    public void fullyAuthenticatedUserCannotChangeHerProfileWithoutEmail() throws Exception {
+    public void fullyAuthenticatedUserCannotChangeHerProfileWithoutUsername() throws Exception {
         UserAccount userAccount = getUserFromBd(TestConstants.USER_ALICE);
         final String newLogin = "new_alice12";
         final String newPassword = "new_alice_password";
 
         EditUserDTO edit = UserAccountConverter.convertToEditUserDto(userAccount);
-        edit.setLogin(newLogin);
+        edit.setLogin(null);
         edit.setPassword(newPassword);
-        edit.setEmail(null);
 
         MvcResult mvcResult = mockMvc.perform(
                 post(Constants.Urls.API+ Constants.Urls.PROFILE)
@@ -155,7 +154,7 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
                         .with(csrf())
         )
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.validationErrors[0].field").value("email"))
+                .andExpect(jsonPath("$.validationErrors[0].field").value("login"))
                 .andExpect(jsonPath("$.validationErrors[0].message").value("must not be empty"))
                 .andReturn();
 
