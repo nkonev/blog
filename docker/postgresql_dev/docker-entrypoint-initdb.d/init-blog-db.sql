@@ -26,7 +26,8 @@ create extension if not exists "uuid-ossp" schema pg_catalog;
 -- ALTER SYSTEM set log_duration = on;
 
 --
-LOAD 'auto_explain';
+
+/*LOAD 'auto_explain';
 ALTER SYSTEM set shared_preload_libraries = 'auto_explain';
 ALTER SYSTEM SET auto_explain.log_min_duration=0;
 ALTER SYSTEM set auto_explain.log_analyze=true;
@@ -34,5 +35,6 @@ ALTER SYSTEM set auto_explain.log_buffers=true;
 ALTER SYSTEM set auto_explain.log_timing=true;
 ALTER SYSTEM set auto_explain.log_verbose=true;
 ALTER SYSTEM set auto_explain.log_nested_statements=true;
+*/
 
 \connect blog blog;

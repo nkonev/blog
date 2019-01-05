@@ -14,6 +14,8 @@ import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.Header;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.test.annotation.Commit;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -57,6 +59,8 @@ public abstract class SocialEmulatorTests extends AbstractItTestRunner {
     public static final String facebookLogin = "Nikita K";
     public final String vkontakteLogin = "Никита Конев";
 
+    @Transactional
+    @Commit
     @BeforeEach
     public void configureFacebookEmulator() throws InterruptedException {
         mockServerFacebook
