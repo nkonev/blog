@@ -210,6 +210,7 @@ custom:
 def BACKEND_MAIN_YML_CONTENT =
 """${AUTOGENERATE_SNIPPET}
 logging.level.root: INFO
+#logging.pattern.console: '%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(\${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-50.50(%logger{49}:%line)){cyan} %clr(:){faint} %m%n%wEx'
 #logging.level.org.springframework.core.env.PropertySourcesPropertyResolver: DEBUG
 #logging.level.org.springframework.security.oauth2: DEBUG
 logging.level.org.springframework.web.socket: WARN
