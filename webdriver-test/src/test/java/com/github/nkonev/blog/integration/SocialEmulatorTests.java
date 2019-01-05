@@ -1,5 +1,7 @@
 package com.github.nkonev.blog.integration;
 
+import com.github.nkonev.blog.controllers.UserProfileController;
+import com.github.nkonev.blog.entity.jpa.UserAccount;
 import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
 import com.github.nkonev.blog.webdriver.configuration.SeleniumConfiguration;
 import io.netty.handler.codec.http.HttpHeaderNames;
@@ -10,6 +12,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.Header;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
+
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
@@ -27,6 +35,9 @@ public abstract class SocialEmulatorTests extends AbstractItTestRunner {
     @Autowired
     protected SeleniumConfiguration seleniumConfiguration;
 
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
     @BeforeAll
     public static void setUpClass() {
         mockServerFacebook = startClientAndServer(MOCK_SERVER_FACEBOOK_PORT);
@@ -42,9 +53,11 @@ public abstract class SocialEmulatorTests extends AbstractItTestRunner {
     public static final String facebookLogin = "Nikita K";
     public final String vkontakteLogin = "Никита Конев";
 
+    @Autowired
+    private UserProfileController userProfileController;
 
     @BeforeEach
-    public void configureFacebookEmulator(){
+    public void configureFacebookEmulator() throws InterruptedException {
         mockServerFacebook
                 .when(request().withPath("/mock/facebook/dialog/oauth")).respond(httpRequest -> {
             String state = httpRequest.getQueryStringParameters().getEntries().stream().filter(parameter -> "state".equals(parameter.getName().getValue())).findFirst().get().getValues().get(0).getValue();
@@ -84,6 +97,20 @@ public abstract class SocialEmulatorTests extends AbstractItTestRunner {
             userAccount.setLocked(false);
             userAccountRepository.save(userAccount);
         });
+
+        clearOauthBindingsInDb();
+    }
+
+    private void clearOauthBindingsInDb() throws InterruptedException {
+        userAccountRepository.findByUsername(facebookLogin).ifPresent(userAccount -> {
+            userProfileController.deleteUser(userAccount.getId());
+        });
+        userAccountRepository.findByUsername(vkontakteLogin).ifPresent(userAccount -> {
+            userProfileController.deleteUser(userAccount.getId());
+        });
+
+        namedParameterJdbcTemplate.update("UPDATE auth.users SET vkontakte_id=NULL, facebook_id=NULL " +
+                "WHERE vkontakte_id IS NOT NULL OR facebook_id IS NOT NULL;", new HashMap<>());
     }
 
     @AfterEach

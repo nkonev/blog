@@ -4,6 +4,7 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import com.github.nkonev.blog.CommonTestConstants;
 import com.github.nkonev.blog.FailoverUtils;
+import com.github.nkonev.blog.controllers.UserProfileController;
 import com.github.nkonev.blog.entity.jpa.UserAccount;
 import com.github.nkonev.blog.integration.SocialEmulatorTests;
 import com.github.nkonev.blog.pages.object.*;
@@ -26,6 +27,7 @@ import org.springframework.util.StringUtils;
 import org.junit.jupiter.api.Assumptions;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
@@ -141,10 +143,10 @@ public class UserProfileIT extends SocialEmulatorTests {
         }
 
         public void assertHasFacebook() {
-            $(USER_PROFILE_VIEW_INFO_DATA).find("a.oauth-fb").has(Condition.exist);
+            $(USER_PROFILE_VIEW_INFO_DATA).find("a.oauth-fb").shouldHave(Condition.exist);
         }
         public void assertHasVkontakte() {
-            $(USER_PROFILE_VIEW_INFO_DATA).find("a.oauth-vk").has(Condition.exist);
+            $(USER_PROFILE_VIEW_INFO_DATA).find("a.oauth-vk").shouldHave(Condition.exist);
         }
     }
 
@@ -357,7 +359,8 @@ public class UserProfileIT extends SocialEmulatorTests {
     }
 
     @Test
-    public void testBindIdToAccoundAndConflict() throws Exception {
+    public void testBindIdToAccountAndConflict() throws Exception {
+
         IndexPage indexPage = new IndexPage(urlPrefix);
         indexPage.openPage();
 

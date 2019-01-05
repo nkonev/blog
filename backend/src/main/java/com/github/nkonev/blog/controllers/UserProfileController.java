@@ -199,6 +199,10 @@ public class UserProfileController {
         deleteCommon(userId);
     }
 
+    public void deleteUser(long userId){
+        deleteCommon(userId);
+    }
+
     private void deleteCommon(long userId) {
         blogUserDetailsService.killSessions(userId);
         UserAccount deleted = userAccountRepository.findByUsername(Constants.DELETED).orElseThrow();
