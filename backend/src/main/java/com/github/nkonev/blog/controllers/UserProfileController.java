@@ -12,6 +12,7 @@ import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
 import com.github.nkonev.blog.security.BlogSecurityService;
 import com.github.nkonev.blog.security.BlogUserDetailsService;
 import com.github.nkonev.blog.services.PostService;
+import com.github.nkonev.blog.services.UserDeleteService;
 import com.github.nkonev.blog.utils.PageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +65,9 @@ public class UserProfileController {
 
     @Autowired
     private UserAccountConverter userAccountConverter;
+
+    @Autowired
+    private UserDeleteService userDeleteService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserProfileController.class);
 
@@ -189,26 +193,14 @@ public class UserProfileController {
     @PreAuthorize("@blogSecurityService.canDelete(#userAccountDetailsDTO, #userId)")
     @DeleteMapping(Constants.Urls.USER)
     public void deleteUser(@AuthenticationPrincipal UserAccountDetailsDTO userAccountDetailsDTO, @RequestParam("userId") long userId){
-        deleteCommon(userId);
+        userDeleteService.deleteUser(userId);
     }
 
     @PreAuthorize("@blogSecurityService.canSelfDelete(#userAccountDetailsDTO)")
     @DeleteMapping(Constants.Urls.PROFILE)
     public void selfDeleteUser(@AuthenticationPrincipal UserAccountDetailsDTO userAccountDetailsDTO){
         long userId = userAccountDetailsDTO.getId();
-        deleteCommon(userId);
-    }
-
-    public void deleteUser(long userId){
-        deleteCommon(userId);
-    }
-
-    private void deleteCommon(long userId) {
-        blogUserDetailsService.killSessions(userId);
-        UserAccount deleted = userAccountRepository.findByUsername(Constants.DELETED).orElseThrow();
-        postRepository.moveToAnotherUser(userId, deleted.getId());
-        commentRepository.moveToAnotherUser(userId, deleted.getId());
-        userAccountRepository.deleteById(userId);
+        userDeleteService.deleteUser(userId);
     }
 
     @PreAuthorize("isAuthenticated()")

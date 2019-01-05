@@ -3,6 +3,7 @@ package com.github.nkonev.blog.integration;
 import com.github.nkonev.blog.controllers.UserProfileController;
 import com.github.nkonev.blog.entity.jpa.UserAccount;
 import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
+import com.github.nkonev.blog.services.UserDeleteService;
 import com.github.nkonev.blog.webdriver.configuration.SeleniumConfiguration;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import org.junit.jupiter.api.AfterEach;
@@ -38,6 +39,9 @@ public abstract class SocialEmulatorTests extends AbstractItTestRunner {
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
+    @Autowired
+    protected UserDeleteService userDeleteService;
+
     @BeforeAll
     public static void setUpClass() {
         mockServerFacebook = startClientAndServer(MOCK_SERVER_FACEBOOK_PORT);
@@ -52,9 +56,6 @@ public abstract class SocialEmulatorTests extends AbstractItTestRunner {
 
     public static final String facebookLogin = "Nikita K";
     public final String vkontakteLogin = "Никита Конев";
-
-    @Autowired
-    private UserProfileController userProfileController;
 
     @BeforeEach
     public void configureFacebookEmulator() throws InterruptedException {
@@ -103,10 +104,10 @@ public abstract class SocialEmulatorTests extends AbstractItTestRunner {
 
     private void clearOauthBindingsInDb() throws InterruptedException {
         userAccountRepository.findByUsername(facebookLogin).ifPresent(userAccount -> {
-            userProfileController.deleteUser(userAccount.getId());
+            userDeleteService.deleteUser(userAccount.getId());
         });
         userAccountRepository.findByUsername(vkontakteLogin).ifPresent(userAccount -> {
-            userProfileController.deleteUser(userAccount.getId());
+            userDeleteService.deleteUser(userAccount.getId());
         });
 
         namedParameterJdbcTemplate.update("UPDATE auth.users SET vkontakte_id=NULL, facebook_id=NULL " +
