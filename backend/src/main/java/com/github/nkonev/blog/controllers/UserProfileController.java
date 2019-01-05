@@ -194,7 +194,7 @@ public class UserProfileController {
         deleteCommon(userId);
     }
 
-    private void deleteCommon(@RequestParam("userId") long userId) {
+    private void deleteCommon(long userId) {
         blogUserDetailsService.killSessions(userId);
         UserAccount deleted = userAccountRepository.findByUsername(Constants.DELETED).orElseThrow();
         postRepository.moveToAnotherUser(userId, deleted.getId());
