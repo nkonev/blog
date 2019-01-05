@@ -3,6 +3,7 @@ package com.github.nkonev.blog.security;
 import com.github.nkonev.blog.converter.UserAccountConverter;
 import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
 import com.github.nkonev.blog.entity.jpa.UserAccount;
+import com.github.nkonev.blog.exception.OauthIdConflictException;
 import com.github.nkonev.blog.exception.UserAlreadyPresentException;
 import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
 import org.slf4j.Logger;
@@ -45,7 +46,7 @@ public class VkontaktePrincipalExtractor implements PrincipalExtractor {
             Optional<UserAccount> maybeUserAccount = userAccountRepository.findByOauthIdentifiersVkontakteId(vkontakteId);
             if (maybeUserAccount.isPresent() && !maybeUserAccount.get().getId().equals(principal.getId())){
                 LOGGER.error("With vkontakteId={} already present another user '{}', id={}", vkontakteId, maybeUserAccount.get().getUsername(), maybeUserAccount.get().getId());
-                throw new UserAlreadyPresentException();
+                throw new OauthIdConflictException("Somebody already taken this vkontakte id="+vkontakteId+". Please contact administrator.");
             }
 
             principal.getOauthIdentifiers().setVkontakteId(vkontakteId);

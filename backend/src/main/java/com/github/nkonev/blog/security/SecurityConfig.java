@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.config.CustomConfig;
 import com.github.nkonev.blog.entity.jpa.UserRole;
+import com.github.nkonev.blog.exception.OauthIdConflictException;
 import com.github.nkonev.blog.security.checks.BlogPostAuthenticationChecks;
 import com.github.nkonev.blog.security.checks.BlogPreAuthenticationChecks;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -179,6 +180,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private ApplicationContext applicationContext;
 
+    @Autowired
+    private OauthExceptionHandler oauthExceptionHandler;
+
     // https://spring.io/guides/tutorials/spring-boot-oauth2/#_social_login_github for compose facebook with github
     private Filter ssoFilter() {
         CompositeFilter filter = new CompositeFilter();
@@ -199,6 +203,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             tokenServices.setRestTemplate(facebookTemplate);
             facebookFilter.setTokenServices(tokenServices);
             facebookFilter.setAuthenticationSuccessHandler(new OAuth2AuthenticationSuccessHandler());
+            facebookFilter.setAuthenticationFailureHandler(oauthExceptionHandler);
 
             filters.add(facebookFilter);
         }
@@ -218,9 +223,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             tokenServices.setRestTemplate(vkontakteTemplate);
             vkontakteFilter.setTokenServices(tokenServices);
             vkontakteFilter.setAuthenticationSuccessHandler(new OAuth2AuthenticationSuccessHandler());
+            vkontakteFilter.setAuthenticationFailureHandler(oauthExceptionHandler);
 
             filters.add(vkontakteFilter);
-
         }
         filter.setFilters(filters);
         return filter;
