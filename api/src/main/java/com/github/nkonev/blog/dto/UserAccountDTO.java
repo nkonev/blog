@@ -24,17 +24,16 @@ public class UserAccountDTO implements Serializable {
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern= ApiConstants.DATE_FORMAT)
     private LocalDateTime lastLoginDateTime;
 
-    private String facebookId;
+    private OauthIdentifiersDTO oauthIdentifiers = new OauthIdentifiersDTO();
 
-    private String vkontakteId;
-
-    public UserAccountDTO(Long id, String login, String avatar, LocalDateTime lastLoginDateTime, String facebookId, String vkontakteId) {
+    public UserAccountDTO(Long id, String login, String avatar, LocalDateTime lastLoginDateTime, OauthIdentifiersDTO oauthIdentifiers) {
         this.id = id;
         this.login = login;
         this.avatar = avatar;
         this.lastLoginDateTime = lastLoginDateTime;
-        this.facebookId = facebookId;
-        this.vkontakteId = vkontakteId;
+        if (oauthIdentifiers!=null) {
+            this.oauthIdentifiers = oauthIdentifiers;
+        }
     }
 
 
@@ -64,27 +63,19 @@ public class UserAccountDTO implements Serializable {
         this.avatar = avatar;
     }
 
-    public String getFacebookId() {
-        return facebookId;
-    }
-
-    public void setFacebookId(String facebookId) {
-        this.facebookId = facebookId;
-    }
-
-    public String getVkontakteId() {
-        return vkontakteId;
-    }
-
-    public void setVkontakteId(String vkontakteId) {
-        this.vkontakteId = vkontakteId;
-    }
-
     public LocalDateTime getLastLoginDateTime() {
         return lastLoginDateTime;
     }
 
     public void setLastLoginDateTime(LocalDateTime lastLoginDateTime) {
         this.lastLoginDateTime = lastLoginDateTime;
+    }
+
+    public OauthIdentifiersDTO getOauthIdentifiers() {
+        return oauthIdentifiers;
+    }
+
+    public void setOauthIdentifiers(OauthIdentifiersDTO oauthIdentifiers) {
+        this.oauthIdentifiers = oauthIdentifiers;
     }
 }

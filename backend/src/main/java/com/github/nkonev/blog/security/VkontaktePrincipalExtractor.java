@@ -35,7 +35,7 @@ public class VkontaktePrincipalExtractor implements PrincipalExtractor {
         Assert.notNull(vkontakteId, "vkontakteId cannot be null");
 
         UserAccount userAccount;
-        Optional<UserAccount> userAccountOpt = userAccountRepository.findByVkontakteId(vkontakteId);
+        Optional<UserAccount> userAccountOpt = userAccountRepository.findByOauthIdentifiersVkontakteId(vkontakteId);
         if (!userAccountOpt.isPresent()){
             String login = getLogin(m);
             userAccount = UserAccountConverter.buildUserAccountEntityForVkontakteInsert(vkontakteId, login);

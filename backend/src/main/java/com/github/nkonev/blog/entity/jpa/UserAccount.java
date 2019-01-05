@@ -7,6 +7,7 @@ import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @TypeDefs({
@@ -37,8 +38,6 @@ public class UserAccount {
             columnDefinition = "user_creation_type"
     )
     private CreationType creationType;
-    private String facebookId;
-    private String vkontakteId;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -51,9 +50,14 @@ public class UserAccount {
 
     private LocalDateTime lastLoginDateTime;
 
+    @Embedded
+    private OauthIdentifiers oauthIdentifiers = new OauthIdentifiers();
+
     public UserAccount() { }
 
-    public UserAccount(CreationType creationType, String username, String password, String avatar, boolean expired, boolean locked, boolean enabled, UserRole role, String email, String facebookId, String vkontakteId) {
+    public UserAccount(CreationType creationType, String username, String password, String avatar,
+                       boolean expired, boolean locked, boolean enabled,
+                       UserRole role, String email, OauthIdentifiers oauthIdentifiers) {
         this.creationType = creationType;
         this.username = username;
         this.password = password;
@@ -63,8 +67,47 @@ public class UserAccount {
         this.enabled = enabled;
         this.role = role;
         this.email = email;
-        this.facebookId = facebookId;
-        this.vkontakteId = vkontakteId;
+        if (oauthIdentifiers!=null){
+            this.oauthIdentifiers = oauthIdentifiers;
+        }
+    }
+
+    public OauthIdentifiers getOauthIdentifiers() {
+        return oauthIdentifiers;
+    }
+
+    public void setOauthIdentifiers(OauthIdentifiers oauthIdentifiers) {
+        this.oauthIdentifiers = oauthIdentifiers;
+    }
+
+    @Embeddable
+    public static class OauthIdentifiers {
+        private String facebookId;
+        private String vkontakteId;
+
+        public OauthIdentifiers() {
+        }
+
+        public OauthIdentifiers(String facebookId, String vkontakteId) {
+            this.facebookId = facebookId;
+            this.vkontakteId = vkontakteId;
+        }
+
+        public String getFacebookId() {
+            return facebookId;
+        }
+
+        public void setFacebookId(String facebookId) {
+            this.facebookId = facebookId;
+        }
+
+        public String getVkontakteId() {
+            return vkontakteId;
+        }
+
+        public void setVkontakteId(String vkontakteId) {
+            this.vkontakteId = vkontakteId;
+        }
     }
 
     public Long getId() {
@@ -139,28 +182,12 @@ public class UserAccount {
         this.role = role;
     }
 
-    public String getFacebookId() {
-        return facebookId;
-    }
-
-    public void setFacebookId(String facebookId) {
-        this.facebookId = facebookId;
-    }
-
     public CreationType getCreationType() {
         return creationType;
     }
 
     public void setCreationType(CreationType creationType) {
         this.creationType = creationType;
-    }
-
-    public String getVkontakteId() {
-        return vkontakteId;
-    }
-
-    public void setVkontakteId(String vkontakteId) {
-        this.vkontakteId = vkontakteId;
     }
 
     public void setLastLoginDateTime(LocalDateTime lastLoginDateTime) {

@@ -40,7 +40,7 @@ public class FacebookPrincipalExtractor implements PrincipalExtractor {
         Assert.notNull(facebookId, "facebookId cannot be null");
 
         UserAccount userAccount;
-        Optional<UserAccount> userAccountOpt = userAccountRepository.findByFacebookId(facebookId);
+        Optional<UserAccount> userAccountOpt = userAccountRepository.findByOauthIdentifiersFacebookId(facebookId);
         if (!userAccountOpt.isPresent()){
             String login = getLogin(map);
             userAccount = UserAccountConverter.buildUserAccountEntityForFacebookInsert(facebookId, login, maybeImageUrl);

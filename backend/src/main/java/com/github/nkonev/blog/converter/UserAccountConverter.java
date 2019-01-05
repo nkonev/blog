@@ -7,7 +7,8 @@ import com.github.nkonev.blog.entity.jpa.UserAccount;
 import com.github.nkonev.blog.entity.jpa.UserRole;
 import com.github.nkonev.blog.exception.BadRequestException;
 import com.github.nkonev.blog.security.BlogSecurityService;
-import com.github.nkonev.blog.security.LoginUtils;
+import com.github.nkonev.blog.security.FacebookPrincipalExtractor;
+import com.github.nkonev.blog.security.VkontaktePrincipalExtractor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,6 +26,15 @@ public class UserAccountConverter {
     @Autowired
     private BlogSecurityService blogSecurityService;
 
+    private static OauthIdentifiersDTO convertOauth(UserAccount.OauthIdentifiers oauthIdentifiers){
+        if (oauthIdentifiers==null) return null;
+        return new OauthIdentifiersDTO(oauthIdentifiers.getFacebookId(), oauthIdentifiers.getVkontakteId());
+    }
+
+    private static UserAccount.OauthIdentifiers convertOauth(OauthIdentifiersDTO oauthIdentifiers){
+        if (oauthIdentifiers==null) return null;
+        return new UserAccount.OauthIdentifiers(oauthIdentifiers.getFacebookId(), oauthIdentifiers.getVkontakteId());
+    }
 
     public static UserAccountDetailsDTO convertToUserAccountDetailsDTO(UserAccount userAccount) {
         if (userAccount == null) { return null; }
@@ -39,8 +49,7 @@ public class UserAccountConverter {
                 Collections.singletonList(convertRole(userAccount.getRole())),
                 userAccount.getEmail(),
                 userAccount.getLastLoginDateTime(),
-                userAccount.getFacebookId(),
-                userAccount.getVkontakteId()
+                convertOauth(userAccount.getOauthIdentifiers())
         );
     }
 
@@ -52,8 +61,7 @@ public class UserAccountConverter {
                 userAccount.getAvatar(),
                 userAccount.getEmail(),
                 userAccountEntity.getLastLoginDateTime(),
-                userAccount.getFacebookId(),
-                userAccount.getVkontakteId()
+                convertOauth(userAccountEntity.getOauthIdentifiers())
         );
     }
 
@@ -74,8 +82,7 @@ public class UserAccountConverter {
                 userAccount.getUsername(),
                 userAccount.getAvatar(),
                 userAccount.getLastLoginDateTime(),
-                userAccount.getFacebookId(),
-                userAccount.getVkontakteId()
+                convertOauth(userAccount.getOauthIdentifiers())
         );
     }
 
@@ -93,8 +100,7 @@ public class UserAccountConverter {
                 userAccount.getAvatar(),
                 dataDTO,
                 userAccount.getLastLoginDateTime(),
-                userAccount.getFacebookId(),
-                userAccount.getVkontakteId(),
+                convertOauth(userAccount.getOauthIdentifiers()),
                 blogSecurityService.canLock(currentUser, userAccount),
                 blogSecurityService.canDelete(currentUser, userAccount)
         );
@@ -107,8 +113,7 @@ public class UserAccountConverter {
                 userAccount.getUsername(),
                 userAccount.getAvatar(),
                 userAccount.getLastLoginDateTime(),
-                userAccount.getFacebookId(),
-                userAccount.getVkontakteId()
+                userAccount.getOauthIdentifiers()
         );
     }
 
@@ -146,13 +151,23 @@ public class UserAccountConverter {
                 enabled,
                 newUserRole,
                 userAccountDTO.getEmail(),
-                null,
                 null
         );
     }
 
+    public static String validateAndTrimLogin(String login){
+        Assert.notNull(login, "login cannot be null");
+        login = login.trim();
+        Assert.hasLength(login, "login should have length");
+        Assert.isTrue(!login.startsWith(FacebookPrincipalExtractor.LOGIN_PREFIX), "not allowed prefix");
+        Assert.isTrue(!login.startsWith(VkontaktePrincipalExtractor.LOGIN_PREFIX), "not allowed prefix");
+
+        return login;
+    }
+
+
     private static void validateAndTrimLogin(EditUserDTO userAccountDTO) {
-        userAccountDTO.setLogin(LoginUtils.validateAndTrimLogin(userAccountDTO.getLogin()));
+        userAccountDTO.setLogin(validateAndTrimLogin(userAccountDTO.getLogin()));
     }
 
     // used for just get user id
@@ -173,8 +188,7 @@ public class UserAccountConverter {
                 enabled,
                 newUserRole,
                 null,
-                facebookId,
-                null
+                new UserAccount.OauthIdentifiers(facebookId, null)
         );
     }
 
@@ -195,8 +209,7 @@ public class UserAccountConverter {
                 enabled,
                 newUserRole,
                 null,
-                null,
-                vkontakteId
+                new UserAccount.OauthIdentifiers(null, vkontakteId)
         );
     }
 

@@ -133,8 +133,6 @@ public class PostService {
                     "p.edit_date_time," +
                     "u.id as owner_id," +
                     "u.username as owner_login," +
-                    "u.facebook_id as owner_facebook_id," +
-                    "u.vkontakte_id as owner_vkontakte_id," +
                     "u.avatar as owner_avatar, " +
                     "(select count(*) from posts.comment c where c.post_id = p.id) as comment_count " +
                     "  from posts.post p " +
@@ -161,8 +159,7 @@ public class PostService {
                             resultSet.getString("owner_login"),
                             resultSet.getString("owner_avatar"),
                             null,
-                            resultSet.getString("owner_facebook_id"),
-                            resultSet.getString("owner_vkontakte_id")
+                            null
                     )
             );
         }
@@ -296,11 +293,11 @@ public class PostService {
             for (IndexPost fulltextPost: fulltextResult){
 
                 var params = new HashMap<String, Object>();
-                params.put("id", fulltextPost.getId());
+                params.put("postId", fulltextPost.getId());
                 LOGGER.debug("Will search in postgres by id="+fulltextPost.getId());
                 PostDTO postDTO = jdbcTemplate.queryForObject(
                         rowMapperWithoutTextTitle.getBaseSql() +
-                                " where p.id = :id",
+                                " where p.id = :postId",
                         params,
                         rowMapperWithoutTextTitle
                 );

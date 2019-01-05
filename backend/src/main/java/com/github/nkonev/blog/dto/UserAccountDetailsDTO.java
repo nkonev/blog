@@ -36,10 +36,9 @@ public class UserAccountDetailsDTO extends UserAccountDTO implements UserDetails
             Collection<GrantedAuthority> roles,
             String email,
             LocalDateTime lastLoginDateTime,
-            String facebookId,
-            String vkontakteId
+            OauthIdentifiersDTO oauthIdentifiers
     ) {
-        super(id, login, avatar, lastLoginDateTime, facebookId, vkontakteId);
+        super(id, login, avatar, lastLoginDateTime, oauthIdentifiers);
         this.password = password;
         this.expired = expired;
         this.locked = locked;
