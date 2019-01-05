@@ -19,6 +19,8 @@ public class Constants {
         public static final String POST = "/post";
         public static final String RANDOM = "/random";
         public static final String PROFILE = "/profile";
+        public static final String FACEBOOK = "/facebook";
+        public static final String VKONTAKTE = "/vkontakte";
         public static final String MY = "/my";
         public static final String POST_ID = "/{"+ PathVariables.POST_ID+"}";
         public static final String COMMENT_ID = "/{"+PathVariables.COMMENT_ID+"}";

@@ -194,7 +194,7 @@ public class UserProfileController {
 
     @PreAuthorize("@blogSecurityService.canSelfDelete(#userAccountDetailsDTO)")
     @DeleteMapping(Constants.Urls.PROFILE)
-    public void selfDeleteUser(@AuthenticationPrincipal UserAccountDetailsDTO userAccountDetailsDTO, javax.servlet.http.HttpSession session){
+    public void selfDeleteUser(@AuthenticationPrincipal UserAccountDetailsDTO userAccountDetailsDTO){
         long userId = userAccountDetailsDTO.getId();
         deleteCommon(userId);
     }
@@ -206,4 +206,21 @@ public class UserProfileController {
         commentRepository.moveToAnotherUser(userId, deleted.getId());
         userAccountRepository.deleteById(userId);
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping(Constants.Urls.PROFILE+Constants.Urls.FACEBOOK)
+    public void selfDeleteBindingFacebook(@AuthenticationPrincipal UserAccountDetailsDTO userAccountDetailsDTO){
+        long userId = userAccountDetailsDTO.getId();
+        UserAccount userAccount = userAccountRepository.findById(userId).orElseThrow();
+        userAccount.getOauthIdentifiers().setFacebookId(null);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping(Constants.Urls.PROFILE+Constants.Urls.VKONTAKTE)
+    public void selfDeleteBindingVkontakte(@AuthenticationPrincipal UserAccountDetailsDTO userAccountDetailsDTO){
+        long userId = userAccountDetailsDTO.getId();
+        UserAccount userAccount = userAccountRepository.findById(userId).orElseThrow();
+        userAccount.getOauthIdentifiers().setVkontakteId(null);
+    }
+
 }

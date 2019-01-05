@@ -233,7 +233,7 @@ public class UserAccountConverter {
         } else {
             userAccount.setAvatar(userAccountDTO.getAvatar());
         }
-        if (userAccountDTO.getEmail()!=null) {
+        if (!StringUtils.isEmpty(userAccountDTO.getEmail())) {
             String email = userAccountDTO.getEmail();
             email = email.trim();
             userAccount.setEmail(email);

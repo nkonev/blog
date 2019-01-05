@@ -1,0 +1,29 @@
+
+.login-btn-social{
+  width 100%
+  height: 36px
+  background: white;
+  padding 3px
+  color: $ok_color !important
+  border-color: $ok_color !important
+  display flex
+  justify-content center
+  align-items center
+  span {
+    align-items center
+  }
+  &-fb:hover:enabled {
+    border-color: $fbColor !important
+    background: $fbColor !important
+    color: white !important
+  }
+  &-vk:hover:enabled {
+    border-color: $vkColor !important
+    background: $vkColor !important
+    color: white !important
+  }
+  &:disabled{
+    border-color: $grey_color
+    color: $grey_color
+  }
+}

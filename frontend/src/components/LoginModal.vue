@@ -14,16 +14,10 @@
                 </form>
                 <div class="buttons-container">
                     <form class="social form-fb" action="/api/login/facebook" v-if="!loading && !formError" @click="setSpinner">
-                        <button id="btn-submit-facebook" class="blog-btn login-btn-social login-btn-social-fb" type="submit">
-                            <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'facebook' }" style="width: 28px; height:28px; margin-right: 1em" ></font-awesome-icon>
-                            <span>Facebook</span>
-                        </button>
+                        <ButtonFacebook>Facebook</ButtonFacebook>
                     </form>
                     <form class="social form-vk" action="/api/login/vkontakte" v-if="!loading && !formError" @click="setSpinner">
-                        <button id="btn-submit-vkontakte" class="blog-btn login-btn-social login-btn-social-vk" type="submit">
-                            <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'vk' }" style="width: 28px; height:28px; margin-right: 1em" ></font-awesome-icon>
-                            <span>Vkontakte</span>
-                        </button>
+                        <ButtonVkontakte>Vkontakte</ButtonVkontakte>
                     </form>
                 </div>
 
@@ -44,9 +38,10 @@
     import {FETCH_USER_PROFILE, FETCH_CONFIG} from '../store'
     import bus from '../bus'
     import {LOGIN} from '../bus'
-    //import Spinner from 'vue-simple-spinner'
     import {LOGIN_MODAL} from '../constants';
     import BlogSpinner from "./BlogSpinner.vue"
+    import ButtonFacebook from "./ButtonFacebook.vue"
+    import ButtonVkontakte from "./ButtonVkontakte.vue"
 
     export default {
         name: 'LoginModal',
@@ -116,15 +111,15 @@
             },
         },
         components: {
-            BlogSpinner
+            BlogSpinner,
+            ButtonFacebook,
+            ButtonVkontakte
         }
     }
 </script>
 
 <style lang="stylus" scoped>
     $background_color=#404142;
-    $fbColor=#3B5998
-    $vkColor=#45668e
     @import "../common.styl"
 
     .box {
@@ -229,35 +224,6 @@
                 width 49%
             }
 
-        }
-
-        .login-btn-social{
-            width 100%
-            height: 36px
-            background: white;
-            padding 3px
-            color: $ok_color;
-            border-color: $ok_color;
-            display flex
-            justify-content center
-            align-items center
-            span {
-                align-items center
-            }
-            &-fb:hover:enabled {
-                border-color: $fbColor
-                background: $fbColor
-                color: white;
-            }
-            &-vk:hover:enabled {
-                border-color: $vkColor
-                background: $vkColor
-                color: white;
-            }
-            &:disabled{
-                border-color: $grey_color
-                color: $grey_color
-            }
         }
 
         .button-set {

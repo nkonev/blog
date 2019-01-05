@@ -5,6 +5,8 @@
             Editing profile #{{dto.id}}
         </div>
 
+        <BlogSpinner v-if="binding" class="send-spinner" :speed="0.3" :size="72"></BlogSpinner>
+        <template v-else>
         <div class="profile-edit-info">
             <div class="profile-edit-info-avatar-container">
                 <croppa v-model="profileAvatarCroppa"
@@ -29,6 +31,25 @@
 
             <div class="profile-edit-info-form">
                 <vue-form-generator :schema="schema" :model="model" :options="formOptions" @validated="onValidated"></vue-form-generator>
+
+                <div class="profile-edit-info-form-binding">
+                    <template>
+                        <form v-if="!model.oauthIdentifiers.facebookId" class="social form-fb" action="/api/login/facebook" @click="setSpinner">
+                            <ButtonFacebook>Bind Facebook</ButtonFacebook>
+                        </form>
+                        <div v-else class="social">
+                            <ButtonFacebook @click="unbindFacebook">Unind Facebook</ButtonFacebook>
+                        </div>
+                    </template>
+                    <template>
+                        <form v-if="!model.oauthIdentifiers.vkontakteId" class="social form-vk" action="/api/login/vkontakte" @click="setSpinner">
+                            <ButtonVkontakte>Bind Vkontakte</ButtonVkontakte>
+                        </form>
+                        <div v-else class="social">
+                            <ButtonVkontakte @click="unbindVkontakte">Unbind Vkontakte</ButtonVkontakte>
+                        </div>
+                    </template>
+                </div>
             </div>
 
         </div>
@@ -38,6 +59,7 @@
             <button @click="requestDelete()" class="delete blog-btn delete-btn">Delete account</button>
             <button @click="cancel" class="blog-btn">Cancel</button>
         </div>
+        </template>
         <error v-if="errorMessage" :message="errorMessage"></error>
     </div>
 </template>
@@ -52,6 +74,9 @@
     import VueFormGenerator from "vue-form-generator";
     import "vue-form-generator/dist/vfg.css";  // optional full css additions
     import 'vue-croppa/dist/vue-croppa.css'
+    import ButtonFacebook from "./ButtonFacebook.vue"
+    import ButtonVkontakte from "./ButtonVkontakte.vue"
+    import BlogSpinner from "./BlogSpinner.vue"
 
     export default {
         name: 'user-profile', // это имя компонента, которое м. б. тегом в другом компоненте
@@ -63,6 +88,7 @@
                 profileAvatarCroppa: {},
                 chosenFile: null,
                 submitEnabled: true,
+                binding: false,
 
                 model: {
                     login: "",
@@ -136,6 +162,33 @@
                 }, reason => {
                     console.error("Error during delete account", reason);
                 });
+            },
+            setSpinner(){
+                this.binding = true;
+            },
+            unbindFacebook(){
+                this.$http.delete('/api/profile/facebook')
+                    .then(value => {
+                            //store.commit(SET_USER, value.data);
+                            store.dispatch(FETCH_USER_PROFILE);
+                            this.$emit('SAVED');
+                        },
+                        reason => {
+                            console.error("Error unbind fb", reason);
+                        }
+                    )
+            },
+            unbindVkontakte(){
+                this.$http.delete('/api/profile/vkontakte')
+                    .then(value => {
+                            //store.commit(SET_USER, value.data);
+                            store.dispatch(FETCH_USER_PROFILE);
+                            this.$emit('SAVED');
+                        },
+                        reason => {
+                            console.error("Error unbind fb", reason);
+                        }
+                    )
             },
             handleCroppaInit(e){
                 document.querySelector(".profile-edit-info-avatar-container canvas").style.border="dashed"
@@ -217,6 +270,8 @@
             Error,
             'croppa': Croppa.component,
             "vue-form-generator": VueFormGenerator.component,
+            ButtonFacebook, ButtonVkontakte,
+            BlogSpinner
         },
     };
 </script>
@@ -251,6 +306,16 @@
 
             &-form {
                 height 100%
+
+                &-binding {
+                    width 100%
+                    display flex
+                    flex-direction row
+                    .social {
+                        width 100%
+                        margin 0.5em
+                    }
+                }
             }
         }
 

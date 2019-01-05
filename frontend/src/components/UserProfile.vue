@@ -17,6 +17,14 @@
                         <div class="user-profile-view-info-data">
                             <div class="login">{{ dto.login }}</div>
                             <div v-if="dto.email" class="email">{{dto.email}}</div>
+                            <div class="oauth">
+                                <a :href="facebookUrl" v-if="dto.oauthIdentifiers.facebookId" class="oauth-fb">
+                                    <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'facebook' }" style="width: 28px; height:28px; margin-right: 0.5em" ></font-awesome-icon>
+                                </a>
+                                <a :href="vkontakteUrl" v-if="dto.oauthIdentifiers.vkontakteId" class="oauth-vk">
+                                    <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'vk' }" style="width: 28px; height:28px; margin-right: 0.5em" ></font-awesome-icon>
+                                </a>
+                            </div>
                             <div class="last-login">{{ lastLogin }}</div>
                         </div>
                     </div>
@@ -64,6 +72,12 @@
                 if (this.dto.lastLoginDateTime) {
                     return 'Last login at ' + getTimestampFromUtc(this.dto.lastLoginDateTime)
                 }
+            },
+            facebookUrl(){
+                return "https://facebook.com/profile.php?id="+this.dto.oauthIdentifiers.facebookId;
+            },
+            vkontakteUrl(){
+                return "https://vk.com/id"+this.dto.oauthIdentifiers.vkontakteId;
             }
         },
         methods:{
@@ -180,6 +194,19 @@
                     .last-login {
                         color: grey
                         font-size small
+                        //margin-top 0.5em
+                    }
+
+                    .oauth {
+                        display flex
+                        flex-direction row
+
+                        a.oauth-vk {
+                            color: $vkColor
+                        }
+                        a.oauth-fb {
+                            color: $fbColor
+                        }
                     }
                 }
             }
