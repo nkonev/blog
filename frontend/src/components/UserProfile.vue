@@ -74,7 +74,7 @@
                 }
             },
             facebookUrl(){
-                return "https://facebook.com/profile.php?id="+this.dto.oauthIdentifiers.facebookId;
+                return "https://facebook.com/profile.php?user_id="+this.dto.oauthIdentifiers.facebookId;
             },
             vkontakteUrl(){
                 return "https://vk.com/id"+this.dto.oauthIdentifiers.vkontakteId;
