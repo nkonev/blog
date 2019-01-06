@@ -1,25 +1,20 @@
 package com.github.nkonev.blog.integration;
 
-import com.github.nkonev.blog.controllers.UserProfileController;
-import com.github.nkonev.blog.entity.jpa.UserAccount;
 import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
 import com.github.nkonev.blog.services.UserDeleteService;
 import com.github.nkonev.blog.webdriver.configuration.SeleniumConfiguration;
 import io.netty.handler.codec.http.HttpHeaderNames;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.Header;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.test.annotation.Commit;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
@@ -57,10 +52,8 @@ public abstract class SocialEmulatorTests extends AbstractItTestRunner {
     }
 
     public static final String facebookLogin = "Nikita K";
-    public final String vkontakteLogin = "Никита Конев";
+    public static final String vkontakteLogin = "Никита Конев";
 
-    @Transactional
-    @Commit
     @BeforeEach
     public void configureFacebookEmulator() throws InterruptedException {
         mockServerFacebook
@@ -107,15 +100,19 @@ public abstract class SocialEmulatorTests extends AbstractItTestRunner {
     }
 
     private void clearOauthBindingsInDb() throws InterruptedException {
-        userAccountRepository.findByUsername(facebookLogin).ifPresent(userAccount -> {
-            userDeleteService.deleteUser(userAccount.getId());
-        });
-        userAccountRepository.findByUsername(vkontakteLogin).ifPresent(userAccount -> {
-            userDeleteService.deleteUser(userAccount.getId());
-        });
+        String updatePosts = "UPDATE posts.post SET owner_id=(select id from auth.users WHERE username='deleted') WHERE owner_id = (select id from auth.users WHERE username=:username)";
+        namedParameterJdbcTemplate.update(updatePosts, Collections.singletonMap("username", facebookLogin));
+        namedParameterJdbcTemplate.update(updatePosts, Collections.singletonMap("username", vkontakteLogin));
 
-        namedParameterJdbcTemplate.update("UPDATE auth.users SET vkontakte_id=NULL, facebook_id=NULL " +
-                "WHERE vkontakte_id IS NOT NULL OR facebook_id IS NOT NULL;", new HashMap<>());
+        String updateComments = "UPDATE posts.comment SET owner_id=(select id from auth.users WHERE username='deleted') WHERE owner_id = (select id from auth.users WHERE username=:username)";
+        namedParameterJdbcTemplate.update(updateComments, Collections.singletonMap("username", facebookLogin));
+        namedParameterJdbcTemplate.update(updateComments, Collections.singletonMap("username", vkontakteLogin));
+
+        String deleteUsers = "DELETE FROM auth.users WHERE username = :username";
+        namedParameterJdbcTemplate.update(deleteUsers, Collections.singletonMap("username", facebookLogin));
+        namedParameterJdbcTemplate.update(deleteUsers, Collections.singletonMap("username", vkontakteLogin));
+
+        namedParameterJdbcTemplate.update("UPDATE auth.users SET vkontakte_id=NULL, facebook_id=NULL", new HashMap<>());
     }
 
     @AfterEach
