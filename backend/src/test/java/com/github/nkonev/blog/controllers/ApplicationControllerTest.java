@@ -16,6 +16,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "server.port=9083",
         "management.server.port=3013",
         "spring.flyway.drop-first=false",
+        "custom.elasticsearch.refresh-on-start=false",
+        "custom.elasticsearch.drop-first=false"
 })
 public class ApplicationControllerTest extends AbstractUtTestRunner {
     @org.junit.jupiter.api.Test

@@ -33,7 +33,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "server.port=9082",
         "management.server.port=3012",
         "spring.flyway.drop-first=false",
-        "custom.elasticsearch.refresh-on-start=false"
+        "custom.elasticsearch.refresh-on-start=false",
+        "custom.elasticsearch.drop-first=false"
 })
 public class RendertronFilterTest extends AbstractUtTestRunner {
 
