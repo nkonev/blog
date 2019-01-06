@@ -51,7 +51,8 @@ public class FacebookPrincipalExtractor implements PrincipalExtractor {
             Optional<UserAccount> maybeUserAccount = userAccountRepository.findByOauthIdentifiersFacebookId(facebookId);
             if (maybeUserAccount.isPresent() && !maybeUserAccount.get().getId().equals(principal.getId())){
                 LOGGER.error("With facebookId={} already present another user '{}', id={}", facebookId, maybeUserAccount.get().getUsername(), maybeUserAccount.get().getId());
-                throw new OauthIdConflictException("Somebody already taken this facebook id="+facebookId+". Please contact administrator.");
+                throw new OauthIdConflictException("Somebody already taken this facebook id="+facebookId+". " +
+                        "If this is you and you want to merge your profiles please delete another profile and bind facebook to this. If not please contact administrator.");
             }
 
             principal.getOauthIdentifiers().setFacebookId(facebookId);

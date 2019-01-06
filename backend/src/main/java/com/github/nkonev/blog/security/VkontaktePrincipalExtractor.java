@@ -46,7 +46,8 @@ public class VkontaktePrincipalExtractor implements PrincipalExtractor {
             Optional<UserAccount> maybeUserAccount = userAccountRepository.findByOauthIdentifiersVkontakteId(vkontakteId);
             if (maybeUserAccount.isPresent() && !maybeUserAccount.get().getId().equals(principal.getId())){
                 LOGGER.error("With vkontakteId={} already present another user '{}', id={}", vkontakteId, maybeUserAccount.get().getUsername(), maybeUserAccount.get().getId());
-                throw new OauthIdConflictException("Somebody already taken this vkontakte id="+vkontakteId+". Please contact administrator.");
+                throw new OauthIdConflictException("Somebody already taken this vkontakte id="+vkontakteId+". " +
+                        "If this is you and you want to merge your profiles please delete another profile and bind vkontakte to this. If not please contact administrator.");
             }
 
             principal.getOauthIdentifiers().setVkontakteId(vkontakteId);
