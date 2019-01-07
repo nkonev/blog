@@ -353,55 +353,6 @@ public class PostControllerTest extends AbstractUtTestRunner {
         mockServer.verify();
     }
 
-    /*@WithUserDetails(TestConstants.USER_ALICE)
-    @Test
-    public void testEditDateSetsAfterEdit() throws Exception {
-        final String newPostRendered = "<body>Post Rendered</body>";
-        mockServer.expect(ExpectedCount.times(2), requestTo(new StringStartsWith("http://rendertron.example.com:3000/"+customConfig.getBaseUrl()+"/post/")))
-                .andExpect(method(HttpMethod.GET))
-                .andRespond(withSuccess(newPostRendered, MediaType.TEXT_HTML));
-
-        final String newIndexRendered = "<body>Index Rendered</body>";
-        mockServer.expect(ExpectedCount.times(2), requestTo("http://rendertron.example.com:3000/"+customConfig.getBaseUrl()))
-                .andExpect(method(HttpMethod.GET))
-                .andRespond(withSuccess(newIndexRendered, MediaType.TEXT_HTML));
-
-        MvcResult addPostRequest = mockMvc.perform(
-                post(Constants.Urls.API+ Constants.Urls.POST)
-                        .content(objectMapper.writeValueAsString(PostDtoBuilder.startBuilding().build()))
-                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                        .with(csrf())
-        )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.owner.login").value(TestConstants.USER_ALICE))
-                .andExpect(jsonPath("$.canEdit").value(true))
-                .andExpect(jsonPath("$.canDelete").value(false))
-                .andReturn();
-
-
-        String addStr = addPostRequest.getResponse().getContentAsString();
-        LOGGER.info(addStr);
-        PostDTO added = objectMapper.readValue(addStr, PostDTO.class);
-
-        // check Alice can update her post
-        final String updatedTitle = "updated title";
-        added.setTitle(updatedTitle);
-        MvcResult updatePostRequest = mockMvc.perform(
-                put(Constants.Urls.API+ Constants.Urls.POST)
-                        .content(objectMapper.writeValueAsString(added))
-                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                        .with(csrf())
-        )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value(updatedTitle))
-                .andExpect(jsonPath("$.owner.login").value(TestConstants.USER_ALICE))
-                .andExpect(jsonPath("$.canEdit").value(true))
-                .andExpect(jsonPath("$.canDelete").value(false))
-                .andReturn();
-        LOGGER.info(updatePostRequest.getResponse().getContentAsString());
-    }*/
-
-
     @Test
     public void testAnonymousCannotAddPostUnit() throws Exception {
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> {
