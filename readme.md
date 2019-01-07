@@ -272,3 +272,14 @@ Set query
 ```100 - ((node_filesystem_avail_bytes{mountpoint="/rootfs"} * 100) / node_filesystem_size_bytes{mountpoint="/rootfs"})```
 
 Set Instant
+
+# TODO
+* re-implement buttons css
+* sitemap for SEO
+* edit metainfo for SEO by user
+* change post owner by admin
+* change comment owner by admin
+* change role by admin, immutable user bit
+* LDAP
+* Google OAuth2 login
+* demo [application]((https://github.com/nkonev/blog-file-store)) on Go
