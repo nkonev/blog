@@ -1,7 +1,7 @@
 package com.github.nkonev.blog.controllers;
 
 import com.github.nkonev.blog.TestConstants;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,6 +89,6 @@ public class ImagePostContentUploadControllerTest extends AbstractImageUploadCon
 
 	@Override
 	protected void assertDeletedCount() {
-		Assert.assertTrue(clearAbandonedImage() == 0);
+		Assertions.assertTrue(clearAbandonedImage() == 0);
 	}
 }

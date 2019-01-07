@@ -16,7 +16,7 @@ import com.github.nkonev.blog.repo.jpa.PostRepository;
 import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
 import com.github.nkonev.blog.security.BlogUserDetailsService;
 import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -94,7 +94,7 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
 
         LOGGER.info(mvcResult.getResponse().getContentAsString());
 
-        Assert.assertEquals("password shouldn't be affected if there isn't set explicitly", initialPassword, getUserFromBd(newLogin).getPassword());
+        Assertions.assertEquals(initialPassword, getUserFromBd(newLogin).getPassword(), "password shouldn't be affected if there isn't set explicitly");
 
         MvcResult getPostsRequest = mockMvc.perform(
                 get(Constants.Urls.API+ Constants.Urls.PROFILE)
@@ -132,8 +132,8 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
         LOGGER.info(mvcResult.getResponse().getContentAsString());
 
         UserAccount afterChange = getUserFromBd(newLogin);
-        Assert.assertNotEquals("password should be changed if there is set explicitly", initialPassword, afterChange.getPassword());
-        Assert.assertTrue("password should be changed if there is set explicitly", passwordEncoder.matches(newPassword, afterChange.getPassword()));
+        Assertions.assertNotEquals(initialPassword, afterChange.getPassword(), "password should be changed if there is set explicitly");
+        Assertions.assertTrue( passwordEncoder.matches(newPassword, afterChange.getPassword()), "password should be changed if there is set explicitly");
     }
 
     @WithUserDetails(TestConstants.USER_ALICE)
@@ -189,7 +189,7 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
         LOGGER.info(mvcResult.getResponse().getContentAsString());
 
         UserAccount foreignPotentiallyAffectedUserAccount = getUserFromBd(TestConstants.USER_ALICE);
-        Assert.assertEquals(foreignUserAccountLogin, foreignPotentiallyAffectedUserAccount.getUsername());
+        Assertions.assertEquals(foreignUserAccountLogin, foreignPotentiallyAffectedUserAccount.getUsername());
     }
 
     @WithUserDetails(TestConstants.USER_ALICE)
@@ -243,9 +243,9 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
         LOGGER.info(mvcResult.getResponse().getContentAsString());
 
         UserAccount foreignAccountAfter = getUserFromBd(TestConstants.USER_BOB);
-        Assert.assertEquals(foreingId, foreignAccountAfter.getId().longValue());
-        Assert.assertEquals(foreignEmail, foreignAccountAfter.getEmail());
-        Assert.assertEquals(foreignPassword, foreignAccountAfter.getPassword());
+        Assertions.assertEquals(foreingId, foreignAccountAfter.getId().longValue());
+        Assertions.assertEquals(foreignEmail, foreignAccountAfter.getEmail());
+        Assertions.assertEquals(foreignPassword, foreignAccountAfter.getPassword());
 
     }
 
@@ -305,10 +305,10 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
         ResponseEntity<String> responseEntity = testRestTemplate.exchange(requestEntity, String.class);
         String str = responseEntity.getBody();
 
-        Assert.assertEquals(403, responseEntity.getStatusCodeValue());
+        Assertions.assertEquals(403, responseEntity.getStatusCodeValue());
 
         Map<String, Object> resp = objectMapper.readValue(str, new TypeReference<Map<String, Object>>() { });
-        Assert.assertEquals("Forbidden", resp.get("message"));
+        Assertions.assertEquals("Forbidden", resp.get("message"));
     }
 
     @org.junit.jupiter.api.Test
@@ -324,7 +324,7 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
 
         ResponseEntity<String> responseEntity = testRestTemplate.exchange(requestEntity, String.class);
         String str = responseEntity.getBody();
-        Assert.assertEquals(200, responseEntity.getStatusCodeValue());
+        Assertions.assertEquals(200, responseEntity.getStatusCodeValue());
     }
 
     @WithUserDetails(TestConstants.USER_ALICE)
@@ -378,7 +378,7 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
 
         // check that user 10 is locked
         UserAccount userAccountFound = userAccountRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        Assert.assertTrue(userAccountFound.isLocked());
+        Assertions.assertTrue(userAccountFound.isLocked());
     }
 
     @WithUserDetails(TestConstants.USER_ALICE)

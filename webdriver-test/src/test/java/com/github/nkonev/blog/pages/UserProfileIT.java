@@ -12,7 +12,7 @@ import com.github.nkonev.blog.util.FileUtils;
 import com.github.nkonev.blog.webdriver.IntegrationTestConstants;
 import com.github.nkonev.blog.webdriver.configuration.SeleniumConfiguration;
 import com.github.nkonev.blog.webdriver.selenium.Browser;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -191,7 +191,7 @@ public class UserProfileIT extends SocialEmulatorTests {
 
         String urlOnPageBefore = userPage.getAvatarUrl();
         String urlInNavbarBefore = UserNav.getAvatarUrl();
-        Assert.assertEquals(urlOnPageBefore, urlInNavbarBefore);
+        Assertions.assertEquals(urlOnPageBefore, urlInNavbarBefore);
 
         userPage.edit();
 
@@ -208,13 +208,13 @@ public class UserProfileIT extends SocialEmulatorTests {
         userPage.assertLogin(renamed);
 
         long countAfter = getUserAvatarCount();
-        Assert.assertEquals(countBefore+1, countAfter);
+        Assertions.assertEquals(countBefore+1, countAfter);
 
         String urlOnPageAfter = userPage.getAvatarUrl();
         String urlInNavbarAfter = UserNav.getAvatarUrl();
-        Assert.assertFalse(StringUtils.isEmpty(urlOnPageAfter));
-        Assert.assertNotEquals(urlOnPageBefore, urlOnPageAfter);
-        Assert.assertEquals(urlOnPageAfter, urlInNavbarAfter);
+        Assertions.assertFalse(StringUtils.isEmpty(urlOnPageAfter));
+        Assertions.assertNotEquals(urlOnPageBefore, urlOnPageAfter);
+        Assertions.assertEquals(urlOnPageAfter, urlInNavbarAfter);
     }
 
 
@@ -258,7 +258,7 @@ public class UserProfileIT extends SocialEmulatorTests {
         userProfilePage.assertLogin(myLogin);
         String myAvatarUrl = userProfilePage.getAvatarUrl();
 
-        Assert.assertNotEquals(anotherUserAvatarUrl, myAvatarUrl);
+        Assertions.assertNotEquals(anotherUserAvatarUrl, myAvatarUrl);
     }
 
     @Test
@@ -294,8 +294,8 @@ public class UserProfileIT extends SocialEmulatorTests {
         loginModal.openLoginModal();
         loginModal.loginFacebook();
 
-        Assert.assertEquals("https://i.pinimg.com/236x/37/47/62/374762701f2571ffaacba61325d6dbf1--linux-penguin.jpg", UserNav.getAvatarUrl());
-        Assert.assertEquals(facebookLogin, UserNav.getLogin());
+        Assertions.assertEquals("https://i.pinimg.com/236x/37/47/62/374762701f2571ffaacba61325d6dbf1--linux-penguin.jpg", UserNav.getAvatarUrl());
+        Assertions.assertEquals(facebookLogin, UserNav.getLogin());
 
 
         // now we attempt to change email
@@ -321,10 +321,10 @@ public class UserProfileIT extends SocialEmulatorTests {
         loginModal.openLoginModal();
         loginModal.loginVkontakte();
 
-        Assert.assertEquals(vkontakteLogin, UserNav.getLogin());
+        Assertions.assertEquals(vkontakteLogin, UserNav.getLogin());
 
         long countBefore = userAccountRepository.count();
-        Assert.assertEquals(countInitial+1, countBefore);
+        Assertions.assertEquals(countInitial+1, countBefore);
 
         // now we attempt to change email
         UserProfilePage userPage = new UserProfilePage(urlPrefix, driver);
@@ -344,7 +344,7 @@ public class UserProfileIT extends SocialEmulatorTests {
 
         UserAccount userAccountUpdated = userAccountRepository.findByUsername(vkontakteLogin).orElseThrow();
         LocalDateTime lastLoginSecond = userAccountUpdated.getLastLoginDateTime();
-        Assert.assertNotEquals(lastLoginSecond, lastLoginFirst);
+        Assertions.assertNotEquals(lastLoginSecond, lastLoginFirst);
         userPage.assertLastLoginPresent();
 
         userPage.edit();
@@ -353,7 +353,7 @@ public class UserProfileIT extends SocialEmulatorTests {
 
         FailoverUtils.retry(10, () -> {
             long countAfter = userAccountRepository.count();
-            Assert.assertEquals(countBefore-1, countAfter);
+            Assertions.assertEquals(countBefore-1, countAfter);
             return null;
         });
     }
@@ -383,7 +383,7 @@ public class UserProfileIT extends SocialEmulatorTests {
         userPage.openPage(userAccount.getId().intValue());
         userPage.assertHasFacebook();
 
-        Assert.assertEquals(countInitial, countAfter);
+        Assertions.assertEquals(countInitial, countAfter);
         loginModal600.logout();
 
         {
@@ -391,7 +391,7 @@ public class UserProfileIT extends SocialEmulatorTests {
             loginModalVk.openLoginModal();
             loginModalVk.loginVkontakte();
 
-            Assert.assertEquals(vkontakteLogin, UserNav.getLogin());
+            Assertions.assertEquals(vkontakteLogin, UserNav.getLogin());
 
             loginModalVk.logout();
         }

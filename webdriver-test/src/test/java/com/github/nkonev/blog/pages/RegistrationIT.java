@@ -9,11 +9,9 @@ import com.github.nkonev.blog.integration.AbstractItTestRunner;
 import com.github.nkonev.blog.pages.object.LoginModal;
 import com.github.nkonev.blog.repo.redis.UserConfirmationTokenRepository;
 import com.github.nkonev.blog.util.UrlParser;
-import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.util.Retriever;
-import com.icegreen.greenmail.util.ServerSetupTest;
 import com.sun.mail.imap.IMAPMessage;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.slf4j.Logger;
@@ -69,18 +67,18 @@ public class RegistrationIT extends AbstractItTestRunner {
         // confirm
         try (Retriever r = new Retriever(greenMail.getImap())) {
             Message[] messages = r.getMessages(email);
-            Assert.assertEquals("backend should sent one email during registration and I request resend",2, messages.length);
+            Assertions.assertEquals(2, messages.length, "backend should sent one email during registration and I request resend");
             IMAPMessage imapMessage = (IMAPMessage)messages[1];
             String content = (String) imapMessage.getContent();
 
             String parsedUrl = UrlParser.parseUrlFromMessage(content);
 
             String tokenUuidString = UriComponentsBuilder.fromUri(new URI(parsedUrl)).build().getQueryParams().get(Constants.Urls.UUID).get(0);
-            Assert.assertTrue(userConfirmationTokenRepository.existsById(tokenUuidString));
+            Assertions.assertTrue(userConfirmationTokenRepository.existsById(tokenUuidString));
 
             // perform confirm
             driver.navigate().to(parsedUrl);
-            Assert.assertFalse(userConfirmationTokenRepository.existsById(tokenUuidString));
+            Assertions.assertFalse(userConfirmationTokenRepository.existsById(tokenUuidString));
             $(".successfully-confirmed").should(Condition.text("You successfully confirmed, now you can"));
         }
 

@@ -4,7 +4,7 @@ import com.github.nkonev.blog.AbstractUtTestRunner;
 import com.github.nkonev.blog.dto.PostDTO;
 import com.github.nkonev.blog.entity.elasticsearch.IndexPost;
 import com.github.nkonev.blog.repo.elasticsearch.IndexPostRepository;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -27,7 +27,7 @@ public class PostServiceTest extends AbstractUtTestRunner {
 
         postService.refreshFulltextIndex(true);
 
-        Assert.assertFalse(indexPostRepository.findById(post.getId()).isPresent());
+        Assertions.assertFalse(indexPostRepository.findById(post.getId()).isPresent());
     }
 }
 

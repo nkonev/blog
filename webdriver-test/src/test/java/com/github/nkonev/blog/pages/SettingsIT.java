@@ -7,7 +7,7 @@ import com.github.nkonev.blog.pages.object.IndexPage;
 import com.github.nkonev.blog.pages.object.LoginModal;
 import com.github.nkonev.blog.pages.object.SettingsPage;
 import com.github.nkonev.blog.repo.jpa.RuntimeSettingsRepository;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -36,7 +36,7 @@ public class SettingsIT extends AbstractItTestRunner {
 
         FailoverUtils.retry(3, () -> {
             settingsPage.clickSave();
-            Assert.assertFalse($(SettingsPage.IMG_BG).getAttribute("src").isEmpty());
+            Assertions.assertFalse($(SettingsPage.IMG_BG).getAttribute("src").isEmpty());
 
             runtimeSettingsRepository.findById(IMAGE_BACKGROUND).orElseThrow();
             return null;
@@ -48,7 +48,7 @@ public class SettingsIT extends AbstractItTestRunner {
 
             settingsPage.waitForBackgroundImageWillSet();
 
-            Assert.assertFalse($(SettingsPage.IMG_BG).getAttribute("src").isEmpty());
+            Assertions.assertFalse($(SettingsPage.IMG_BG).getAttribute("src").isEmpty());
             return null;
         });
     }

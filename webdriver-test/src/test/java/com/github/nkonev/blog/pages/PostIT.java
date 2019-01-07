@@ -9,7 +9,7 @@ import com.github.nkonev.blog.repo.jpa.PostRepository;
 import com.github.nkonev.blog.webdriver.IntegrationTestConstants;
 import com.github.nkonev.blog.webdriver.configuration.SeleniumConfiguration;
 import com.github.nkonev.blog.webdriver.selenium.Browser;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
@@ -260,7 +260,7 @@ public class PostIT extends SocialEmulatorTests {
             postViewPage.delete();
             postViewPage.confirmDelete();
             String urlAfter = driver.getCurrentUrl();
-            Assert.assertNotEquals(urlBefore, urlAfter);
+            Assertions.assertNotEquals(urlBefore, urlAfter);
             return null;
         });
 
@@ -283,7 +283,7 @@ public class PostIT extends SocialEmulatorTests {
             final int page = 1;
             commentEdit.addComment("comment " + i);
             final int commentPage = getCommentPage();
-            Assert.assertEquals(page, commentPage);
+            Assertions.assertEquals(page, commentPage);
             commentEdit.checkPaginator(page);
         }
 
@@ -291,7 +291,7 @@ public class PostIT extends SocialEmulatorTests {
             final int page = 2;
             commentEdit.addComment("comment " + i);
             final int commentPage = getCommentPage();
-            Assert.assertEquals(page, commentPage);
+            Assertions.assertEquals(page, commentPage);
             commentEdit.checkPaginator(page);
         }
     }
@@ -310,7 +310,7 @@ public class PostIT extends SocialEmulatorTests {
         final int page = 1;
         commentEdit.addComment("comment for edit and delete");
         int commentPage = getCommentPage();
-        Assert.assertEquals(page, commentPage);
+        Assertions.assertEquals(page, commentPage);
         commentEdit.checkPaginator(page);
 
         final String newCommentText = "new comment text";
@@ -329,10 +329,10 @@ public class PostIT extends SocialEmulatorTests {
         loginModal.openLoginModal();
         loginModal.loginFacebook();
 
-        Assert.assertEquals(facebookLogin, UserNav.getLogin());
+        Assertions.assertEquals(facebookLogin, UserNav.getLogin());
 
         long postId = getPostId(URI.create(driver.getCurrentUrl()).toURL());
-        Assert.assertEquals(POST_FOR_EDIT_COMMENTS, postId);
+        Assertions.assertEquals(POST_FOR_EDIT_COMMENTS, postId);
     }
 
 }

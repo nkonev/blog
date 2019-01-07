@@ -1,6 +1,8 @@
 package com.github.nkonev.blog.util;
 
-import org.junit.Assert;
+
+import org.junit.jupiter.api.Assertions;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,7 +12,7 @@ public class UrlParser {
 
     public static String parseUrlFromMessage(String message) {
         Matcher m = p.matcher(message);
-        Assert.assertTrue(m.find());
+        Assertions.assertTrue(m.find());
         return m.group();
     }
 }

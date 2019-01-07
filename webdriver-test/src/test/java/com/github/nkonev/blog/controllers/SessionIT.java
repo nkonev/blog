@@ -10,7 +10,7 @@ import com.github.nkonev.blog.integration.SocialEmulatorTests;
 import com.github.nkonev.blog.pages.object.IndexPage;
 import com.github.nkonev.blog.pages.object.LoginModal;
 import com.github.nkonev.blog.utils.ContextPathHelper;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,7 +90,7 @@ public class SessionIT extends SocialEmulatorTests {
                 .header(COOKIE, userAliceSession.getCookiesArray())
                 .build();
         ResponseEntity<String> myPostsResponse1 = testRestTemplate.exchange(myPostsRequest1, String.class);
-        Assert.assertEquals(200, myPostsResponse1.getStatusCodeValue());
+        Assertions.assertEquals(200, myPostsResponse1.getStatusCodeValue());
 
         //userAliceSession.updateXsrf(myPostsResponse1);
 
@@ -100,7 +100,7 @@ public class SessionIT extends SocialEmulatorTests {
                 .header(COOKIE, userAliceSession.getCookiesArray())
                 .build();
         ResponseEntity<String> myPostsResponse2 = testRestTemplate.exchange(myPostsRequest2, String.class);
-        Assert.assertEquals(200, myPostsResponse2.getStatusCodeValue());
+        Assertions.assertEquals(200, myPostsResponse2.getStatusCodeValue());
 
 
 
@@ -114,7 +114,7 @@ public class SessionIT extends SocialEmulatorTests {
                 .body(lockDTO);
         ResponseEntity<String> lockResponseEntity = testRestTemplate.exchange(lockRequest, String.class);
         String str = lockResponseEntity.getBody();
-        Assert.assertEquals(200, lockResponseEntity.getStatusCodeValue());
+        Assertions.assertEquals(200, lockResponseEntity.getStatusCodeValue());
 
 
         RequestEntity myPostsRequest3 = RequestEntity
@@ -123,17 +123,17 @@ public class SessionIT extends SocialEmulatorTests {
                 .header(COOKIE, userAliceSession.getCookiesArray())
                 .build();
         ResponseEntity<String> myPostsResponse3 = testRestTemplate.exchange(myPostsRequest3, String.class);
-        Assert.assertEquals(401, myPostsResponse3.getStatusCodeValue());
+        Assertions.assertEquals(401, myPostsResponse3.getStatusCodeValue());
 
 
         ResponseEntity<SuccessfulLoginDTO> newAliceLogin = rawLogin(CommonTestConstants.USER_LOCKED, CommonTestConstants.COMMON_PASSWORD);
-        Assert.assertEquals(401, newAliceLogin.getStatusCodeValue());
+        Assertions.assertEquals(401, newAliceLogin.getStatusCodeValue());
     }
 
     private SessionHolder login(String login, String password) throws URISyntaxException {
         ResponseEntity<SuccessfulLoginDTO> loginResponseEntity = rawLogin(login, password);
 
-        Assert.assertEquals(200, loginResponseEntity.getStatusCodeValue());
+        Assertions.assertEquals(200, loginResponseEntity.getStatusCodeValue());
 
         return new SessionHolder(loginResponseEntity.getBody().getId(), loginResponseEntity);
     }
@@ -195,7 +195,7 @@ public class SessionIT extends SocialEmulatorTests {
                 .header(COOKIE, sessionCookie.toString())
                 .build();
         ResponseEntity<String> myPostsResponse3 = testRestTemplate.exchange(myPostsRequest3, String.class);
-        Assert.assertEquals(200, myPostsResponse3.getStatusCodeValue());
+        Assertions.assertEquals(200, myPostsResponse3.getStatusCodeValue());
 
 
         SessionHolder userAdminSession = login(user, password);
@@ -209,7 +209,7 @@ public class SessionIT extends SocialEmulatorTests {
                 .body(lockDTO);
         ResponseEntity<String> lockResponseEntity = testRestTemplate.exchange(lockRequest, String.class);
         String str = lockResponseEntity.getBody();
-        Assert.assertEquals(200, lockResponseEntity.getStatusCodeValue());
+        Assertions.assertEquals(200, lockResponseEntity.getStatusCodeValue());
 
 
         RequestEntity myPostsRequest4 = RequestEntity
@@ -217,7 +217,7 @@ public class SessionIT extends SocialEmulatorTests {
                 .header(COOKIE, sessionCookie.toString())
                 .build();
         ResponseEntity<String> myPostsResponse4 = testRestTemplate.exchange(myPostsRequest4, String.class);
-        Assert.assertEquals(401, myPostsResponse4.getStatusCodeValue());
+        Assertions.assertEquals(401, myPostsResponse4.getStatusCodeValue());
 
         clearBrowserCookies();
         refresh();

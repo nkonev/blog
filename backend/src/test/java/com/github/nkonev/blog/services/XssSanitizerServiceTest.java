@@ -2,7 +2,7 @@ package com.github.nkonev.blog.services;
 
 import com.github.nkonev.blog.AbstractUtTestRunner;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ public class XssSanitizerServiceTest extends AbstractUtTestRunner {
         String unsafe = "<a href='javascript:alert('XSS')'>часто</a> используемый в печати и вэб-дизайне";
 
         String safe = xssSanitizerService.sanitize(unsafe);
-        Assert.assertEquals("часто используемый в печати и вэб-дизайне", safe);
+        Assertions.assertEquals("часто используемый в печати и вэб-дизайне", safe);
     }
 
     @Test
@@ -40,7 +40,7 @@ public class XssSanitizerServiceTest extends AbstractUtTestRunner {
         String unsafe = "<a href='javascript:alert('XSS')'>часто используемый в печати и вэб-дизайне";
 
         String safe = xssSanitizerService.sanitize(unsafe);
-        Assert.assertEquals("часто используемый в печати и вэб-дизайне", safe);
+        Assertions.assertEquals("часто используемый в печати и вэб-дизайне", safe);
     }
 
 }

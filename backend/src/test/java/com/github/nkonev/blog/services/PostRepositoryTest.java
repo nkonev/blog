@@ -3,7 +3,6 @@ package com.github.nkonev.blog.services;
 import com.github.nkonev.blog.AbstractUtTestRunner;
 import com.github.nkonev.blog.entity.jpa.Post;
 import com.github.nkonev.blog.repo.jpa.PostRepository;
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,12 +22,12 @@ public class PostRepositoryTest extends AbstractUtTestRunner {
 
     @org.junit.jupiter.api.Test
     public void testLeft() throws Exception {
-        Assert.assertNotNull(postRepository.getLeft(target.getId()));
+        Assertions.assertNotNull(postRepository.getLeft(target.getId()));
     }
 
     @Test
     public void testRight() throws Exception {
-        Assert.assertNotNull(postRepository.getRight(target.getId()));
+        Assertions.assertNotNull(postRepository.getRight(target.getId()));
     }
 
     @org.junit.jupiter.api.Test
@@ -47,11 +46,11 @@ public class PostRepositoryTest extends AbstractUtTestRunner {
 
     @Test
     public void testLeftNone() throws Exception {
-        Assert.assertNull(postRepository.getLeft(-50_000L));
+        Assertions.assertNull(postRepository.getLeft(-50_000L));
     }
 
     @Test
     public void testRightNone() throws Exception {
-        Assert.assertNull(postRepository.getRight(50_000L));
+        Assertions.assertNull(postRepository.getRight(50_000L));
     }
 }

@@ -16,7 +16,7 @@ import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.util.Retriever;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import com.sun.mail.imap.IMAPMessage;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.slf4j.Logger;
@@ -89,25 +89,25 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
                             .with(csrf())
             )
                     .andExpect(status().isOk());
-            Assert.assertEquals(tokenCountBeforeResend+1, userConfirmationTokenRepository.count());
+            Assertions.assertEquals(tokenCountBeforeResend+1, userConfirmationTokenRepository.count());
         }
 
         // confirm
         // http://www.icegreen.com/greenmail/javadocs/com/icegreen/greenmail/util/Retriever.html
         try (Retriever r = new Retriever(greenMail.getImap())) {
             Message[] messages = r.getMessages(email);
-            Assert.assertEquals("backend should sent two email: a) during registration; b) during confirmation token reissue",2, messages.length);
+            Assertions.assertEquals(2, messages.length, "backend should sent two email: a) during registration; b) during confirmation token reissue");
             IMAPMessage imapMessage = (IMAPMessage)messages[1];
             String content = (String) imapMessage.getContent();
 
             String parsedUrl = UrlParser.parseUrlFromMessage(content);
 
             String tokenUuidString = UriComponentsBuilder.fromUri(new URI(parsedUrl)).build().getQueryParams().get(Constants.Urls.UUID).get(0);
-            Assert.assertTrue(userConfirmationTokenRepository.existsById(tokenUuidString));
+            Assertions.assertTrue(userConfirmationTokenRepository.existsById(tokenUuidString));
 
             // perform confirm
             mockMvc.perform(get(parsedUrl)).andExpect(status().isOk());
-            Assert.assertFalse(userConfirmationTokenRepository.existsById(tokenUuidString));
+            Assertions.assertFalse(userConfirmationTokenRepository.existsById(tokenUuidString));
         }
 
         // login confirmed ok
@@ -128,7 +128,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
                             .with(csrf())
             )
                     .andExpect(status().isOk());
-            Assert.assertEquals(tokenCountBeforeResend, userConfirmationTokenRepository.count());
+            Assertions.assertEquals(tokenCountBeforeResend, userConfirmationTokenRepository.count());
         }
     }
 
@@ -225,12 +225,12 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
         UserAccount userAccountAfter = userAccountRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("user account not found in test"));
 
         // check that initial user account is not affected
-        Assert.assertEquals(userAccountBefore.getId(), userAccountAfter.getId());
-        Assert.assertEquals(userAccountBefore.getAvatar(), userAccountAfter.getAvatar());
-        Assert.assertEquals(TestConstants.USER_ALICE, userAccountBefore.getUsername());
-        Assert.assertEquals(userAccountBefore.getUsername(), userAccountAfter.getUsername());
-        Assert.assertEquals(userAccountBefore.getPassword(), userAccountAfter.getPassword());
-        Assert.assertEquals(userAccountBefore.getRole(), userAccountAfter.getRole());
+        Assertions.assertEquals(userAccountBefore.getId(), userAccountAfter.getId());
+        Assertions.assertEquals(userAccountBefore.getAvatar(), userAccountAfter.getAvatar());
+        Assertions.assertEquals(TestConstants.USER_ALICE, userAccountBefore.getUsername());
+        Assertions.assertEquals(userAccountBefore.getUsername(), userAccountAfter.getUsername());
+        Assertions.assertEquals(userAccountBefore.getPassword(), userAccountAfter.getPassword());
+        Assertions.assertEquals(userAccountBefore.getRole(), userAccountAfter.getRole());
     }
 
 
@@ -279,7 +279,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
                     .with(csrf())
         )
                 .andExpect(status().isOk());
-        Assert.assertEquals("new token shouldn't appear when attacker attempts reactivate banned(locked) user", tokenCountBeforeResend, userConfirmationTokenRepository.count());
+        Assertions.assertEquals(tokenCountBeforeResend, userConfirmationTokenRepository.count(), "new token shouldn't appear when attacker attempts reactivate banned(locked) user");
     }
 
     // scheme simplified, suspect that user's email doesn't stolen
@@ -300,7 +300,7 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
         String passwordResetTokenUuidString;
         try (Retriever r = new Retriever(greenMail.getImap())) {
             Message[] messages = r.getMessages(email);
-            Assert.assertEquals("backend should sent one email for password reset",1, messages.length);
+            Assertions.assertEquals(1, messages.length, "backend should sent one email for password reset");
             IMAPMessage imapMessage = (IMAPMessage)messages[0];
             String content = (String) imapMessage.getContent();
 

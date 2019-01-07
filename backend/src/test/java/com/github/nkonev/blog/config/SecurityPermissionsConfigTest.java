@@ -2,7 +2,7 @@ package com.github.nkonev.blog.config;
 
 import com.github.nkonev.blog.entity.jpa.UserRole;
 import com.github.nkonev.blog.security.SecurityPermissionsConfig;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,9 +17,9 @@ public class SecurityPermissionsConfigTest {
         Collection<GrantedAuthority> roles = Collections.singletonList(new SimpleGrantedAuthority(UserRole.ROLE_ADMIN.name()));
         java.util.Collection<? extends GrantedAuthority> reachable = securityPermissionsConfig.roleHierarchy().getReachableGrantedAuthorities(roles);
 
-        Assert.assertEquals(3, reachable.size());
-        Assert.assertTrue(reachable.contains(new SimpleGrantedAuthority(UserRole.ROLE_ADMIN.name())));
-        Assert.assertTrue(reachable.contains(new SimpleGrantedAuthority(UserRole.ROLE_MODERATOR.name())));
-        Assert.assertTrue(reachable.contains(new SimpleGrantedAuthority(UserRole.ROLE_USER.name())));
+        Assertions.assertEquals(3, reachable.size());
+        Assertions.assertTrue(reachable.contains(new SimpleGrantedAuthority(UserRole.ROLE_ADMIN.name())));
+        Assertions.assertTrue(reachable.contains(new SimpleGrantedAuthority(UserRole.ROLE_MODERATOR.name())));
+        Assertions.assertTrue(reachable.contains(new SimpleGrantedAuthority(UserRole.ROLE_USER.name())));
     }
 }

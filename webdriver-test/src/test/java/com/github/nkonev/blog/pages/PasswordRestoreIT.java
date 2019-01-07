@@ -8,11 +8,9 @@ import com.github.nkonev.blog.extensions.GreenMailExtensionFactory;
 import com.github.nkonev.blog.integration.AbstractItTestRunner;
 import com.github.nkonev.blog.pages.object.LoginModal;
 import com.github.nkonev.blog.util.UrlParser;
-import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.util.Retriever;
-import com.icegreen.greenmail.util.ServerSetupTest;
 import com.sun.mail.imap.IMAPMessage;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
@@ -40,7 +38,7 @@ public class PasswordRestoreIT extends AbstractItTestRunner {
 
         try (Retriever r = new Retriever(greenMail.getImap())) {
             Message[] messages = r.getMessages(email);
-            Assert.assertEquals("backend should sent one email",1, messages.length);
+            Assertions.assertEquals(1, messages.length, "backend should sent one email");
             IMAPMessage imapMessage = (IMAPMessage)messages[0];
             String content = (String) imapMessage.getContent();
 

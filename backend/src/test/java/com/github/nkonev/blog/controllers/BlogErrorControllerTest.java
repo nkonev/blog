@@ -5,7 +5,7 @@ import com.github.nkonev.blog.AbstractUtTestRunner;
 import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.TestConstants;
 import com.github.nkonev.blog.security.SecurityConfig;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,33 +50,33 @@ public class BlogErrorControllerTest extends AbstractUtTestRunner {
     public void testNotAuthorized() throws Exception {
         ResponseEntity<String> responseEntity = testRestTemplate.getForEntity(urlWithContextPath()+ Constants.Urls.API+ Constants.Urls.PROFILE, String.class);
         String str = responseEntity.getBody();
-        Assert.assertEquals(401, responseEntity.getStatusCodeValue());
+        Assertions.assertEquals(401, responseEntity.getStatusCodeValue());
 
         LOGGER.info(str);
 
         Map<String, Object> resp = objectMapper.readValue(str, new TypeReference<Map<String, Object>>(){});
         // check that Exception Handler hides Spring Security exceptions
-        Assert.assertFalse(resp.containsKey("exception"));
-        Assert.assertFalse(resp.containsKey("trace"));
-        Assert.assertFalse(resp.containsValue("org.springframework.security.access.AccessDeniedException"));
+        Assertions.assertFalse(resp.containsKey("exception"));
+        Assertions.assertFalse(resp.containsKey("trace"));
+        Assertions.assertFalse(resp.containsValue("org.springframework.security.access.AccessDeniedException"));
 
-        Assert.assertTrue(resp.containsKey("message"));
-        Assert.assertNotNull(resp.get("message"));
+        Assertions.assertTrue(resp.containsKey("message"));
+        Assertions.assertNotNull(resp.get("message"));
     }
 
     @org.junit.jupiter.api.Test
     public void testNotFoundJs() throws Exception {
         ResponseEntity<String> responseEntity = testRestTemplate.getForEntity(urlWithContextPath()+"/not-exists", String.class);
         String str = responseEntity.getBody();
-        Assert.assertEquals(404, responseEntity.getStatusCodeValue());
+        Assertions.assertEquals(404, responseEntity.getStatusCodeValue());
 
         LOGGER.info(str);
 
         Map<String, Object> resp = objectMapper.readValue(str, new TypeReference<Map<String, Object>>(){});
 
-        Assert.assertTrue(responseEntity.getHeaders().getContentType().toString().contains(MediaType.APPLICATION_JSON_UTF8_VALUE));
-        Assert.assertEquals("Not Found", resp.get("error"));
-        Assert.assertEquals(404, resp.get("status"));
+        Assertions.assertTrue(responseEntity.getHeaders().getContentType().toString().contains(MediaType.APPLICATION_JSON_UTF8_VALUE));
+        Assertions.assertEquals("Not Found", resp.get("error"));
+        Assertions.assertEquals(404, resp.get("status"));
     }
 
     @Test
@@ -85,12 +85,12 @@ public class BlogErrorControllerTest extends AbstractUtTestRunner {
 
         ResponseEntity<String> responseEntity = testRestTemplate.exchange(requestEntity, String.class);
         String str = responseEntity.getBody();
-        Assert.assertEquals(200, responseEntity.getStatusCodeValue()); // we respond 200 for 404 fallback
+        Assertions.assertEquals(200, responseEntity.getStatusCodeValue()); // we respond 200 for 404 fallback
 
         LOGGER.info(str);
         LOGGER.info("HTML 404 fallback Content-Type: {}", responseEntity.getHeaders().getContentType());
-        Assert.assertTrue(responseEntity.getHeaders().getContentType().toString().contains(MediaType.TEXT_HTML_VALUE));
-        Assert.assertTrue(str.contains("<!doctype html>"));
+        Assertions.assertTrue(responseEntity.getHeaders().getContentType().toString().contains(MediaType.TEXT_HTML_VALUE));
+        Assertions.assertTrue(str.contains("<!doctype html>"));
     }
 
     @org.junit.jupiter.api.Test
@@ -101,12 +101,12 @@ public class BlogErrorControllerTest extends AbstractUtTestRunner {
 
         ResponseEntity<String> responseEntity = testRestTemplate.exchange(new URI(urlWithContextPath()+"/not-exists"), GET, entity, String.class);
         String str = responseEntity.getBody();
-        Assert.assertEquals(200, responseEntity.getStatusCodeValue()); // we respond 200 for 404 fallback
+        Assertions.assertEquals(200, responseEntity.getStatusCodeValue()); // we respond 200 for 404 fallback
 
         LOGGER.info(str);
         LOGGER.info("HTML 404 fallback Content-Type: {}", responseEntity.getHeaders().getContentType());
-        Assert.assertTrue(responseEntity.getHeaders().getContentType().toString().contains(MediaType.TEXT_HTML_VALUE));
-        Assert.assertTrue(str.contains("<!doctype html>"));
+        Assertions.assertTrue(responseEntity.getHeaders().getContentType().toString().contains(MediaType.TEXT_HTML_VALUE));
+        Assertions.assertTrue(str.contains("<!doctype html>"));
     }
 
 
@@ -114,32 +114,32 @@ public class BlogErrorControllerTest extends AbstractUtTestRunner {
     public void testSqlExceptionIsHidden() throws Exception {
         ResponseEntity<String> responseEntity = testRestTemplate.getForEntity(urlWithContextPath()+ Constants.Urls.API+ TestConstants.SQL_URL, String.class);
         String str = responseEntity.getBody();
-        Assert.assertEquals(500, responseEntity.getStatusCodeValue());
+        Assertions.assertEquals(500, responseEntity.getStatusCodeValue());
 
         LOGGER.info(str);
 
         Map<String, Object> resp = objectMapper.readValue(str, new TypeReference<Map<String, Object>>(){});
-        Assert.assertFalse(resp.containsKey("exception"));
-        Assert.assertFalse(resp.containsKey("trace"));
-        Assert.assertFalse(resp.containsValue(TestConstants.SQL_QUERY));
+        Assertions.assertFalse(resp.containsKey("exception"));
+        Assertions.assertFalse(resp.containsKey("trace"));
+        Assertions.assertFalse(resp.containsValue(TestConstants.SQL_QUERY));
 
-        Assert.assertEquals("internal error", resp.get("message"));
-        Assert.assertEquals("Internal Server Error", resp.get("error"));
+        Assertions.assertEquals("internal error", resp.get("message"));
+        Assertions.assertEquals("Internal Server Error", resp.get("error"));
     }
 
     @Test
     public void testUserDetailsWithPasswordIsNotSerialized() throws Exception {
         ResponseEntity<String> responseEntity = testRestTemplate.getForEntity(urlWithContextPath()+ Constants.Urls.API+TestConstants.USER_DETAILS, String.class);
         String str = responseEntity.getBody();
-        Assert.assertEquals(500, responseEntity.getStatusCodeValue());
+        Assertions.assertEquals(500, responseEntity.getStatusCodeValue());
 
         LOGGER.info(str);
 
         Map<String, Object> resp = objectMapper.readValue(str, new TypeReference<Map<String, Object>>(){});
-        Assert.assertFalse(resp.containsKey("exception"));
-        Assert.assertFalse(resp.containsKey("trace"));
+        Assertions.assertFalse(resp.containsKey("exception"));
+        Assertions.assertFalse(resp.containsKey("trace"));
 
-        Assert.assertEquals("internal error", resp.get("message"));
-        Assert.assertEquals("Internal Server Error", resp.get("error"));
+        Assertions.assertEquals("internal error", resp.get("message"));
+        Assertions.assertEquals("Internal Server Error", resp.get("error"));
     }
 }

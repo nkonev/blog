@@ -11,7 +11,7 @@ import com.github.nkonev.blog.integration.AbstractItTestRunner;
 import com.github.nkonev.blog.pages.object.IndexPage;
 import com.github.nkonev.blog.security.BlogUserDetailsService;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -92,7 +92,7 @@ public class IndexIT extends AbstractItTestRunner {
 
         indexPage.sendEnd();
 
-        Assert.assertEquals(1, indexPage.posts().size());
+        Assertions.assertEquals(1, indexPage.posts().size());
     }
 
     @Test
@@ -107,8 +107,7 @@ public class IndexIT extends AbstractItTestRunner {
         indexPage.contains(searchQuery);
 
         String url = driver.getCurrentUrl();
-        Assert.assertTrue(url.endsWith(searchQuery));
-
+        Assertions.assertTrue(url.endsWith(searchQuery));
 
 
         indexPage.openPage(searchQuery);

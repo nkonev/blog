@@ -3,7 +3,7 @@ package com.github.nkonev.blog.controllers;
 import com.github.nkonev.blog.AbstractUtTestRunner;
 import com.github.nkonev.blog.TestConstants;
 import com.google.common.net.HttpHeaders;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +48,7 @@ public abstract class AbstractImageUploadControllerTest extends AbstractUtTestRu
                 ;
         byte[] content = result.getResponse().getContentAsByteArray();
 
-        Assert.assertArrayEquals(mpf.getBytes(), content);
+        Assertions.assertArrayEquals(mpf.getBytes(), content);
 
         return urlResponse;
     }
@@ -65,7 +65,7 @@ public abstract class AbstractImageUploadControllerTest extends AbstractUtTestRu
         MockMultipartFile mf1 = new MockMultipartFile(ImagePostTitleUploadController.IMAGE_PART, "lol-content.png", "image/png", img1);
         String url1 = postImage(postTemplate(), mf1);
 
-        Assert.assertNotEquals(url0, url1);
+        Assertions.assertNotEquals(url0, url1);
 
         assertDeletedCount();
     }
@@ -97,14 +97,14 @@ public abstract class AbstractImageUploadControllerTest extends AbstractUtTestRu
 
         RequestEntity requestEntity1 = RequestEntity.get(URI.create(urlResponse)).build();
         ResponseEntity<byte[]> re1 = testRestTemplate.exchange(requestEntity1, byte[].class);
-        Assert.assertEquals(200, re1.getStatusCodeValue());
+        Assertions.assertEquals(200, re1.getStatusCodeValue());
 
         String etag = re1.getHeaders().getFirst(org.springframework.http.HttpHeaders.ETAG);
-        Assert.assertNotNull(etag);
+        Assertions.assertNotNull(etag);
 
         RequestEntity requestEntity2 = RequestEntity.get(URI.create(urlResponse)).header(org.springframework.http.HttpHeaders.IF_NONE_MATCH, etag).build();
         ResponseEntity<byte[]> re2 = testRestTemplate.exchange(requestEntity2, byte[].class);
-        Assert.assertEquals(304, re2.getStatusCodeValue());
+        Assertions.assertEquals(304, re2.getStatusCodeValue());
     }
 
     @Test

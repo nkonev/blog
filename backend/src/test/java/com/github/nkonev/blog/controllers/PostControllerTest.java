@@ -14,7 +14,6 @@ import com.github.nkonev.blog.repo.jpa.PostRepository;
 import com.github.nkonev.blog.services.SeoCacheService;
 import com.github.nkonev.blog.utils.PageUtils;
 import org.hamcrest.core.StringStartsWith;
-import org.junit.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -294,11 +293,11 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andExpect(jsonPath("$.editDateTime").isEmpty())
                 .andReturn();
 
-        Assert.assertFalse(oldDataIndex.equals(redisTemplate.opsForValue().get(getRedisKeyForIndex())));
-        Assert.assertEquals(newIndexRendered, redisTemplate.opsForValue().get(getRedisKeyForIndex()));
+        Assertions.assertFalse(oldDataIndex.equals(redisTemplate.opsForValue().get(getRedisKeyForIndex())));
+        Assertions.assertEquals(newIndexRendered, redisTemplate.opsForValue().get(getRedisKeyForIndex()));
 
         long id = objectMapper.readValue(addPostRequest.getResponse().getContentAsString(), PostDTOWithAuthorization.class).getId();
-        Assert.assertTrue(redisTemplate.hasKey(getRedisKeyHtmlForPost(id)));
+        Assertions.assertTrue(redisTemplate.hasKey(getRedisKeyHtmlForPost(id)));
 
         String addStr = addPostRequest.getResponse().getContentAsString();
         LOGGER.info(addStr);
@@ -314,12 +313,10 @@ public class PostControllerTest extends AbstractUtTestRunner {
         String strListPosts = getMyPostsRequest.getResponse().getContentAsString();
         LOGGER.info(strListPosts);
         List<PostDTO> posts = objectMapper.readValue(strListPosts, new TypeReference<List<PostDTO>>(){});
-        Assert.assertTrue("I should can see my created post",
-                posts.stream().anyMatch(postDTO -> postDTO.getTitle().equals("default new post title")));
+        Assertions.assertTrue(posts.stream().anyMatch(postDTO -> postDTO.getTitle().equals("default new post title")), "I should can see my created post");
 
         // check foreign post not present in my posts
-        Assert.assertFalse("foreign post shouldn't be in my posts",
-                posts.stream().anyMatch(postDTO -> postDTO.getTitle().startsWith("generated_post")));
+        Assertions.assertFalse(posts.stream().anyMatch(postDTO -> postDTO.getTitle().startsWith("generated_post")), "foreign post shouldn't be in my posts");
 
         // check Alice can update her post
         final String updatedTitle = "updated title";
@@ -341,8 +338,8 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andExpect(jsonPath("$.editDateTime").isNotEmpty())
                 .andReturn();
         LOGGER.info(updatePostRequest.getResponse().getContentAsString());
-        Assert.assertFalse(oldCachedPost.equals(redisTemplate.opsForValue().get(getRedisKeyHtmlForPost(added.getId()))));
-        Assert.assertEquals(newPostRendered, redisTemplate.opsForValue().get(getRedisKeyHtmlForPost(id)));
+        Assertions.assertFalse(oldCachedPost.equals(redisTemplate.opsForValue().get(getRedisKeyHtmlForPost(added.getId()))));
+        Assertions.assertEquals(newPostRendered, redisTemplate.opsForValue().get(getRedisKeyHtmlForPost(id)));
 
         MvcResult deleteResult = mockMvc.perform(
                 delete(Constants.Urls.API+ Constants.Urls.POST+"/"+added.getId()).with(csrf())
