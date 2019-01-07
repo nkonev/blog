@@ -71,7 +71,7 @@
         },
         methods: {
             infiniteHandler($state) {
-                infinitePostsHandlerWithSearch(this, API_POST, res => res, res => {}, $state);
+                infinitePostsHandlerWithSearch(this, API_POST, res => res.data, res => {}, $state);
             },
 
             onChangeSearchString(str) {

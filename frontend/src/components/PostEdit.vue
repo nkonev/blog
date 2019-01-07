@@ -47,6 +47,11 @@
                 <button v-if="!submitting" class="blog-btn ok-btn" @click="onBtnSave" v-bind:disabled="!isPostValid()">Save</button>
             </div>
             <button v-if="!submitting" class="blog-btn cancel-btn" @click="onBtnCancel">Cancel</button>
+
+            <div class="draft">
+                <input type="checkbox" id="draft" name="draft" v-model="editPostDTO.draft">
+                <label for="draft">[Draft]</label>
+            </div>
         </div>
     </div>
 </template>
@@ -264,6 +269,11 @@
 
         .send {
             display inline
+        }
+
+        div.draft {
+            display flex
+            align-items center
         }
     }
 </style>

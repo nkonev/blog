@@ -1,5 +1,5 @@
 <template>
-    <div class="post">
+    <div class="post" :style="{opacity: computedOpacity}">
         <div v-if="postDTO.titleImg" class="img-wrapper">
             <router-link :to="{name: post, params: { id: postDTO.id} }"><img :src="postDTO.titleImg"/></router-link>
         </div>
@@ -39,6 +39,9 @@
             },
             editTime(){
                 return this.postDTO.editDateTime ? getTimestampFromUtc(this.postDTO.editDateTime) : null;
+            },
+            computedOpacity(){
+                return this.postDTO.draft ? 0.4 : 1;
             }
         },
     }

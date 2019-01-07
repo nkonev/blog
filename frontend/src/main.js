@@ -41,7 +41,7 @@ Vue.http.interceptors.push((request, next) => {
             }
         } else if (response.status === 400) {
             console.debug("Bad request", response);
-        } else if (!(response.status >= 200 && response.status < 300)) {
+        } else if (!(response.status >= 200 && response.status < 300 || response.status === 404)) {
             console.error("Unexpected error", response);
             Notifications.unexpectedError(request.method, request.url, response.status);
         }

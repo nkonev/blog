@@ -55,7 +55,7 @@ public class IndexIT extends AbstractItTestRunner {
         indexPage.openPage();
         indexPage.contains("Lorem Ipsum является стандартной \"рыбой\" для текстов на латинице с начала XVI века.");
 
-        PostDTO postDTO = new PostDTO(0, "Added via websocket", "Пост, пришедший через вебсокет " + new Date(), "image.png", LocalDateTime.now(ZoneOffset.UTC), null, new UserAccountDTO());
+        PostDTO postDTO = new PostDTO(0, "Added via websocket", "Пост, пришедший через вебсокет " + new Date(), "image.png", LocalDateTime.now(ZoneOffset.UTC), null, new UserAccountDTO(), false);
         UserAccountDetailsDTO accountDetailsDTO = authenticateAs(CommonTestConstants.USER_ADMIN);
         PostDTO added = postController.addPost(accountDetailsDTO, postDTO);
 

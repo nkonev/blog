@@ -13,7 +13,7 @@
                     <div v-else class="post-title"><h1>{{postDTO.title}}</h1></div>
                     <div class="post-head">
                         <owner v-if="postDTO.owner" :owner="postDTO.owner" :createTime="createTime" :editTime="editTime"></owner>
-
+                        <span class="draft" v-if="postDTO.draft">[Draft]</span>
                         <div class="manage-buttons" v-if="postDTO.canEdit || postDTO.canDelete">
                             <img class="edit-container-pen" src="../assets/pen.png" v-if="postDTO.canEdit" @click="setEdit()"/>
                             <img class="remove-container-x" src="../assets/remove.png" v-if="postDTO.canDelete" @click="openDeleteConfirmation(postDTO.id)"/>
@@ -301,6 +301,13 @@
 
             .user-info {
                 flex-grow 9
+            }
+
+            span.draft {
+                display flex
+                align-items center
+                color grey
+                margin-left 1em
             }
 
             .manage-buttons {
