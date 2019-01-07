@@ -342,6 +342,7 @@
 
             margin-top $postBodyMarginTop
             margin-bottom $postBodyMarginBottom
+            overflow: visible
         }
 
         &-error {
