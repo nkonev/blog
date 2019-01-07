@@ -123,7 +123,7 @@ public class RendertronFilter extends GenericFilterBean {
             }
             value = injectSeoScripts(value, request); // for Yandex verification
             final String userAgent = request.getHeader(USER_AGENT);
-            LOGGER.info("Responding cached rendered page {} for User-Agent '{}'", getPath(request), userAgent);
+            LOGGER.info("Responding cached rendered page '{}' for User-Agent '{}'", getPath(request), userAgent);
             response.setHeader("Content-Type", "text/html; charset=utf-8");
             response.getWriter().print(value);
             return;
