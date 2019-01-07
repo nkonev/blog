@@ -17,15 +17,16 @@ public class PostDTO {
     private LocalDateTime createDateTime;
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern= ApiConstants.DATE_FORMAT)
     private LocalDateTime editDateTime;
+    private boolean draft;
 
     public PostDTO() { }
 
-    public PostDTO(long id, String title, String text, String titleImg, LocalDateTime createDateTime, LocalDateTime editDateTime, Integer commentCount, UserAccountDTO owner) {
-        this(id, title, text, titleImg, createDateTime, editDateTime, owner);
+    public PostDTO(long id, String title, String text, String titleImg, LocalDateTime createDateTime, LocalDateTime editDateTime, Integer commentCount, UserAccountDTO owner, boolean draft) {
+        this(id, title, text, titleImg, createDateTime, editDateTime, owner, draft);
         this.commentCount = commentCount;
     }
 
-    public PostDTO(long id, String title, String text, String titleImg, LocalDateTime createDateTime, LocalDateTime editDateTime, UserAccountDTO owner) {
+    public PostDTO(long id, String title, String text, String titleImg, LocalDateTime createDateTime, LocalDateTime editDateTime, UserAccountDTO owner, boolean draft) {
         this.id = id;
         this.title = title;
         this.text = text;
@@ -33,6 +34,7 @@ public class PostDTO {
         this.createDateTime = createDateTime;
         this.editDateTime = editDateTime;
         this.owner = owner;
+        this.draft = draft;
     }
 
 
@@ -106,5 +108,13 @@ public class PostDTO {
 
     public void setEditDateTime(LocalDateTime editDateTime) {
         this.editDateTime = editDateTime;
+    }
+
+    public boolean isDraft() {
+        return draft;
+    }
+
+    public void setDraft(boolean draft) {
+        this.draft = draft;
     }
 }

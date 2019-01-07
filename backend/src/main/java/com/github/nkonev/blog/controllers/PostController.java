@@ -2,10 +2,7 @@ package com.github.nkonev.blog.controllers;
 
 import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.converter.PostConverter;
-import com.github.nkonev.blog.dto.PostDTO;
-import com.github.nkonev.blog.dto.PostDTOExtended;
-import com.github.nkonev.blog.dto.PostDTOWithAuthorization;
-import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
+import com.github.nkonev.blog.dto.*;
 import com.github.nkonev.blog.exception.DataNotFoundException;
 import com.github.nkonev.blog.repo.jpa.CommentRepository;
 import com.github.nkonev.blog.repo.jpa.PostRepository;
@@ -49,12 +46,13 @@ public class PostController {
 
 
     @GetMapping(Constants.Urls.API + Constants.Urls.POST)
-    public List<PostDTO> getPosts(
+    public Wrapper<PostDTO> getPosts(
             @RequestParam(value = "page", required = false, defaultValue = "0") int page,
             @RequestParam(value = "size", required = false, defaultValue = "0") int size,
-            @RequestParam(value = "searchString", required = false, defaultValue = "") String searchString
+            @RequestParam(value = "searchString", required = false, defaultValue = "") String searchString,
+            @AuthenticationPrincipal UserAccountDetailsDTO userAccount // null if not authenticated
     ) {
-        return postService.getPosts(page, size, searchString);
+        return postService.getPosts(page, size, searchString, userAccount);
     }
 
     public static class RandomPostDTO {

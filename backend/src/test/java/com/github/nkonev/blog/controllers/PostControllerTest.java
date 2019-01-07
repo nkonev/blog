@@ -6,13 +6,15 @@ import com.github.nkonev.blog.AbstractUtTestRunner;
 import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.TestConstants;
 import com.github.nkonev.blog.config.CustomConfig;
-import com.github.nkonev.blog.dto.PostDTO;
-import com.github.nkonev.blog.dto.PostDTOWithAuthorization;
-import com.github.nkonev.blog.dto.UserAccountDTO;
-import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
+import com.github.nkonev.blog.dto.*;
+import com.github.nkonev.blog.entity.jpa.Post;
 import com.github.nkonev.blog.repo.jpa.PostRepository;
+import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
+import com.github.nkonev.blog.services.PostService;
 import com.github.nkonev.blog.services.SeoCacheService;
 import com.github.nkonev.blog.utils.PageUtils;
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matchers;
 import org.hamcrest.core.StringStartsWith;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.Test;
@@ -31,10 +33,15 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
+
 import static com.github.nkonev.blog.utils.SeoCacheKeyUtils.RENDERTRON_HTML;
 import static com.github.nkonev.blog.utils.SeoCacheKeyUtils.getRedisKeyForIndex;
 import static com.github.nkonev.blog.utils.SeoCacheKeyUtils.getRedisKeyHtmlForPost;
+import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
@@ -68,9 +75,18 @@ public class PostControllerTest extends AbstractUtTestRunner {
     @Autowired
     private CustomConfig customConfig;
 
+    @Autowired
+    private UserAccountRepository userAccountRepository;
+
+    @Autowired
+    private PostService postService;
+
     @BeforeEach
     public void setUp() {
         mockServer = MockRestServiceServer.createServer(restTemplate);
+
+        // removed that posts those orphaned in elasticsearch due transaction rollback
+        postService.removeOrphansFromIndex();
     }
 
     @AfterEach
@@ -89,7 +105,8 @@ public class PostControllerTest extends AbstractUtTestRunner {
                         "https://postgrespro.ru/img/logo_mono.png",
                         null,
                         null,
-                        new UserAccountDTO()
+                        new UserAccountDTO(),
+                        false
                 );
             }
             public PostDTO build() {
@@ -113,7 +130,9 @@ public class PostControllerTest extends AbstractUtTestRunner {
     }
 
     public static final long FOREIGN_POST = 50;
+    public static final long DRAFT_POST = 84;
 
+    private final Predicate<PostDTO> hasDraftPostPredicate = postDTO -> postDTO.getId() == DRAFT_POST;
 
     @Test
     public void testAnonymousCanGetPostsAndItsLimiting() throws Exception {
@@ -122,10 +141,10 @@ public class PostControllerTest extends AbstractUtTestRunner {
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
         )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()").value(PageUtils.DEFAULT_SIZE))
-                .andExpect(jsonPath("$[0].commentCount").value(1))
-                .andExpect(jsonPath("$[1].commentCount").value(501))
-                .andExpect(jsonPath("$[2].commentCount").value(0))
+                .andExpect(jsonPath("$.data.size()").value(PageUtils.DEFAULT_SIZE))
+                .andExpect(jsonPath("$.data[0].commentCount").value(1))
+                .andExpect(jsonPath("$.data[1].commentCount").value(501))
+                .andExpect(jsonPath("$.data[2].commentCount").value(0))
                 .andReturn();
         String getStr = getPostsRequest.getResponse().getContentAsString();
         LOGGER.info(getStr);
@@ -148,7 +167,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
         )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()").value(PageUtils.DEFAULT_SIZE))
+                .andExpect(jsonPath("$.data.size()").value(PageUtils.DEFAULT_SIZE))
                 .andReturn();
     }
 
@@ -159,9 +178,9 @@ public class PostControllerTest extends AbstractUtTestRunner {
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
         )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()").value(PageUtils.DEFAULT_SIZE))
-                .andExpect(jsonPath("$.[0].title").value("generated_post_100"))
-                .andExpect(jsonPath("$.[0].text").value("Lorem Ipsum - это текст-\"<b>рыба</b>\", часто используемый в печати и вэб-дизайне.... Lorem Ipsum является стандартной \"<b>рыбой</b>\" для текстов на латинице с начала XVI века."))
+                .andExpect(jsonPath("$.data.size()").value(PageUtils.DEFAULT_SIZE))
+                .andExpect(jsonPath("$.data[0].title").value("generated_post_100"))
+                .andExpect(jsonPath("$.data[0].text").value("Lorem Ipsum - это текст-\"<b>рыба</b>\", часто используемый в печати и вэб-дизайне.... Lorem Ipsum является стандартной \"<b>рыбой</b>\" для текстов на латинице с начала XVI века."))
                 .andReturn();
     }
 
@@ -173,9 +192,9 @@ public class PostControllerTest extends AbstractUtTestRunner {
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
         )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()").value(PageUtils.DEFAULT_SIZE))
-                .andExpect(jsonPath("$.[0].title").value("generated_post_100"))
-                .andExpect(jsonPath("$.[0].text").value("Lorem Ipsum - это текст-\"рыба\", часто <b>используемый</b> в печати и вэб-дизайне.... В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, <b>используя</b> Lorem Ipsum для распечатки образцов.... листов Letraset с образцами Lorem Ipsum в 60-х годах и, в более недавнее время, программы электронной вёрстки типа Aldus PageMaker, в шаблонах которых <b>используется</b>"))
+                .andExpect(jsonPath("$.data.size()").value(PageUtils.DEFAULT_SIZE))
+                .andExpect(jsonPath("$.data[0].title").value("generated_post_100"))
+                .andExpect(jsonPath("$.data[0].text").value("Lorem Ipsum - это текст-\"рыба\", часто <b>используемый</b> в печати и вэб-дизайне.... В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, <b>используя</b> Lorem Ipsum для распечатки образцов.... листов Letraset с образцами Lorem Ipsum в 60-х годах и, в более недавнее время, программы электронной вёрстки типа Aldus PageMaker, в шаблонах которых <b>используется</b>"))
                 .andReturn();
     }
 
@@ -186,9 +205,9 @@ public class PostControllerTest extends AbstractUtTestRunner {
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
         )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()").value(PageUtils.DEFAULT_SIZE))
-                .andExpect(jsonPath("$.[0].title").value("generated_post_100"))
-                .andExpect(jsonPath("$.[0].text").value("Lorem Ipsum <b>является</b> стандартной \"рыбой\" для текстов на латинице с <b>начала</b> XVI века."))
+                .andExpect(jsonPath("$.data.size()").value(PageUtils.DEFAULT_SIZE))
+                .andExpect(jsonPath("$.data[0].title").value("generated_post_100"))
+                .andExpect(jsonPath("$.data[0].text").value("Lorem Ipsum <b>является</b> стандартной \"рыбой\" для текстов на латинице с <b>начала</b> XVI века."))
                 .andReturn();
     }
 
@@ -200,9 +219,9 @@ public class PostControllerTest extends AbstractUtTestRunner {
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
         )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()").value(PageUtils.DEFAULT_SIZE))
-                .andExpect(jsonPath("$.[0].title").value("generated_post_100"))
-                .andExpect(jsonPath("$.[0].text").value("Lorem <b>Ipsum</b> - это текст-\"рыба\", часто используемый в печати и вэб-дизайне.... Lorem <b>Ipsum</b> является стандартной \"рыбой\" для текстов на латинице с начала XVI века.... В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem <b>Ipsum</b> для распечатки образцов.... Lorem <b>Ipsum</b> не только успешно пережил без заметных изменений пять веков, но и перешагнул в электронный дизайн.... вёрстки типа Aldus PageMaker, в шаблонах которых используется Lorem <b>Ipsum</b>."))
+                .andExpect(jsonPath("$.data.size()").value(PageUtils.DEFAULT_SIZE))
+                .andExpect(jsonPath("$.data[0].title").value("generated_post_100"))
+                .andExpect(jsonPath("$.data[0].text").value("Lorem <b>Ipsum</b> - это текст-\"рыба\", часто используемый в печати и вэб-дизайне.... Lorem <b>Ipsum</b> является стандартной \"рыбой\" для текстов на латинице с начала XVI века.... В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem <b>Ipsum</b> для распечатки образцов.... Lorem <b>Ipsum</b> не только успешно пережил без заметных изменений пять веков, но и перешагнул в электронный дизайн.... вёрстки типа Aldus PageMaker, в шаблонах которых используется Lorem <b>Ipsum</b>."))
                 .andReturn();
     }
 
@@ -221,7 +240,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andRespond(withSuccess(newIndexRendered, MediaType.TEXT_HTML));
 
         UserAccountDetailsDTO userAccountDetailsDTO = (UserAccountDetailsDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        postController.updatePost(userAccountDetailsDTO, new PostDTO(50L, "edited for search host port", "A new host for test www.google.com:80 with port too", "", null, null, null));
+        postController.updatePost(userAccountDetailsDTO, new PostDTO(50L, "edited for search host port", "A new host for test www.google.com:80 with port too", "", null, null, null, false));
         postRepository.flush();
 
         MvcResult getPostsRequest = mockMvc.perform(
@@ -229,9 +248,9 @@ public class PostControllerTest extends AbstractUtTestRunner {
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
         )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()").value(1))
-                .andExpect(jsonPath("$.[0].title").value("edited for search host port"))
-                .andExpect(jsonPath("$.[0].text").value("A new host for test <b>www.google.com</b>:<b>80</b> with port too"))
+                .andExpect(jsonPath("$.data.size()").value(1))
+                .andExpect(jsonPath("$.data[0].title").value("edited for search host port"))
+                .andExpect(jsonPath("$.data[0].text").value("A new host for test <b>www.google.com</b>:<b>80</b> with port too"))
                 .andReturn();
     }
 
@@ -384,6 +403,100 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andExpect(status().isUnauthorized())
                 .andReturn();
         LOGGER.info(addPostRequest.getResponse().getContentAsString());
+    }
+
+    @Test
+    public void testAnonymousCannotSeeDraftPost() throws Exception {
+        MvcResult addPostRequest = mockMvc.perform(
+                get(Constants.Urls.API+ Constants.Urls.POST+"/"+DRAFT_POST)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+        )
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value("This post hidden to drafts by author."))
+                .andReturn();
+        LOGGER.info(addPostRequest.getResponse().getContentAsString());
+    }
+
+    @Test
+    public void testAnonymousCannotSeeDraftPostInLeft() throws Exception {
+        MvcResult addPostRequest = mockMvc.perform(
+                get(Constants.Urls.API+ Constants.Urls.POST+"/"+(DRAFT_POST+1))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+        )
+                .andDo(result -> {
+                    LOGGER.info("Response: {} {}", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                })
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.left.id").value(Matchers.not((int)DRAFT_POST)))
+                .andReturn();
+        LOGGER.info(addPostRequest.getResponse().getContentAsString());
+    }
+
+    @Test
+    public void testAnonymousCannotSeeDraftPostInRight() throws Exception {
+        MvcResult addPostRequest = mockMvc.perform(
+                get(Constants.Urls.API+ Constants.Urls.POST+"/"+(DRAFT_POST-1))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+        )
+                .andDo(result -> {
+                    LOGGER.info("Response: {} {}", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                })
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.right.id").value(Matchers.not((int)DRAFT_POST)))
+                .andReturn();
+        LOGGER.info(addPostRequest.getResponse().getContentAsString());
+    }
+
+    private List<PostDTO> getAllPosts(String urlPrefix) throws Exception {
+        final int pageSize = 20;
+        final List<PostDTO> allPosts = new ArrayList<>();
+        int lastSize;
+        int p = 0;
+        do {
+            MvcResult getPostRequest = mockMvc.perform(
+                    get(urlPrefix + "?page=" + p + "&size=" + pageSize)
+            )
+                    .andExpect(status().isOk())
+                    .andReturn();
+            String getStr = getPostRequest.getResponse().getContentAsString();
+            LOGGER.info(getStr);
+            Wrapper<PostDTO> wrapper = objectMapper.readValue(getStr, new TypeReference<Wrapper<PostDTO>>() {});
+            Collection<PostDTO> list = wrapper.getData();
+            lastSize = list.size();
+            allPosts.addAll(list);
+            ++p;
+        } while (lastSize == pageSize);
+        return allPosts;
+    }
+
+    @WithUserDetails(TestConstants.USER_ALICE)
+    @Test
+    public void testUserCannotSeeForeignDrafts() throws Exception {
+        Assertions.assertFalse(getAllPosts(Constants.Urls.API + Constants.Urls.POST).stream().anyMatch(hasDraftPostPredicate));
+    }
+
+    @WithUserDetails(TestConstants.USER_NIKITA)
+    @Test
+    public void testUserCanSeeHisDrafts() throws Exception {
+        Assertions.assertTrue(getAllPosts(Constants.Urls.API + Constants.Urls.POST).stream().anyMatch(hasDraftPostPredicate));
+    }
+
+    private Long getUserId(String userName){
+        return userAccountRepository.findByUsername(userName).orElseThrow().getId();
+    }
+
+    @WithUserDetails(TestConstants.USER_ALICE)
+    @Test
+    public void testUserCannotSeeForeignDraftsInUsersPosts() throws Exception {
+        Long id = getUserId(TestConstants.USER_ALICE);
+        Assertions.assertFalse(getAllPosts(Constants.Urls.API+Constants.Urls.USER + "/" + id + Constants.Urls.POSTS).stream().anyMatch(hasDraftPostPredicate));
+    }
+
+    @WithUserDetails(TestConstants.USER_NIKITA)
+    @Test
+    public void testUserCanSeeHisDraftsInUsersPosts() throws Exception {
+        Long id = getUserId(TestConstants.USER_NIKITA);
+        Assertions.assertTrue(getAllPosts(Constants.Urls.API+Constants.Urls.USER + "/" + id + Constants.Urls.POSTS).stream().anyMatch(hasDraftPostPredicate));
     }
 
     @Test
@@ -547,7 +660,6 @@ public class PostControllerTest extends AbstractUtTestRunner {
 
         LOGGER.info(deletePostRequest.getResponse().getContentAsString());
     }
-
 
     @WithUserDetails(TestConstants.USER_ALICE)
     @Test

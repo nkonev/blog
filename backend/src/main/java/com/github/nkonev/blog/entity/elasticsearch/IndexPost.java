@@ -14,6 +14,8 @@ public class IndexPost {
     public static final String FIELD_TEXT = "text";
     public static final String FIELD_TITLE = "title";
     public static final String TYPE = "_doc";
+    public static final String FIELD_DRAFT = "draft";
+    public static final String FIELD_OWNER = "owner";
 
     @Id
     private Long id;
@@ -22,12 +24,18 @@ public class IndexPost {
 
     private String text;
 
+    private boolean draft;
+
+    private long owner;
+
     public IndexPost() { }
 
-    public IndexPost(Long id, String title, String text) {
+    public IndexPost(Long id, String title, String text, boolean draft, long ownerId) {
         this.id = id;
         this.title = title;
         this.text = text;
+        this.owner = ownerId;
+        this.draft = draft;
     }
 
 
@@ -53,5 +61,21 @@ public class IndexPost {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public boolean isDraft() {
+        return draft;
+    }
+
+    public void setDraft(boolean draft) {
+        this.draft = draft;
+    }
+
+    public long getOwner() {
+        return owner;
+    }
+
+    public void setOwner(long owner) {
+        this.owner = owner;
     }
 }

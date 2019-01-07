@@ -408,7 +408,7 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
                 get(Constants.Urls.API+ Constants.Urls.USER + "/" +userId + Constants.Urls.POSTS)
         )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.totalCount").value(102))
+                .andExpect(jsonPath("$.totalCount").value(101))
                 .andExpect(jsonPath("$.data.length()").value(20))
                 .andExpect(jsonPath("$.data[0].commentCount").value(1))
                 .andExpect(jsonPath("$.data[1].commentCount").value(501))

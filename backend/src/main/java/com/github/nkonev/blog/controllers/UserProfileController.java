@@ -103,13 +103,14 @@ public class UserProfileController {
 
     @GetMapping(value = Constants.Urls.USER + Constants.Urls.USER_ID + Constants.Urls.POSTS)
     public Wrapper<PostDTO> getUserPosts(
+            @AuthenticationPrincipal UserAccountDetailsDTO userAccount,
             @PathVariable(Constants.PathVariables.USER_ID) Long userId,
             @RequestParam(value = "page", required=false, defaultValue = "0") int page,
             @RequestParam(value = "size", required=false, defaultValue = "0") int size
     ) {
         PageRequest springDataPage = PageRequest.of(PageUtils.fixPage(page), PageUtils.fixSize(size), Sort.Direction.DESC, "id");
 
-        return postService.findByOwnerId(springDataPage, userId);
+        return postService.findByOwnerId(springDataPage, userId, userAccount);
     }
 
 

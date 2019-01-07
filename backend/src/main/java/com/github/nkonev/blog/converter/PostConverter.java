@@ -40,7 +40,8 @@ public class PostConverter {
                 blogSecurityService.hasPostPermission(saved, userAccount, PostPermissions.EDIT),
                 blogSecurityService.hasPostPermission(saved, userAccount, PostPermissions.DELETE),
                 saved.getCreateDateTime(),
-                saved.getEditDateTime()
+                saved.getEditDateTime(),
+                saved.isDraft()
         );
     }
 
@@ -61,7 +62,8 @@ public class PostConverter {
                 left != null ? new PostPreview(left.getId(), left.getTitle()) : null,
                 right != null ? new PostPreview(right.getId(), right.getTitle()) : null,
                 saved.getCreateDateTime(),
-                saved.getEditDateTime()
+                saved.getEditDateTime(),
+                saved.isDraft()
         );
     }
 
@@ -86,12 +88,13 @@ public class PostConverter {
         } else {
             forUpdate.setTitleImg(postDTO.getTitleImg());
         }
+        forUpdate.setDraft(postDTO.isDraft());
         return forUpdate;
     }
 
     public IndexPost toElasticsearchPost(com.github.nkonev.blog.entity.jpa.Post jpaPost) {
         String sanitizedHtml = xssSanitizerService.sanitize(jpaPost.getText());
-        return new IndexPost(jpaPost.getId(), jpaPost.getTitle(), cleanHtmlTags(sanitizedHtml));
+        return new IndexPost(jpaPost.getId(), jpaPost.getTitle(), cleanHtmlTags(sanitizedHtml), jpaPost.isDraft(), jpaPost.getOwner().getId());
     }
 
     public static void cleanTags(PostDTO postDTO) {
@@ -120,7 +123,8 @@ public class PostConverter {
                 post.getTitleImg(),
                 post.getCreateDateTime(),
                 post.getEditDateTime(),
-                userAccountConverter.convertToUserAccountDTO(post.getOwner())
+                userAccountConverter.convertToUserAccountDTO(post.getOwner()),
+                post.isDraft()
         );
     }
 

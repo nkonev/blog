@@ -6,6 +6,7 @@ import com.github.nkonev.blog.dto.*;
 import com.github.nkonev.blog.entity.elasticsearch.IndexPost;
 import com.github.nkonev.blog.entity.jpa.Post;
 import com.github.nkonev.blog.entity.jpa.UserAccount;
+import com.github.nkonev.blog.entity.jpa.UserRole;
 import com.github.nkonev.blog.exception.BadRequestException;
 import com.github.nkonev.blog.exception.DataNotFoundException;
 import com.github.nkonev.blog.repo.elasticsearch.IndexPostRepository;
@@ -15,6 +16,7 @@ import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
 import com.github.nkonev.blog.utils.PageUtils;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.text.Text;
+import org.elasticsearch.index.query.AbstractQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
@@ -32,11 +34,15 @@ import org.springframework.data.elasticsearch.core.SearchResultMapper;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilter;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.lang.Nullable;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -51,7 +57,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.github.nkonev.blog.entity.elasticsearch.IndexPost.*;
-import static org.elasticsearch.common.unit.Fuzziness.fromEdits;
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 @Service
@@ -86,6 +91,9 @@ public class PostService {
 
     @Autowired
     private SeoCacheService seoCacheService;
+
+    @Autowired
+    private RoleHierarchy roleHierarchy;
 
     @Value("${custom.elasticsearch.get.all.index.ids.chunk.size:20}")
     private int chunkSize;
@@ -127,6 +135,7 @@ public class PostService {
             return "select " +
                     "p.id, " +
                     "p.title_img, " +
+                    "p.draft, " +
                     (setTitle ? "p.title, " : "") +
                     (setPost ? "p.text, "  : "") +
                     "p.create_date_time," +
@@ -160,7 +169,8 @@ public class PostService {
                             resultSet.getString("owner_avatar"),
                             null,
                             null
-                    )
+                    ),
+                    resultSet.getBoolean("draft")
             );
         }
     }
@@ -189,6 +199,8 @@ public class PostService {
                 tempPost.setId(Long.valueOf(searchHit.getId()));
                 tempPost.setTitle(getHighlightedOrOriginalField(searchHit, FIELD_TITLE));
                 tempPost.setText(getHighlightedOrOriginalField(searchHit, FIELD_TEXT));
+                tempPost.setDraft((boolean) searchHit.getSourceAsMap().get(FIELD_DRAFT));
+                tempPost.setOwner((int) searchHit.getSourceAsMap().get(FIELD_OWNER));
                 list.add(tempPost);
             }
             return new AggregatedPageImpl<T>((List<T>) list);
@@ -242,7 +254,33 @@ public class PostService {
         return post;
     }
 
-    public List<PostDTO> getPosts(int page, int size, String searchString){
+    private AbstractQueryBuilder noDraftFilterElastic(UserAccountDetailsDTO userAccountDetailsDTO){
+        if (userAccountDetailsDTO==null) {
+            return termQuery(FIELD_DRAFT, false);
+        } else {
+            if (roleHierarchy.getReachableGrantedAuthorities(userAccountDetailsDTO.getAuthorities()).contains(new SimpleGrantedAuthority(UserRole.ROLE_ADMIN.name()))){
+                return matchAllQuery();
+            } else {
+                return boolQuery()
+                        .should(termQuery(FIELD_DRAFT, false))
+                        .should(termQuery(FIELD_OWNER, userAccountDetailsDTO.getId()));
+            }
+        }
+    }
+
+    private Map<String, Object> noDraftFilterJdbc(UserAccountDetailsDTO userAccountDetailsDTO){
+        Map<String, Object> countParams = new HashMap<>();
+        if (userAccountDetailsDTO==null) {
+            countParams.put("currentUserId", null);
+            countParams.put("isAdmin", false);
+        } else {
+            countParams.put("currentUserId", userAccountDetailsDTO.getId());
+            countParams.put("isAdmin", roleHierarchy.getReachableGrantedAuthorities(userAccountDetailsDTO.getAuthorities()).contains(new SimpleGrantedAuthority(UserRole.ROLE_ADMIN.name())));
+        }
+        return countParams;
+    }
+
+    public Wrapper<PostDTO> getPosts(int page, int size, String searchString, @Nullable UserAccountDetailsDTO currentUser){
         page = PageUtils.fixPage(page);
         size = PageUtils.fixSize(size);
         searchString = StringUtils.trimWhitespace(searchString);
@@ -250,25 +288,19 @@ public class PostService {
         List<PostDTO> postsResult;
 
         if (StringUtils.isEmpty(searchString)) {
-            var params = new HashMap<String, Object>();
-            params.put("offset", PageUtils.getOffset(page, size));
-            params.put("limit", size);
+            PageRequest pageRequest = PageRequest.of(page, size);
 
-            postsResult = jdbcTemplate.query(
-                    rowMapperWithoutTextTitle.getBaseSql() +
-                            "  order by p.id desc " +
-                            "limit :limit offset :offset\n",
-                    params,
-                    rowMapperWithoutTextTitle
-            );
+            SearchQuery searchQuery = new NativeSearchQueryBuilder()
+                    .withSort(new FieldSortBuilder(FIELD_ID).order(SortOrder.DESC))
+                    .withIndices(INDEX)
+                    .withQuery(boolQuery()
+                            .must(noDraftFilterElastic(currentUser))
+                    )
+                    .withPageable(pageRequest)
+                    .build();
+            // https://stackoverflow.com/questions/37049764/how-to-provide-highlighting-with-spring-data-elasticsearch/37163711#37163711
+            postsResult = getPostDTOS(searchQuery);
 
-            postsResult.forEach(postDTO -> {
-                IndexPost fulltextPost = indexPostRepository
-                        .findById(postDTO.getId())
-                        .orElseThrow(() -> new DataNotFoundException("post "+postDTO.getId()+" not found in fulltext store during getPosts"));
-                postDTO.setText(fulltextPost.getText());
-                postDTO.setTitle(fulltextPost.getTitle());
-            });
 
         } else {
             PageRequest pageRequest = PageRequest.of(page, size);
@@ -277,8 +309,13 @@ public class PostService {
                     .withSort(new FieldSortBuilder(FIELD_ID).order(SortOrder.DESC))
                     .withIndices(INDEX)
                     .withQuery(boolQuery()
-                            .should(matchPhrasePrefixQuery(FIELD_TEXT, searchString).slop(searchFieldTextSlop))
-                            .should(matchPhrasePrefixQuery(FIELD_TITLE, searchString).slop(searchFieldTextSlop))
+                            .must(
+                                    boolQuery()
+                                            .should(matchPhrasePrefixQuery(FIELD_TEXT, searchString).slop(searchFieldTextSlop))
+                                            .should(matchPhrasePrefixQuery(FIELD_TITLE, searchString).slop(searchFieldTextSlop))
+                            )
+
+                            .must(noDraftFilterElastic(currentUser))
                     )
                     .withHighlightFields(
                             new HighlightBuilder.Field(FIELD_TEXT).preTags("<b>").postTags("</b>").numOfFragments(highlightFieldTextNumOfFragments).fragmentSize(highlightFieldTextFragmentSize),
@@ -287,34 +324,45 @@ public class PostService {
                     .withPageable(pageRequest)
                     .build();
             // https://stackoverflow.com/questions/37049764/how-to-provide-highlighting-with-spring-data-elasticsearch/37163711#37163711
-            Page<IndexPost> fulltextResult = elasticsearchTemplate.queryForPage(searchQuery, IndexPost.class, searchResultMapper);
-
-            postsResult = new ArrayList<>();
-            for (IndexPost fulltextPost: fulltextResult){
-
-                var params = new HashMap<String, Object>();
-                params.put("postId", fulltextPost.getId());
-                LOGGER.debug("Will search in postgres by id="+fulltextPost.getId());
-                PostDTO postDTO = jdbcTemplate.queryForObject(
-                        rowMapperWithoutTextTitle.getBaseSql() +
-                                " where p.id = :postId",
-                        params,
-                        rowMapperWithoutTextTitle
-                );
-                if (postDTO == null){
-                    throw new DataNotFoundException("post not found in db");
-                }
-                postDTO.setText(fulltextPost.getText());
-                postDTO.setTitle(fulltextPost.getTitle());
-
-                postsResult.add(postDTO);
-            }
+            postsResult = getPostDTOS(searchQuery);
         }
 
+        NativeSearchQuery countQuery = new NativeSearchQueryBuilder()
+                .withIndices(INDEX)
+                .withQuery(boolQuery().must(noDraftFilterElastic(currentUser)))
+                .build();
+        long totalCount = elasticsearchTemplate.count(countQuery);
+
+        return new Wrapper<>(postsResult, totalCount);
+    }
+
+    private List<PostDTO> getPostDTOS(SearchQuery searchQuery) {
+        List<PostDTO> postsResult;
+        Page<IndexPost> fulltextResult = elasticsearchTemplate.queryForPage(searchQuery, IndexPost.class, searchResultMapper);
+
+        postsResult = new ArrayList<>();
+        for (IndexPost fulltextPost: fulltextResult){
+
+            var params = new HashMap<String, Object>();
+            params.put("postId", fulltextPost.getId());
+            LOGGER.debug("Will search in postgres by id="+fulltextPost.getId());
+            PostDTO postDTO = jdbcTemplate.queryForObject(
+                    rowMapperWithoutTextTitle.getBaseSql() + " where p.id = :postId",
+                    params,
+                    rowMapperWithoutTextTitle
+            );
+            if (postDTO == null){
+                throw new DataNotFoundException("post not found in db");
+            }
+            postDTO.setText(fulltextPost.getText());
+            postDTO.setTitle(fulltextPost.getTitle());
+
+            postsResult.add(postDTO);
+        }
         return postsResult;
     }
 
-    public Wrapper<PostDTO> findByOwnerId(Pageable springDataPage, Long userId) {
+    public Wrapper<PostDTO> findByOwnerId(Pageable springDataPage, Long userId, UserAccountDetailsDTO userAccountDetailsDTO) {
         int limit = springDataPage.getPageSize();
         long offset = springDataPage.getOffset();
 
@@ -335,7 +383,10 @@ public class PostService {
         List<PostDTO> list = postsResult.stream()
                 .map(this::convertToPostDTOWithCleanTags)
                 .collect(Collectors.toList());
-        long count = jdbcTemplate.queryForObject("select count(*) from posts.post p where p.owner_id = :userId", Collections.singletonMap("userId", userId), long.class);
+        var countParams = new HashMap<String, Object>();
+        countParams.put("userId", userId);
+        countParams.putAll(noDraftFilterJdbc(userAccountDetailsDTO));
+        long count = jdbcTemplate.queryForObject("select count(*) from posts.post p where p.owner_id = :userId and (p.draft = FALSE OR ((:currentUserId\\:\\:bigint) = (:userId\\:\\:bigint)) OR :isAdmin = TRUE)", countParams, long.class);
         return new Wrapper<>(list, count);
     }
 
@@ -370,6 +421,11 @@ public class PostService {
             }
         }
 
+        removeOrphansFromIndex();
+        LOGGER.info("Finished refreshing elasticsearch index {}", IndexPost.INDEX);
+    }
+
+    public void removeOrphansFromIndex() {
         List<Long> toDeleteFromIndex = new ArrayList<>();
         for(int page=0; ;page++) {
             PageRequest pageRequest = PageRequest.of(page, chunkSize);
@@ -396,7 +452,6 @@ public class PostService {
             LOGGER.info("Deleting orphan post id={} from index", id);
             indexPostRepository.deleteById(id);
         }
-        LOGGER.info("Finished refreshing elasticsearch index {}", IndexPost.INDEX);
     }
 
     public void refreshFulltextIndex(boolean ignoreInProgress){

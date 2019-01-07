@@ -19,9 +19,10 @@ public class PostDTOExtended extends PostDTOWithAuthorization {
             PostPreview left,
             PostPreview right,
             LocalDateTime createDateTime,
-            LocalDateTime editDateTime
+            LocalDateTime editDateTime,
+            boolean draft
     ) {
-        super(id, title, text, titleImg, userAccountDTO, canEdit, canDelete, createDateTime, editDateTime);
+        super(id, title, text, titleImg, userAccountDTO, canEdit, canDelete, createDateTime, editDateTime, draft);
         this.left = left;
         this.right = right;
     }

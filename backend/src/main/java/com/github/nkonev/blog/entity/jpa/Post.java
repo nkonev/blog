@@ -29,6 +29,8 @@ public class Post {
 
     private LocalDateTime editDateTime;
 
+    private boolean draft;
+
     public Post() { }
 
     public Post(Long id, String title, String text, String titleImg) {
@@ -97,5 +99,13 @@ public class Post {
 
     public void setEditDateTime(LocalDateTime editDateTime) {
         this.editDateTime = editDateTime;
+    }
+
+    public boolean isDraft() {
+        return draft;
+    }
+
+    public void setDraft(boolean draft) {
+        this.draft = draft;
     }
 }
