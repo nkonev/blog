@@ -34,6 +34,7 @@ import static org.springframework.util.StringUtils.isEmpty;
 @ConditionalOnProperty(com.github.nkonev.blog.Constants.CUSTOM_RENDERTRON_ENABLE)
 public class RendertronFilter extends GenericFilterBean {
 
+    private static final String USER_AGENT = "User-Agent";
     @Autowired
     private RendertronConfig rendertronConfig;
 
@@ -121,6 +122,8 @@ public class RendertronFilter extends GenericFilterBean {
                 value = seoCacheService.rewriteCachedPage(request);
             }
             value = injectSeoScripts(value, request); // for Yandex verification
+            final String userAgent = request.getHeader(USER_AGENT);
+            LOGGER.info("Responding cached rendered page {} for User-Agent '{}'", getPath(request), userAgent);
             response.setHeader("Content-Type", "text/html; charset=utf-8");
             response.getWriter().print(value);
             return;
@@ -130,7 +133,7 @@ public class RendertronFilter extends GenericFilterBean {
     }
 
     public boolean shouldUseCache(HttpServletRequest request) {
-        final String userAgent = request.getHeader("User-Agent");
+        final String userAgent = request.getHeader(USER_AGENT);
         final String url = request.getRequestURL().toString();
         final String path = getPath(request);
 
@@ -143,7 +146,7 @@ public class RendertronFilter extends GenericFilterBean {
      * @return
      */
     public boolean shouldRenderSeoScript(HttpServletRequest request){
-        final String userAgent = request.getHeader("User-Agent");
+        final String userAgent = request.getHeader(USER_AGENT);
         return !isPrerenderUserAgent(userAgent);
     }
 
