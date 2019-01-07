@@ -282,4 +282,5 @@ Set Instant
 * change role by admin, immutable user bit
 * LDAP
 * Google OAuth2 login
+* search by comments
 * demo [application]((https://github.com/nkonev/blog-file-store)) on Go
