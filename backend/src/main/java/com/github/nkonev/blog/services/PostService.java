@@ -13,6 +13,8 @@ import com.github.nkonev.blog.repo.elasticsearch.IndexPostRepository;
 import com.github.nkonev.blog.repo.jpa.CommentRepository;
 import com.github.nkonev.blog.repo.jpa.PostRepository;
 import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
+import com.github.nkonev.blog.security.BlogSecurityService;
+import com.github.nkonev.blog.security.permissions.PostPermissions;
 import com.github.nkonev.blog.utils.PageUtils;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.text.Text;
@@ -38,6 +40,7 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.lang.Nullable;
@@ -64,6 +67,18 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 
 @Service
 public class PostService {
+
+    private static final ResultSetExtractor<PostDTO> POST_DTO_RESULT_SET_EXTRACTOR = rs -> {
+        if (!rs.next()) {
+            return null;
+        }
+        String title = rs.getString("title");
+        long id = rs.getLong("id");
+        PostDTO postDTO = new PostDTO();
+        postDTO.setId(id);
+        postDTO.setTitle(title);
+        return postDTO;
+    };
 
     @Autowired
     private UserAccountRepository userAccountRepository;
@@ -97,6 +112,9 @@ public class PostService {
 
     @Autowired
     private RoleHierarchy roleHierarchy;
+
+    @Autowired
+    private BlogSecurityService blogSecurityService;
 
     @Value("${custom.elasticsearch.get.all.index.ids.chunk.size:20}")
     private int chunkSize;
@@ -281,6 +299,55 @@ public class PostService {
             countParams.put("isAdmin", roleHierarchy.getReachableGrantedAuthorities(userAccountDetailsDTO.getAuthorities()).contains(new SimpleGrantedAuthority(UserRole.ROLE_ADMIN.name())));
         }
         return Tuples.of("(p.draft = FALSE OR ((:currentUserId\\:\\:bigint) = (:userId\\:\\:bigint)) OR :isAdmin = TRUE)", countParams);
+    }
+
+    private PostDTOExtended convertToDtoExtended(PostDTO saved, UserAccountDetailsDTO userAccount, Tuple2<String, Map<String, Object>> noDraftFilterJdbc) {
+        Assert.notNull(saved, "Post can't be null");
+
+        var params = new HashMap<String, Object>();
+        params.put("postId", saved.getId());
+        params.put("userId", userAccount != null ? userAccount.getId() : null);
+        params.putAll(noDraftFilterJdbc.getT2());
+
+        String sqlLeft = "SELECT p.id, p.title FROM posts.post p WHERE p.id < :postId AND "+noDraftFilterJdbc.getT1()+" ORDER BY id DESC LIMIT 1";
+        String sqlright = "SELECT p.id, p.title FROM posts.post p WHERE p.id > :postId AND "+noDraftFilterJdbc.getT1()+" ORDER BY id ASC LIMIT 1";
+        PostDTO left = jdbcTemplate.query(sqlLeft, params, POST_DTO_RESULT_SET_EXTRACTOR);
+        PostDTO right = jdbcTemplate.query(sqlright, params, POST_DTO_RESULT_SET_EXTRACTOR);
+
+        return new PostDTOExtended(
+                saved.getId(),
+                saved.getTitle(),
+                (saved.getText()),
+                saved.getTitleImg(),
+                saved.getOwner(),
+                blogSecurityService.hasPostPermission(saved, userAccount, PostPermissions.EDIT),
+                blogSecurityService.hasPostPermission(saved, userAccount, PostPermissions.DELETE),
+                left != null ? new PostPreview(left.getId(), left.getTitle()) : null,
+                right != null ? new PostPreview(right.getId(), right.getTitle()) : null,
+                saved.getCreateDateTime(),
+                saved.getEditDateTime(),
+                saved.isDraft()
+        );
+    }
+
+    public Optional<PostDTOExtended> findById(long postId, @Nullable UserAccountDetailsDTO userAccountDetailsDTO){
+        Tuple2<String, Map<String, Object>> tuple2 = noDraftFilterJdbc(userAccountDetailsDTO);
+        var params = new HashMap<String, Object>();
+        params.put("postId", postId);
+        params.put("userId", userAccountDetailsDTO != null ? userAccountDetailsDTO.getId() : null);
+        params.putAll(tuple2.getT2());
+
+        var postsResult = jdbcTemplate.query(
+                rowMapper.getBaseSql() + " WHERE p.id = :postId AND " + tuple2.getT1(),
+                params,
+                rowMapper
+        );
+
+        if (postsResult.isEmpty()){
+            return Optional.empty();
+        } else {
+            return Optional.of(convertToDtoExtended(postsResult.get(0), userAccountDetailsDTO, tuple2));
+        }
     }
 
     public Wrapper<PostDTO> getPosts(int page, int size, String searchString, @Nullable UserAccountDetailsDTO currentUser){

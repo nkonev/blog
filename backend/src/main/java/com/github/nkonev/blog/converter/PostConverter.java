@@ -45,28 +45,6 @@ public class PostConverter {
         );
     }
 
-    public PostDTOExtended convertToDtoExtended(Post saved, UserAccountDetailsDTO userAccount) {
-        Assert.notNull(saved, "Post can't be null");
-
-        Post left = postRepository.getLeft(saved.getId());
-        Post right = postRepository.getRight(saved.getId());
-
-        return new PostDTOExtended(
-                saved.getId(),
-                saved.getTitle(),
-                (saved.getText()),
-                saved.getTitleImg(),
-                userAccountConverter.convertToUserAccountDTO(saved.getOwner()),
-                blogSecurityService.hasPostPermission(saved, userAccount, PostPermissions.EDIT),
-                blogSecurityService.hasPostPermission(saved, userAccount, PostPermissions.DELETE),
-                left != null ? new PostPreview(left.getId(), left.getTitle()) : null,
-                right != null ? new PostPreview(right.getId(), right.getTitle()) : null,
-                saved.getCreateDateTime(),
-                saved.getEditDateTime(),
-                saved.isDraft()
-        );
-    }
-
     private void checkLength(String comment) {
         final int MIN_POST_LENGTH = 10;
         String trimmed = StringUtils.trimWhitespace(comment);

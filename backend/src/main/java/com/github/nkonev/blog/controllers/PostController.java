@@ -73,24 +73,13 @@ public class PostController {
         }
     }
 
-    @GetMapping(Constants.Urls.API + Constants.Urls.POST + Constants.Urls.RANDOM)
-    public List<RandomPostDTO> getRandomPosts() {
-
-        return jdbcTemplate.query(
-                "select id, title from posts.post order by random() limit 10",
-                (resultSet, i) -> new RandomPostDTO(resultSet.getLong("id"), resultSet.getString("title"))
-        );
-    }
-
-
     @GetMapping(Constants.Urls.API + Constants.Urls.POST + Constants.Urls.POST_ID)
     public PostDTOExtended getPost(
             @PathVariable(Constants.PathVariables.POST_ID) long id,
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount // null if not authenticated
     ) {
-        return postRepository
-                .findById(id)
-                .map(post -> postConverter.convertToDtoExtended(post, userAccount))
+        return postService
+                .findById(id, userAccount)
                 .orElseThrow(() -> new DataNotFoundException("Post " + id + " not found"));
     }
 

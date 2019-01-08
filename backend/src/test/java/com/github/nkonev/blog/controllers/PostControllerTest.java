@@ -151,16 +151,6 @@ public class PostControllerTest extends AbstractUtTestRunner {
     }
 
     @Test
-    public void testAnonymousCanGetRandomPosts() throws Exception {
-        mockMvc.perform(
-                MockMvcRequestBuilders.get(Constants.Urls.API+ Constants.Urls.POST + Constants.Urls.RANDOM)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-        )
-                .andExpect(status().isOk())
-                .andReturn();
-    }
-
-    @Test
     public void testTrimmed() throws Exception {
         MvcResult getPostsRequest = mockMvc.perform(
                 get(Constants.Urls.API+ Constants.Urls.POST+"?searchString= ")
@@ -411,8 +401,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 get(Constants.Urls.API+ Constants.Urls.POST+"/"+DRAFT_POST)
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
         )
-                .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$.message").value("This post hidden to drafts by author."))
+                .andExpect(status().isNotFound())
                 .andReturn();
         LOGGER.info(addPostRequest.getResponse().getContentAsString());
     }
