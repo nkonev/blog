@@ -184,12 +184,10 @@ public class PostService {
                     resultSet.getObject("create_date_time", LocalDateTime.class),
                     resultSet.getObject("edit_date_time", LocalDateTime.class),
                     resultSet.getInt("comment_count"),
-                    new UserAccountDTO(
+                    new OwnerDTO(
                             resultSet.getLong("owner_id"),
                             resultSet.getString("owner_login"),
-                            resultSet.getString("owner_avatar"),
-                            null,
-                            null
+                            resultSet.getString("owner_avatar")
                     ),
                     resultSet.getBoolean("draft")
             );

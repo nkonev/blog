@@ -36,7 +36,7 @@ public class PostConverter {
                 saved.getTitle(),
                 (saved.getText()),
                 saved.getTitleImg(),
-                userAccountConverter.convertToUserAccountDTO(saved.getOwner()),
+                userAccountConverter.convertToOwnerDTO(saved.getOwner()),
                 blogSecurityService.hasPostPermission(saved, userAccount, PostPermissions.EDIT),
                 blogSecurityService.hasPostPermission(saved, userAccount, PostPermissions.DELETE),
                 saved.getCreateDateTime(),
@@ -101,7 +101,7 @@ public class PostConverter {
                 post.getTitleImg(),
                 post.getCreateDateTime(),
                 post.getEditDateTime(),
-                userAccountConverter.convertToUserAccountDTO(post.getOwner()),
+                userAccountConverter.convertToOwnerDTO(post.getOwner()),
                 post.isDraft()
         );
     }

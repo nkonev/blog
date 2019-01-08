@@ -13,7 +13,7 @@ public class PostDTOExtended extends PostDTOWithAuthorization {
             String title,
             String text,
             String titleImg,
-            UserAccountDTO userAccountDTO,
+            OwnerDTO userAccountDTO,
             boolean canEdit,
             boolean canDelete,
             PostPreview left,

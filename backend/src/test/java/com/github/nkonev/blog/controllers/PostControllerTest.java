@@ -105,7 +105,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
                         "https://postgrespro.ru/img/logo_mono.png",
                         null,
                         null,
-                        new UserAccountDTO(),
+                        new OwnerDTO(),
                         false
                 );
             }

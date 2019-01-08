@@ -86,6 +86,15 @@ public class UserAccountConverter {
         );
     }
 
+    public OwnerDTO convertToOwnerDTO(UserAccount userAccount) {
+        if (userAccount == null) { return null; }
+        return new OwnerDTO(
+                userAccount.getId(),
+                userAccount.getUsername(),
+                userAccount.getAvatar()
+        );
+    }
+
     public UserAccountDTOExtended convertToUserAccountDTOExtended(UserAccountDetailsDTO currentUser, UserAccount userAccount) {
         if (userAccount == null) { return null; }
         UserAccountDTOExtended.DataDTO dataDTO;

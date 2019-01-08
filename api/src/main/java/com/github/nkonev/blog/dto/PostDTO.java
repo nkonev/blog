@@ -10,7 +10,7 @@ public class PostDTO {
     private String title;
     private String text;
     private String titleImg;
-    private UserAccountDTO owner;
+    private OwnerDTO owner;
     private Integer commentCount;
     private Boolean removeTitleImage;
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern= ApiConstants.DATE_FORMAT)
@@ -21,12 +21,12 @@ public class PostDTO {
 
     public PostDTO() { }
 
-    public PostDTO(long id, String title, String text, String titleImg, LocalDateTime createDateTime, LocalDateTime editDateTime, Integer commentCount, UserAccountDTO owner, boolean draft) {
+    public PostDTO(long id, String title, String text, String titleImg, LocalDateTime createDateTime, LocalDateTime editDateTime, Integer commentCount, OwnerDTO owner, boolean draft) {
         this(id, title, text, titleImg, createDateTime, editDateTime, owner, draft);
         this.commentCount = commentCount;
     }
 
-    public PostDTO(long id, String title, String text, String titleImg, LocalDateTime createDateTime, LocalDateTime editDateTime, UserAccountDTO owner, boolean draft) {
+    public PostDTO(long id, String title, String text, String titleImg, LocalDateTime createDateTime, LocalDateTime editDateTime, OwnerDTO owner, boolean draft) {
         this.id = id;
         this.title = title;
         this.text = text;
@@ -86,11 +86,11 @@ public class PostDTO {
         this.createDateTime = createDateTime;
     }
 
-    public UserAccountDTO getOwner() {
+    public OwnerDTO getOwner() {
         return owner;
     }
 
-    public void setOwner(UserAccountDTO owner) {
+    public void setOwner(OwnerDTO owner) {
         this.owner = owner;
     }
 
