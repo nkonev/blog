@@ -46,6 +46,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+import reactor.util.function.Tuple2;
+import reactor.util.function.Tuples;
+
 import javax.validation.constraints.NotNull;
 
 import java.sql.ResultSet;
@@ -268,7 +271,7 @@ public class PostService {
         }
     }
 
-    private Map<String, Object> noDraftFilterJdbc(UserAccountDetailsDTO userAccountDetailsDTO){
+    private Tuple2<String, Map<String, Object>> noDraftFilterJdbc(UserAccountDetailsDTO userAccountDetailsDTO){
         Map<String, Object> countParams = new HashMap<>();
         if (userAccountDetailsDTO==null) {
             countParams.put("currentUserId", null);
@@ -277,7 +280,7 @@ public class PostService {
             countParams.put("currentUserId", userAccountDetailsDTO.getId());
             countParams.put("isAdmin", roleHierarchy.getReachableGrantedAuthorities(userAccountDetailsDTO.getAuthorities()).contains(new SimpleGrantedAuthority(UserRole.ROLE_ADMIN.name())));
         }
-        return countParams;
+        return Tuples.of("(p.draft = FALSE OR ((:currentUserId\\:\\:bigint) = (:userId\\:\\:bigint)) OR :isAdmin = TRUE)", countParams);
     }
 
     public Wrapper<PostDTO> getPosts(int page, int size, String searchString, @Nullable UserAccountDetailsDTO currentUser){
@@ -366,15 +369,17 @@ public class PostService {
         int limit = springDataPage.getPageSize();
         long offset = springDataPage.getOffset();
 
+        Tuple2<String, Map<String, Object>> tuple2 = noDraftFilterJdbc(userAccountDetailsDTO);
         var params = new HashMap<String, Object>();
         params.put("offset", offset);
         params.put("limit", limit);
         params.put("userId", userId);
+        params.putAll(tuple2.getT2());
 
         var postsResult = jdbcTemplate.query(
                 rowMapper.getBaseSql() +
-                        " where u.id = :userId " +
-                        "  order by p.id desc " +
+                        " WHERE u.id = :userId AND " + tuple2.getT1() +
+                        "  ORDER BY p.id DESC " +
                         "limit :limit offset :offset\n",
                 params,
                 rowMapper
@@ -385,8 +390,8 @@ public class PostService {
                 .collect(Collectors.toList());
         var countParams = new HashMap<String, Object>();
         countParams.put("userId", userId);
-        countParams.putAll(noDraftFilterJdbc(userAccountDetailsDTO));
-        long count = jdbcTemplate.queryForObject("select count(*) from posts.post p where p.owner_id = :userId and (p.draft = FALSE OR ((:currentUserId\\:\\:bigint) = (:userId\\:\\:bigint)) OR :isAdmin = TRUE)", countParams, long.class);
+        countParams.putAll(tuple2.getT2());
+        long count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM posts.post p WHERE p.owner_id = :userId AND "+tuple2.getT1(), countParams, long.class);
         return new Wrapper<>(list, count);
     }
 
