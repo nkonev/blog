@@ -219,7 +219,7 @@ public class PostService {
                 tempPost.setTitle(getHighlightedOrOriginalField(searchHit, FIELD_TITLE));
                 tempPost.setText(getHighlightedOrOriginalField(searchHit, FIELD_TEXT));
                 tempPost.setDraft((boolean) searchHit.getSourceAsMap().get(FIELD_DRAFT));
-                tempPost.setOwner((int) searchHit.getSourceAsMap().get(FIELD_OWNER));
+                tempPost.setOwnerId((int) searchHit.getSourceAsMap().get(FIELD_OWNER_ID));
                 list.add(tempPost);
             }
             return new AggregatedPageImpl<T>((List<T>) list);
@@ -282,7 +282,7 @@ public class PostService {
             } else {
                 return boolQuery()
                         .should(termQuery(FIELD_DRAFT, false))
-                        .should(termQuery(FIELD_OWNER, userAccountDetailsDTO.getId()));
+                        .should(termQuery(FIELD_OWNER_ID, userAccountDetailsDTO.getId()));
             }
         }
     }

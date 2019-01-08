@@ -15,7 +15,7 @@ public class IndexPost {
     public static final String FIELD_TITLE = "title";
     public static final String TYPE = "_doc";
     public static final String FIELD_DRAFT = "draft";
-    public static final String FIELD_OWNER = "owner";
+    public static final String FIELD_OWNER_ID = "ownerId";
 
     @Id
     private Long id;
@@ -26,7 +26,7 @@ public class IndexPost {
 
     private boolean draft;
 
-    private long owner;
+    private long ownerId;
 
     public IndexPost() { }
 
@@ -34,7 +34,7 @@ public class IndexPost {
         this.id = id;
         this.title = title;
         this.text = text;
-        this.owner = ownerId;
+        this.ownerId = ownerId;
         this.draft = draft;
     }
 
@@ -71,11 +71,11 @@ public class IndexPost {
         this.draft = draft;
     }
 
-    public long getOwner() {
-        return owner;
+    public long getOwnerId() {
+        return ownerId;
     }
 
-    public void setOwner(long owner) {
-        this.owner = owner;
+    public void setOwnerId(long ownerId) {
+        this.ownerId = ownerId;
     }
 }

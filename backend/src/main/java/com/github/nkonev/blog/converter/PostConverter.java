@@ -1,10 +1,11 @@
 package com.github.nkonev.blog.converter;
 
-import com.github.nkonev.blog.dto.*;
+import com.github.nkonev.blog.dto.PostDTO;
+import com.github.nkonev.blog.dto.PostDTOWithAuthorization;
+import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
 import com.github.nkonev.blog.entity.elasticsearch.IndexPost;
 import com.github.nkonev.blog.entity.jpa.Post;
 import com.github.nkonev.blog.exception.BadRequestException;
-import com.github.nkonev.blog.repo.jpa.PostRepository;
 import com.github.nkonev.blog.security.BlogSecurityService;
 import com.github.nkonev.blog.security.permissions.PostPermissions;
 import com.github.nkonev.blog.services.XssSanitizerService;
@@ -18,9 +19,6 @@ import org.springframework.util.StringUtils;
 public class PostConverter {
     @Autowired
     private BlogSecurityService blogSecurityService;
-
-    @Autowired
-    private PostRepository postRepository;
 
     @Autowired
     private UserAccountConverter userAccountConverter;
