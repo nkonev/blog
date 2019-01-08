@@ -18,7 +18,7 @@
                             <div class="login">{{ dto.login }}</div>
                             <div v-if="dto.email" class="email">{{dto.email}}</div>
                             <div class="oauth">
-                                <a class="oauth-fb">
+                                <a class="oauth-fb" v-if="dto.oauthIdentifiers.facebookId">
                                     <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'facebook' }" style="width: 28px; height:28px; margin-right: 0.5em" ></font-awesome-icon>
                                 </a>
                                 <a :href="vkontakteUrl" v-if="dto.oauthIdentifiers.vkontakteId" class="oauth-vk">
