@@ -54,7 +54,7 @@ services:
       - traefik_backend
       - backend
   traefik:
-    image: traefik:1.6
+    image: traefik:1.7.6
     hostname: traefik
     command: -c /traefik.toml
     ports:
@@ -274,7 +274,7 @@ services:
         - traefik.frontend.rule=PathPrefix:/;Host:prometheus.blog.test
         - traefik.port=9090
         - traefik.docker.network=proxy_backend
-        - traefik.frontend.auth.basic=admin:$$apr1$$naLpVBK2$$beVtB2oo9bUZuNjkBHyeA1
+        - traefik.frontend.auth.basic.users=admin:$$apr1$$naLpVBK2$$beVtB2oo9bUZuNjkBHyeA1
     logging:
       driver: "json-file"
 #      options:
@@ -298,7 +298,7 @@ services:
         - traefik.frontend.rule=PathPrefix:/;Host:alertmanager.blog.test
         - traefik.port=9093
         - traefik.docker.network=proxy_backend
-        - traefik.frontend.auth.basic=admin:$$apr1$$naLpVBK2$$beVtB2oo9bUZuNjkBHyeA1
+        - traefik.frontend.auth.basic.users=admin:$$apr1$$naLpVBK2$$beVtB2oo9bUZuNjkBHyeA1
     logging:
       driver: "json-file"
 #      options:
@@ -330,7 +330,7 @@ services:
         - traefik.frontend.rule=PathPrefix:/;Host:grafana.blog.test
         - traefik.port=3000
         - traefik.docker.network=proxy_backend
-        - traefik.frontend.auth.basic=admin:$$apr1$$naLpVBK2$$beVtB2oo9bUZuNjkBHyeA1
+        - traefik.frontend.auth.basic.users=admin:$$apr1$$naLpVBK2$$beVtB2oo9bUZuNjkBHyeA1
     logging:
       driver: "json-file"
 #      options:
