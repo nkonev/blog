@@ -81,6 +81,7 @@ public class RendertronFilter extends GenericFilterBean {
 
 
     private boolean isInSearchUserAgent(final String userAgent) {
+        LOGGER.debug("Crawler userAgents: {}", getCrawlerUserAgents());
         if (userAgent == null){ return false;}
         for(String item: getCrawlerUserAgents()){
             if (userAgent.toLowerCase().contains(item.toLowerCase())){
@@ -92,6 +93,7 @@ public class RendertronFilter extends GenericFilterBean {
 
 
     private boolean isInResources(final String url) {
+        LOGGER.debug("Extensions to ignore by rendertron: {}", getExtensionsToIgnore());
         for(String item: getExtensionsToIgnore()){
             if ((url.indexOf('?') >= 0 ? url.substring(0, url.indexOf('?')) : url)
                     .toLowerCase().endsWith(item)){
@@ -114,7 +116,7 @@ public class RendertronFilter extends GenericFilterBean {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-        if (shouldUseCache(request)) {
+        if (shouldUseRendertron(request)) {
             final String key = getRedisKeyHtml(request);
             String value = seoCacheService.getHtmlFromCache(key);
 
@@ -132,12 +134,18 @@ public class RendertronFilter extends GenericFilterBean {
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
-    public boolean shouldUseCache(HttpServletRequest request) {
+    public boolean shouldUseRendertron(HttpServletRequest request) {
         final String userAgent = request.getHeader(USER_AGENT);
         final String url = request.getRequestURL().toString();
         final String path = getPath(request);
 
-        return isInSearchUserAgent(userAgent) && !isInResources(url) && !isInBlackList(path);
+        final boolean isInSearchUserAgent = isInSearchUserAgent(userAgent);
+        final boolean notIsInResources = !isInResources(url);
+        final boolean notIsInBlackList = !isInBlackList(path);
+        final boolean shouldUseRendertron = isInSearchUserAgent && notIsInResources && notIsInBlackList;
+        LOGGER.debug("shouldUseRendertron={} = (isInSearchUserAgent('{}')={} && !isInResources('{}')={} && !isInBlackList('{}')={})",
+                shouldUseRendertron, userAgent, isInSearchUserAgent, url, notIsInResources, path, notIsInBlackList);
+        return shouldUseRendertron;
     }
 
     /**
