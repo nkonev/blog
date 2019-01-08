@@ -84,7 +84,7 @@ public class PostConverter {
      * @param html
      * @return
      */
-    private static String cleanHtmlTags(String html) {
+    public static String cleanHtmlTags(String html) {
         return html == null ? null : Jsoup.parse(html).text();
     }
 
