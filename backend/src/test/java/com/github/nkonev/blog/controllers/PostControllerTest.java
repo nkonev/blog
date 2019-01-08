@@ -481,12 +481,38 @@ public class PostControllerTest extends AbstractUtTestRunner {
         Assertions.assertFalse(getAllPosts(Constants.Urls.API+Constants.Urls.USER + "/" + id + Constants.Urls.POSTS).stream().anyMatch(hasDraftPostPredicate));
     }
 
+    @Test
+    public void testAnonymousCannotSeeForeignDraftsInUsersPosts() throws Exception {
+        Long id = getUserId(TestConstants.USER_ALICE);
+        Assertions.assertFalse(getAllPosts(Constants.Urls.API+Constants.Urls.USER + "/" + id + Constants.Urls.POSTS).stream().anyMatch(hasDraftPostPredicate));
+    }
+
     @WithUserDetails(TestConstants.USER_NIKITA)
     @Test
     public void testUserCanSeeHisDraftsInUsersPosts() throws Exception {
         Long id = getUserId(TestConstants.USER_NIKITA);
         Assertions.assertTrue(getAllPosts(Constants.Urls.API+Constants.Urls.USER + "/" + id + Constants.Urls.POSTS).stream().anyMatch(hasDraftPostPredicate));
     }
+
+    @WithUserDetails(TestConstants.USER_ALICE)
+    @Test
+    public void testUserCannotSeeForeignDraft() throws Exception {
+        MvcResult getPostRequest = mockMvc.perform(
+                get(Constants.Urls.API+ Constants.Urls.POST+"/"+DRAFT_POST)
+        )
+                .andExpect(status().isNotFound())
+                .andReturn();
+    }
+
+    @Test
+    public void testAnonymousCannotSeeForeignDraft() throws Exception {
+        MvcResult getPostRequest = mockMvc.perform(
+                get(Constants.Urls.API+ Constants.Urls.POST+"/"+DRAFT_POST)
+        )
+                .andExpect(status().isNotFound())
+                .andReturn();
+    }
+
 
     @Test
     public void testAnonymousCannotDeletePost() throws Exception {

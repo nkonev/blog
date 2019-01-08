@@ -298,7 +298,7 @@ public class PostService {
             countParams.put("currentUserId", userAccountDetailsDTO.getId());
             countParams.put("isAdmin", roleHierarchy.getReachableGrantedAuthorities(userAccountDetailsDTO.getAuthorities()).contains(new SimpleGrantedAuthority(UserRole.ROLE_ADMIN.name())));
         }
-        return Tuples.of("(p.draft = FALSE OR ((:currentUserId\\:\\:bigint) = (:userId\\:\\:bigint)) OR :isAdmin = TRUE)", countParams);
+        return Tuples.of("(p.draft = FALSE OR ((:currentUserId\\:\\:bigint) = p.owner_id) OR :isAdmin = TRUE)", countParams);
     }
 
     private PostDTOExtended convertToDtoExtended(PostDTO saved, UserAccountDetailsDTO userAccount, Tuple2<String, Map<String, Object>> noDraftFilterJdbc) {
@@ -306,7 +306,6 @@ public class PostService {
 
         var params = new HashMap<String, Object>();
         params.put("postId", saved.getId());
-        params.put("userId", userAccount != null ? userAccount.getId() : null);
         params.putAll(noDraftFilterJdbc.getT2());
 
         String sqlLeft = "SELECT p.id, p.title FROM posts.post p WHERE p.id < :postId AND "+noDraftFilterJdbc.getT1()+" ORDER BY id DESC LIMIT 1";
@@ -334,7 +333,6 @@ public class PostService {
         Tuple2<String, Map<String, Object>> tuple2 = noDraftFilterJdbc(userAccountDetailsDTO);
         var params = new HashMap<String, Object>();
         params.put("postId", postId);
-        params.put("userId", userAccountDetailsDTO != null ? userAccountDetailsDTO.getId() : null);
         params.putAll(tuple2.getT2());
 
         var postsResult = jdbcTemplate.query(
