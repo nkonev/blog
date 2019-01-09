@@ -1,5 +1,7 @@
 package com.github.nkonev.blog.config;
 
+import ch.qos.logback.access.servlet.TeeFilter;
+import ch.qos.logback.access.tomcat.LogbackValve;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,12 +9,16 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
 import com.github.nkonev.blog.utils.ResourceUtils;
+import org.apache.catalina.Context;
+import org.apache.catalina.Valve;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.boot.web.embedded.tomcat.TomcatContextCustomizer;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -47,8 +53,9 @@ public class BlogConfig {
     }
 
     @Bean
-    public ServletWebServerFactory servletContainer() {
+    public ServletWebServerFactory servletContainer(Valve... valves) {
         TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
+        tomcat.addContextValves(valves);
 
         final File baseDir = serverProperties.getTomcat().getBasedir();
         if (baseDir!=null) {
