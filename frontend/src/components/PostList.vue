@@ -37,6 +37,7 @@
     import VmBackTop from 'vue-multiple-back-top'
     import {root} from '../routes';
     import {isLargeScreen} from '../utils'
+    import bus, {LOGIN, LOGOUT} from '../bus'
 
     // https://peachscript.github.io/vue-infinite-loading/#!/getting-started/with-filter
 
@@ -87,6 +88,11 @@
                     routerNewState.query = {[searchQueryParameter]: str};
                 }
                 this.$router.push(routerNewState);
+            },
+
+            reload(){
+                const oldSearchStr = this.searchString;
+                this.onChangeSearchString(oldSearchStr);
             },
         },
         computed:{
@@ -144,6 +150,16 @@
             } catch (ignored){}
             closeStompClient(stompObj);
         },
+        created() {
+            bus.$on(LOGIN, this.reload);
+            bus.$on(LOGOUT, this.reload);
+        },
+        destroyed() {
+            //console.log("destroyed");
+            bus.$off(LOGIN, this.reload);
+            bus.$off(LOGOUT, this.reload);
+        },
+
         metaInfo: {
             title: 'Posts',
         }
