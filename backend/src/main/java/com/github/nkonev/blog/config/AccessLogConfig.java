@@ -7,7 +7,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@ConditionalOnProperty(value = "custom.access.log.enable", matchIfMissing = true)
+@ConditionalOnProperty(value = "custom.access.log.enable", matchIfMissing = false)
 @Configuration
 public class AccessLogConfig {
     @Bean
