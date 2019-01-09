@@ -183,6 +183,18 @@ rm package-lock.json
 npm install
 ```
 
+### Debug js tests
+[youtube video](https://youtu.be/MPQ92gxEKlE?t=1672)
+[ndb](https://github.com/GoogleChromeLabs/ndb)
+
+```bash
+# globally seems not working
+cd frontend
+npm i ndb
+
+node_modules/ndb/ndb.js .
+```
+
 # FAQ
 
 Q: I suddenly get http 403 error in JUnit mockMvc tests.
