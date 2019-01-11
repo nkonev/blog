@@ -21,7 +21,7 @@ public class AccessLogConfig {
     @Bean
     public FilterRegistrationBean registration() {
         FilterRegistrationBean registration = new FilterRegistrationBean(new TeeFilter());
-        registration.setOrder(-1000); // set lesser value to be before SpringSecurityFilterChain for prevent output AccessDeniedException to stderr
+        registration.setOrder(-200); // set lesser value to be before SpringSecurityFilterChain for prevent output AccessDeniedException to stderr
         registration.setEnabled(true);
         return registration;
     }
