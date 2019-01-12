@@ -10,7 +10,7 @@
 * Draft posts that visible only for author and administrator
 * User locking
 * User deletion (with migrating posts to special `deleted` user)
-* Pages prerendering for crawlers with rendertron
+* Pages prerendering for crawlers with [rendertron](https://github.com/nkonev/rendertron-docker)
 * Dynamically setting header, subheader and background image without server restart
 * Auto cleaning "orphanned" images from PostgreSQL, and "orphaned" posts from Elasticsearch
 * Cluster out from the box - simple scale it with `docker service scale BLOGSTACK_blog=4`
