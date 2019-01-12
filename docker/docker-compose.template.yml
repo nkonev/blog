@@ -27,6 +27,7 @@ services:
       - CUSTOM_STOMP_BROKER_HOST=rabbitmq
       - CUSTOM_STOMP_BROKER_PORT=61613
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/blog?connectTimeout=10&socketTimeout=40
+      - SPRING_FLYWAY_OUT-OF-ORDER=false
       - SPRING_REDIS_URL=redis://redis:6379/0
       - SPRING_DATA_ELASTICSEARCH_CLUSTER-NODES=elasticsearch:9300
       - SPRING_RESOURCES_STATIC-LOCATIONS=file:/opt/blog/www/, classpath:/static/
@@ -164,7 +165,7 @@ services:
     - backend
 
   rendertron:
-    image: nkonev/rendertron-docker:0.0.2
+    image: nkonev/rendertron-docker:0.0.3
     hostname: rendertron
     logging:
       driver: "json-file"
