@@ -28,6 +28,7 @@ import org.springframework.security.data.repository.query.SecurityEvaluationCont
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
+import org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeAccessTokenProvider;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -123,6 +124,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 )*/
         ;
 
+        http.addFilterBefore(new OAuth2ClientContextFilter(), BasicAuthenticationFilter.class);
         http.addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
 
         http.formLogin()

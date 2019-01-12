@@ -21,7 +21,7 @@ import java.util.Optional;
 
 @Component
 @Transactional
-public class VkontaktePrincipalExtractor implements PrincipalExtractor {
+public class VkontaktePrincipalExtractor extends AbstractPrincipalExtractor implements PrincipalExtractor {
 
     @Autowired
     private UserAccountRepository userAccountRepository;
@@ -38,9 +38,9 @@ public class VkontaktePrincipalExtractor implements PrincipalExtractor {
         String vkontakteId = getId(m);
         Assert.notNull(vkontakteId, "vkontakteId cannot be null");
 
-        if (SecurityContextHolder.getContext().getAuthentication()!=null && SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof UserAccountDetailsDTO) {
+        if (isAlreadyAuthenticated()) {
             // we already authenticated - so it' s binding
-            UserAccountDetailsDTO principal = (UserAccountDetailsDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            UserAccountDetailsDTO principal = getPrincipal();
             LOGGER.info("Will merge vkontakteId to exists user '{}', id={}", principal.getUsername(), principal.getId());
 
             Optional<UserAccount> maybeUserAccount = userAccountRepository.findByOauthIdentifiersVkontakteId(vkontakteId);
