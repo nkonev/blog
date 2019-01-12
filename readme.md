@@ -3,6 +3,21 @@
 [![](https://images.microbadger.com/badges/image/nkonev/blog.svg)](https://microbadger.com/images/nkonev/blog "Get your own image badge on microbadger.com")
 [![](https://images.microbadger.com/badges/version/nkonev/blog.svg)](https://microbadger.com/images/nkonev/blog "Get your own version badge on microbadger.com")
 
+# Features
+* Fast page loading due client-side rendering
+* Fulltext search by posts
+* Updating posts through web STOMP on main page
+* Draft posts that visible only for author and administrator
+* User locking
+* User deletion (with migrating posts to special `deleted` user)
+* Pages prerendering for crawlers with rendertron
+* Dynamically setting Header, cubheader and background image without server restart
+* Auto cleaning "orphanned" images from PostgreSQL, and "orphaned" posts from Elasticsearch
+* Cluster out from box - simple scale it with `docker service scale BLOGSTACK_blog=4`
+* Login throug Facebook, Vkontakte OAuth2 providers
+* Binding several OAuth2 account to same blog accoung
+* Simply installation with docker swarm
+
 # Requirements
 
 * JDK 11
@@ -23,6 +38,12 @@ A:
 ./mvnw -P frontend generate-resources
 ```
 
+Q: How to build ulll jar (with static) ?
+A: 
+```bash
+./mvnw -P frontend clean package
+```
+It will download java dependencies and node with frontend dependencies.
 
 ## Embedded documentation
 
