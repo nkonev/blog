@@ -40,40 +40,16 @@ public class FacebookPrincipalExtractor extends AbstractPrincipalExtractor imple
     @Override
     public Object extractPrincipal(Map<String, Object> map) {
         String facebookId = getId(map);
-        String maybeImageUrl = getAvatarUrl(map);
         Assert.notNull(facebookId, "facebookId cannot be null");
 
-        if (isAlreadyAuthenticated()) {
-            // we already authenticated - so it' s binding
-            UserAccountDetailsDTO principal = getPrincipal();
-            LOGGER.info("Will merge facebookId to exists user '{}', id={}", principal.getUsername(), principal.getId());
-
-            Optional<UserAccount> maybeUserAccount = userAccountRepository.findByOauthIdentifiersFacebookId(facebookId);
-            if (maybeUserAccount.isPresent() && !maybeUserAccount.get().getId().equals(principal.getId())){
-                LOGGER.error("With facebookId={} already present another user '{}', id={}", facebookId, maybeUserAccount.get().getUsername(), maybeUserAccount.get().getId());
-                throw new OauthIdConflictException("Somebody already taken this facebook id="+facebookId+". " +
-                        "If this is you and you want to merge your profiles please delete another profile and bind facebook to this. If not please contact administrator.");
-            }
-
-            principal.getOauthIdentifiers().setFacebookId(facebookId);
-
-            UserAccount userAccount = userAccountRepository.findById(principal.getId()).orElseThrow();
-            userAccount.getOauthIdentifiers().setFacebookId(facebookId);
-            LOGGER.info("facebookId successfully merged to exists user '{}', id={}", principal.getUsername(), principal.getId());
-            return principal;
+        UserAccountDetailsDTO mergedPrincipal = mergeOauthIdToExistsUser(facebookId);
+        if (mergedPrincipal != null) {
+            return mergedPrincipal;
         }
 
-        UserAccount userAccount;
-        Optional<UserAccount> userAccountOpt = userAccountRepository.findByOauthIdentifiersFacebookId(facebookId);
-        if (!userAccountOpt.isPresent()){
-            String login = getLogin(map);
-            userAccount = UserAccountConverter.buildUserAccountEntityForFacebookInsert(facebookId, login, maybeImageUrl);
-            userAccount = userAccountRepository.save(userAccount);
-        } else {
-            userAccount = userAccountOpt.get();
-        }
+        String login = getLogin(map);
 
-        return UserAccountConverter.convertToUserAccountDetailsDTO(userAccount);
+        return createOrGetExistsUser(facebookId, login, map);
     }
 
     private String getLogin(Map<String, Object> map) {
@@ -83,7 +59,7 @@ public class FacebookPrincipalExtractor extends AbstractPrincipalExtractor imple
         login = login.replaceAll(" +", " ");
         String facebookId = getId(map);
         if (userAccountRepository.findByUsername(login).isPresent()){
-            LOGGER.info("User with login '{}' already present in database, so we' ll generate login", login);
+            LOGGER.info("User with login '{}' (facebook) already present in database, so we' ll generate login", login);
             return LOGIN_PREFIX+facebookId;
         } else {
             return login;
@@ -92,5 +68,41 @@ public class FacebookPrincipalExtractor extends AbstractPrincipalExtractor imple
 
     private String getId(Map<String, Object> map) {
         return (String) map.get("id");
+    }
+
+    @Override
+    protected Logger logger() {
+        return LOGGER;
+    }
+
+    @Override
+    protected String getOauthName() {
+        return "facebook";
+    }
+
+    @Override
+    protected Optional<UserAccount> findByOauthId(String oauthId) {
+        return userAccountRepository.findByOauthIdentifiersFacebookId(oauthId);
+    }
+
+    @Override
+    protected void setOauthIdToPrincipal(UserAccountDetailsDTO principal, String oauthId) {
+        principal.getOauthIdentifiers().setFacebookId(oauthId);
+    }
+
+    @Override
+    protected void setOauthIdToEntity(Long id, String oauthId) {
+        UserAccount userAccount = userAccountRepository.findById(id).orElseThrow();
+        userAccount.getOauthIdentifiers().setFacebookId(oauthId);
+    }
+
+    @Override
+    protected UserAccount saveEntity(String oauthId, String login, Map<String, Object> map) {
+        String maybeImageUrl = getAvatarUrl(map);
+
+        UserAccount userAccount = UserAccountConverter.buildUserAccountEntityForFacebookInsert(oauthId, login, maybeImageUrl);
+        userAccount = userAccountRepository.save(userAccount);
+
+        return userAccount;
     }
 }

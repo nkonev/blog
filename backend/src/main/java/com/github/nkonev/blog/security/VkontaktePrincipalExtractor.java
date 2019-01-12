@@ -38,37 +38,14 @@ public class VkontaktePrincipalExtractor extends AbstractPrincipalExtractor impl
         String vkontakteId = getId(m);
         Assert.notNull(vkontakteId, "vkontakteId cannot be null");
 
-        if (isAlreadyAuthenticated()) {
-            // we already authenticated - so it' s binding
-            UserAccountDetailsDTO principal = getPrincipal();
-            LOGGER.info("Will merge vkontakteId to exists user '{}', id={}", principal.getUsername(), principal.getId());
-
-            Optional<UserAccount> maybeUserAccount = userAccountRepository.findByOauthIdentifiersVkontakteId(vkontakteId);
-            if (maybeUserAccount.isPresent() && !maybeUserAccount.get().getId().equals(principal.getId())){
-                LOGGER.error("With vkontakteId={} already present another user '{}', id={}", vkontakteId, maybeUserAccount.get().getUsername(), maybeUserAccount.get().getId());
-                throw new OauthIdConflictException("Somebody already taken this vkontakte id="+vkontakteId+". " +
-                        "If this is you and you want to merge your profiles please delete another profile and bind vkontakte to this. If not please contact administrator.");
-            }
-
-            principal.getOauthIdentifiers().setVkontakteId(vkontakteId);
-
-            UserAccount userAccount = userAccountRepository.findById(principal.getId()).orElseThrow();
-            userAccount.getOauthIdentifiers().setVkontakteId(vkontakteId);
-            LOGGER.info("vkontakteId successfully merged to exists user '{}', id={}", principal.getUsername(), principal.getId());
-            return principal;
+        UserAccountDetailsDTO mergedPrincipal = mergeOauthIdToExistsUser(vkontakteId);
+        if (mergedPrincipal != null) {
+            return mergedPrincipal;
         }
 
-        UserAccount userAccount;
-        Optional<UserAccount> userAccountOpt = userAccountRepository.findByOauthIdentifiersVkontakteId(vkontakteId);
-        if (!userAccountOpt.isPresent()){
-            String login = getLogin(m);
-            userAccount = UserAccountConverter.buildUserAccountEntityForVkontakteInsert(vkontakteId, login);
-            userAccount = userAccountRepository.save(userAccount);
-        } else {
-            userAccount = userAccountOpt.get();
-        }
+        String login = getLogin(m);
 
-        return UserAccountConverter.convertToUserAccountDetailsDTO(userAccount);
+        return createOrGetExistsUser(vkontakteId, login, map);
     }
 
     private String getId(Map<String, Object> m) {
@@ -92,10 +69,45 @@ public class VkontaktePrincipalExtractor extends AbstractPrincipalExtractor impl
         login = login.trim();
         String vkontakteId = getId(map);
         if (userAccountRepository.findByUsername(login).isPresent()){
-            LOGGER.info("User with login '{}' already present in database, so we' ll generate login", login);
+            LOGGER.info("User with login '{}' (vkontakte) already present in database, so we' ll generate login", login);
             return LOGIN_PREFIX+vkontakteId;
         } else {
             return login;
         }
+    }
+
+    @Override
+    protected Logger logger() {
+        return LOGGER;
+    }
+
+    @Override
+    protected String getOauthName() {
+        return "vkontate";
+    }
+
+    @Override
+    protected Optional<UserAccount> findByOauthId(String oauthId) {
+        return userAccountRepository.findByOauthIdentifiersVkontakteId(oauthId);
+    }
+
+    @Override
+    protected void setOauthIdToPrincipal(UserAccountDetailsDTO principal, String oauthId) {
+        principal.getOauthIdentifiers().setVkontakteId(oauthId);
+    }
+
+    @Override
+    protected void setOauthIdToEntity(Long id, String oauthId) {
+        UserAccount userAccount = userAccountRepository.findById(id).orElseThrow();
+        userAccount.getOauthIdentifiers().setVkontakteId(oauthId);
+    }
+
+    @Override
+    protected UserAccount saveEntity(String oauthId, String login, Map<String, Object> oauthResourceServerResponse) {
+        UserAccount userAccount = UserAccountConverter.buildUserAccountEntityForVkontakteInsert(oauthId, login);
+        userAccount = userAccountRepository.save(userAccount);
+
+        return userAccount;
+
     }
 }
