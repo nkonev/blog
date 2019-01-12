@@ -11,10 +11,10 @@
 * User locking
 * User deletion (with migrating posts to special `deleted` user)
 * Pages prerendering for crawlers with rendertron
-* Dynamically setting Header, cubheader and background image without server restart
+* Dynamically setting header, subheader and background image without server restart
 * Auto cleaning "orphanned" images from PostgreSQL, and "orphaned" posts from Elasticsearch
-* Cluster out from box - simple scale it with `docker service scale BLOGSTACK_blog=4`
-* Login throug Facebook, Vkontakte OAuth2 providers
+* Cluster out from the box - simple scale it with `docker service scale BLOGSTACK_blog=4`
+* Login throuh Facebook, Vkontakte OAuth2 providers
 * Binding several OAuth2 account to same blog accoung
 * Simply installation with docker swarm
 
