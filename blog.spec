@@ -30,4 +30,4 @@ This package contains the API documentation for %{name}.
 %files -f .mfiles
 
 %changelog
-- Initial packaging
+* Initial packaging
