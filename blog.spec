@@ -22,7 +22,7 @@ Summary:        Javadoc for %{name}
 This package contains the API documentation for %{name}.
 
 %build
-%mvn_build
+mvn-rpmbuild -Pfrontend
 
 %install
 %mvn_install
