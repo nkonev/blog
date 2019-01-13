@@ -13,6 +13,9 @@
       "search_analyzer": "my_analyzer",
       "analyzer": "my_analyzer",
       "term_vector": "with_positions_offsets_payloads"
+    },
+    "id": {
+      "type": "long"
     }
   }
 }
