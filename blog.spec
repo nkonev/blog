@@ -20,6 +20,8 @@ This package contains the API documentation for %{name}.
 
 %build
 ./mvnw -Pfrontend clean package
+pwd
+ls -lah
 
 %install
 %mvn_install
