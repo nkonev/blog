@@ -15,9 +15,6 @@ Requires:       java-11-openjdk-headless
 %description
 This is simple Maven project.
 
-%description javadoc
-This package contains the API documentation for %{name}.
-
 %build
 ./mvnw -Pfrontend clean package
 pwd
