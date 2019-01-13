@@ -38,7 +38,8 @@ A:
 ./mvnw -P frontend generate-resources
 ```
 
-Q: How to build ulll jar (with static) ?
+Q: How to build full jar (with static) ?
+
 A: 
 ```bash
 ./mvnw -P frontend clean package
