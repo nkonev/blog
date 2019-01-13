@@ -28,6 +28,3 @@ This package contains the API documentation for %{name}.
 %mvn_install
 
 %files -f .mfiles
-
-%changelog
-* Initial packaging
