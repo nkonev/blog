@@ -15,14 +15,11 @@ Requires:       java-11-openjdk-headless
 %description
 This is simple Maven project.
 
-%package        javadoc
-Summary:        Javadoc for %{name}
-
 %description javadoc
 This package contains the API documentation for %{name}.
 
 %build
-mvn-rpmbuild -Pfrontend
+./mvnw -Pfrontend clean package
 
 %install
 %mvn_install
