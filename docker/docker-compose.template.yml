@@ -55,7 +55,7 @@ services:
       - traefik_backend
       - backend
   traefik:
-    image: traefik:1.7.6
+    image: traefik:1.7.7
     hostname: traefik
     command: -c /traefik.toml
     ports:
