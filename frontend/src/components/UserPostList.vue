@@ -63,9 +63,6 @@
         },
         beforeDestroy() {
         },
-        metaInfo: {
-            title: 'User posts',
-        }
     }
 </script>
 

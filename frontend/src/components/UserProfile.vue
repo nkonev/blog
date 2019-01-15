@@ -135,8 +135,7 @@
                 login = this.id;
             }
             return {
-
-                title: 'User ' + login,
+                title: login,
             }
         }
 

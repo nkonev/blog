@@ -3,17 +3,17 @@
         <template v-if="configLoading">
             <blog-spinner message="Loading config..."></blog-spinner>
         </template>
-        <template v-else>
+        <div class="settings" v-else>
             <h1>Header</h1>
             <input class="title-edit" placeholder="Header title" type="text" autofocus v-model="header"/>
 
-            <h1>Sub header</h1>
+            <h2>Sub header</h2>
             <input class="title-edit" placeholder="Sub header" type="text" v-model="subHeader"/>
 
-            <h1>Title template</h1>
+            <h2>Title template</h2>
             <input class="title-edit" placeholder="Title Template" type="text" v-model="titleTemplate"/>
 
-            <h1>Background image</h1>
+            <h2>Background image</h2>
             <!-- https://zhanziyang.github.io/vue-croppa/#/file-input -->
             <div class="image-background-cropper">
                 <croppa v-model="myCroppa"
@@ -42,7 +42,7 @@
 
             <button v-if="!submitting" class="blog-btn ok-btn" @click="onBtnSave">Save</button>
             <blog-spinner v-if="submitting" message="Sending..."></blog-spinner>
-        </template>
+        </div>
     </div>
 </template>
 
@@ -182,7 +182,7 @@
     }
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
     @import "../constants.styl"
     @import "../common.styl"
 
@@ -190,4 +190,7 @@
         text-align center
     }
 
+    div.settings h1, h2 {
+        margin-bottom 0
+    }
 </style>
