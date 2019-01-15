@@ -29,12 +29,14 @@ public class UserDeleteService {
     @Autowired
     private PostRepository postRepository;
 
-    public void deleteUser(long userId) {
+    public long deleteUser(long userId) {
         blogUserDetailsService.killSessions(userId);
         UserAccount deleted = userAccountRepository.findByUsername(Constants.DELETED).orElseThrow();
         postRepository.moveToAnotherUser(userId, deleted.getId());
         commentRepository.moveToAnotherUser(userId, deleted.getId());
         userAccountRepository.deleteById(userId);
+
+        return userAccountRepository.count();
     }
 
 }

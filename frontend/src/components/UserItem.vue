@@ -19,8 +19,9 @@
 <script>
     import Vue from "vue"
     import Avatar from 'vue-avatar'
-    const refreshEvent = "refreshEvent";
     import {DIALOG} from '../constants'
+
+    export const USER_DELETED = 'USER_DELETED';
 
     export default {
         name: 'user-item', // это имя компонента, которое м. б. тегом в другом компоненте
@@ -52,7 +53,7 @@
                 this.$http.delete('/api/user?userId='+this.model.id).then(
                     response => {
                         console.log("Successfully deleted");
-                        this.$emit(refreshEvent);
+                        this.$emit(USER_DELETED, response.body);
                     },
                     failResponse => {
                         alert("Error on delete")

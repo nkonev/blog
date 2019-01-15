@@ -19,7 +19,7 @@
         ></paginate>
 
         <div v-if="users.length>0" id="user-list">
-            <user-item v-for="user in users" v-bind:userDTO="user" :key="user.id" :currentUser="currentUser" @refreshEvent="onRefreshEvent"></user-item>
+            <user-item v-for="user in users" v-bind:userDTO="user" :key="user.id" :currentUser="currentUser" @USER_DELETED="onDeleteEvent"></user-item>
         </div>
         <div v-else id="user-list">
             No data
@@ -52,11 +52,13 @@
         },
         store,
         methods: {
-            reloadPage(pageNum, searchString) {
-                this.users = []; // bypass caching or something same
-                if (!searchString) {searchString=''}
+            reloadPage(pageNum) {
                 this.$router.push({path: users, query: {page: pageNum}});
                 console.log("opening page ", pageNum);
+                this.fetchUsers('', pageNum);
+            },
+            fetchUsers(searchString='', pageNum=(this.initialPageIndex+1)) {
+                this.$router.push({path: users, query: {page: pageNum}});
 
                 // API request
                 this.$http.get('/api/user',
@@ -68,7 +70,7 @@
                         },
                     }).then(
                     response => {
-                        this.pageCount = Math.ceil(response.body.totalCount / PAGE_SIZE);
+                        this.pageCount = this.getPageCount(response.body.totalCount);
                         this.users = response.body.data;
                         this.currentPage = pageNum;
                     }, response => {
@@ -79,22 +81,29 @@
             },
             onLogin(ignore) {
                 console.log("onLogin");
-                this.reloadPage(this.initialPageIndex+1);
+                this.fetchUsers();
             },
             onLogout(ignore) {
                 console.log("onLogout");
-                this.reloadPage(this.initialPageIndex+1);
+                this.fetchUsers();
             },
             onChangeSearchString(str) {
                 console.debug('onChangeSearchString', str);
-                this.searchString = str;
-                this.users = [];
                 const initPage = 0;
-                this.reloadPage(initPage+1, str);
+                this.fetchUsers(str, initPage+1);
             },
-            onRefreshEvent(){
-                console.info("Refresh event in list");
-                this.reloadPage(this.initialPageIndex+1);
+            getPageCount(totalUsersCount){
+                return Math.ceil(totalUsersCount / PAGE_SIZE);
+            },
+            shouldSwitch(totalUsersCount){
+                return !(totalUsersCount % PAGE_SIZE);
+            },
+
+            onDeleteEvent(newUsersCount){
+                console.info("Delete event in list");
+                this.pageCount = this.getPageCount(newUsersCount);
+                const nextPage = this.shouldSwitch(newUsersCount) ? this.initialPageIndex : this.initialPageIndex +1;
+                this.reloadPage(nextPage);
             }
         },
         components: {
@@ -110,7 +119,7 @@
         },
         created() {
             //console.log("created");
-            this.reloadPage(this.initialPageIndex+1);
+            this.fetchUsers();
 
             bus.$on(LOGIN, this.onLogin);
             bus.$on(LOGOUT, this.onLogout);
