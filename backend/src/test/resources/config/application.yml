@@ -66,9 +66,9 @@ custom:
     defaultLockAtLeastForSec: 20
     images.clean:
       cron: "0 * * * * *"
-    rendered.cache.refresh:
+    rendertron.cache.refresh:
       cron: "0 */30 * * * *"
-    index.refresh:
+    elasticsearch.refresh:
       cron: "0 0 */2 * * *"
   rendertron:
     serviceUrl: http://rendertron.example.com:3000/
