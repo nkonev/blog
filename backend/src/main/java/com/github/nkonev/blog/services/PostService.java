@@ -63,6 +63,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.github.nkonev.blog.entity.elasticsearch.IndexPost.*;
+import static com.github.nkonev.blog.utils.TimeUtil.getNowUTC;
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 @Service
@@ -248,7 +249,7 @@ public class PostService {
         Assert.notNull(userAccount, "UserAccountDetailsDTO can't be null");
         Post found = postRepository.findById(postDTO.getId()).orElseThrow(()->new IllegalArgumentException("Post with id " + postDTO.getId() + " not found"));
         Post updatedEntity = postConverter.convertToPost(postDTO, found);
-        updatedEntity.setEditDateTime(LocalDateTime.now(ZoneOffset.UTC));
+        updatedEntity.setEditDateTime(getNowUTC());
         Post saved = postRepository.saveAndFlush(updatedEntity);
         indexPostRepository.save(postConverter.toElasticsearchPost(saved));
 

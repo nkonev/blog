@@ -20,8 +20,12 @@ import org.springframework.data.redis.core.RedisTemplate;
 import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeUnit;
+
+import static com.github.nkonev.blog.utils.TimeUtil.getNowUTC;
 
 @Qualifier(ElasticsearchConfig.ELASTICSEARCH_CONFIG)
 @Configuration
@@ -102,14 +106,14 @@ public class ElasticsearchConfig {
             LOGGER.info("Will try to refresh elasticsearch index");
             final String key = getKey();
 
-            final boolean firstRun = Boolean.TRUE.equals(redisTemplate.opsForValue().setIfAbsent(key, LocalDateTime.now().format(formatter)));
+            final boolean firstRun = Boolean.TRUE.equals(redisTemplate.opsForValue().setIfAbsent(key, getNowUTC().format(formatter)));
             String dateTimeString = redisTemplate.opsForValue().get(key);
             LocalDateTime dateTime = LocalDateTime.parse(dateTimeString, formatter);
 
-            if (dateTime.plus(Duration.of(timeout, timeUnit.toChronoUnit())).isBefore(LocalDateTime.now()) || firstRun) {
+            if (dateTime.plus(Duration.of(timeout, timeUnit.toChronoUnit())).isBefore(getNowUTC()) || firstRun) {
                 LOGGER.info("Condition is successful, so we'll refresh elasticsearch index");
                 postService.refreshFulltextIndex(false);
-                redisTemplate.opsForValue().set(key, LocalDateTime.now().format(formatter));
+                redisTemplate.opsForValue().set(key, getNowUTC().format(formatter));
                 if (dropFirst){
                     redisTemplate.delete(key);
                 }

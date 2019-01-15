@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
+import static com.github.nkonev.blog.utils.TimeUtil.getNowUTC;
+
 @Transactional
 @Component
 public class LoginListener implements ApplicationListener<AuthenticationSuccessEvent> {
@@ -28,6 +30,6 @@ public class LoginListener implements ApplicationListener<AuthenticationSuccessE
         UserDetails userDetails = (UserDetails) event.getAuthentication().getPrincipal();
         LOGGER.info("Logged in as '{}'", userDetails.getUsername());
         UserAccount userAccount = userAccountRepository.findByUsername(userDetails.getUsername()).orElseThrow();
-        userAccount.setLastLoginDateTime(LocalDateTime.now(ZoneOffset.UTC));
+        userAccount.setLastLoginDateTime(getNowUTC());
     }
 }

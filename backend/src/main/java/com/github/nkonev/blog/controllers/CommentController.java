@@ -23,6 +23,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.github.nkonev.blog.utils.TimeUtil.getNowUTC;
+
 @Transactional
 @RestController
 public class CommentController {
@@ -99,7 +101,7 @@ public class CommentController {
         Comment found = commentRepository.findById(commentDTO.getId()).orElseThrow(()-> new IllegalArgumentException("Comment with id " + commentDTO.getId() + " not found"));
 
         Comment updatedEntity = commentConverter.convertFromDto(commentDTO, 0, found);
-        updatedEntity.setEditDateTime(LocalDateTime.now(ZoneOffset.UTC));
+        updatedEntity.setEditDateTime(getNowUTC());
         Comment saved = commentRepository.save(updatedEntity);
 
         return commentConverter.convertToDtoExtended(saved, userAccount, count);
