@@ -31,6 +31,10 @@ public abstract class AbstractPrincipalExtractor {
 
     protected abstract UserAccount saveEntity(String oauthId, String login, Map<String, Object> oauthResourceServerResponse);
 
+    protected abstract String getLoginPrefix();
+
+    protected abstract Optional<UserAccount> findByUsername(String login);
+
     /**
      *
      * @return notnull UserAccountDetailsDTO if was merged - so we should return it immediately from Extractor
@@ -63,6 +67,12 @@ public abstract class AbstractPrincipalExtractor {
         UserAccount userAccount;
         Optional<UserAccount> userAccountOpt = findByOauthId(oauthId);
         if (!userAccountOpt.isPresent()){
+
+            if (findByUsername(login).isPresent()){
+                logger().info("User with login '{}' ({}) already present in database, so we' ll generate login", login, getOauthName());
+                login = getLoginPrefix()+oauthId;
+            }
+
             userAccount = saveEntity(oauthId, login, oauthResourceServerResponse);
         } else {
             userAccount = userAccountOpt.get();
@@ -70,4 +80,5 @@ public abstract class AbstractPrincipalExtractor {
 
         return UserAccountConverter.convertToUserAccountDetailsDTO(userAccount);
     }
+
 }

@@ -67,13 +67,7 @@ public class VkontaktePrincipalExtractor extends AbstractPrincipalExtractor impl
         }
         Assert.hasLength(login, "vkontakte name cannot be null");
         login = login.trim();
-        String vkontakteId = getId(map);
-        if (userAccountRepository.findByUsername(login).isPresent()){
-            LOGGER.info("User with login '{}' (vkontakte) already present in database, so we' ll generate login", login);
-            return LOGIN_PREFIX+vkontakteId;
-        } else {
-            return login;
-        }
+        return login;
     }
 
     @Override
@@ -109,5 +103,15 @@ public class VkontaktePrincipalExtractor extends AbstractPrincipalExtractor impl
 
         return userAccount;
 
+    }
+
+    @Override
+    protected String getLoginPrefix() {
+        return LOGIN_PREFIX;
+    }
+
+    @Override
+    protected Optional<UserAccount> findByUsername(String login) {
+        return userAccountRepository.findByUsername(login);
     }
 }

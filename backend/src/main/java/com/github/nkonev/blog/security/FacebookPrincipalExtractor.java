@@ -57,13 +57,7 @@ public class FacebookPrincipalExtractor extends AbstractPrincipalExtractor imple
         Assert.hasLength(login, "facebook name cannot be null");
         login = login.trim();
         login = login.replaceAll(" +", " ");
-        String facebookId = getId(map);
-        if (userAccountRepository.findByUsername(login).isPresent()){
-            LOGGER.info("User with login '{}' (facebook) already present in database, so we' ll generate login", login);
-            return LOGIN_PREFIX+facebookId;
-        } else {
-            return login;
-        }
+        return login;
     }
 
     private String getId(Map<String, Object> map) {
@@ -104,5 +98,15 @@ public class FacebookPrincipalExtractor extends AbstractPrincipalExtractor imple
         userAccount = userAccountRepository.save(userAccount);
 
         return userAccount;
+    }
+
+    @Override
+    protected String getLoginPrefix() {
+        return LOGIN_PREFIX;
+    }
+
+    @Override
+    protected Optional<UserAccount> findByUsername(String login) {
+        return userAccountRepository.findByUsername(login);
     }
 }
