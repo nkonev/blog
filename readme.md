@@ -14,14 +14,17 @@
 * Dynamically setting header, subheader and background image without server restart
 * Auto cleaning "orphanned" images from PostgreSQL, and "orphaned" posts from Elasticsearch
 * Cluster out from the box - simple scale it with `docker service scale BLOGSTACK_blog=4`
-* Login throuh Facebook, Vkontakte OAuth2 providers
+* Login through Facebook, Vkontakte OAuth2 providers
 * Binding several OAuth2 account to same blog accoung
 * Simply installation with docker swarm
 
 # Requirements
 
+## Run
 * JDK 11
 * Docker 17.09.1-ce +
+
+## Development
 * docker-compose 1.16.1 +
 * Google Chrome (as [default](https://github.com/nkonev/blog/blob/master/webdriver-test/src/test/resources/config/application.yml#L88) browser for webdriver-test). Just `dnf install chromium` in latest Fedora.
 
@@ -29,7 +32,7 @@
 
 Q: Can I run it without docker ?
 
-A: Yes, you can achieve it by manually install PostgreSQL, RabbitMQ, Redis, Elasticsearch and configure it's connections in config or through commandline. 
+A: Yes, you can achieve it by manually install PostgreSQL, RabbitMQ, Redis, Elasticsearch and configure it's connections in config or through commandline. See Spring Boot documentation https://docs.spring.io/spring-boot/docs/2.1.1.RELEASE/reference/html/boot-features-external-config.html.
 
 Q: How to build frontend if I am backend developer ?
 
@@ -44,9 +47,13 @@ A:
 ```bash
 ./mvnw -P frontend clean package
 ```
-It will download java dependencies and node with frontend dependencies.
+It will download java dependencies and nodejs with frontend dependencies.
 
-## Embedded documentation
+Q: Why does blog wait for PostgreSQL, Elasticsearch, Redis, RabbltMQ port availability on boot?
+A: Primarily for deploy tests runned inside Travis. When there isn' t these waits, I had spirously tests fails due inpredictable time of Elasticsearch boot.
+
+
+## Embedded API documentation
 
 Embedded documentation are available at `http://127.0.0.1:8080/docs/index.html`
 
@@ -61,8 +68,8 @@ curl -i http://127.0.0.1:8080/git.json
 
 # Running on Windows without docker
 
-First you should install redis, postgres, Rabbit MQ, Elasticsearch
-and manually setup them (create database, schema user for Postgres, install web stomp plugin and create user for RabbitMQ).
+First you should install Redis, PostgreSQL, Rabbit MQ, Elasticsearch
+and manually setup them (create database, schema, user for PostgreSQL, install web stomp plugin and create user for RabbitMQ).
 
 Redis Windows x86 which works on my PC (Windows 7 x86)
 http://bitsandpieces.it/redis-x86-32bit-builds-for-windows
@@ -171,7 +178,7 @@ next insert iptables rule
 iptables -I INPUT -i docker_gwbridge -p tcp -m multiport --dports 80,443 -j ACCEPT
 ```
 
-If all ok, you can do it persistent by
+If all ok, you should do it persistent by
 ```bash
 chmod +x /etc/rc.local
 vim /etc/rc.local
