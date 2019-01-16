@@ -49,7 +49,9 @@ A:
 ```
 It will download java dependencies and nodejs with frontend dependencies.
 
+
 Q: Why does blog wait for PostgreSQL, Elasticsearch, Redis, RabbltMQ port availability on boot?
+
 A: Primarily for deploy tests runned inside Travis. When there isn' t these waits, I had spirously tests fails due inpredictable time of Elasticsearch boot.
 
 
