@@ -144,6 +144,9 @@ public class PostService {
     @Value(Constants.ELASTICSEARCH_REFRESH_ON_START_KEY_TIMEUNIT)
     private TimeUnit timeUnit;
 
+    @Value("${custom.elasticsearch.refresh.batch.size:100}")
+    private int refreshBatchSize;
+
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
@@ -481,17 +484,30 @@ public class PostService {
         LOGGER.info("Starting refreshing elasticsearch index {}", IndexPost.INDEX);
         final Collection<Long> postIds = postRepository.findPostIds();
 
+        final Collection<IndexPost> toSave = new ArrayList<>();
         for (Long id: postIds) {
             Optional<com.github.nkonev.blog.entity.jpa.Post> post = postRepository.findById(id);
             if (post.isPresent()) {
                 com.github.nkonev.blog.entity.jpa.Post jpaPost = post.get();
-                LOGGER.info("Copying PostgreSQL -> Elasticsearch post id={}", id);
-                indexPostRepository.save(postConverter.toElasticsearchPost(jpaPost));
+                LOGGER.debug("Converting PostgreSQL -> Elasticsearch post id={}", id);
+                IndexPost indexPost = postConverter.toElasticsearchPost(jpaPost);
+                toSave.add(indexPost);
+
+                if (toSave.size() > refreshBatchSize-1){
+                    flushToElasticsearch(toSave);
+                }
             }
         }
+        flushToElasticsearch(toSave);
 
         removeOrphansFromIndex();
         LOGGER.info("Finished refreshing elasticsearch index {}", IndexPost.INDEX);
+    }
+
+    private void flushToElasticsearch(Collection<IndexPost> toSave) {
+        indexPostRepository.saveAll(toSave);
+        LOGGER.info("Flushed {} items to elasticsearch index", toSave.size());
+        toSave.clear();
     }
 
     public void removeOrphansFromIndex() {
