@@ -18,6 +18,10 @@ services:
         - traefik.frontend.rule=PathPrefix:/;Host:blog.test
         - traefik.port=8098
         - traefik.docker.network=proxy_backend
+        - traefik.backend.healthcheck.path=/actuator/health
+        - traefik.backend.healthcheck.interval=2s
+        - traefik.backend.healthcheck.port=3010
+        - traefik.backend.healthcheck.scheme=http
     environment:
       # https://stackoverflow.com/questions/28327620/difference-between-java-options-java-tool-options-and-java-opts
       # https://blogs.oracle.com/poonam/about-g1-garbage-collector%2c-permanent-generation-and-metaspace
