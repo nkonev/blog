@@ -83,6 +83,8 @@
         return tmp.textContent || tmp.innerText || "";
     }
 
+    const localStorageKey = 'postDto';
+
     // https://quilljs.com/docs/modules/toolbar/
     const toolbarOptions = [
         ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
@@ -125,6 +127,7 @@
             },
             finishSending() {
                 this.submitting = false;
+                localStorage.removeItem(localStorageKey);
             },
             onBtnSave() {
                 this.startSending();
@@ -177,6 +180,7 @@
                 }
             },
             onBtnCancel() {
+                localStorage.removeItem(localStorageKey);
                 if (this.$props.onCancel){
                     this.$props.onCancel();
                 }
@@ -239,8 +243,20 @@
             'editPostDTO': {
                 handler: function (val, oldVal) {
                     // console.log("PostEdit changing editPostDTO", val.title, val.text);
+                    const parsed = JSON.stringify(this.editPostDTO);
+                    localStorage.setItem(localStorageKey, parsed);
                 },
                 deep: true
+            }
+        },
+        mounted(){
+            if (localStorage.getItem(localStorageKey)) {
+                try {
+                    this.editPostDTO = JSON.parse(localStorage.getItem(localStorageKey));
+                } catch(e) {
+                    console.error("Exception during parsing localstorage value - will delete this value", e);
+                    localStorage.removeItem(localStorageKey);
+                }
             }
         },
         created(){
