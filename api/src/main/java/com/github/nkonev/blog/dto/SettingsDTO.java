@@ -1,5 +1,8 @@
 package com.github.nkonev.blog.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SettingsDTO {
     private String header;
 
@@ -15,15 +18,18 @@ public class SettingsDTO {
 
     private boolean canShowApplications;
 
+    private List<UserRole> availableRoles = new ArrayList<>();
+
     public SettingsDTO() { }
 
-    public SettingsDTO(String header, String subHeader, String titleTemplate, String imageBackground, boolean canShowSettings, boolean enableApplications) {
+    public SettingsDTO(String header, String subHeader, String titleTemplate, String imageBackground, boolean canShowSettings, boolean enableApplications, List<UserRole> availableRoles) {
         this.header = header;
         this.subHeader = subHeader;
         this.titleTemplate = titleTemplate;
         this.imageBackground = imageBackground;
         this.canShowSettings = canShowSettings;
         this.canShowApplications = enableApplications;
+        this.availableRoles = availableRoles;
     }
 
     public String getTitleTemplate() {
@@ -80,5 +86,13 @@ public class SettingsDTO {
 
     public void setCanShowApplications(boolean canShowApplications) {
         this.canShowApplications = canShowApplications;
+    }
+
+    public List<UserRole> getAvailableRoles() {
+        return availableRoles;
+    }
+
+    public void setAvailableRoles(List<UserRole> availableRoles) {
+        this.availableRoles = availableRoles;
     }
 }

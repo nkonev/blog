@@ -8,7 +8,7 @@ import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
 import com.github.nkonev.blog.entity.jpa.Comment;
 import com.github.nkonev.blog.entity.jpa.Post;
 import com.github.nkonev.blog.entity.jpa.UserAccount;
-import com.github.nkonev.blog.entity.jpa.UserRole;
+import com.github.nkonev.blog.dto.UserRole;
 import com.github.nkonev.blog.repo.jpa.CommentRepository;
 import com.github.nkonev.blog.repo.jpa.PostRepository;
 import com.github.nkonev.blog.repo.jpa.UserAccountRepository;

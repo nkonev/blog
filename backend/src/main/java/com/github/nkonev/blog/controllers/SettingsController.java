@@ -3,6 +3,7 @@ package com.github.nkonev.blog.controllers;
 import com.github.nkonev.blog.config.ApplicationConfig;
 import com.github.nkonev.blog.dto.SettingsDTO;
 import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
+import com.github.nkonev.blog.dto.UserRole;
 import com.github.nkonev.blog.repo.jpa.RuntimeSettingsRepository;
 import com.github.nkonev.blog.security.BlogSecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.sql.SQLException;
+import java.util.Arrays;
+
 import static com.github.nkonev.blog.Constants.Urls.*;
 
 @RestController
@@ -45,7 +48,15 @@ public class SettingsController {
         String subHeader = runtimeSettingsRepository.findById(SUB_HEADER).orElseThrow().getValue();
         String titleTemplate = runtimeSettingsRepository.findById(TITLE_TEMPLATE).orElseThrow().getValue();
         boolean canShowSettings = blogSecurityService.hasSettingsPermission(userAccount);
-        return new SettingsDTO(header, subHeader, titleTemplate, imageBackground, canShowSettings, applicationConfig.isEnableApplications());
+        return new SettingsDTO(
+                header,
+                subHeader,
+                titleTemplate,
+                imageBackground,
+                canShowSettings,
+                applicationConfig.isEnableApplications(),
+                Arrays.asList(UserRole.ROLE_ADMIN, UserRole.ROLE_USER)
+        );
     }
 
     @Transactional

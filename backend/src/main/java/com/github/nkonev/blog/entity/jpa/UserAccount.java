@@ -1,13 +1,13 @@
 package com.github.nkonev.blog.entity.jpa;
 
 import com.github.nkonev.blog.Constants;
+import com.github.nkonev.blog.dto.UserRole;
 import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @TypeDefs({

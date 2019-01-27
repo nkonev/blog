@@ -1,6 +1,6 @@
 package com.github.nkonev.blog.config;
 
-import com.github.nkonev.blog.entity.jpa.UserRole;
+import com.github.nkonev.blog.dto.UserRole;
 import com.github.nkonev.blog.security.SecurityPermissionsConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

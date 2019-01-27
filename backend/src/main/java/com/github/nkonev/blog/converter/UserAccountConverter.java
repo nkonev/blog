@@ -4,7 +4,7 @@ import com.github.nkonev.blog.ApiConstants;
 import com.github.nkonev.blog.dto.*;
 import com.github.nkonev.blog.entity.jpa.CreationType;
 import com.github.nkonev.blog.entity.jpa.UserAccount;
-import com.github.nkonev.blog.entity.jpa.UserRole;
+import com.github.nkonev.blog.dto.UserRole;
 import com.github.nkonev.blog.exception.BadRequestException;
 import com.github.nkonev.blog.security.BlogSecurityService;
 import com.github.nkonev.blog.security.FacebookPrincipalExtractor;

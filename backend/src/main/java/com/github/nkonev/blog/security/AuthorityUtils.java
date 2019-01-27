@@ -1,6 +1,6 @@
 package com.github.nkonev.blog.security;
 
-import com.github.nkonev.blog.entity.jpa.UserRole;
+import com.github.nkonev.blog.dto.UserRole;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
