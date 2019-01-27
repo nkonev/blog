@@ -111,7 +111,8 @@ public class UserAccountConverter {
                 userAccount.getLastLoginDateTime(),
                 convertOauth(userAccount.getOauthIdentifiers()),
                 blogSecurityService.canLock(currentUser, userAccount),
-                blogSecurityService.canDelete(currentUser, userAccount)
+                blogSecurityService.canDelete(currentUser, userAccount),
+                blogSecurityService.canChangeRole(currentUser, userAccount)
         );
     }
 

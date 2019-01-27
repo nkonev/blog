@@ -338,7 +338,10 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
                     LOGGER.info(result.getResponse().getContentAsString());
                 })
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.canManageSessions").value(false))
+                .andExpect(jsonPath("$.data[2].canDelete").value(false))
+                .andExpect(jsonPath("$.data[2].canChangeRole").value(false))
+                .andExpect(jsonPath("$.data[2].canLock").value(false))
+
                 .andReturn();
     }
 
@@ -353,7 +356,10 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
                     LOGGER.info(result.getResponse().getContentAsString());
                 })
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.canManageSessions").value(true))
+                .andExpect(jsonPath("$.data[2].canDelete").value(true))
+                .andExpect(jsonPath("$.data[2].canChangeRole").value(true))
+                .andExpect(jsonPath("$.data[2].canLock").value(true))
+
                 .andReturn();
     }
 

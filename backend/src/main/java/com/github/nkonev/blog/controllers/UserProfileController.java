@@ -83,7 +83,7 @@ public class UserProfileController {
     }
 
     @GetMapping(value = Constants.Urls.USER)
-    public UserListWrapper getUsersGet(
+    public Wrapper<UserAccountDTO> getUsers(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount,
             @RequestParam(value = "page", required=false, defaultValue = "0") int page,
             @RequestParam(value = "size", required=false, defaultValue = "0") int size,
@@ -94,10 +94,9 @@ public class UserProfileController {
 
         Page<UserAccount> resultPage = userAccountRepository.findByUsernameContainsIgnoreCase(springDataPage, searchString);
 
-        return new UserListWrapper(
+        return new Wrapper<UserAccountDTO>(
                 resultPage.getContent().stream().map(getConvertToUserAccountDTO(userAccount)).collect(Collectors.toList()),
-                resultPage.getTotalElements(),
-                blogSecurityService.hasSessionManagementPermission(userAccount)
+                resultPage.getTotalElements()
         );
     }
 

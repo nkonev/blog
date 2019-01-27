@@ -179,6 +179,10 @@ public class BlogSecurityService {
         return lockAndDelete(currentUser, userAccount);
     }
 
+    public boolean canChangeRole(UserAccountDetailsDTO currentUser, UserAccount userAccount) {
+        return lockAndDelete(currentUser, userAccount);
+    }
+
     private boolean lockAndDelete(UserAccountDetailsDTO currentUser, UserAccount userAccount) {
         if (userAccount == null) {
             return false;

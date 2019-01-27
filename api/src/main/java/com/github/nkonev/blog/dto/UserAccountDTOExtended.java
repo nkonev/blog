@@ -11,13 +11,16 @@ public class UserAccountDTOExtended extends UserAccountDTO {
 
     private boolean canDelete;
 
+    private boolean canChangeRole;
+
     public UserAccountDTOExtended() { }
 
-    public UserAccountDTOExtended(Long id, String login, String avatar, DataDTO managementData, LocalDateTime lastLoginDateTime, OauthIdentifiersDTO oauthIdentifiers, boolean canLock, boolean canDelete) {
+    public UserAccountDTOExtended(Long id, String login, String avatar, DataDTO managementData, LocalDateTime lastLoginDateTime, OauthIdentifiersDTO oauthIdentifiers, boolean canLock, boolean canDelete, boolean canChangeRole) {
         super(id, login, avatar, lastLoginDateTime, oauthIdentifiers);
         this.managementData = managementData;
         this.canDelete = canDelete;
         this.canLock = canLock;
+        this.canChangeRole = canChangeRole;
     }
 
     public DataDTO getManagementData() {
@@ -42,6 +45,14 @@ public class UserAccountDTOExtended extends UserAccountDTO {
 
     public void setCanDelete(boolean canDelete) {
         this.canDelete = canDelete;
+    }
+
+    public boolean isCanChangeRole() {
+        return canChangeRole;
+    }
+
+    public void setCanChangeRole(boolean canChangeRole) {
+        this.canChangeRole = canChangeRole;
     }
 
 
