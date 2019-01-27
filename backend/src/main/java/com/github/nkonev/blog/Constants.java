@@ -39,6 +39,8 @@ public class Constants {
         public static final String CONFIG = "/config";
         public static final String POSTS = "/posts";
         public static final String APPLICATION = "/application";
+        public static final String ROLE = "/role";
+
     }
 
     public static class PathVariables {

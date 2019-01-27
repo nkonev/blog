@@ -306,13 +306,13 @@ Set query
 
 Set Instant
 
+
 # TODO
 * re-implement buttons css
 * sitemap for SEO
 * edit metainfo for SEO by user
 * change post owner by admin
 * change comment owner by admin
-* change role by admin, immutable user bit
 * LDAP
 * Google OAuth2 login
 * search by comments

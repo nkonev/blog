@@ -8,6 +8,7 @@ import com.github.nkonev.blog.pages.object.LoginModal;
 import com.github.nkonev.blog.webdriver.IntegrationTestConstants;
 import org.junit.jupiter.api.Test;
 import static com.codeborne.selenide.Selenide.*;
+import static com.github.nkonev.blog.pages.object.Modal.getValidModal;
 
 /**
  * Тест на список пользователей, управляемый админом
@@ -152,6 +153,29 @@ public class UserListIT extends AbstractItTestRunner {
             loginModal.login();
             return null;
         });
+    }
+
+    @Test
+    public void adminCanChangeRole() throws Exception {
+        UsersPage userPage = new UsersPage(urlPrefix);
+        userPage.openPage();
+
+        LoginModal loginModal = new LoginModal(user, password);
+        loginModal.openLoginModal();
+
+        loginModal.login();
+
+        final long userId = 2;
+        final String userLogin = "nikita";
+        changeRoleAndAssert("ROLE_ADMIN", userId, userLogin);
+        changeRoleAndAssert("ROLE_USER", userId, userLogin);
+    }
+
+    private void changeRoleAndAssert(String role, long userId, String userLogin) {
+        $("#user-id-"+userId+" button#change-role").click();
+        getValidModal("Change role for "+userLogin).find("select").selectOption(role);
+        $(".button-set #btn-submit").click();
+        $("#user-id-"+userId+" div.user-role").shouldHave(Condition.text(role));
     }
 
 }

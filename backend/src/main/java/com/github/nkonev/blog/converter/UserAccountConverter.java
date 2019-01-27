@@ -99,7 +99,7 @@ public class UserAccountConverter {
         if (userAccount == null) { return null; }
         UserAccountDTOExtended.DataDTO dataDTO;
         if (blogSecurityService.hasSessionManagementPermission(currentUser)){
-            dataDTO = new UserAccountDTOExtended.DataDTO(userAccount.isEnabled(), userAccount.isExpired(), userAccount.isLocked());
+            dataDTO = new UserAccountDTOExtended.DataDTO(userAccount.isEnabled(), userAccount.isExpired(), userAccount.isLocked(), userAccount.getRole());
         } else {
             dataDTO = null;
         }

@@ -29,6 +29,8 @@ export const SET_IMAGE_BACKGROUND = "setImageBackground";
 export const GET_CONFIG_LOADING = "getConfigLoading";
 export const SET_CONFIG_LOADING = "setConfigLoading";
 
+export const GET_ROLES = 'getRoles';
+
 const store = new Vuex.Store({
     state: {
         currentUser: null,
@@ -96,7 +98,10 @@ const store = new Vuex.Store({
         },
         [GET_CONFIG_LOADING](state) {
             return state.configLoading;
-        }
+        },
+        [GET_ROLES](state) {
+            return state.config.availableRoles;
+        },
     },
     actions: {
         [FETCH_USER_PROFILE](context) {

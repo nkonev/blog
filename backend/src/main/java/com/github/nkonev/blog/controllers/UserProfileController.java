@@ -196,6 +196,14 @@ public class UserProfileController {
         return userDeleteService.deleteUser(userId);
     }
 
+    @PreAuthorize("@blogSecurityService.canChangeRole(#userAccountDetailsDTO, #userId)")
+    @PostMapping(Constants.Urls.USER + Constants.Urls.ROLE)
+    public UserAccountDTOExtended setRole(@AuthenticationPrincipal UserAccountDetailsDTO userAccountDetailsDTO, @RequestParam long userId, @RequestParam UserRole role){
+        UserAccount userAccount = userAccountRepository.findById(userId).orElseThrow();
+        userAccount.setRole(role);
+        return userAccountConverter.convertToUserAccountDTOExtended(userAccountDetailsDTO, userAccount);
+    }
+
     @PreAuthorize("@blogSecurityService.canSelfDelete(#userAccountDetailsDTO)")
     @DeleteMapping(Constants.Urls.PROFILE)
     public void selfDeleteUser(@AuthenticationPrincipal UserAccountDetailsDTO userAccountDetailsDTO){

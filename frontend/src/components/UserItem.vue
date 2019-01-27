@@ -1,9 +1,10 @@
 <template>
-    <div class="user">
+    <div class="user" :id="'user-id-'+model.id">
         <div class="user-avatar"><avatar :src="model.avatar" :username="model.login"/></div>
         <div class="user-info">
             <router-link :to="{ name: 'user-profile', params: { id: model.id } }">{{ model.login }}</router-link>
         </div>
+        <div class="user-role" v-if="model.managementData">{{model.managementData.role}}</div>
         <div class="user-management" v-if="model.managementData">
             <template v-if="model.canLock">
                 <button v-if="model.managementData.locked" id="unlock" @click="requestUnlock()" class="blog-btn unlock-btn">Unlock</button>
@@ -12,8 +13,8 @@
             <template v-if="model.canDelete">
                 <button id="delete" @click="openDeleteConfirmation(model.login)" class="blog-btn lock-btn">Delete</button>
             </template>
-            <template>
-                <button @click="openChangeRole(model.login)">Change role</button>
+            <template v-if="model.canChangeRole">
+                <button @click="openChangeRole(model)" class="blog-btn ok-btn" id="change-role">Change role</button>
             </template>
         </div>
     </div>
@@ -63,9 +64,8 @@
                     }
                 )
             },
-            openChangeRole(login){
-                console.log('openChangeRole' ,login);
-                this.$modal.show(CHANGE_ROLE_MODAL, { login: login });
+            openChangeRole(model){
+                this.$modal.show(CHANGE_ROLE_MODAL, { login: model.login, currentRole: model.managementData.role, userId: model.id });
             },
             openDeleteConfirmation(login){
                 this.$modal.show(DIALOG, {
@@ -130,6 +130,15 @@
             margin-right 6px
         }
 
+        &-role {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-left 6px
+            margin-right 6px
+            color grey
+        }
+
         &-management {
             width 100%
             display: flex;
@@ -163,6 +172,10 @@
                 background: $ok_color;
                 color: white;
             }
+        }
+
+        button.blog-btn.ok-btn {
+            margin $lockBtnMargin
         }
 
     }

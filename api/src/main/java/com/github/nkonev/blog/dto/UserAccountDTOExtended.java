@@ -60,11 +60,13 @@ public class UserAccountDTOExtended extends UserAccountDTO {
         private boolean enabled;
         private boolean expired;
         private boolean locked;
+        private UserRole role;
 
-        public DataDTO(boolean enabled, boolean expired, boolean locked) {
+        public DataDTO(boolean enabled, boolean expired, boolean locked, UserRole role) {
             this.enabled = enabled;
             this.expired = expired;
             this.locked = locked;
+            this.role = role;
         }
 
         public DataDTO() { }
@@ -91,6 +93,14 @@ public class UserAccountDTOExtended extends UserAccountDTO {
 
         public void setLocked(boolean locked) {
             this.locked = locked;
+        }
+
+        public UserRole getRole() {
+            return role;
+        }
+
+        public void setRole(UserRole role) {
+            this.role = role;
         }
     }
 }

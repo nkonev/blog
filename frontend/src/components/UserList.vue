@@ -1,6 +1,6 @@
 <template>
     <div class="users-page">
-        <ChangeRoleModal/>
+        <ChangeRoleModal @USER_UPDATED="onUserUpdated"/>
         <h1>Users</h1>
         <Search @searchEvent="onChangeSearchString" placeholder="Contain search by login"></Search>
         <paginate
@@ -60,6 +60,7 @@
                 this.fetchUsers('', pageNum);
             },
             fetchUsers(searchString='', pageNum=(this.initialPageIndex+1)) {
+                this.users = [];
                 this.$router.push({path: users, query: {page: pageNum}});
 
                 // API request
@@ -106,7 +107,11 @@
                 this.pageCount = this.getPageCount(newUsersCount);
                 const nextPage = this.shouldSwitch(newUsersCount) ? this.initialPageIndex : this.initialPageIndex +1;
                 this.reloadPage(nextPage);
-            }
+            },
+            onUserUpdated(user){
+                // https://ru.vuejs.org/v2/guide/list.html#%D0%9F%D1%80%D0%B5%D0%B4%D0%BE%D1%81%D1%82%D0%B5%D1%80%D0%B5%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F
+                this.fetchUsers();
+            },
         },
         components: {
             ChangeRoleModal,

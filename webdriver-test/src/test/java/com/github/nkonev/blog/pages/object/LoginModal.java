@@ -16,6 +16,7 @@ import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.github.nkonev.blog.pages.object.Buttons.FB;
 import static com.github.nkonev.blog.pages.object.Buttons.VK;
+import static com.github.nkonev.blog.pages.object.Modal.getValidModal;
 
 /**
  * Created by nik on 12.07.17.
@@ -35,7 +36,7 @@ public class LoginModal {
 
 
     public void login() {
-        SelenideElement modal = getValidModal();
+        SelenideElement modal = getValidLoginModal();
         WebElement modal2 = modal.getWrappedElement();
 
         modal.find("input#username").setValue(user);
@@ -64,19 +65,16 @@ public class LoginModal {
     }
 
     public void loginFacebook() {
-        SelenideElement modal = getValidModal();
+        SelenideElement modal = getValidLoginModal();
         modal.find(FB).click();
     }
 
-    private SelenideElement getValidModal() {
-        SelenideElement modal = $(".v--modal-box");
-        modal.waitUntil(Condition.visible, 5*1000);
-        modal.shouldHave(text("Please login"));
-        return modal;
+    private SelenideElement getValidLoginModal() {
+        return getValidModal("Please login");
     }
 
     public void loginVkontakte() {
-        SelenideElement modal = getValidModal();
+        SelenideElement modal = getValidLoginModal();
         modal.find(VK).click();
     }
 }
