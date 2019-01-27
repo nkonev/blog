@@ -12,6 +12,9 @@
             <template v-if="model.canDelete">
                 <button id="delete" @click="openDeleteConfirmation(model.login)" class="blog-btn lock-btn">Delete</button>
             </template>
+            <template>
+                <button @click="openChangeRole(model.login)">Change role</button>
+            </template>
         </div>
     </div>
 </template>
@@ -19,7 +22,7 @@
 <script>
     import Vue from "vue"
     import Avatar from 'vue-avatar'
-    import {DIALOG} from '../constants'
+    import {DIALOG, CHANGE_ROLE_MODAL} from '../constants'
 
     export const USER_DELETED = 'USER_DELETED';
 
@@ -59,6 +62,10 @@
                         alert("Error on delete")
                     }
                 )
+            },
+            openChangeRole(login){
+                console.log('openChangeRole' ,login);
+                this.$modal.show(CHANGE_ROLE_MODAL, { login: login });
             },
             openDeleteConfirmation(login){
                 this.$modal.show(DIALOG, {

@@ -1,5 +1,6 @@
 <template>
     <div class="users-page">
+        <ChangeRoleModal/>
         <h1>Users</h1>
         <Search @searchEvent="onChangeSearchString" placeholder="Contain search by login"></Search>
         <paginate
@@ -39,6 +40,7 @@
     import Search from './Search.vue';
     import store, {GET_USER} from '../store'
     import {mapGetters} from 'vuex'
+    import ChangeRoleModal from "./ChangeRoleModal";
 
     Vue.component('paginate', Paginate);
 
@@ -107,6 +109,7 @@
             }
         },
         components: {
+            ChangeRoleModal,
             Search,
             UserItem
         },
