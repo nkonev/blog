@@ -1,5 +1,5 @@
 <template>
-    <modal :name="modalName" transition="pop-out" :width="modalWidth" @before-open="beforeOpen" :height="180">
+    <modal :name="modalName" transition="pop-out" :width="modalWidth" @before-open="beforeOpen" :height="200">
         <div class="spinner" v-if="isLoading">
             <BlogSpinner message="Loading roles..."/>
         </div>
@@ -134,7 +134,7 @@
 
             display: flex;
             flex-direction: column;
-            justify-content: space-between
+            justify-content: space-around
 
             .button-set {
                 width 100%
