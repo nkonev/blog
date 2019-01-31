@@ -1,6 +1,5 @@
 -- insert test data
 INSERT INTO auth.users(username, password, avatar, email) VALUES
-	('admin', '$2a$10$HsyFGy9IO//nJZxYc2xjDeV/kF7koiPrgIDzPOfgmngKVe9cOyOS2', 'https://cdn3.iconfinder.com/data/icons/rcons-user-action/32/boy-512.png', 'admin@example.com'), -- bcrypt('admin', 10)
 	('nikita', '$2a$10$e3pEnL2d3RB7jBrlEA3B9eUhayb/bmEG1V35h.4EhdReUAMzlAWxS', 'https://cdn3.iconfinder.com/data/icons/users-6/100/654853-user-men-2-512.png', 'nikita@example.com'), -- bcrypt('password', 10)
 	('alice', '$2a$10$e3pEnL2d3RB7jBrlEA3B9eUhayb/bmEG1V35h.4EhdReUAMzlAWxS', 'https://cdn3.iconfinder.com/data/icons/rcons-user-action/32/girl-512.png', 'alice@example.com'),
 	('bob', '$2a$10$e3pEnL2d3RB7jBrlEA3B9eUhayb/bmEG1V35h.4EhdReUAMzlAWxS', NULL, 'bob@example.com'),
