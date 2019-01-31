@@ -174,7 +174,7 @@ public class UserListIT extends AbstractItTestRunner {
     private void changeRoleAndAssert(String role, long userId, String userLogin) {
         $("#user-id-"+userId+" button#change-role").click();
         getValidModal("Change role for "+userLogin).find("select").selectOption(role);
-        $(".button-set #btn-submit").click();
+        $(".button-set #btn-submit").shouldBe(CLICKABLE).click();
         $("#user-id-"+userId+" div.user-role").shouldHave(Condition.text(role));
     }
 
