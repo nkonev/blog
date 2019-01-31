@@ -2,6 +2,7 @@ package com.github.nkonev.blog.pages;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.SelenideElement;
 import com.github.nkonev.blog.FailoverUtils;
 import com.github.nkonev.blog.integration.AbstractItTestRunner;
 import com.github.nkonev.blog.pages.object.LoginModal;
@@ -173,8 +174,9 @@ public class UserListIT extends AbstractItTestRunner {
 
     private void changeRoleAndAssert(String role, long userId, String userLogin) {
         $("#user-id-"+userId+" button#change-role").click();
-        getValidModal("Change role for "+userLogin).find("select").selectOption(role);
-        $(".button-set #btn-submit").waitUntil(Condition.visible, 10 * 1000).click();
+        SelenideElement modal = getValidModal("Change role for " + userLogin);
+        modal.find("select").selectOption(role);
+        modal.find(".button-set #btn-submit").waitUntil(Condition.visible, 10 * 1000).click();
         $("#user-id-"+userId+" div.user-role").shouldHave(Condition.text(role));
     }
 
