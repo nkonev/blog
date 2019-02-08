@@ -50,6 +50,7 @@ services:
       - SPRING_SERVLET_MULTIPART_MAX-FILE-SIZE=6MB
       - SPRING_SERVLET_MULTIPART_MAX-REQUEST-SIZE=8MB
       - CUSTOM_ELASTICSEARCH_DROP-FIRST=false
+      - management.health.mail.enabled=false
     volumes :
       - ./www:/opt/blog/www
     ports:
