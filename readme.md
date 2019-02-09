@@ -4,6 +4,7 @@
 [![](https://images.microbadger.com/badges/version/nkonev/blog.svg)](https://microbadger.com/images/nkonev/blog "Get your own version badge on microbadger.com")
 
 # Features
+* Blue-green deployment
 * Fast page loading due client-side rendering
 * Fulltext search by posts
 * Updating posts through web STOMP on main page
