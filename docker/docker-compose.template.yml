@@ -1,4 +1,4 @@
-version: '3.4'
+version: '3.7'
 
 services:
   blog:
@@ -12,6 +12,9 @@ services:
 #        tag: blog
     deploy:
       replicas: 2
+      update_config:
+        parallelism: 1
+        delay: 120s
       labels:
         - traefik.enable=true
         - traefik.backend=blog
@@ -357,5 +360,5 @@ networks:
   backend:
     driver: overlay
   traefik_backend:
-    external:
-      name: proxy_backend        
+    external: true
+    name: proxy_backend

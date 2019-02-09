@@ -11,10 +11,11 @@ jdk: openjdk11
 services:
   - docker
 before_install:
+  - sudo apt update -y
+  - sudo apt install --only-upgrade docker-ce -y
 #  - sudo apt-get install -y chromium-browser #https://www.ubuntuupdates.org/pm/google-chrome-stable
   - openssl aes-256-cbc -K $encrypted_8518ee46cc9c_key -iv $encrypted_8518ee46cc9c_iv -in ./.travis/id_rsa.enc -out ~/.ssh/id_rsa -d
   - chmod 600 ~/.ssh/id_rsa
-  - "echo '{\"experimental\":true}' | sudo tee /etc/docker/daemon.json"
   - sudo service docker restart
 # https://medium.com/@jonashavers/how-to-use-java-10-with-travis-ci-363c7dc2f708
   - java -version;

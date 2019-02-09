@@ -21,7 +21,7 @@
 # Requirements
 
 ## Run
-* Docker 17.09.1-ce +
+* Docker 18.06.0+
 
 Use `latest` tag.
 
@@ -98,19 +98,6 @@ mvnw -P local -Dasciidoctor.skip=true clean test
 cd docker
 ./swarm-init.sh
 ```
-
-Next unlock `--compose-file`
-add accords https://github.com/moby/moby/issues/30585#issuecomment-280822231
-
-in `/etc/docker/daemon.json` (create it)
-```json
-{"experimental":true}
-```
-
-```bash
-sudo systemctl restart docker
-```
-
 
 I strongly recommend copy and rename `docker-compose.template.yml` to `docker-compose.stack.yml`.
 Next I'll use renamed file.
