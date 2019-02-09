@@ -241,7 +241,14 @@ services:
     hostname: 'node_exporter'
     ports:
       - '9100:9100'
-    command: ["--log.level", "info", "--log.format", "logger:stdout"]
+    command:
+      - '--log.level=fatal'
+      - '--log.format=logger:stdout'
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/host'
+      - '--collector.filesystem.ignored-mount-points="^(/rootfs|/host|)/(sys|proc|dev|host|etc)($$|/)"'
+      - '--collector.filesystem.ignored-fs-types="^(sys|proc|auto|cgroup|devpts|ns|au|fuse\.lxc|mqueue)(fs|)$$"'
     volumes:
       - /:/rootfs:ro
     logging:
