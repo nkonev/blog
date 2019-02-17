@@ -39,7 +39,7 @@ dashboard = true
 
 #[[acme.domains]]
 # main = "blog.test"
-# sans = ["grafana.blog.test", "prometheus.blog.test"]
+# sans = ["grafana.blog.test", "prometheus.blog.test", "alertmanager.blog.test"]
 
 [docker]
 watch = true
