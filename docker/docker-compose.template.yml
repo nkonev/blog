@@ -54,6 +54,8 @@ services:
       - SPRING_SERVLET_MULTIPART_MAX-REQUEST-SIZE=8MB
       - CUSTOM_ELASTICSEARCH_DROP-FIRST=false
       - management.health.mail.enabled=false
+      # use same cookie for applications
+      - server.servlet.session.cookie.domain=blog.test
     volumes :
       - ./www:/opt/blog/www
     ports:
