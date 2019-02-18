@@ -16,7 +16,7 @@
 * Auto cleaning "orphanned" images from PostgreSQL, and "orphaned" posts from Elasticsearch
 * Cluster out from the box - simple scale it with `docker service scale BLOGSTACK_blog=4`
 * Login through Facebook, Vkontakte OAuth2 providers
-* Binding several OAuth2 account to same blog accoung
+* Binding several OAuth2 account to same blog account
 * Simply installation with docker swarm
 
 # Requirements
