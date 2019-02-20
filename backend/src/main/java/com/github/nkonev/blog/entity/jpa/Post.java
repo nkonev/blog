@@ -1,6 +1,8 @@
 package com.github.nkonev.blog.entity.jpa;
 
 import com.github.nkonev.blog.Constants;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
 import javax.persistence.*;
@@ -11,6 +13,8 @@ import java.time.LocalDateTime;
  */
 @Entity
 @Table(name = "post", schema = Constants.Schemas.POSTS)
+@DynamicInsert
+@DynamicUpdate
 public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
