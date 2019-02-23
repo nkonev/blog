@@ -18,6 +18,7 @@
 * Login through Facebook, Vkontakte OAuth2 providers
 * Binding several OAuth2 account to same blog account
 * Simply installation with docker swarm
+* Applications like Vkontakte/Facebook apps. Example [store application]((https://github.com/nkonev/blog-file-store)) on Go.
 
 # Requirements
 
@@ -302,4 +303,3 @@ Set Instant
 * LDAP
 * Google OAuth2 login
 * search by comments
-* demo [application]((https://github.com/nkonev/blog-file-store)) on Go
