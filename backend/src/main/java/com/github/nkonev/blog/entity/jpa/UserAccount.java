@@ -3,10 +3,11 @@ package com.github.nkonev.blog.entity.jpa;
 import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.dto.UserRole;
 import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
+import org.hibernate.annotations.*;
+
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -18,6 +19,8 @@ import java.time.LocalDateTime;
 })
 @Entity
 @Table(name = "users", schema = Constants.Schemas.AUTH)
+@DynamicInsert
+@DynamicUpdate
 public class UserAccount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
