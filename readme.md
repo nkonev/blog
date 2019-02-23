@@ -181,7 +181,7 @@ echo "Successful inserted docker_gwbridge rule"
 ```
 
 
-## Starting with docker
+## Starting with docker swarm
 
 Next you can 
 ```bash
