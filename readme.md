@@ -24,8 +24,6 @@
 ## Run
 * Docker 18.06.0+
 
-Use `latest` tag.
-
 ## Development
 * JDK 11
 * docker-compose 1.16.1 +
