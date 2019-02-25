@@ -17,7 +17,11 @@
                 :prev-link-class="'prev-link-item arrow-link-item'"
                 :next-class="'next-item'"
                 :next-link-class="'next-link-item arrow-link-item'"
-        ></paginate>
+        >
+              <span slot="breakViewContent">
+                ...
+              </span>
+        </paginate>
 
         <div v-if="users.length>0" id="user-list">
             <user-item v-for="user in users" v-bind:userDTO="user" :key="user.id" :currentUser="currentUser" @USER_DELETED="onDeleteEvent"></user-item>
