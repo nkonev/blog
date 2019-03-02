@@ -493,18 +493,20 @@ public class PostService {
                 toSave.add(indexPost);
 
                 if (toSave.size() > refreshBatchSize-1){
-                    flushToElasticsearch(toSave);
+                    saveToElasticsearch(toSave);
                 }
             }
         }
-        flushToElasticsearch(toSave);
+        saveToElasticsearch(toSave);
 
         removeOrphansFromIndex();
         LOGGER.info("Finished refreshing elasticsearch index {}", IndexPost.INDEX);
     }
 
-    private void flushToElasticsearch(Collection<IndexPost> toSave) {
-        indexPostRepository.saveAll(toSave);
+    private void saveToElasticsearch(Collection<IndexPost> toSave) {
+        if (!toSave.isEmpty()) {
+            indexPostRepository.saveAll(toSave);
+        }
         LOGGER.info("Flushed {} items to elasticsearch index", toSave.size());
         toSave.clear();
     }
