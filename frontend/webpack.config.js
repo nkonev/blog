@@ -55,15 +55,16 @@ module.exports = {
     devtool: devMode ? "source-map" : false,
 
     plugins: [
+        new CleanWebpackPlugin({
+            watch: false,
+            dangerouslyAllowCleanPatternsOutsideProject: true,
+            verbose: true,
+            dry: false,
+            cleanBeforeEveryBuildPatterns: [buildDir]
+        }),
         new VueLoaderPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /^$/),
-        new CleanWebpackPlugin([buildDir], {
-            watch: false,
-            allowExternal: true,
-            verbose: true,
-            dry: false
-        }),
         new MiniCssExtractPlugin({
             // Options similar to the same options in webpackOptions.output
             // both options are optional
