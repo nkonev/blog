@@ -1,11 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import UserProfile from './components/UserProfile.vue'
 import Error404 from './components/Error404.vue'
 import Error401 from './components/Error401.vue'
 import Error403 from './components/Error403.vue'
 import UserList from './components/UserList.vue'
-import Registration from './components/Registration.vue'
 import PostList from './components/PostList.vue'
 import createPostDto from './factories/PostDtoFactory'
 import Confirm from './components/Confirm.vue'
@@ -18,6 +16,9 @@ import Help from './components/Help.vue'
 import Settings from './components/Settings.vue'
 import ApplicationList from './components/ApplicationList.vue'
 import {root, root_name, users, useProfileName, post} from './routes'
+
+const UserProfile = () => import('./components/UserProfile.vue');
+const Registration = () => import('./components/Registration.vue');
 const PostView = () => import('./components/PostView.vue');
 const PostEdit = () => import('./components/PostEdit.vue');
 

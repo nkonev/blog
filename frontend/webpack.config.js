@@ -14,6 +14,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const WebpackOnBuildPlugin = require('on-build-webpack');
 const LiveReloadPlugin = require('webpack-livereload-plugin');
 const { VueLoaderPlugin } = require('vue-loader');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const devMode = process.env.NODE_ENV !== PRODUCTION_ENV;
 
 module.exports = {
@@ -22,7 +23,6 @@ module.exports = {
     context: srcDir,
 
     entry: {
-        vendor: ["vue"],
         main: "./main.js", // vue.js
     },
 
@@ -31,19 +31,6 @@ module.exports = {
         publicPath: "/build/", // url prefix
         filename: "[name].js",
         library: "[name]"
-    },
-
-    optimization: {
-        splitChunks: {
-            cacheGroups: {
-                default: false,
-                commons: {
-                    test: /[\\/]node_modules[\\/]/,
-                    name: "vendor",
-                    chunks: "all",
-                }
-            }
-        }
     },
 
     watch: devMode,
@@ -55,6 +42,7 @@ module.exports = {
     devtool: devMode ? "source-map" : false,
 
     plugins: [
+        //new BundleAnalyzerPlugin({defaultSizes: "gzip"}),
         new VueLoaderPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /^$/),
