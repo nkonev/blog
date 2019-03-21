@@ -28,8 +28,11 @@ dashboard = true
 #[entryPoints.https]
 #address = ":443"
 #  [entryPoints.https.tls]
+#  [entryPoints.https.redirect]
+#    regex = "^https://www.blog.test/(.*)"
+#    replacement = "http://blog.test/$1"
 
-[retry]
+#[retry]
 
 #[acme]
 #  email = "test@traefik.io"
@@ -39,7 +42,7 @@ dashboard = true
 
 #[[acme.domains]]
 # main = "blog.test"
-# sans = ["grafana.blog.test", "prometheus.blog.test", "alertmanager.blog.test"]
+# sans = ["www.blog.test", "grafana.blog.test", "prometheus.blog.test", "alertmanager.blog.test"]
 
 [docker]
 watch = true
