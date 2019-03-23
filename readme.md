@@ -165,7 +165,15 @@ cat /proc/sys/net/ipv4/ip_forward
 ```
 returns non-zero
 
-next insert iptables rule
+next 
+
+Option a)
+firewall-cmd --permanent --zone=public --change-interface=docker_gwbridge
+firewall-cmd --permanent --zone=public --add-port=80/tcp
+firewall-cmd --permanent --zone=public --add-port=443/tcp
+firewall-cmd --reload
+
+Option b) insert iptables rule
 ```bash
 iptables -I INPUT -i docker_gwbridge -p tcp -m multiport --dports 80,443 -j ACCEPT
 ```
