@@ -168,10 +168,17 @@ returns non-zero
 next 
 
 Option a)
+```bash
 firewall-cmd --permanent --zone=public --change-interface=docker_gwbridge
 firewall-cmd --permanent --zone=public --add-port=80/tcp
 firewall-cmd --permanent --zone=public --add-port=443/tcp
 firewall-cmd --reload
+```
+
+Check
+```bash
+firewall-cmd --list-all-zones
+```
 
 Option b) insert iptables rule
 ```bash
