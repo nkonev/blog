@@ -1,11 +1,11 @@
 package com.github.nkonev.blog.dto;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashMap;
@@ -15,6 +15,9 @@ import java.util.Map;
 /**
  * Internal class for Spring Security, it shouldn't be passed to browser via Rest API
  */
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public class UserAccountDetailsDTO extends UserAccountDTO implements UserDetails, OAuth2User {
     private static final long serialVersionUID = -3271989114498135073L;
 
