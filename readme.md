@@ -177,6 +177,7 @@ firewall-cmd --reload
 Check
 ```bash
 firewall-cmd --list-all-zones
+iptables -t nat --line-numbers --numeric --list
 ```
 
 Option b) insert iptables rule
