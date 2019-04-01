@@ -93,7 +93,7 @@ spring.jpa:
   properties:
     hibernate.use_sql_comments: true
     hibernate.format_sql: true
-    hibernate.generate_statistics: true
+    hibernate.generate_statistics: false
     hibernate.temp.use_jdbc_metadata_defaults: false
   hibernate.ddl-auto: validate
 
