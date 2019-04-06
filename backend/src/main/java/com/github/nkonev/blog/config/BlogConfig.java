@@ -64,6 +64,8 @@ public class BlogConfig {
             tomcat.setDocumentRoot(docRoot);
         }
 
+        tomcat.setProtocol("org.apache.coyote.http11.Http11Nio2Protocol");
+
         return tomcat;
     }
 
