@@ -52,6 +52,7 @@ public class BlogConfig {
         objectMapper.registerModule(rejectUserAccountDetailsDTOModule);
     }
 
+    // see https://github.com/spring-projects/spring-boot/issues/14302#issuecomment-418712080 if you want to customize management tomcat
     @Bean
     public ServletWebServerFactory servletContainer(Valve... valves) {
         TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
