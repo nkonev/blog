@@ -27,7 +27,7 @@
 * Docker 18.06.0+
 
 ## Development
-* JDK 11
+* JDK 12
 * docker-compose 1.16.1 +
 * Google Chrome (as [default](https://github.com/nkonev/blog/blob/master/webdriver-test/src/test/resources/config/application.yml#L88) browser for webdriver-test). Just `dnf install chromium` in latest Fedora.
 
