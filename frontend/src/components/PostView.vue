@@ -376,7 +376,7 @@
 
             margin-top $postBodyMarginTop
             margin-bottom $postBodyMarginBottom
-            overflow: visible
+            overflow hidden
         }
 
         &-error {
@@ -407,6 +407,12 @@
                 color $titleColor
                 background $titleBackground
             }
+        }
+    }
+
+    @media screen and (max-width: $contentWidth) {
+        .post {
+            width: 100%;
         }
     }
 
