@@ -63,8 +63,24 @@
     import {getPostId, getTimestampFromUtc} from '../utils'
     import VmBackTop from 'vue-multiple-back-top'
     import {isLargeScreen} from '../utils'
+    import 'highlight.js/styles/monokai.css'
     // Lazy load heavy component https://router.vuejs.org/en/advanced/lazy-loading.html. see also in .babelrc
     const PostEdit = () => import('./PostEdit.vue');
+
+    window.hljs.configure({
+        languages: ['apache',
+            //'aspectj',
+            'bash', 'css', 'cs', 'go',
+            'groovy',
+            // 'gradle',
+            'ini', 'java', 'javascript', 'kotlin', 'ldif', 'makefile', 'markdown', 'nginx',
+            //'pgsql',
+            'php', 'protobuf',
+            'python',
+            //'scala',
+            'shell', 'sql', 'xml', 'yaml']
+    });
+
 
     export default {
         name: 'post-view',
@@ -204,6 +220,17 @@
                     this.isLoading = false;
                 });
             }
+        },
+        updated(){
+            Vue.nextTick(()=>{
+                if (!this.isEditing) {
+                    console.log('Performing highlighting in nextTick');
+                    const arr = document.body.querySelectorAll('pre.ql-syntax');
+                    [].forEach.call(arr, function (block) {
+                        window.hljs.highlightBlock(block);
+                    });
+                }
+            })
         },
         watch: {
             'postDTO': {

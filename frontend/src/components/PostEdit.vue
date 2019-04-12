@@ -111,7 +111,7 @@
                 editorOptions: {
                     theme: isLargeScreen() ? 'bubble' : 'snow',
                     modules: {
-                        syntax: false,
+                        syntax: true,
                         toolbar: toolbarOptions,
                     }
                 },
