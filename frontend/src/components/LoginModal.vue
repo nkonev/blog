@@ -1,5 +1,5 @@
 <template>
-    <modal :name="modalName" transition="pop-out" @before-open="beforeOpen" :width="loginModalWidth" :height="240">
+    <modal :name="modalName" transition="pop-out" @before-open="beforeOpen" :width="loginModalWidth" :height="'auto'">
         <div class="box">
             <div class="login-title">Please login</div>
 
