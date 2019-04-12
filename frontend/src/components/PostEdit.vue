@@ -298,6 +298,11 @@
     @import "../constants.styl"
     @import "../lib/QuillVideo.styl"
 
+    // fix scroll changing on paste https://github.com/quilljs/quill/issues/1374#issuecomment-415333651
+    .ql-clipboard {
+        position: fixed;
+    }
+
     .ql-editor {
         font-size $postBodyFontSize
         font-family $postBodyFontFamily
