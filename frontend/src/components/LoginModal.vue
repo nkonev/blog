@@ -137,9 +137,9 @@
 
         .box-part {
             height: 100%;
-            padding-left 5%;
-            padding-right 5%;
-            padding-bottom 5%
+            padding-left 16px
+            padding-right 16px
+            padding-bottom 16px
 
             display: flex;
             flex-direction: column;
