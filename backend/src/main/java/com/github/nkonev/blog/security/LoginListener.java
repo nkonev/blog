@@ -16,6 +16,9 @@ import java.time.ZoneOffset;
 
 import static com.github.nkonev.blog.utils.TimeUtil.getNowUTC;
 
+/**
+ * This listener works for both database and OAuth2 logins
+ */
 @Transactional
 @Component
 public class LoginListener implements ApplicationListener<AuthenticationSuccessEvent> {
@@ -28,7 +31,7 @@ public class LoginListener implements ApplicationListener<AuthenticationSuccessE
     @Override
     public void onApplicationEvent(AuthenticationSuccessEvent event) {
         UserDetails userDetails = (UserDetails) event.getAuthentication().getPrincipal();
-        LOGGER.info("Logged in as '{}'", userDetails.getUsername());
+        LOGGER.info("User '{}' logged in", userDetails.getUsername());
         UserAccount userAccount = userAccountRepository.findByUsername(userDetails.getUsername()).orElseThrow();
         userAccount.setLastLoginDateTime(getNowUTC());
     }
