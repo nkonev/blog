@@ -440,4 +440,23 @@
 <style lang="stylus">
     @import "../lib/QuillVideo.styl"
     @import "~quill/dist/quill.bubble.css"
+    @import "../constants.styl"
+
+    // fix ql-bubble (on top of url)
+    .ql-container.ql-bubble .post-content:not(.ql-disabled) a {
+        position: absolute;
+    }
+
+    // disable it for mobile
+    @media screen and (max-width: $contentWidth) {
+        .ql-container.ql-bubble .post-content:not(.ql-disabled) a {
+            position: relative;
+        }
+        .ql-container.ql-bubble .post-content:not(.ql-disabled) a:hover::before,
+        .ql-container.ql-bubble .post-content:not(.ql-disabled) a:hover::after {
+            visibility: hidden;
+        }
+
+    }
+
 </style>
