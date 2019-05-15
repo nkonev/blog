@@ -310,6 +310,14 @@
         margin-top $postBodyMarginTop
         margin-bottom $postBodyMarginBottom
     }
+
+    // larger screens
+    @media screen and (min-width: $contentWidth) {
+        .ql-editor {
+            overflow-y unset
+        }
+    }
+
 </style>
 
 

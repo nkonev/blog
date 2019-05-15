@@ -376,7 +376,8 @@
 
             margin-top $postBodyMarginTop
             margin-bottom $postBodyMarginBottom
-            overflow hidden
+
+            //overflow-y unset
         }
 
         &-error {
@@ -442,21 +443,19 @@
     @import "~quill/dist/quill.bubble.css"
     @import "../constants.styl"
 
-    // fix ql-bubble (on top of url)
-    .ql-container.ql-bubble .post-content:not(.ql-disabled) a {
-        position: absolute;
+    // larger screens
+    @media screen and (min-width: $contentWidth) {
+        .ql-editor {
+            overflow-y unset
+        }
     }
 
-    // disable it for mobile
+    // mobile sceens
     @media screen and (max-width: $contentWidth) {
-        .ql-container.ql-bubble .post-content:not(.ql-disabled) a {
-            position: relative;
-        }
-        .ql-container.ql-bubble .post-content:not(.ql-disabled) a:hover::before,
-        .ql-container.ql-bubble .post-content:not(.ql-disabled) a:hover::after {
+        .ql-container.ql-bubble:not(.ql-disabled) .post-content a:hover::before,
+        .ql-container.ql-bubble:not(.ql-disabled) .post-content a:hover::after {
             visibility: hidden;
         }
-
     }
 
 </style>
