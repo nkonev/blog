@@ -197,7 +197,7 @@ custom:
     iframe:
       allow:
         src:
-          pattern: '^(https://www\\.youtube\\.com.*)|(https://coub\\.com/.*)|(https://player\\.vimeo\\.com.*)\$'
+          pattern: '^(https://www\\.youtube\\.com.*)|(https://coub\\.com/.*)|(https://player\\.vimeo\\.com.*)|(https://asciinema\\.org.*)\$'
 
 """
     return str
