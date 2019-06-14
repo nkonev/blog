@@ -9,7 +9,7 @@ import com.github.nkonev.blog.config.UtConfig;
 import com.github.nkonev.blog.dto.PostDTO;
 import com.github.nkonev.blog.repo.redis.UserConfirmationTokenRepository;
 import com.github.nkonev.blog.security.SecurityConfig;
-import com.github.nkonev.blog.utils.ContextPathHelper;
+import com.github.nkonev.blog.util.ContextPathHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;

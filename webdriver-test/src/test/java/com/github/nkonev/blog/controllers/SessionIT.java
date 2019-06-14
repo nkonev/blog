@@ -9,7 +9,7 @@ import com.github.nkonev.blog.entity.jpa.UserAccount;
 import com.github.nkonev.blog.integration.SocialEmulatorTests;
 import com.github.nkonev.blog.pages.object.IndexPage;
 import com.github.nkonev.blog.pages.object.LoginModal;
-import com.github.nkonev.blog.utils.ContextPathHelper;
+import com.github.nkonev.blog.util.ContextPathHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Cookie;
