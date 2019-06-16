@@ -75,6 +75,10 @@ https://stackoverflow.com/questions/1709625/maven-command-to-list-lifecycle-phas
 ./mvnw fr.jcgay.maven.plugins:buildplan-maven-plugin:list-phase
 ```
 
+# Take dump
+```bash
+docker exec $(docker inspect --format "{{.Status.ContainerStatus.ContainerID}}" $(docker service ps BLOGSTACK_postgresql --filter desired-state=running -q)) pg_dump -U blog -b --create --column-inserts --serializable-deferrable > /tmp/dump.sql```
+
 # Restore dump
 ```bash
 echo 'drop database blog;' | docker exec -i postgresql-blog-dev psql -U postgres
