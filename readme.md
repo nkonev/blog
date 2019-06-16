@@ -20,7 +20,7 @@
 * Simply installation with docker swarm
 * Applications like Vkontakte/Facebook apps. Example [storage application](https://github.com/nkonev/blog-storage) on Go
 * Self-sufficient frontend asset. No CDN used
-* Simply backup of everything to one .sql file
+* Simply [backup](https://github.com/nkonev/blog/blob/master/dev.md#take-dump) of everything to one .sql file
 
 # Requirements
 
