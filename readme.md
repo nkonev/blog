@@ -18,7 +18,7 @@
 * Login through Facebook, Vkontakte OAuth2 providers
 * Binding several OAuth2 account to same blog account
 * Simply installation with docker swarm
-* Applications like Vkontakte/Facebook apps. Example [store application](https://github.com/nkonev/blog-file-store) on Go
+* Applications like Vkontakte/Facebook apps. Example [storage application](https://github.com/nkonev/blog-storage) on Go
 * Self-sufficient frontend asset. No CDN used
 * Simply backup of everything to one .sql file
 
