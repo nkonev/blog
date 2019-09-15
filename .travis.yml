@@ -10,7 +10,7 @@ jdk: openjdk12
 services:
   - docker
 before_install:
-#  - sudo apt-get install -y chromium-browser #https://www.ubuntuupdates.org/pm/google-chrome-stable
+  - sudo apt update && sudo apt install -y chromium-browser
   - openssl aes-256-cbc -K $encrypted_7051ac01cf89_key -iv $encrypted_7051ac01cf89_iv -in ./.travis/id_rsa.enc -out ~/.ssh/id_rsa -d
   - chmod 600 ~/.ssh/id_rsa
 # https://medium.com/@jonashavers/how-to-use-java-10-with-travis-ci-363c7dc2f708
@@ -43,4 +43,4 @@ script:
     ) fi
 addons:
   firefox: "63.0"
-  chrome: stable
+#  chrome: stable
