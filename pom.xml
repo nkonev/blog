@@ -69,9 +69,14 @@
             <url>https://repo.spring.io/release</url>
         </repository>
         <repository>
+            <id>repository.spring.milestone</id>
+            <name>Spring GA Repository</name>
+            <url>https://repo.spring.io/milestone</url>
+        </repository>
+        <repository>
             <id>jcenter</id>
-            <name>jcenter-bintray</name>
-            <url>http://jcenter.bintray.com</url>
+            <name>jcenter bintray</name>
+            <url>https://jcenter.bintray.com</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -80,7 +85,7 @@
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
-            <id>bintray-nkonev-m2</id>
+            <id>bintray.nkonev.m2</id>
             <name>bintray-nkonev-m2</name>
             <url>https://dl.bintray.com/nkonev/m2</url>
         </repository>
@@ -89,7 +94,7 @@
 
     <pluginRepositories>
         <pluginRepository>
-            <id>spring-milestones</id>
+            <id>repository.spring.milestone</id>
             <url>http://repo.spring.io/milestone</url>
         </pluginRepository>
         <pluginRepository>
@@ -98,7 +103,7 @@
             <url>https://repo.spring.io/plugins-release</url>
         </pluginRepository>
         <pluginRepository>
-            <id>jcenter-releases</id>
+            <id>jcenter</id>
             <name>jcenter</name>
             <url>http://jcenter.bintray.com</url>
             <snapshots>
