@@ -145,9 +145,15 @@
         beforeDestroy() {
             try {
                 subscriptionInsert.unsubscribe();
+            } catch (ignored){}
+            try {
                 subscriptionUpdate.unsubscribe();
+            } catch (ignored){}
+
+            try {
                 subscriptionDelete.unsubscribe();
             } catch (ignored){}
+
             closeStompClient(stompObj);
         },
         created() {
