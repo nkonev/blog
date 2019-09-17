@@ -85,7 +85,7 @@ public abstract class SocialEmulatorTests extends AbstractItTestRunner {
                                 "  \"name\": \""+facebookLogin+"\",\n" +
                                 "  \"picture\": {\n" +
                                 "      \"data\": {\t\n" +
-                                "           \"url\": \"https://i.pinimg.com/236x/37/47/62/374762701f2571ffaacba61325d6dbf1--linux-penguin.jpg\"\n" +
+                                "           \"url\": \"http://localhost:9080/ava.png\"\n" +
                                 "        }\n" +
                                 "    }"+
                                 "}")

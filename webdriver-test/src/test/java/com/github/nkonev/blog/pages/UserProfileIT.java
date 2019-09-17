@@ -294,7 +294,7 @@ public class UserProfileIT extends SocialEmulatorTests {
         loginModal.openLoginModal();
         loginModal.loginFacebook();
 
-        Assertions.assertTrue(UserNav.getAvatarUrl().endsWith(".jpeg"));
+        Assertions.assertTrue(UserNav.getAvatarUrl().endsWith(".png"));
         Assertions.assertEquals(facebookLogin, UserNav.getLogin());
 
 
