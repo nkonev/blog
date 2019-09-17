@@ -12,6 +12,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
 
@@ -66,7 +68,7 @@ public class SettingsController {
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount,
             @RequestPart(value = DTO_PART) SettingsDTO dto,
             @RequestPart(value = IMAGE_PART, required = false) MultipartFile imagePart
-    ) throws SQLException {
+    ) throws SQLException, IOException {
         var runtimeSettingsBackgroundImage = runtimeSettingsRepository.findById(IMAGE_BACKGROUND).orElseThrow();
 
         // update image

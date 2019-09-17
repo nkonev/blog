@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.UUID;
 
@@ -28,11 +29,13 @@ public class ImageSettingsUploadController extends AbstractImageUploadController
     public ImageResponse postImage(
             @RequestPart(value = IMAGE_PART) MultipartFile imagePart,
             @NotNull @AuthenticationPrincipal UserAccountDetailsDTO userAccount
-    ) throws SQLException {
+    ) throws SQLException, IOException {
         return super.postImage(
             "INSERT INTO images.settings_image(img, content_type) VALUES (?, ?) RETURNING id",
             GET_TEMPLATE,
-            imagePart
+            imagePart.getSize(),
+            imagePart.getContentType(),
+            imagePart.getInputStream()
         );
     }
 

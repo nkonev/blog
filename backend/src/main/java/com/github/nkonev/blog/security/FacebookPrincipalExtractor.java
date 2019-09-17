@@ -1,5 +1,7 @@
 package com.github.nkonev.blog.security;
 
+import com.github.nkonev.blog.controllers.AbstractImageUploadController;
+import com.github.nkonev.blog.controllers.ImageUserAvatarUploadController;
 import com.github.nkonev.blog.converter.UserAccountConverter;
 import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
 import com.github.nkonev.blog.entity.jpa.UserAccount;
@@ -10,10 +12,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.web.client.RestTemplate;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.Map;
 import java.util.Optional;
 
@@ -24,13 +31,25 @@ public class FacebookPrincipalExtractor extends AbstractPrincipalExtractor imple
     @Autowired
     private UserAccountRepository userAccountRepository;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Autowired
+    private ImageUserAvatarUploadController imageUserAvatarUploadController;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(FacebookPrincipalExtractor.class);
 
     public static final String LOGIN_PREFIX = "facebook_";
 
     private String getAvatarUrl(Map<String, Object> map){
         try {
-            return (String) ((Map<String, Object>) ((Map<String, Object>) map.get("picture")).get("data")).get("url");
+            String url = (String) ((Map<String, Object>) ((Map<String, Object>) map.get("picture")).get("data")).get("url");
+            ResponseEntity<byte[]> forEntity = restTemplate.getForEntity(url, byte[].class);
+            byte[] body = forEntity.getBody();
+            try(InputStream is = new ByteArrayInputStream(body);) {
+                AbstractImageUploadController.ImageResponse imageResponse = imageUserAvatarUploadController.postImage(body.length, forEntity.getHeaders().getContentType().toString(), is);
+                return imageResponse.getRelativeUrl();
+            }
         } catch (Exception e){
             LOGGER.info("Cannot get image url from {}, returning null", map);
             return null;

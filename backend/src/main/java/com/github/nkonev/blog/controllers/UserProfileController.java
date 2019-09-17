@@ -46,22 +46,13 @@ public class UserProfileController {
     private UserAccountRepository userAccountRepository;
 
     @Autowired
-    private PostRepository postRepository;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
     private BlogUserDetailsService blogUserDetailsService;
 
     @Autowired
-    private BlogSecurityService blogSecurityService;
-
-    @Autowired
     private PostService postService;
-
-    @Autowired
-    private CommentRepository commentRepository;
 
     @Autowired
     private UserAccountConverter userAccountConverter;
@@ -78,7 +69,7 @@ public class UserProfileController {
      */
     @PreAuthorize("isAuthenticated()")
     @GetMapping(value = Constants.Urls.PROFILE)
-    public UserAccountDTO checkAuthenticated(@AuthenticationPrincipal UserAccountDetailsDTO userAccount) throws MalformedURLException {
+    public UserAccountDTO checkAuthenticated(@AuthenticationPrincipal UserAccountDetailsDTO userAccount) {
         return UserAccountConverter.convertToUserAccountDTO(userAccount);
     }
 

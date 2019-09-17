@@ -86,32 +86,34 @@ public abstract class AbstractImageUploadController {
     protected ImageResponse postImage(
             String sql,
             String urlTemplate,
-            MultipartFile imagePart
+            long contentLength,
+            String contentType,
+            InputStream inputStream
 	) throws SQLException {
-		long contentLength = getCorrectContentLength(imagePart.getSize());
-        String contentType = getCorrectContentType(imagePart.getContentType());
+		contentLength = getCorrectContentLength(contentLength);
+        contentType = getCorrectContentType(contentType);
 
         try(Connection conn = dataSource.getConnection();) {
             try (PreparedStatement ps = conn.prepareStatement(sql)){
                 ps.setString(2, contentType);
-                ps.setBinaryStream(1, imagePart.getInputStream(), (int) contentLength);
+                ps.setBinaryStream(1, inputStream, (int) contentLength);
                 try(ResultSet resp = ps.executeQuery()) {
                     if(!resp.next()) {
                         throw new RuntimeException("Expected result");
                     }
-                    return getResponse(urlTemplate, resp.getObject("id", UUID.class), imagePart);
+                    return getResponse(urlTemplate, resp.getObject("id", UUID.class), contentType);
                 }
 
-            } catch (SQLException | IOException e) {
+            } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
 
         }
     }
 
-    private ImageResponse getResponse(String template, UUID uuid, MultipartFile imagePart) {
+    private ImageResponse getResponse(String template, UUID uuid, String contentType) {
         String relativeUrl = UriComponentsBuilder.fromUriString(template)
-                .buildAndExpand(uuid, getExtension(imagePart.getContentType()))
+                .buildAndExpand(uuid, getExtension(contentType))
                 .toUriString();
         return new ImageResponse(relativeUrl, customConfig.getBaseUrl() + relativeUrl);
     }
