@@ -220,7 +220,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
     @Test
     public void testFulltextSearchHostPort() throws Exception {
         final String newPostRendered = "<body>Post Rendered</body>";
-        mockServer.expect(requestTo(new StringStartsWith("http://rendertron.example.com:3000/"+customConfig.getBaseUrl()+"/post/")))
+        mockServer.expect(requestTo(new StringStartsWith(true, "http://rendertron.example.com:3000/"+customConfig.getBaseUrl()+"/post/")))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(newPostRendered, MediaType.TEXT_HTML));
 
@@ -275,7 +275,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
     @Test
     public void testUserCanAddAndUpdateAndCannotDeletePost() throws Exception {
         final String newPostRendered = "<body>Post Rendered</body>";
-        mockServer.expect(ExpectedCount.times(2), requestTo(new StringStartsWith("http://rendertron.example.com:3000/"+customConfig.getBaseUrl()+"/post/")))
+        mockServer.expect(ExpectedCount.times(2), requestTo(new StringStartsWith(true, "http://rendertron.example.com:3000/"+customConfig.getBaseUrl()+"/post/")))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(newPostRendered, MediaType.TEXT_HTML));
 
@@ -602,7 +602,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
     @Test
     public void testAdminCanUpdateForeignPost() throws Exception {
         final String newPostRendered = "<body>Post Rendered</body>";
-        mockServer.expect(requestTo(new StringStartsWith("http://rendertron.example.com:3000/"+customConfig.getBaseUrl()+"/post/")))
+        mockServer.expect(requestTo(new StringStartsWith(true, "http://rendertron.example.com:3000/"+customConfig.getBaseUrl()+"/post/")))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(newPostRendered, MediaType.TEXT_HTML));
 
@@ -680,7 +680,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
     @Test
     public void xssText() throws Exception {
         final String newPostRendered = "<body>Post Rendered</body>";
-        mockServer.expect(requestTo(new StringStartsWith("http://rendertron.example.com:3000/"+customConfig.getBaseUrl()+"/post/")))
+        mockServer.expect(requestTo(new StringStartsWith(true, "http://rendertron.example.com:3000/"+customConfig.getBaseUrl()+"/post/")))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(newPostRendered, MediaType.TEXT_HTML));
 
