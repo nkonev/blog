@@ -36,7 +36,6 @@
         <selenide.version>4.14.2</selenide.version>
         <phantomjsdriver.version>1.4.4</phantomjsdriver.version>
         <shedlock.version>2.1.0</shedlock.version>
-        <postgresql.version>42.2.8</postgresql.version>
         <greenmail.version>1.5.10</greenmail.version>
         <mockserver.version>5.6.1</mockserver.version>
     </properties>
@@ -273,12 +272,6 @@
                 <groupId>org.seleniumhq.selenium</groupId>
                 <artifactId>selenium-support</artifactId>
                 <version>${selenium.override.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.postgresql</groupId>
-                <artifactId>postgresql</artifactId>
-                <version>${postgresql.version}</version>
             </dependency>
 
             <dependency>
