@@ -65,7 +65,11 @@ public abstract class AbstractItTestRunner {
         clearBrowserCookies();
     }
 
-    protected String getPencilImage() throws IOException {
-        return getExistsFile("../"+ CommonTestConstants.TEST_IMAGE, CommonTestConstants.TEST_IMAGE).getCanonicalPath();
+    protected String getPencilImage() {
+        try {
+            return getExistsFile("../"+ CommonTestConstants.TEST_IMAGE, CommonTestConstants.TEST_IMAGE).getCanonicalPath();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

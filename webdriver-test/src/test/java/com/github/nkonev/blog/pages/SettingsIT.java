@@ -31,10 +31,11 @@ public class SettingsIT extends AbstractItTestRunner {
         indexPage.clickSettings();
 
         SettingsPage settingsPage = new SettingsPage(urlPrefix);
-        settingsPage.setBackgroundImage(getPencilImage());
-        settingsPage.waitForBackgroundImageWillSet();
 
         FailoverUtils.retry(3, () -> {
+            settingsPage.setBackgroundImage(getPencilImage());
+            settingsPage.waitForBackgroundImageWillSet();
+
             settingsPage.clickSave();
             Assertions.assertFalse($(SettingsPage.IMG_BG).getAttribute("src").isEmpty());
 
