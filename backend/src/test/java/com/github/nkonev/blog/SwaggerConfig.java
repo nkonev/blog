@@ -1,4 +1,4 @@
-/*package com.github.nkonev.blog;
+package com.github.nkonev.blog;
 
 import com.github.nkonev.blog.dto.SettingsDTO;
 import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
@@ -49,4 +49,3 @@ public class SwaggerConfig {
                 .build();
     }
 }
-*/
