@@ -108,6 +108,7 @@ spring.resources.static-locations: file:backend/src/main/resources/static/, clas
 
 
 spring.jpa:
+  database-platform: org.hibernate.dialect.PostgreSQLDialect
   open-in-view: false
   properties:
     hibernate.use_sql_comments: true

@@ -45,6 +45,7 @@ def writeAndLog(filePath, content) {
 def DATA_STORE_SNIPPET = {boolean dropFirst, String ddlAuto ->
 return """
 spring.jpa:
+  database-platform: org.hibernate.dialect.PostgreSQLDialect
   open-in-view: false
   properties:
     hibernate.use_sql_comments: true
