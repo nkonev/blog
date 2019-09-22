@@ -56,18 +56,6 @@
             <artifactId>selenium-chrome-driver</artifactId>
         </dependency>
 
-        <!--
-https://github.com/bonigarcia/webdrivermanager
-Загрузчик различных исполняемых файлов для имплементаций драйверов (Firefox, Chrome, phantomJs)
-загружает в ~/.m2/repository/webdriver
-которые по каким-то причинам не находятся в maven central
--->
-        <dependency>
-            <groupId>io.github.bonigarcia</groupId>
-            <artifactId>webdrivermanager</artifactId>
-            <version>${webdrivermanager.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>com.codeborne</groupId>
             <artifactId>phantomjsdriver</artifactId>

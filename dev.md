@@ -152,6 +152,14 @@ Test user credentials can be found in `backend/src/main/resources/db/demo/V32767
 
 ```
 
+# Update with careful
+```
+shedlock
+hibernate-types-52
+selenide
+webdrivermanager
+```
+
 # Run `boot-run`
 ```bash
 ./mvnw clean spring-boot:run

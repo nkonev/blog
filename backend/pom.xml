@@ -21,7 +21,7 @@
         <!-- swagger stuff -->
         <swagger2markup.version>1.3.7</swagger2markup.version>
         <swagger2markup-ext.version>1.3.3</swagger2markup-ext.version>
-        <springfox.version>2.9.0</springfox.version>
+        <springfox.version>2.9.2</springfox.version>
         <asciidoctor.input.directory>${project.basedir}/src/docs/asciidoc</asciidoctor.input.directory>
         <swagger.output.dir>${project.build.directory}/swagger</swagger.output.dir>
         <swagger.snippetOutput.dir>${project.build.directory}/generated-snippets</swagger.snippetOutput.dir>
@@ -31,7 +31,7 @@
         <swagger.input>${swagger.output.dir}/swagger.json</swagger.input>
         <swagger-annotations.version>1.5.17</swagger-annotations.version>
         <!-- /swagger stuff -->
-        <hibernate-types.version>2.4.2</hibernate-types.version>
+        <hibernate-types.version>2.4.4</hibernate-types.version>
         <html.sanitizer.version>20180219.1</html.sanitizer.version>
 
         <git-template-json>git.template.json</git-template-json>
@@ -383,7 +383,7 @@
             <!-- jsoup HTML parser library @ https://jsoup.org/ -->
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>1.11.3</version>
+            <version>1.12.1</version>
         </dependency>
 
         <dependency>

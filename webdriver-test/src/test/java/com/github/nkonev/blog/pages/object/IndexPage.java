@@ -2,6 +2,7 @@ package com.github.nkonev.blog.pages.object;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.WebDriverRunner;
 import com.github.nkonev.blog.integration.AbstractItTestRunner;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -21,7 +22,7 @@ public class IndexPage {
     public static final String ADD_POST = ".fab div";
     public IndexPage(String urlPrefix) {
         this.urlPrefix = urlPrefix;
-        this.driver = $(BODY).getWrappedDriver();
+        this.driver = WebDriverRunner.getWebDriver();
     }
 
     /**

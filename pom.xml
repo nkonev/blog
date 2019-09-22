@@ -32,14 +32,13 @@
 
         <spring.boot.version>2.1.8.RELEASE</spring.boot.version>
         <spring.security.oauth2.version>2.1.5.RELEASE</spring.security.oauth2.version>
-        <selenium.override.version>3.13.0</selenium.override.version>
-        <selenide.version>4.12.2</selenide.version>
+        <selenium.override.version>3.14.0</selenium.override.version>
+        <selenide.version>4.14.2</selenide.version>
         <phantomjsdriver.version>1.4.4</phantomjsdriver.version>
-        <webdrivermanager.version>2.2.4</webdrivermanager.version>
         <shedlock.version>2.1.0</shedlock.version>
-        <postgresql.version>42.2.5</postgresql.version>
-        <greenmail.version>1.5.9</greenmail.version>
-        <mockserver.version>5.4.1</mockserver.version>
+        <postgresql.version>42.2.8</postgresql.version>
+        <greenmail.version>1.5.10</greenmail.version>
+        <mockserver.version>5.6.1</mockserver.version>
     </properties>
 
     <modules>

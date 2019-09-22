@@ -14,6 +14,7 @@ import com.github.nkonev.blog.webdriver.configuration.SeleniumConfiguration;
 import com.github.nkonev.blog.webdriver.selenium.Browser;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
@@ -235,7 +236,7 @@ public class UserProfileIT extends SocialEmulatorTests {
         FailoverUtils.retry(2, () -> {
             $(UserListIT.UsersPage.USERS_CONTAINER_SELECTOR)
                     .shouldHave(Condition.text(anotherUserLogin))
-                    .findElementByLinkText(anotherUserLogin)
+                    .findElement(By.linkText(anotherUserLogin))
                     .click();
 
             userProfilePage.assertMsg(anotherUserId);
