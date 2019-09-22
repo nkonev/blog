@@ -21,7 +21,7 @@ public class UserNav {
         $(".user-profile-nav .dropobj")
 //                .waitUntil(Condition.enabled, USER_NAV_TIMEOUT)
 //                .waitUntil(Condition.visible, USER_NAV_TIMEOUT)
-                .hover();
+                .hover().click();
     }
 
     public static void exit() {

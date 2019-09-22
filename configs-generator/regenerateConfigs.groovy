@@ -114,6 +114,8 @@ def WEBSERVER_SNIPPET =
 """
 server.tomcat.basedir: \${java.io.tmpdir}/com.github.nkonev.tomcat
 server.servlet.session.store-dir: \${server.tomcat.basedir}/sessions
+# For pretty output in tests
+spring.http.encoding.force-response: true
 """;
 
 def TEST_USERS_SNIPPET=
