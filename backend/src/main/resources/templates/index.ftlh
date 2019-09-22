@@ -8,7 +8,9 @@
     <title>Blog</title>
     <link rel="stylesheet" href="/build/main.css">
     <#if seoScript?has_content>
+        <#noautoesc>
         ${seoScript}
+        </#noautoesc>
     </#if>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon/favicon.ico"/>
     <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
