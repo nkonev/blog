@@ -3,10 +3,7 @@ package com.github.nkonev.blog.webdriver.selenium;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.WebDriverRunner;
 import com.github.nkonev.blog.webdriver.configuration.SeleniumConfiguration;
-import io.github.bonigarcia.wdm.ChromeDriverManager;
-import io.github.bonigarcia.wdm.DriverManagerType;
-import io.github.bonigarcia.wdm.FirefoxDriverManager;
-import io.github.bonigarcia.wdm.PhantomJsDriverManager;
+import io.github.bonigarcia.wdm.*;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -73,7 +70,7 @@ public class SeleniumFactory implements FactoryBean<WebDriver> {
         switch(seleniumConfiguration.getBrowser()) {
             case PHANTOM:
             {
-                PhantomJsDriverManager.getInstance(DriverManagerType.PHANTOMJS).version(PHANTOM_JS_DRIVER_VERSION).setup(); // download executables if need and set System.properties
+                WebDriverManager.getInstance(DriverManagerType.PHANTOMJS).version(PHANTOM_JS_DRIVER_VERSION).setup(); // download executables if need and set System.properties
 
                 String phantomLogProp = System.getProperty(PROPERTY_BROWSER_PHANTOM_LOG);
                 File phantomLog = null;
@@ -93,7 +90,7 @@ public class SeleniumFactory implements FactoryBean<WebDriver> {
             {
                 System.setProperty("webdriver.firefox.logfile", "/dev/null");
                 // firefox
-                FirefoxDriverManager.getInstance(DriverManagerType.FIREFOX).version(FIREFOX_DRIVER_VERSION).setup(); // download executables if need and set System.properties
+                WebDriverManager.getInstance(DriverManagerType.FIREFOX).version(FIREFOX_DRIVER_VERSION).setup(); // download executables if need and set System.properties
                 // https://developer.mozilla.org/en-US/Firefox/Headless_mode
                 FirefoxOptions firefoxOptions = new FirefoxOptions();
                 firefoxOptions.setLogLevel(FirefoxDriverLogLevel.INFO);
@@ -106,7 +103,7 @@ public class SeleniumFactory implements FactoryBean<WebDriver> {
             break;
             case CHROME:
             {
-                ChromeDriverManager.getInstance(DriverManagerType.CHROME).version(CHROME_DRIVER_VERSION).setup(); // download executables if need and set System.properties
+                WebDriverManager.getInstance(DriverManagerType.CHROME).version(CHROME_DRIVER_VERSION).setup(); // download executables if need and set System.properties
                 // https://developers.google.com/web/updates/2017/04/headless-chrome
                 ChromeOptions chromeOptions = new ChromeOptions();
                 if (seleniumConfiguration.isHeadless()) {
