@@ -13,10 +13,10 @@
                     </div>
                 </form>
                 <div class="buttons-container">
-                    <form class="social form-fb" v-if="!loading && !formError" @submit="submitOauthFb">
+                    <form class="social form-fb" v-if="!loading && !formError" @submit.prevent="submitOauthFb">
                         <ButtonFacebook>Facebook</ButtonFacebook>
                     </form>
-                    <form class="social form-vk" v-if="!loading && !formError" @submit="submitOauthVk">
+                    <form class="social form-vk" v-if="!loading && !formError" @submit.prevent="submitOauthVk">
                         <ButtonVkontakte>Vkontakte</ButtonVkontakte>
                     </form>
                 </div>

@@ -34,7 +34,7 @@
 
                 <div class="profile-edit-info-form-binding">
                     <template>
-                        <form v-if="!model.oauthIdentifiers.facebookId" class="social form-fb" @submit="submitOauthFb">
+                        <form v-if="!model.oauthIdentifiers.facebookId" class="social form-fb" @submit.prevent="submitOauthFb">
                             <ButtonFacebook>Bind Facebook</ButtonFacebook>
                         </form>
                         <div v-else class="social">
@@ -42,7 +42,7 @@
                         </div>
                     </template>
                     <template>
-                        <form v-if="!model.oauthIdentifiers.vkontakteId" class="social form-vk" @submit="submitOauthVk">
+                        <form v-if="!model.oauthIdentifiers.vkontakteId" class="social form-vk" @submit.prevent="submitOauthVk">
                             <ButtonVkontakte>Bind Vkontakte</ButtonVkontakte>
                         </form>
                         <div v-else class="social">
