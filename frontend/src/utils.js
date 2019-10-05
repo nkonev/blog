@@ -128,4 +128,4 @@ export const fixScroll = () => {
             element_to_scroll_to.scrollIntoView();
         })
     }
-}
+};

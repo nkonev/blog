@@ -13,10 +13,10 @@
                     </div>
                 </form>
                 <div class="buttons-container">
-                    <form class="social form-fb" action="/api/login/facebook" v-if="!loading && !formError" @click="setSpinner">
+                    <form class="social form-fb" v-if="!loading && !formError" @submit="submitSocial('/api/login/facebook')">
                         <ButtonFacebook>Facebook</ButtonFacebook>
                     </form>
-                    <form class="social form-vk" action="/api/login/vkontakte" v-if="!loading && !formError" @click="setSpinner">
+                    <form class="social form-vk" v-if="!loading && !formError" @submit="submitSocial('/api/login/vkontakte')">
                         <ButtonVkontakte>Vkontakte</ButtonVkontakte>
                     </form>
                 </div>
@@ -100,6 +100,10 @@
             },
             setSpinner(){
                 this.loading = true;
+            },
+            submitSocial(url){
+                this.setSpinner();
+                window.location.assign(url);
             }
         },
         watch: {

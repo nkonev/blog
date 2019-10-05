@@ -1,5 +1,5 @@
 <template>
-    <button id="btn-submit-facebook" class="blog-btn login-btn-social login-btn-social-fb" type="submit" @click="onClick">
+    <button id="btn-submit-facebook" class="blog-btn login-btn-social login-btn-social-fb" type="submit">
         <font-awesome-icon :icon="{ prefix: 'fab', iconName: 'facebook' }" style="width: 28px; height:28px; margin-right: 1em" ></font-awesome-icon>
         <span><slot/></span>
     </button>
@@ -7,11 +7,7 @@
 
 <script>
     export default {
-        methods:{
-            onClick(){
-                this.$emit('click');
-            }
-        }
+
     }
 </script>
 

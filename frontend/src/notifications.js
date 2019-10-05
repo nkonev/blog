@@ -24,15 +24,15 @@ miniToastr.init({types: {
 
 export default {
     unexpectedError(m, b, s) {
-        VueNotifications.error({title: 'Unexpected server error', message: 'Unexpected server error occurred on '+m+' '+b + ' ' + s})
+        miniToastr['error']('Unexpected server error occurred on '+m+' '+b + ' ' + s, 'Unexpected server error')
     },
     successfulLogin(){
-        VueNotifications.info({message: 'You are successfully logged in'})
+        miniToastr['info']('You are successfully logged in')
     },
     successfulLogout(){
-        VueNotifications.info({message: 'You are successfully logged out'})
+        miniToastr['info']('You are successfully logged out')
     },
-    postCreated(title){
-        VueNotifications.info({title: 'Created new post', message: title})
+    postCreated(postTitleAsMessage){
+        miniToastr['info'](postTitleAsMessage, 'Created new post')
     }
 }
