@@ -64,6 +64,7 @@ export const closeStompClient = obj => {
  * @param $state
  */
 export const infinitePostsHandlerWithSearch = (that, getWithPaginationUrl, responseArrayExtractor, onSuccess, $state) => {
+    that.$Progress.start();
     Vue.http.get(getWithPaginationUrl, {
         params: {
             page: Math.floor(that.posts.length / POSTS_PAGE_SIZE),
@@ -94,8 +95,10 @@ export const infinitePostsHandlerWithSearch = (that, getWithPaginationUrl, respo
         } else {
             $state.complete();
         }
+        that.$Progress.finish();
     }, err => {
         $state.complete();
+        that.$Progress.fail();
     });
 };
 

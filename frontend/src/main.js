@@ -11,9 +11,15 @@ import {LOGIN_MODAL, PROFILE_URL} from './constants'
 import bus from './bus'
 import {UNAUTHORIZED} from './bus'
 import Meta from 'vue-meta'
+import VueProgressBar from 'vue-progressbar'
 
 Vue.use(VueResource);
 Vue.use(Meta);
+Vue.use(VueProgressBar, {
+    color: 'rgb(143, 255, 199)',
+    failedColor: 'red',
+    height: '2px'
+});
 
 // Vue.config.devtools = false;
 
