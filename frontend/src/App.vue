@@ -4,7 +4,7 @@
 
         <div id="content">
             <LoginModal></LoginModal>
-
+            <vue-progress-bar></vue-progress-bar>
             <div class="logo">
                 <h1>{{config.header}}</h1>
                 <h4>{{config.subHeader}}</h4>
