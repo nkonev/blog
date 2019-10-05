@@ -2,6 +2,7 @@ package com.github.nkonev.blog.pages;
 
 import com.codeborne.selenide.Selenide;
 import com.github.nkonev.blog.FailoverUtils;
+import com.github.nkonev.blog.entity.jpa.RuntimeSettings;
 import com.github.nkonev.blog.integration.AbstractItTestRunner;
 import com.github.nkonev.blog.pages.object.IndexPage;
 import com.github.nkonev.blog.pages.object.LoginModal;
@@ -9,7 +10,11 @@ import com.github.nkonev.blog.pages.object.SettingsPage;
 import com.github.nkonev.blog.repo.jpa.RuntimeSettingsRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Optional;
 
 import static com.codeborne.selenide.Selenide.$;
 import static com.github.nkonev.blog.controllers.SettingsController.IMAGE_BACKGROUND;
@@ -18,6 +23,8 @@ public class SettingsIT extends AbstractItTestRunner {
 
     @Autowired
     private RuntimeSettingsRepository runtimeSettingsRepository;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SettingsIT.class);
 
     @Test
     public void testSetImage() throws Exception {
@@ -39,20 +46,14 @@ public class SettingsIT extends AbstractItTestRunner {
             settingsPage.clickSave();
             Assertions.assertFalse($(SettingsPage.IMG_BG).getAttribute("src").isEmpty());
 
-            runtimeSettingsRepository.findById(IMAGE_BACKGROUND).orElseThrow();
+            Optional<RuntimeSettings> byId = runtimeSettingsRepository.findById(IMAGE_BACKGROUND);
+            if (byId.isEmpty()) {
+                LOGGER.error("We didn't found {} in database", IMAGE_BACKGROUND);
+                throw new RuntimeException();
+            }
             return null;
         });
 
-
-        FailoverUtils.retry(3, () -> {
-            Selenide.refresh();
-
-            settingsPage.waitForBackgroundImageWillSet();
-
-            Assertions.assertFalse($(SettingsPage.IMG_BG).getAttribute("src").isEmpty());
-            return null;
-        });
     }
-
 
 }
