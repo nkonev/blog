@@ -103,7 +103,7 @@
             },
             submitSocial(url){
                 this.setSpinner();
-                window.location.assign(url);
+                window.location.href = url;
             }
         },
         watch: {
