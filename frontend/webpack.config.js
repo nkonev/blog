@@ -10,7 +10,7 @@ const NODE_ENV = process.env.NODE_ENV || DEVELOPMENT_ENV;
 
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const WebpackOnBuildPlugin = require('on-build-webpack');
 const LiveReloadPlugin = require('webpack-livereload-plugin');
 const { VueLoaderPlugin } = require('vue-loader');
@@ -46,9 +46,9 @@ module.exports = {
         new VueLoaderPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /^$/),
-        new CleanWebpackPlugin([buildDir], {
+        new CleanWebpackPlugin({
             watch: false,
-            allowExternal: true,
+            dangerouslyAllowCleanPatternsOutsideProject: true,
             verbose: true,
             dry: false
         }),
