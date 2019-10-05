@@ -113,7 +113,7 @@ them can fails, with websocket for example.
 
 As you can see, there is switches via maven profiles.
 
-This will run tests on PhantomJS.
+This will run tests on Chrome.
 See `.travis.yml` for Firefox and Chrome test examples
 
 ## Building without frontend and without webdriver tests

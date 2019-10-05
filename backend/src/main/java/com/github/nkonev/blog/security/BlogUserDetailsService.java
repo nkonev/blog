@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.session.FindByIndexNameSessionRepository;
 import org.springframework.session.Session;
+import org.springframework.session.data.redis.RedisIndexedSessionRepository;
 import org.springframework.session.data.redis.RedisOperationsSessionRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -29,7 +30,7 @@ public class BlogUserDetailsService implements UserDetailsService {
     private UserAccountRepository userAccountRepository;
 
     @Autowired
-    private RedisOperationsSessionRepository redisOperationsSessionRepository;
+    private RedisIndexedSessionRepository redisOperationsSessionRepository;
 
     /**
      * load UserAccountDetailsDTO from database, or throws UsernameNotFoundException
