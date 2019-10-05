@@ -34,7 +34,7 @@
 
                 <div class="profile-edit-info-form-binding">
                     <template>
-                        <form v-if="!model.oauthIdentifiers.facebookId" class="social form-fb" action="/api/login/facebook" @click="setSpinner">
+                        <form v-if="!model.oauthIdentifiers.facebookId" class="social form-fb" @submit="submitSocial('/api/login/facebook')">
                             <ButtonFacebook>Bind Facebook</ButtonFacebook>
                         </form>
                         <div v-else class="social">
@@ -42,7 +42,7 @@
                         </div>
                     </template>
                     <template>
-                        <form v-if="!model.oauthIdentifiers.vkontakteId" class="social form-vk" action="/api/login/vkontakte" @click="setSpinner">
+                        <form v-if="!model.oauthIdentifiers.vkontakteId" class="social form-vk" @submit="submitSocial('/api/login/vkontakte')">
                             <ButtonVkontakte>Bind Vkontakte</ButtonVkontakte>
                         </form>
                         <div v-else class="social">
@@ -260,6 +260,10 @@
                 console.log("Validation result: ", isValid, ", Errors:", errors);
                 this.submitEnabled = isValid;
                 this.errorMessage = null;
+            },
+            submitSocial(url){
+                this.setSpinner();
+                window.location.assign(url);
             },
         },
         created(){
