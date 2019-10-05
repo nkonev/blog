@@ -13,10 +13,10 @@
                     </div>
                 </form>
                 <div class="buttons-container">
-                    <form class="social form-fb" v-if="!loading && !formError" @submit="submitSocial('/api/login/facebook')">
+                    <form class="social form-fb" v-if="!loading && !formError" @submit="submitOauthFb">
                         <ButtonFacebook>Facebook</ButtonFacebook>
                     </form>
-                    <form class="social form-vk" v-if="!loading && !formError" @submit="submitSocial('/api/login/vkontakte')">
+                    <form class="social form-vk" v-if="!loading && !formError" @submit="submitOauthVk">
                         <ButtonVkontakte>Vkontakte</ButtonVkontakte>
                     </form>
                 </div>
@@ -42,6 +42,7 @@
     import BlogSpinner from "./BlogSpinner.vue"
     import ButtonFacebook from "./ButtonFacebook.vue"
     import ButtonVkontakte from "./ButtonVkontakte.vue"
+    import {submitOauthVkontakte, submitOauthFacebook} from '../utils'
 
     export default {
         name: 'LoginModal',
@@ -101,9 +102,13 @@
             setSpinner(){
                 this.loading = true;
             },
-            submitSocial(url){
+            submitOauthVk(){
                 this.setSpinner();
-                window.location.href = url;
+                submitOauthVkontakte();
+            },
+            submitOauthFb(){
+                this.setSpinner();
+                submitOauthFacebook();
             }
         },
         watch: {

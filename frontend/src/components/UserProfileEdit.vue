@@ -34,7 +34,7 @@
 
                 <div class="profile-edit-info-form-binding">
                     <template>
-                        <form v-if="!model.oauthIdentifiers.facebookId" class="social form-fb" @submit="submitSocial('/api/login/facebook')">
+                        <form v-if="!model.oauthIdentifiers.facebookId" class="social form-fb" @submit="submitOauthFb">
                             <ButtonFacebook>Bind Facebook</ButtonFacebook>
                         </form>
                         <div v-else class="social">
@@ -42,7 +42,7 @@
                         </div>
                     </template>
                     <template>
-                        <form v-if="!model.oauthIdentifiers.vkontakteId" class="social form-vk" @submit="submitSocial('/api/login/vkontakte')">
+                        <form v-if="!model.oauthIdentifiers.vkontakteId" class="social form-vk" @submit="submitOauthVk">
                             <ButtonVkontakte>Bind Vkontakte</ButtonVkontakte>
                         </form>
                         <div v-else class="social">
@@ -77,6 +77,7 @@
     import ButtonFacebook from "./ButtonFacebook.vue"
     import ButtonVkontakte from "./ButtonVkontakte.vue"
     import BlogSpinner from "./BlogSpinner.vue"
+    import {submitOauthVkontakte, submitOauthFacebook} from '../utils'
 
     export default {
         name: 'user-profile', // это имя компонента, которое м. б. тегом в другом компоненте
@@ -261,10 +262,14 @@
                 this.submitEnabled = isValid;
                 this.errorMessage = null;
             },
-            submitSocial(url){
+            submitOauthVk(){
                 this.setSpinner();
-                window.location.href = url;
+                submitOauthVkontakte();
             },
+            submitOauthFb(){
+                this.setSpinner();
+                submitOauthFacebook();
+            }
         },
         created(){
             // deep copy
