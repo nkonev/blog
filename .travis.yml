@@ -42,5 +42,5 @@ script:
       echo "Won't push docker image and deploy";
     ) fi
 addons:
-  firefox: "64.0"
+  firefox: "63.0"
 #  chrome: stable
