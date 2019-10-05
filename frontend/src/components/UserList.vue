@@ -64,6 +64,7 @@
                 this.fetchUsers('', pageNum);
             },
             fetchUsers(searchString='', pageNum=(this.initialPageIndex+1)) {
+                this.$Progress.start();
                 this.users = [];
                 this.$router.push({path: users, query: {page: pageNum}});
 
@@ -80,9 +81,11 @@
                         this.pageCount = this.getPageCount(response.body.totalCount);
                         this.users = response.body.data;
                         this.currentPage = pageNum;
+                        this.$Progress.finish();
                     }, response => {
                         console.error(response);
                         // alert(response);
+                        this.$Progress.fail();
                     }
                 );
             },

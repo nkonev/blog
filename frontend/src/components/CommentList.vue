@@ -64,6 +64,7 @@
              * @param pageNum. decreases to 1 for compability with Spring Data
              */
             fetchComments(pageNum=(this.initialPageIndex+1)){
+                this.$Progress.start();
                 const postId = getPostId(this);
 
                 this.$http.get('/api/post/'+postId+'/comment?page='+(pageNum-1)+'&size='+PAGE_SIZE).then(
@@ -72,9 +73,11 @@
                         this.comments = response.body.data;
                         this.currentPage = pageNum;
                         fixScroll();
+                        this.$Progress.finish();
                     }, response => {
                         console.error(response);
                         // alert(response);
+                        this.$Progress.fail();
                     }
                 );
             },
