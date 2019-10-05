@@ -3,10 +3,7 @@ package com.github.nkonev.blog.webdriver.selenium;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.WebDriverRunner;
 import com.github.nkonev.blog.webdriver.configuration.SeleniumConfiguration;
-import io.github.bonigarcia.wdm.ChromeDriverManager;
-import io.github.bonigarcia.wdm.DriverManagerType;
-import io.github.bonigarcia.wdm.FirefoxDriverManager;
-import io.github.bonigarcia.wdm.PhantomJsDriverManager;
+import io.github.bonigarcia.wdm.*;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -14,8 +11,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
-import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,12 +24,9 @@ import java.util.concurrent.TimeUnit;
  */
 public class SeleniumFactory implements FactoryBean<WebDriver> {
 
-    public static final String PROPERTY_BROWSER_PHANTOM_LOG = "phantomjs.log";
-
 
     public static final String FIREFOX_DRIVER_VERSION = "0.21.0"; // https://github.com/mozilla/geckodriver/releases
     public static final String CHROME_DRIVER_VERSION = "2.40"; // https://sites.google.com/a/chromium.org/chromedriver/
-    public static final String PHANTOM_JS_DRIVER_VERSION = "2.1.1"; // https://npm.taobao.org/mirrors/phantomjs
 
     private WebDriver driver;
 
@@ -71,29 +63,11 @@ public class SeleniumFactory implements FactoryBean<WebDriver> {
         SLF4JBridgeHandler.install();
 
         switch(seleniumConfiguration.getBrowser()) {
-            case PHANTOM:
-            {
-                PhantomJsDriverManager.getInstance(DriverManagerType.PHANTOMJS).version(PHANTOM_JS_DRIVER_VERSION).setup(); // download executables if need and set System.properties
-
-                String phantomLogProp = System.getProperty(PROPERTY_BROWSER_PHANTOM_LOG);
-                File phantomLog = null;
-                if (phantomLogProp != null){
-                    phantomLog = new File(phantomLogProp);
-                }
-                String phantomjspath = System.getProperty(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY); // setted by PhantomJsDriverManager.getInstance().setup();
-                PhantomJSDriverService phantomJSDriverService = new PhantomJSDriverService.Builder()
-                        .usingPhantomJSExecutable(new File(phantomjspath))
-                        .withLogFile(phantomLog)
-                        .usingAnyFreePort()
-                        .build();
-                driver = new PhantomJSDriver(phantomJSDriverService, DesiredCapabilities.phantomjs());
-            }
-            break;
             case FIREFOX:
             {
                 System.setProperty("webdriver.firefox.logfile", "/dev/null");
                 // firefox
-                FirefoxDriverManager.getInstance(DriverManagerType.FIREFOX).version(FIREFOX_DRIVER_VERSION).setup(); // download executables if need and set System.properties
+                WebDriverManager.getInstance(DriverManagerType.FIREFOX).version(FIREFOX_DRIVER_VERSION).setup(); // download executables if need and set System.properties
                 // https://developer.mozilla.org/en-US/Firefox/Headless_mode
                 FirefoxOptions firefoxOptions = new FirefoxOptions();
                 firefoxOptions.setLogLevel(FirefoxDriverLogLevel.INFO);
@@ -106,7 +80,7 @@ public class SeleniumFactory implements FactoryBean<WebDriver> {
             break;
             case CHROME:
             {
-                ChromeDriverManager.getInstance(DriverManagerType.CHROME).version(CHROME_DRIVER_VERSION).setup(); // download executables if need and set System.properties
+                WebDriverManager.getInstance(DriverManagerType.CHROME).version(CHROME_DRIVER_VERSION).setup(); // download executables if need and set System.properties
                 // https://developers.google.com/web/updates/2017/04/headless-chrome
                 ChromeOptions chromeOptions = new ChromeOptions();
                 if (seleniumConfiguration.isHeadless()) {

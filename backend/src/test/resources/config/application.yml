@@ -83,12 +83,15 @@ server.port: 9080
 
 server.tomcat.basedir: ${java.io.tmpdir}/com.github.nkonev.tomcat
 server.servlet.session.store-dir: ${server.tomcat.basedir}/sessions
+# For pretty output in tests
+spring.http.encoding.force-response: true
 
 custom.it.user: admin
 custom.it.password: admin
 
 
 spring.jpa:
+  database-platform: org.hibernate.dialect.PostgreSQL10Dialect
   open-in-view: false
   properties:
     hibernate.use_sql_comments: true

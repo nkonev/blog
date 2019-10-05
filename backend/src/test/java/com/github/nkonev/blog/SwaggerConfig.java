@@ -17,9 +17,9 @@ import java.net.URL;
 import java.net.URLStreamHandler;
 import java.time.Duration;
 
-/**
- * Created by nik on 28.05.17.
- */
+
+// Created by nik on 28.05.17.
+
 @EnableSwagger2
 @Configuration
 @Import(BeanValidatorPluginsConfiguration.class)

@@ -76,8 +76,8 @@ public class RendertronFilterTest extends AbstractUtTestRunner {
             LOGGER.info("result body={}", result.getResponse().getContentAsString());
         })
                 .andExpect(status().isOk())
-                .andExpect(content().string(new StringContains("Index Rendered")))
-                .andExpect(content().string(new StringContains("<script>console.log(\"Seo\");</script>")))
+                .andExpect(content().string(new StringContains(true, "Index Rendered")))
+                .andExpect(content().string(new StringContains(true, "<script>console.log(\"Seo\");</script>")))
                 .andReturn();
 
         mockServer.verify();
@@ -95,8 +95,8 @@ public class RendertronFilterTest extends AbstractUtTestRunner {
             LOGGER.info("result body={}", result.getResponse().getContentAsString());
         })
                 .andExpect(status().isOk())
-                .andExpect(content().string(new StringContains("<div id=\"app-container\"></div>")))
-                .andExpect(content().string(new StringContains("<script>console.log(\"Seo\");</script>")))
+                .andExpect(content().string(new StringContains(true, "<div id=\"app-container\"></div>")))
+                .andExpect(content().string(new StringContains(true, "<script>console.log(\"Seo\");</script>")))
                 .andReturn();
 
     }
@@ -116,8 +116,8 @@ public class RendertronFilterTest extends AbstractUtTestRunner {
             LOGGER.info("result body={}", result.getResponse().getContentAsString());
         })
                 .andExpect(status().isOk())
-                .andExpect(content().string(new StringContains("<div id=\"app-container\"></div>")))
-                .andExpect(content().string(not(new StringContains("<script>console.log(\"Seo\");</script>"))))
+                .andExpect(content().string(new StringContains(true, "<div id=\"app-container\"></div>")))
+                .andExpect(content().string(not(new StringContains(true, "<script>console.log(\"Seo\");</script>"))))
                 .andReturn();
 
         mockServer.verify();

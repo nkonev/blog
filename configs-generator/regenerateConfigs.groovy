@@ -45,6 +45,7 @@ def writeAndLog(filePath, content) {
 def DATA_STORE_SNIPPET = {boolean dropFirst, String ddlAuto ->
 return """
 spring.jpa:
+  database-platform: org.hibernate.dialect.PostgreSQL10Dialect
   open-in-view: false
   properties:
     hibernate.use_sql_comments: true
@@ -113,6 +114,8 @@ def WEBSERVER_SNIPPET =
 """
 server.tomcat.basedir: \${java.io.tmpdir}/com.github.nkonev.tomcat
 server.servlet.session.store-dir: \${server.tomcat.basedir}/sessions
+# For pretty output in tests
+spring.http.encoding.force-response: true
 """;
 
 def TEST_USERS_SNIPPET=

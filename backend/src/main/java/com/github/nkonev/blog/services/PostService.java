@@ -227,6 +227,11 @@ public class PostService {
             }
             return new AggregatedPageImpl<T>((List<T>) list);
         }
+
+        @Override
+        public <T> T mapSearchHit(SearchHit searchHit, Class<T> type) {
+            return null;
+        }
     };
 
     public PostDTOWithAuthorization addPost(UserAccountDetailsDTO userAccount, @NotNull PostDTO postDTO){

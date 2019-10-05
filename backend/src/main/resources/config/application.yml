@@ -98,6 +98,8 @@ server.servlet.session.persistent: true
 
 server.tomcat.basedir: ${java.io.tmpdir}/com.github.nkonev.tomcat
 server.servlet.session.store-dir: ${server.tomcat.basedir}/sessions
+# For pretty output in tests
+spring.http.encoding.force-response: true
 
 
 # this is URL
@@ -108,6 +110,7 @@ spring.resources.static-locations: file:backend/src/main/resources/static/, clas
 
 
 spring.jpa:
+  database-platform: org.hibernate.dialect.PostgreSQL10Dialect
   open-in-view: false
   properties:
     hibernate.use_sql_comments: true

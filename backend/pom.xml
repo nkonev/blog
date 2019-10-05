@@ -335,6 +335,7 @@
             <scope>test</scope>
         </dependency>
 
+
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
@@ -345,6 +346,12 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-bean-validators</artifactId>
             <version>${springfox.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.plugin</groupId>
+            <artifactId>spring-plugin-core</artifactId>
+            <version>1.2.0.RELEASE</version>
             <scope>test</scope>
         </dependency>
 
