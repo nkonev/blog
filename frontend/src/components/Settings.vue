@@ -31,7 +31,7 @@
                         :show-remove-button="true"
                         accept="image/*"
                         @file-choose="handleCroppaFileChoose"
-                        @loading-end="handleLoadingEnd"
+                        @draw="handleDraw"
                         @image-remove="handleCroppaImageRemove"
                         @file-size-exceed="handleCroppaFileSizeExceed"
                         @file-type-mismatch="handleCroppaFileTypeMismatch"
@@ -46,6 +46,7 @@
 </template>
 
 <script>
+    import Vue from 'vue'
     import BlogSpinner from './BlogSpinner.vue'
     import 'vue-croppa/dist/vue-croppa.css'
     import Croppa from 'vue-croppa'
@@ -99,10 +100,12 @@
             }
         },
         methods: {
-            handleLoadingEnd(){
-                const dataUrl = document.querySelector(".image-background-cropper canvas").toDataURL();
-                //console.debug('image chosen', dataUrl);
-                this.$store.commit(SET_IMAGE_BACKGROUND, dataUrl);
+            handleDraw(){
+                Vue.nextTick(()=>{
+                    const dataUrl = document.querySelector(".image-background-cropper canvas").toDataURL();
+                    //console.debug('image chosen', dataUrl);
+                    this.$store.commit(SET_IMAGE_BACKGROUND, dataUrl);
+                })
             },
             handleCroppaFileChoose(e){
                 this.removeImageBackground = false;
