@@ -7,10 +7,10 @@
             https://vuejs.org/v2/guide/components.html#Composing-Components
             see also created() hook
         -->
-
+        <sketch-picker :value="colors" @input="updateColor" />
         <!-- https://zhanziyang.github.io/vue-croppa/#/file-input -->
         <div class="post-edit-cropper">
-            <croppa v-model="myCroppa"
+            <croppa v-model="myCroppa" ref="crop" :key="componentKey"
                     :width="cropperWidth"
                     :height="cropperHeight"
                     :remove-button-size="cropperRemoveButtonSize"
@@ -19,11 +19,11 @@
                     placeholder="Choose title image"
                     :initial-image="editPostDTO.titleImg"
                     :placeholder-font-size="32"
+                    :canvas-color="newColor"
                     :disabled="false"
                     :prevent-white-space="false"
                     :show-remove-button="true"
                     accept="image/*"
-                    @init="handleCroppaInit"
                     @file-choose="handleCroppaFileChoose"
                     @image-remove="handleCroppaImageRemove"
                     @file-size-exceed="handleCroppaFileSizeExceed"
@@ -64,6 +64,7 @@
     import {API_POST} from '../constants'
     import Croppa from 'vue-croppa'
     import {isLargeScreen, computedCropper} from "../utils";
+    import { Sketch } from 'vue-color'
     if (isLargeScreen()) {
         require("quill/dist/quill.bubble.css");
     } else {
@@ -107,6 +108,7 @@
         ],
         data () {
             return {
+                componentKey: 0,
                 submitting: false,
                 editorOptions: {
                     theme: isLargeScreen() ? 'bubble' : 'snow',
@@ -118,10 +120,22 @@
                 editPostDTO: {}, // will be overriden below in created()
                 myCroppa: {},
                 chosenFile: null,
+                colors: '#194d33'
             }
         },
-        computed: computedCropper,
+        computed: {
+            ...computedCropper,
+            newColor() {
+                return this.$data.colors.hex;
+            }
+        },
         methods: {
+            updateColor(e){
+                this.$data.colors = e;
+                console.log("set color", e.hex);
+                //this.$refs.crop.$forceUpdate();
+                this.componentKey += 1;
+            },
             startSending() {
                 this.submitting = true;
             },
@@ -204,9 +218,10 @@
                 this.$data.chosenFile = e;
             },
             handleCroppaInit(e){
-                document.querySelector(".post-edit-cropper canvas").style.border="dashed"
+                // document.querySelector(".post-edit-cropper canvas").style.border="dashed"
             },
             handleCroppaImageRemove() {
+                this.editPostDTO.titleImg = null;
                 this.editPostDTO.removeTitleImage = true;
                 console.debug('image removed');
                 this.$data.chosenFile = null;
@@ -237,7 +252,8 @@
         components: {
             VueEditor,
             BlogSpinner,
-            'croppa': Croppa.component
+            'croppa': Croppa.component,
+            'sketch-picker': Sketch,
         },
         watch: {
             'editPostDTO': {
