@@ -53,6 +53,7 @@
     import {computedCropper} from "../utils";
     import {mapGetters} from 'vuex'
     import store, {GET_CONFIG, GET_HEADER, SET_HEADER, GET_SUBHEADER, SET_SUBHEADER, GET_TITLE_TEMPLATE, SET_TITLE_TEMPLATE, SET_CONFIG, GET_IMAGE_BACKGROUND, SET_IMAGE_BACKGROUND, GET_CONFIG_LOADING, FETCH_CONFIG} from '../store'
+    import debounce from "lodash/debounce";
 
     export default {
         components: {
@@ -99,13 +100,14 @@
                 return this.$store.getters[GET_IMAGE_BACKGROUND];
             }
         },
+        created() {
+            this.handleDraw = debounce(this.handleDraw, 400);
+        },
         methods: {
             handleDraw(){
-                Vue.nextTick(()=>{
-                    const dataUrl = document.querySelector(".image-background-cropper canvas").toDataURL();
-                    //console.debug('image chosen', dataUrl);
-                    this.$store.commit(SET_IMAGE_BACKGROUND, dataUrl);
-                })
+                const dataUrl = document.querySelector(".image-background-cropper canvas").toDataURL();
+                //console.debug('image chosen', dataUrl);
+                this.$store.commit(SET_IMAGE_BACKGROUND, dataUrl);
             },
             handleCroppaFileChoose(e){
                 this.removeImageBackground = false;
@@ -126,6 +128,7 @@
                 alert('Image wrong type');
             },
             onBtnSave(){
+                this.$Progress.start();
                 console.debug('Start saving settings');
                 this.startSending();
 
@@ -144,9 +147,11 @@
                             this.finishSending();
                             const newVal = successResp.body;
                             this.$store.commit(SET_CONFIG, newVal);
+                            this.$Progress.finish();
                             return newVal
                         }, failResp => {
                             console.error("Server fail", failResp);
+                            this.$Progress.fail();
                             throw "failed to upload title img"
                         })
                         .catch(e => {
