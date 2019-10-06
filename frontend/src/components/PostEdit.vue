@@ -23,7 +23,6 @@
                     :prevent-white-space="false"
                     :show-remove-button="true"
                     accept="image/*"
-                    @init="handleCroppaInit"
                     @file-choose="handleCroppaFileChoose"
                     @image-remove="handleCroppaImageRemove"
                     @file-size-exceed="handleCroppaFileSizeExceed"
@@ -202,9 +201,6 @@
                 this.editPostDTO.removeTitleImage = false;
                 console.debug('image chosen', e);
                 this.$data.chosenFile = e;
-            },
-            handleCroppaInit(e){
-                document.querySelector(".post-edit-cropper canvas").style.border="dashed"
             },
             handleCroppaImageRemove() {
                 this.editPostDTO.removeTitleImage = true;

@@ -30,7 +30,6 @@
                         :prevent-white-space="false"
                         :show-remove-button="true"
                         accept="image/*"
-                        @init="handleCroppaInit"
                         @file-choose="handleCroppaFileChoose"
                         @loading-end="handleLoadingEnd"
                         @image-remove="handleCroppaImageRemove"
@@ -100,9 +99,6 @@
             }
         },
         methods: {
-            handleCroppaInit(){
-                document.querySelector(".image-background-cropper canvas").style.border="dashed"
-            },
             handleLoadingEnd(){
                 const dataUrl = document.querySelector(".image-background-cropper canvas").toDataURL();
                 //console.debug('image chosen', dataUrl);
