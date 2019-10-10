@@ -10,6 +10,7 @@ import com.github.nkonev.blog.security.BlogSecurityService;
 import com.github.nkonev.blog.security.FacebookPrincipalExtractor;
 import com.github.nkonev.blog.security.VkontaktePrincipalExtractor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,7 @@ import static com.github.nkonev.blog.security.AuthorityUtils.getDefaultUserRole;
 
 @Component
 public class UserAccountConverter {
+
     @Autowired
     private BlogSecurityService blogSecurityService;
 
@@ -62,8 +64,17 @@ public class UserAccountConverter {
                 userAccount.getAvatar(),
                 userAccount.getEmail(),
                 lastLoginDateTime,
-                userAccount.getOauthIdentifiers()
+                userAccount.getOauthIdentifiers(),
+                convertRoles2Enum(userAccount.getRoles())
         );
+    }
+
+    private static Collection<UserRole> convertRoles2Enum(Collection<GrantedAuthority> roles) {
+        if (roles == null) {
+            return null;
+        } else {
+            return roles.stream().map(grantedAuthority -> UserRole.valueOf(grantedAuthority.getAuthority())).collect(Collectors.toList());
+        }
     }
 
     private static SimpleGrantedAuthority convertRole(UserRole role) {
