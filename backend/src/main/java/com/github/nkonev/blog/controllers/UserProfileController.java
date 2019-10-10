@@ -70,7 +70,7 @@ public class UserProfileController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping(value = Constants.Urls.PROFILE)
     public UserAccountDTO checkAuthenticated(@AuthenticationPrincipal UserAccountDetailsDTO userAccount) {
-        return UserAccountConverter.convertToUserAccountDTO(userAccount);
+        return UserAccountConverter.getUserSelfProfile(userAccount, null);
     }
 
     @GetMapping(value = Constants.Urls.USER)
@@ -115,7 +115,7 @@ public class UserProfileController {
         ) {
         UserAccount userAccountEntity = userAccountRepository.findById(userId).orElseThrow(() -> new RuntimeException("user with id="+ userId + " not found"));
         if (userAccount!=null && userAccount.getId().equals(userAccountEntity.getId())){
-            return UserAccountConverter.getUserSelfProfile(userAccount, userAccountEntity);
+            return UserAccountConverter.getUserSelfProfile(userAccount, userAccountEntity.getLastLoginDateTime());
         } else {
             return userAccountConverter.convertToUserAccountDTO(userAccountEntity);
         }

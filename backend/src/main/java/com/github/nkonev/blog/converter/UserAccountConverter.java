@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -53,15 +54,15 @@ public class UserAccountConverter {
         );
     }
 
-    public static UserSelfProfileDTO getUserSelfProfile(UserAccountDetailsDTO userAccount, UserAccount userAccountEntity) {
+    public static UserSelfProfileDTO getUserSelfProfile(UserAccountDetailsDTO userAccount, LocalDateTime lastLoginDateTime) {
         if (userAccount == null) { return null; }
         return new UserSelfProfileDTO (
                 userAccount.getId(),
                 userAccount.getUsername(),
                 userAccount.getAvatar(),
                 userAccount.getEmail(),
-                userAccountEntity.getLastLoginDateTime(),
-                convertOauth(userAccountEntity.getOauthIdentifiers())
+                lastLoginDateTime,
+                userAccount.getOauthIdentifiers()
         );
     }
 
