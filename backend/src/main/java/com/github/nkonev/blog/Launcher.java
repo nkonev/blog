@@ -20,6 +20,7 @@ public class Launcher {
 
     static {
         System.setProperty("es.set.netty.runtime.available.processors", "false");
+        System.setProperty("hibernate.types.print.banner", "false");
     }
 
     public static void main(String[] args) throws Exception {
