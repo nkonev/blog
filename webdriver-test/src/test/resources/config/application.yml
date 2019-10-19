@@ -3,6 +3,7 @@
 
 logging.level.root: INFO
 logging.level.org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: WARN
+logging.level.org.apache.tomcat.util.modeler.Registry: ERROR
 
 custom.base-url: "http://localhost:${server.port}"
 

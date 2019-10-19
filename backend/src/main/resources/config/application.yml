@@ -7,6 +7,7 @@ logging.level.root: INFO
 #logging.level.org.springframework.security.oauth2: DEBUG
 logging.level.org.springframework.web.socket: WARN
 logging.level.org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: WARN
+logging.level.org.apache.tomcat.util.modeler.Registry: ERROR
 #logging.level.org.apache.tomcat.jdbc.pool: TRACE
 #logging.level.org.springframework.security: DEBUG
 #logging.level.org.springframework.session: DEBUG

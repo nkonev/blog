@@ -218,6 +218,7 @@ logging.level.root: INFO
 #logging.level.org.springframework.security.oauth2: DEBUG
 logging.level.org.springframework.web.socket: WARN
 logging.level.org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: WARN
+logging.level.org.apache.tomcat.util.modeler.Registry: ERROR
 #logging.level.org.apache.tomcat.jdbc.pool: TRACE
 #logging.level.org.springframework.security: DEBUG
 #logging.level.org.springframework.session: DEBUG
@@ -275,6 +276,7 @@ def BACKEND_TEST_YML_CONTENT =
 """${AUTOGENERATE_SNIPPET}
 logging.level.root: INFO
 logging.level.org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: WARN
+logging.level.org.apache.tomcat.util.modeler.Registry: ERROR
 ${common(true)}
 ${custom(true)}
 server.port: ${ExportedConstants.TEST_PORT}
@@ -292,6 +294,7 @@ def WEBDRIVER_TEST_YML_CONTENT =
 """${AUTOGENERATE_SNIPPET}
 logging.level.root: INFO
 logging.level.org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: WARN
+logging.level.org.apache.tomcat.util.modeler.Registry: ERROR
 ${common(true)}
 ${custom(true)}
 server.port: ${ExportedConstants.TEST_PORT}
