@@ -9,8 +9,7 @@ import com.github.nkonev.blog.services.SeoCacheService;
 import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.core.SchedulerLock;
 import net.javacrumbs.shedlock.provider.redis.spring.RedisLockProvider;
-import net.javacrumbs.shedlock.spring.ScheduledLockConfiguration;
-import net.javacrumbs.shedlock.spring.ScheduledLockConfigurationBuilder;
+import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +18,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import java.time.Duration;
@@ -27,6 +27,9 @@ import java.util.concurrent.Executor;
 
 @ConditionalOnProperty(value = "custom.tasks.enable", matchIfMissing = true)
 @Configuration
+@EnableSchedulerLock(
+        defaultLockAtMostFor = "PT30S"
+)
 public class TaskConfig {
 
     @Autowired
@@ -58,7 +61,7 @@ public class TaskConfig {
     public LockProvider lockProvider(LettuceConnectionFactory redisConnectionFactory) {
         return new RedisLockProvider(redisConnectionFactory);
     }
-
+/*
     @Bean
     public ScheduledLockConfiguration taskScheduler(
             LockProvider lockProvider,
@@ -73,7 +76,7 @@ public class TaskConfig {
                 .withDefaultLockAtLeastFor(Duration.ofSeconds(defaultLockAtLeastForSec))
                 .build();
     }
-
+*/
     @Bean(name = "taskExecutor")
     public Executor asyncExecutor(
             @Value("${custom.async.corePoolSize:8}") int corePoolSize,
@@ -91,7 +94,7 @@ public class TaskConfig {
     }
 
     @Scheduled(cron = "${custom.tasks.images.clean.cron}")
-    @SchedulerLock(name = IMAGES_CLEAN_TASK)
+    @SchedulerLock(name = IMAGES_CLEAN_TASK, lockAtMostForString = "${custom.tasks.defaultLockAtMostForSec}")
     public void cleanImages(){
         final int deletedPostContent = imagePostContentUploadController.clearPostContentImages();
         final int deletedPostTitles  = imagePostTitleUploadController.clearPostTitleImages();
