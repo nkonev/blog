@@ -454,6 +454,7 @@
     @media screen and (max-width: $contentWidth) {
         .post {
             .ql-editor {
+                font-size 12px !important
                 text-align: justify
                 word-break: break-word
                 overflow-x: hidden;
