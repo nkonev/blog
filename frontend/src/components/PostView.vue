@@ -452,6 +452,14 @@
 
     // mobile sceens
     @media screen and (max-width: $contentWidth) {
+        .post {
+            .ql-editor {
+                text-align: justify
+                word-break: break-word
+                overflow-x: hidden;
+            }
+        }
+
         .ql-container.ql-bubble:not(.ql-disabled) .post-content a:hover::before,
         .ql-container.ql-bubble:not(.ql-disabled) .post-content a:hover::after {
             visibility: hidden;
