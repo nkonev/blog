@@ -443,6 +443,11 @@
     @import "~quill/dist/quill.bubble.css"
     @import "../constants.styl"
 
+    .ql-container.ql-bubble:not(.ql-disabled) .post-content a:hover::before,
+    .ql-container.ql-bubble:not(.ql-disabled) .post-content a:hover::after {
+        display none
+    }
+
     // larger screens
     @media screen and (min-width: $contentWidth) {
         .ql-editor {
@@ -459,11 +464,6 @@
                 word-break: break-word
                 overflow-x: hidden;
             }
-        }
-
-        .ql-container.ql-bubble:not(.ql-disabled) .post-content a:hover::before,
-        .ql-container.ql-bubble:not(.ql-disabled) .post-content a:hover::after {
-            visibility: hidden;
         }
     }
 
