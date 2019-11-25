@@ -444,7 +444,9 @@
     @import "../constants.styl"
 
     .ql-container.ql-bubble .post-content a:hover::before,
-    .ql-container.ql-bubble .post-content a:hover::after {
+    .ql-container.ql-bubble .post-content a:hover::after,
+    .ql-container.ql-bubble .post-content a::before,
+    .ql-container.ql-bubble .post-content a::after {
         display none
     }
 
