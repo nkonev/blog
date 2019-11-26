@@ -2,7 +2,7 @@
     <div class="post">
         <template v-if="postDTO">
             <template v-if="isEditing">
-                <PostEdit :postDTO="postDTO" :onAfterSubmit="afterSubmit" :onCancel="cancel" />
+                <PostEdit :postDTO="postDTO" :onAfterSubmit="afterSubmit" :onCancel="cancel" :hljs="getHljs" />
             </template>
             <template v-else>
                 <template v-if="!isLoading && !errorMessage">
@@ -63,23 +63,26 @@
     import {getPostId, getTimestampFromUtc} from '../utils'
     import VmBackTop from 'vue-multiple-back-top'
     import {isLargeScreen} from '../utils'
+    import hljs from 'highlight.js/lib/highlight'
     import 'highlight.js/styles/monokai.css'
     // Lazy load heavy component https://router.vuejs.org/en/advanced/lazy-loading.html. see also in .babelrc
     const PostEdit = () => import('./PostEdit.vue');
 
-    window.hljs.configure({
-        languages: ['apache',
-            //'aspectj',
-            'bash', 'css', 'cs', 'go',
-            'groovy',
-            // 'gradle',
-            'ini', 'java', 'javascript', 'kotlin', 'ldif', 'makefile', 'markdown', 'nginx',
-            //'pgsql',
-            'php', 'protobuf',
-            'python',
-            //'scala',
-            'shell', 'sql', 'xml', 'yaml']
-    });
+    hljs.registerLanguage('bash', require(`highlight.js/lib/languages/bash`));
+    hljs.registerLanguage('css', require(`highlight.js/lib/languages/css`));
+    hljs.registerLanguage('go', require(`highlight.js/lib/languages/go`));
+    hljs.registerLanguage('ini', require(`highlight.js/lib/languages/ini`));
+    hljs.registerLanguage('java', require(`highlight.js/lib/languages/java`));
+    hljs.registerLanguage('javascript', require(`highlight.js/lib/languages/javascript`));
+    hljs.registerLanguage('kotlin', require(`highlight.js/lib/languages/kotlin`));
+    hljs.registerLanguage('nginx', require(`highlight.js/lib/languages/nginx`));
+    hljs.registerLanguage('php', require(`highlight.js/lib/languages/php`));
+    hljs.registerLanguage('protobuf', require(`highlight.js/lib/languages/protobuf`));
+    hljs.registerLanguage('python', require(`highlight.js/lib/languages/python`));
+    hljs.registerLanguage('shell', require(`highlight.js/lib/languages/shell`));
+    hljs.registerLanguage('sql', require(`highlight.js/lib/languages/sql`));
+    hljs.registerLanguage('xml', require(`highlight.js/lib/languages/xml`));
+    hljs.registerLanguage('yaml', require(`highlight.js/lib/languages/yaml`));
 
 
     export default {
@@ -115,6 +118,9 @@
             'vm-back-top': VmBackTop
         },
         computed:{
+            getHljs(){
+                return hljs;
+            },
             createTime(){
                 return this.postDTO.createDateTime ? getTimestampFromUtc(this.postDTO.createDateTime) : null;
             },
@@ -227,7 +233,7 @@
                     console.log('Performing highlighting in nextTick');
                     const arr = document.body.querySelectorAll('pre.ql-syntax');
                     [].forEach.call(arr, function (block) {
-                        window.hljs.highlightBlock(block);
+                        hljs.highlightBlock(block);
                     });
                 }
             })

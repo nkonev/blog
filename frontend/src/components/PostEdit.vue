@@ -102,7 +102,7 @@
 
     export default {
         props : [
-            'postDTO', 'onAfterSubmit', 'onCancel', 'onError'
+            'postDTO', 'onAfterSubmit', 'onCancel', 'onError', 'hljs'
         ],
         data () {
             return {
@@ -110,7 +110,9 @@
                 editorOptions: {
                     theme: isLargeScreen() ? 'bubble' : 'snow',
                     modules: {
-                        syntax: true,
+                        syntax: {
+                            highlight: text => this.$props.hljs.highlightAuto(text).value
+                        },
                         toolbar: toolbarOptions,
                     }
                 },

@@ -61,10 +61,6 @@ module.exports = {
             var currentdate = new Date();
             console.log("Built with environment:", NODE_ENV, "at", currentdate.toLocaleString());
         }),
-        new webpack.ProvidePlugin({
-            "window.hljs": "highlight.js"
-        }),
-
     ],
 
     resolve: {
