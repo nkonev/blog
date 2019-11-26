@@ -14,7 +14,7 @@
             <input class="title-edit" placeholder="Title Template" type="text" v-model="titleTemplate"/>
 
             <h2>Background color</h2>
-            <color-picker v-model="backgroundColor" />
+            <color-picker v-model="backgroundColor" @cancel="onColorCancel" cancelLabel="Reset color" />
 
             <h2>Background image</h2>
             <!-- https://zhanziyang.github.io/vue-croppa/#/file-input -->
@@ -117,6 +117,9 @@
             this.handleDraw = debounce(this.handleDraw, 400);
         },
         methods: {
+            onColorCancel(){
+                this.$store.commit(SET_BACKGROUND_COLOR, null);
+            },
             handleDraw(){
                 const dataUrl = document.querySelector(".image-background-cropper canvas").toDataURL();
                 //console.debug('image chosen', dataUrl);
