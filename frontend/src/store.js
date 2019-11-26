@@ -20,6 +20,9 @@ export const SET_HEADER = 'setHeader';
 export const GET_SUBHEADER = 'getSubHeader';
 export const SET_SUBHEADER = 'setSubHeader';
 
+export const GET_BACKGROUND_COLOR = 'getbackgroundColor';
+export const SET_BACKGROUND_COLOR = 'setbackgroundColor';
+
 export const GET_TITLE_TEMPLATE = 'getTitleTemplate';
 export const SET_TITLE_TEMPLATE = 'setTitleTemplate';
 
@@ -64,6 +67,9 @@ const store = new Vuex.Store({
         [SET_SUBHEADER](state, payload) {
             state.config.subHeader = payload;
         },
+        [SET_BACKGROUND_COLOR](state, payload) {
+            state.config.backgroundColor = payload;
+        },
 
         [SET_TITLE_TEMPLATE](state, payload) {
             state.config.titleTemplate = payload;
@@ -89,6 +95,9 @@ const store = new Vuex.Store({
         },
         [GET_SUBHEADER](state) {
             return state.config.subHeader;
+        },
+        [GET_BACKGROUND_COLOR](state) {
+            return state.config.backgroundColor;
         },
         [GET_TITLE_TEMPLATE](state) {
             return state.config.titleTemplate;

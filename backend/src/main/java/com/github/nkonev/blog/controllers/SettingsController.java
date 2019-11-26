@@ -42,6 +42,7 @@ public class SettingsController {
     private static final String HEADER = "header";
     private static final String SUB_HEADER = "header.sub";
     private static final String TITLE_TEMPLATE = "title.template";
+    private static final String BACKGROUND_COLOR = "background.color";
 
     @GetMapping(API+CONFIG)
     public SettingsDTO getConfig(@AuthenticationPrincipal UserAccountDetailsDTO userAccount){
@@ -49,12 +50,15 @@ public class SettingsController {
         String header = runtimeSettingsRepository.findById(HEADER).orElseThrow().getValue();
         String subHeader = runtimeSettingsRepository.findById(SUB_HEADER).orElseThrow().getValue();
         String titleTemplate = runtimeSettingsRepository.findById(TITLE_TEMPLATE).orElseThrow().getValue();
+        String backgroundColor = runtimeSettingsRepository.findById(BACKGROUND_COLOR).orElseThrow().getValue();
+
         boolean canShowSettings = blogSecurityService.hasSettingsPermission(userAccount);
         return new SettingsDTO(
                 header,
                 subHeader,
                 titleTemplate,
                 imageBackground,
+                backgroundColor,
                 canShowSettings,
                 applicationConfig.isEnableApplications(),
                 Arrays.asList(UserRole.ROLE_ADMIN, UserRole.ROLE_USER)
@@ -94,6 +98,10 @@ public class SettingsController {
         // update title
         var runtimeTitleTemplate = runtimeSettingsRepository.findById(TITLE_TEMPLATE).orElseThrow();
         runtimeTitleTemplate.setValue(dto.getTitleTemplate());
+
+        // background color
+        var backgroundColor = runtimeSettingsRepository.findById(BACKGROUND_COLOR).orElseThrow();
+        backgroundColor.setValue(dto.getBackgroundColor());
 
         return getConfig(userAccount);
     }

@@ -13,6 +13,9 @@
             <h2>Title template</h2>
             <input class="title-edit" placeholder="Title Template" type="text" v-model="titleTemplate"/>
 
+            <h2>Background color</h2>
+            <color-picker v-model="backgroundColor" />
+
             <h2>Background image</h2>
             <!-- https://zhanziyang.github.io/vue-croppa/#/file-input -->
             <div class="image-background-cropper">
@@ -52,13 +55,15 @@
     import Croppa from 'vue-croppa'
     import {computedCropper} from "../utils";
     import {mapGetters} from 'vuex'
-    import store, {GET_CONFIG, GET_HEADER, SET_HEADER, GET_SUBHEADER, SET_SUBHEADER, GET_TITLE_TEMPLATE, SET_TITLE_TEMPLATE, SET_CONFIG, GET_IMAGE_BACKGROUND, SET_IMAGE_BACKGROUND, GET_CONFIG_LOADING, FETCH_CONFIG} from '../store'
+    import store, {GET_CONFIG, GET_HEADER, SET_HEADER, GET_SUBHEADER, SET_SUBHEADER, GET_TITLE_TEMPLATE, SET_TITLE_TEMPLATE, SET_CONFIG, GET_IMAGE_BACKGROUND, SET_IMAGE_BACKGROUND, GET_BACKGROUND_COLOR, SET_BACKGROUND_COLOR, GET_CONFIG_LOADING, FETCH_CONFIG} from '../store'
     import debounce from "lodash/debounce";
+    import { Photoshop } from 'vue-color'
 
     export default {
         components: {
             'croppa': Croppa.component,
             BlogSpinner,
+            'color-picker': Photoshop
         },
         data() {
             return {
@@ -86,6 +91,14 @@
                 },
                 set (value) {
                     this.$store.commit(SET_SUBHEADER, value)
+                }
+            },
+            backgroundColor: {
+                get () {
+                    return {hex: this.$store.getters[GET_BACKGROUND_COLOR]}
+                },
+                set (value) {
+                    this.$store.commit(SET_BACKGROUND_COLOR, value.hex)
                 }
             },
             titleTemplate: {

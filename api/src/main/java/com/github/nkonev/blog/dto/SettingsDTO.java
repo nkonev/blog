@@ -14,6 +14,8 @@ public class SettingsDTO {
 
     private Boolean removeImageBackground;
 
+    private String backgroundColor;
+
     private boolean canShowSettings;
 
     private boolean canShowApplications;
@@ -22,11 +24,12 @@ public class SettingsDTO {
 
     public SettingsDTO() { }
 
-    public SettingsDTO(String header, String subHeader, String titleTemplate, String imageBackground, boolean canShowSettings, boolean enableApplications, List<UserRole> availableRoles) {
+    public SettingsDTO(String header, String subHeader, String titleTemplate, String imageBackground, String backgroundColor, boolean canShowSettings, boolean enableApplications, List<UserRole> availableRoles) {
         this.header = header;
         this.subHeader = subHeader;
         this.titleTemplate = titleTemplate;
         this.imageBackground = imageBackground;
+        this.backgroundColor = backgroundColor;
         this.canShowSettings = canShowSettings;
         this.canShowApplications = enableApplications;
         this.availableRoles = availableRoles;
@@ -94,5 +97,13 @@ public class SettingsDTO {
 
     public void setAvailableRoles(List<UserRole> availableRoles) {
         this.availableRoles = availableRoles;
+    }
+
+    public String getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(String backgroundColor) {
+        this.backgroundColor = backgroundColor;
     }
 }

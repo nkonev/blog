@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <img class="bg" :src="config.imageBackground"/>
+        <img class="bg" :src="config.imageBackground" v-bind:style="{'background': config.backgroundColor}"/>
 
         <div id="content">
             <LoginModal></LoginModal>
