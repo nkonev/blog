@@ -110,6 +110,7 @@
                 editorOptions: {
                     theme: isLargeScreen() ? 'bubble' : 'snow',
                     modules: {
+                        // https://github.com/surmon-china/vue-quill-editor/issues/39#issuecomment-353725408
                         syntax: {
                             highlight: text => this.$props.hljs.highlightAuto(text).value
                         },
