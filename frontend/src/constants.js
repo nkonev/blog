@@ -18,3 +18,5 @@ export const POSTS_PAGE_SIZE = 20;
 export const POSTS_MAX_PAGES = 10;
 
 export const DIALOG = "dialog";
+
+export const UPLOAD_FILE_SIZE_LIMIT = 4 * 1024 * 1024;

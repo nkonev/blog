@@ -17,30 +17,17 @@
             <color-picker v-model="backgroundColor" @cancel="onColorCancel" cancelLabel="Reset color" />
 
             <h2>Background image</h2>
-            <!-- https://zhanziyang.github.io/vue-croppa/#/file-input -->
-            <div class="image-background-cropper">
-                <croppa v-model="myCroppa"
-                        :width="cropperWidth"
-                        :height="cropperHeight"
-                        :remove-button-size="cropperRemoveButtonSize"
 
-                        :file-size-limit="5 * 1024 * 1024"
-                        :show-loading="true"
-                        placeholder="Choose background image"
-                        :initial-image="imageBackground"
-                        :placeholder-font-size="32"
-                        :disabled="false"
-                        :prevent-white-space="false"
-                        :show-remove-button="true"
-                        accept="image/*"
-                        @file-choose="handleCroppaFileChoose"
-                        @draw="handleDraw"
-                        @image-remove="handleCroppaImageRemove"
-                        @file-size-exceed="handleCroppaFileSizeExceed"
-                        @file-type-mismatch="handleCroppaFileTypeMismatch"
-                >
-                </croppa >
-            </div>
+            <CropperWrapper
+                    ref="cropperInstance"
+                    :initialImage="imageBackground"
+                    :width="cropperWidth"
+                    :height="cropperHeight"
+                    :removeButtonSize="cropperRemoveButtonSize"
+                    placeholder="Choose background image"
+                    :placeholderTextSize="32"
+                    @imageChangedEvent="onImageChanged"
+            />
 
             <button v-if="!submitting" class="blog-btn ok-btn" @click="onBtnSave">Save</button>
             <blog-spinner v-if="submitting" message="Sending..."></blog-spinner>
@@ -49,33 +36,27 @@
 </template>
 
 <script>
-    import Vue from 'vue'
     import BlogSpinner from './BlogSpinner.vue'
-    import 'vue-croppa/dist/vue-croppa.css'
-    import Croppa from 'vue-croppa'
     import {computedCropper} from "../utils";
     import {mapGetters} from 'vuex'
     import store, {GET_CONFIG, GET_HEADER, SET_HEADER, GET_SUBHEADER, SET_SUBHEADER, GET_TITLE_TEMPLATE, SET_TITLE_TEMPLATE, SET_CONFIG, GET_IMAGE_BACKGROUND, SET_IMAGE_BACKGROUND, GET_BACKGROUND_COLOR, SET_BACKGROUND_COLOR, GET_CONFIG_LOADING, FETCH_CONFIG} from '../store'
-    import debounce from "lodash/debounce";
     import { Photoshop } from 'vue-color'
+    import CropperWrapper from "./CropperWrapper";
 
     export default {
         components: {
-            'croppa': Croppa.component,
             BlogSpinner,
-            'color-picker': Photoshop
+            'color-picker': Photoshop,
+            CropperWrapper
         },
         data() {
             return {
-                chosenFile: null,
-                removeImageBackground: false,
-                myCroppa: {},
                 submitting: false,
             }
         },
         store,
         computed: {
-            ...computedCropper,
+            ...computedCropper, // cropperWidth, cropperHeight, cropperRemoveButtonSize, ...
             ...mapGetters({storedConfigDto: GET_CONFIG, configLoading: GET_CONFIG_LOADING}),
             header: {
                 get () {
@@ -109,39 +90,18 @@
                     this.$store.commit(SET_TITLE_TEMPLATE, value)
                 }
             },
-            imageBackground(){
-                return this.$store.getters[GET_IMAGE_BACKGROUND];
-            }
         },
         created() {
-            this.handleDraw = debounce(this.handleDraw, 400);
         },
         methods: {
+            imageBackground(){
+                return this.$store.getters[GET_IMAGE_BACKGROUND];
+            },
             onColorCancel(){
                 this.$store.commit(SET_BACKGROUND_COLOR, null);
             },
-            handleDraw(){
-                const dataUrl = document.querySelector(".image-background-cropper canvas").toDataURL();
-                //console.debug('image chosen', dataUrl);
+            onImageChanged(dataUrl){
                 this.$store.commit(SET_IMAGE_BACKGROUND, dataUrl);
-            },
-            handleCroppaFileChoose(e){
-                this.removeImageBackground = false;
-                console.debug('image chosen', e);
-                this.$data.chosenFile = e;
-            },
-            handleCroppaImageRemove(){
-                console.debug('image removed');
-                this.removeImageBackground = true;
-                this.$data.chosenFile = null;
-                this.$store.commit(SET_IMAGE_BACKGROUND, null);
-            },
-            handleCroppaFileSizeExceed(){
-                // see :file-size-limit
-                alert('Image size must be < than 5 Mb');
-            },
-            handleCroppaFileTypeMismatch(){
-                alert('Image wrong type');
             },
             onBtnSave(){
                 this.$Progress.start();
@@ -150,13 +110,16 @@
 
                 const formData = new FormData();
 
-                const objToPut = {...this.storedConfigDto, removeImageBackground: this.removeImageBackground};
+                const objToPut = {...this.storedConfigDto, removeImageBackground: this.$refs.cropperInstance.isRemoveImage()};
                 delete objToPut.imageBackground; //  don't pass unnecessary value
-                const dtoContent = JSON.stringify(objToPut); // содержимое нового файла...
+                const dtoContent = JSON.stringify(objToPut);
                 const dtoBlob = new Blob([dtoContent], { type: "application/json"});
                 formData.append('dto', dtoBlob);
 
-                const putFunction = () => {
+                const putFunction = (maybeBlob) => {
+                    if (maybeBlob) {
+                        formData.append('image', maybeBlob); // multipart part with name 'image'
+                    }
                     this.$http.put('/api/config', formData)
                         .then(successResp => {
                             console.log("successfully set config", successResp);
@@ -176,14 +139,7 @@
                         })
                 };
 
-                if (this.$data.chosenFile) {
-                    this.myCroppa.promisedBlob(this.$data.chosenFile.type).then(blob => {
-                        formData.append('image', blob); // multipart part with name 'image'
-                        putFunction();
-                    });
-                } else {
-                    putFunction();
-                }
+                this.$refs.cropperInstance.onCreateBlob(putFunction);
             },
             startSending() {
                 this.submitting = true;

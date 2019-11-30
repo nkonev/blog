@@ -46,8 +46,8 @@ public class ImagePostContentUploadControllerTest extends AbstractImageUploadCon
 	@Test
 	public void putImageWithVeryBigSize() throws Exception {
 
-		// in application.yml 2 Mb allowed. We try to POST 4 Mb
-		byte[] img0 = new byte[1024 * 1024 * 4];
+		// in application.yml 4 Mb allowed. We try to POST 5 Mb
+		byte[] img0 = new byte[1024 * 1024 * 5];
 		new Random().nextBytes(img0);
 
 		MockMultipartFile mf0 = new MockMultipartFile(ImagePostTitleUploadController.IMAGE_PART, "lol-content.png", "image/ololo", img0);
@@ -58,7 +58,7 @@ public class ImagePostContentUploadControllerTest extends AbstractImageUploadCon
 		)
 				.andExpect(status().isPayloadTooLarge())
 				.andExpect(jsonPath("$.error").value("payload too large"))
-				.andExpect(jsonPath("$.message").value("Image must be <= 1048576 bytes"))
+				.andExpect(jsonPath("$.message").value("Image must be <= 4194304 bytes"))
 				.andReturn()
 				;
 	}

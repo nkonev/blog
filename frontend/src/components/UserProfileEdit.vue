@@ -8,25 +8,15 @@
         <BlogSpinner v-if="binding" class="send-spinner" :speed="0.3" :size="72"></BlogSpinner>
         <template v-else>
         <div class="profile-edit-info">
-            <div class="profile-edit-info-avatar-container">
-                <croppa v-model="profileAvatarCroppa"
-                        :width="300"
-                        :height="300"
-                        :file-size-limit="5 * 1024 * 1024"
-                        placeholder="Choose avatar image"
-                        :initial-image="model.avatar"
-                        :placeholder-font-size="20"
-                        :disabled="false"
-                        :prevent-white-space="false"
-                        :show-remove-button="true"
-                        accept="image/*"
-                        @file-size-exceed="handleCroppaFileSizeExceed"
-                        @file-type-mismatch="handleCroppaFileTypeMismatch"
-                        @file-choose="handleCroppaFileChoose"
-                        @image-remove="handleCroppaImageRemove"
-                >
-            </croppa>
-            </div>
+
+            <CropperWrapper
+                    ref="cropperInstance"
+                    :initialImage="model.avatar"
+                    :width="cropperWidth"
+                    :height="cropperHeight"
+                    placeholder="Choose avatar image"
+                    :placeholder-font-size="20"
+            />
 
             <div class="profile-edit-info-form">
                 <vue-form-generator :schema="schema" :model="model" :options="formOptions" @validated="onValidated"></vue-form-generator>
@@ -66,17 +56,16 @@
 <script>
     import Vue from 'vue'
     import Error from './Error.vue'
-    import Croppa from 'vue-croppa'
     import store, {FETCH_USER_PROFILE, UNSET_USER} from '../store'
     import {root_name} from '../routes'
     import {PROFILE_URL, PASSWORD_MIN_LENGTH, DIALOG} from '../constants'
     import VueFormGenerator from "vue-form-generator";
     import "vue-form-generator/dist/vfg.css";  // optional full css additions
-    import 'vue-croppa/dist/vue-croppa.css'
     import ButtonFacebook from "./ButtonFacebook.vue"
     import ButtonVkontakte from "./ButtonVkontakte.vue"
     import BlogSpinner from "./BlogSpinner.vue"
     import {submitOauthVkontakte, submitOauthFacebook} from '../utils'
+    import CropperWrapper from "./CropperWrapper";
 
     export default {
         name: 'user-profile', // это имя компонента, которое м. б. тегом в другом компоненте
@@ -85,8 +74,6 @@
             return {
                 errorMessage: '',
                 submitting: false,
-                profileAvatarCroppa: {},
-                chosenFile: null,
                 submitEnabled: true,
                 binding: false,
 
@@ -94,7 +81,6 @@
                     login: "",
                     password: "",
                     email: "",
-                    removeAvatar: false,
                 },
 
                 schema: {
@@ -190,27 +176,11 @@
                         }
                     )
             },
-            handleCroppaFileTypeMismatch() {
-                alert('Image wrong type');
-            },
-            handleCroppaFileSizeExceed() {
-                // see :file-size-limit
-                alert('Image size must be < than 5 Mb');
-            },
-            handleCroppaFileChoose(e){
-                console.debug('image chosen', e);
-                this.model.removeAvatar = false;
-                this.$data.chosenFile = e;
-            },
-            handleCroppaImageRemove(){
-                this.model.removeAvatar = true;
-                this.$data.chosenFile = null;
-            },
             save(){
                 this.startSending();
                 const sendProfile = () => {
                     this.errorMessage = null;
-                    this.$http.post(PROFILE_URL, this.model).then(
+                    this.$http.post(PROFILE_URL, {...this.model, removeAvatar: this.$refs.cropperInstance.isRemoveImage()}).then(
                         successResp => {
                             this.finishSending();
                             store.dispatch(FETCH_USER_PROFILE);
@@ -222,27 +192,29 @@
                         }
                     )
                 };
-                if (this.$data.chosenFile){
-                    this.profileAvatarCroppa.promisedBlob(this.$data.chosenFile.type).then(blob => {
+                const sendAvatarImage = (maybeBlob) => {
+                    if (maybeBlob) {
                         const formData = new FormData();
-                        formData.append('image', blob); // multipart part with name 'image'
-                        this.$http.post('/api/image/user/avatar', formData)
-                            .then(successResp => {
+                        formData.append('image', maybeBlob); // multipart part with name 'image'
+                        return this.$http.post('/api/image/user/avatar', formData)
+                    } else {
+                        return Promise.resolve(true); // empty promise
+                    }
+                };
+                const composition = (maybeBlob) => {
+                    sendAvatarImage(maybeBlob)
+                        .then(successResp => {
+                            if(successResp.body) {
                                 this.model.avatar = successResp.body.relativeUrl;
-                                return;
-                            }, failResp => {
-                                throw "failed to upload title img"
-                            })
-                            .then(sendProfile)
-                            .catch(e => {
-                                console.log("Catch error in sending avatar with image");
-                                this.finishSending();
-                            })
-                    });
-                } else {
-                    console.log('avatar not selected');
-                    sendProfile();
-                }
+                            }
+                        })
+                        .then(sendProfile)
+                        .catch(e => {
+                            console.log("Catch error in sending post with image", e);
+                            this.finishSending();
+                        })
+                };
+                this.$refs.cropperInstance.onCreateBlob(composition);
             },
             cancel() {
                 this.$emit('CANCELED');
@@ -273,11 +245,19 @@
         },
         components:{
             Error,
-            'croppa': Croppa.component,
+            CropperWrapper,
             "vue-form-generator": VueFormGenerator.component,
             ButtonFacebook, ButtonVkontakte,
             BlogSpinner
         },
+        computed: {
+            cropperWidth() {
+                return 300
+            },
+            cropperHeight() {
+                return 300
+            },
+        }
     };
 </script>
 
@@ -304,10 +284,6 @@
             align-items stretch
             height 100%
             width: 100%
-
-            &-avatar-container {
-                text-align center
-            }
 
             &-form {
                 height 100%

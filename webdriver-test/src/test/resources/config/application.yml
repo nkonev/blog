@@ -34,7 +34,7 @@ custom.stomp.broker:
 
 # Postgres image store configuration
 custom.image:
-  max-bytes: 1048576 # 1 Mb. Must be < than tomcat file upload limit
+  max-bytes: 4194304 # 4 Mb. Must be < than tomcat file upload limit. see also spring.servlet.multipart.*
   allowed-mime-types:
    - image/png
    - image/jpg
@@ -86,6 +86,8 @@ server.tomcat.basedir: ${java.io.tmpdir}/com.github.nkonev.tomcat
 server.servlet.session.store-dir: ${server.tomcat.basedir}/sessions
 # For pretty output in tests
 spring.http.encoding.force-response: true
+spring.servlet.multipart.max-file-size: 6MB
+spring.servlet.multipart.max-request-size: 8MB
 
 # this is URL
 spring.mvc.static-path-pattern: /**

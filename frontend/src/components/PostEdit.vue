@@ -8,28 +8,16 @@
             see also created() hook
         -->
 
-        <!-- https://zhanziyang.github.io/vue-croppa/#/file-input -->
-        <div class="post-edit-cropper">
-            <croppa v-model="myCroppa"
-                    :width="cropperWidth"
-                    :height="cropperHeight"
-                    :remove-button-size="cropperRemoveButtonSize"
-                    :file-size-limit="5 * 1024 * 1024"
-                    :show-loading="true"
-                    placeholder="Choose title image"
-                    :initial-image="editPostDTO.titleImg"
-                    :placeholder-font-size="32"
-                    :disabled="false"
-                    :prevent-white-space="false"
-                    :show-remove-button="true"
-                    accept="image/*"
-                    @file-choose="handleCroppaFileChoose"
-                    @image-remove="handleCroppaImageRemove"
-                    @file-size-exceed="handleCroppaFileSizeExceed"
-                    @file-type-mismatch="handleCroppaFileTypeMismatch"
-                    >
-            </croppa >
-        </div>
+        <CropperWrapper
+                ref="cropperInstance"
+                :initialImage="editPostDTO.titleImg"
+                :width="cropperWidth"
+                :height="cropperHeight"
+                :removeButtonSize="cropperRemoveButtonSize"
+                placeholder="Choose title image"
+                :placeholderTextSize="32"
+        />
+
         <input class="title-edit" placeholder="Title of your megapost" type="text" autofocus v-model="editPostDTO.title"/>
         <vue-editor id="editor"
                     :editorOptions="editorOptions"
@@ -57,19 +45,19 @@
 
 <script>
     import VueEditor from '../lib/VueEditor.vue'
-    import 'vue-croppa/dist/vue-croppa.css'
     import Vue from 'vue'
     import BlogSpinner from './BlogSpinner.vue'
     import {API_POST} from '../constants'
-    import Croppa from 'vue-croppa'
     import {isLargeScreen, computedCropper} from "../utils";
+    import CropperWrapper from "./CropperWrapper";
+
     if (isLargeScreen()) {
         require("quill/dist/quill.bubble.css");
     } else {
         require("quill/dist/quill.snow.css");
     }
 
-    const MIN_LENGTH = 10;
+    const MIN_LENGTH = 1;
 
     /**
      * removes html tags
@@ -118,8 +106,6 @@
                     }
                 },
                 editPostDTO: {}, // will be overriden below in created()
-                myCroppa: {},
-                chosenFile: null,
             }
         },
         computed: computedCropper,
@@ -135,6 +121,7 @@
                 this.startSending();
 
                 const sendPost = () => {
+                    this.editPostDTO.removeTitleImage = this.$refs.cropperInstance.isRemoveImage();
                     if (this.editPostDTO.id) {
                         // edit / update
                         this.$http.put(API_POST, this.editPostDTO, {}).then(response => {
@@ -160,26 +147,31 @@
                     }
                 };
 
-                if (this.$data.chosenFile) {
-                    this.myCroppa.promisedBlob(this.$data.chosenFile.type).then(blob => {
+                const sendTitleImage = (maybeBlob) => {
+                    if(maybeBlob){
                         const formData = new FormData();
-                        formData.append('image', blob); // multipart part with name 'image'
-                        this.$http.post('/api/image/post/title', formData)
-                            .then(successResp => {
+                        formData.append('image', maybeBlob); // multipart part with name 'image'
+                        return Vue.http.post('/api/image/post/title', formData);
+                    } else {
+                        return Promise.resolve(true); // empty promise
+                    }
+                };
+
+                const composition = (maybeBlob) => {
+                    sendTitleImage(maybeBlob)
+                        .then(successResp => {
+                            if(successResp.body) {
                                 this.editPostDTO.titleImg = successResp.body.relativeUrl;
-                                return
-                            }, failResp => {
-                                throw "failed to upload title img"
-                            })
-                            .then(sendPost)
-                            .catch(e => {
-                                console.log("Catch error in sending post with image");
-                                this.finishSending();
-                            })
-                    });
-                } else {
-                    sendPost();
-                }
+                            }
+                        })
+                        .then(sendPost)
+                        .catch(e => {
+                            console.log("Catch error in sending post with image", e);
+                            this.finishSending();
+                        })
+                };
+
+                this.$refs.cropperInstance.onCreateBlob(composition);
             },
             onBtnCancel() {
                 localStorage.removeItem(localStorageKey);
@@ -192,23 +184,6 @@
             },
             hasValidText() {
                 return !(strip(this.editPostDTO.text).length < MIN_LENGTH);
-            },
-            handleCroppaFileTypeMismatch() {
-                alert('Image wrong type');
-            },
-            handleCroppaFileSizeExceed() {
-                // see :file-size-limit
-                alert('Image size must be < than 5 Mb');
-            },
-            handleCroppaFileChoose(e) {
-                this.editPostDTO.removeTitleImage = false;
-                console.debug('image chosen', e);
-                this.$data.chosenFile = e;
-            },
-            handleCroppaImageRemove() {
-                this.editPostDTO.removeTitleImage = true;
-                console.debug('image removed');
-                this.$data.chosenFile = null;
             },
             computePlaceholder(){
                 return "Lorem ipsum dolor sit amet..."
@@ -236,7 +211,7 @@
         components: {
             VueEditor,
             BlogSpinner,
-            'croppa': Croppa.component
+            CropperWrapper
         },
         watch: {
             'editPostDTO': {
