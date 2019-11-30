@@ -14,8 +14,8 @@ services:
     environment:
       - POSTGRES_PASSWORD=postgresqlPassword
     volumes :
-      - ./postgresql_dev/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:Z
-      - postgresql_blog_dev_data_dir:/var/lib/postgresql/data:Z
+      - ./postgresql_dev/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - postgresql_blog_dev_data_dir:/var/lib/postgresql/data
     networks:
       blog-dev:
         ipv4_address: 172.22.0.2
@@ -33,7 +33,7 @@ services:
     ports:
       - 26379:6379
     volumes :
-      - redis_blog_dev_data_dir:/data:Z
+      - redis_blog_dev_data_dir:/data
     networks:
       blog-dev:
         ipv4_address: 172.22.0.3
@@ -57,7 +57,7 @@ services:
       - RABBITMQ_DEFAULT_USER=blog
       - RABBITMQ_DEFAULT_PASS=blogPazZw0rd
     volumes :
-      - rabbitmq_data_dir:/var/lib/rabbitmq/mnesia:Z
+      - rabbitmq_data_dir:/var/lib/rabbitmq/mnesia
     networks:
       blog-dev:
         ipv4_address: 172.22.0.4
@@ -79,7 +79,7 @@ services:
     - xpack.security.enabled=false
     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     volumes :
-    - es_data_dir:/usr/share/elasticsearch/data:Z
+    - es_data_dir:/usr/share/elasticsearch/data
     networks:
       blog-dev:
         ipv4_address: 172.22.0.5
