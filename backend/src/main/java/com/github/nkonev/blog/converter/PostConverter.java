@@ -44,7 +44,7 @@ public class PostConverter {
     }
 
     private void checkLength(String comment) {
-        final int MIN_POST_LENGTH = 10;
+        final int MIN_POST_LENGTH = 1;
         String trimmed = StringUtils.trimWhitespace(comment);
         if (trimmed == null || trimmed.length() < MIN_POST_LENGTH) {
             throw new BadRequestException("post is too short, must be longer than " + MIN_POST_LENGTH);

@@ -24,6 +24,7 @@
                     :placeholder="computePlaceholder()"
                     useCustomImageHandler
                     @imageAdded="handleImageAdded" v-model="editPostDTO.text"
+                    @input="onInput"
         >
         </vue-editor>
 
@@ -39,6 +40,7 @@
                 <input type="checkbox" id="draft" name="draft" v-model="editPostDTO.draft">
                 <label for="draft">[Draft]</label>
             </div>
+            <error v-if="errorMessage" :message="errorMessage"></error>
         </div>
     </div>
 </template>
@@ -50,6 +52,7 @@
     import {API_POST} from '../constants'
     import {isLargeScreen, computedCropper} from "../utils";
     import CropperWrapper from "./CropperWrapper";
+    import Error from './Error.vue'
 
     if (isLargeScreen()) {
         require("quill/dist/quill.bubble.css");
@@ -94,6 +97,7 @@
         ],
         data () {
             return {
+                errorMessage: '',
                 submitting: false,
                 editorOptions: {
                     theme: isLargeScreen() ? 'bubble' : 'snow',
@@ -131,6 +135,7 @@
                             }
                         }, response => {
                             console.error("Error on edit post", response);
+                            this.errorMessage = response.body;
                             this.finishSending();
                         });
                     } else {
@@ -142,6 +147,7 @@
                             }
                         }, response => {
                             console.error("Error on add post", response);
+                            this.errorMessage = response.body;
                             this.finishSending();
                         });
                     }
@@ -182,6 +188,12 @@
             isPostValid() {
                return this.hasValidText() && this.editPostDTO.title
             },
+            onInput() {
+                let v = this.isPostValid();
+                if (v) {
+                    this.errorMessage = null;
+                }
+            },
             hasValidText() {
                 return !(strip(this.editPostDTO.text).length < MIN_LENGTH);
             },
@@ -211,7 +223,8 @@
         components: {
             VueEditor,
             BlogSpinner,
-            CropperWrapper
+            CropperWrapper,
+            Error,
         },
         watch: {
             'editPostDTO': {
