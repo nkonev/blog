@@ -30,7 +30,7 @@
 ## Development
 * JDK 13
 * docker-compose 1.24.1 +
-* Google Chrome (as [default](https://github.com/nkonev/blog/blob/master/webdriver-test/src/test/resources/config/application.yml#L88) browser for webdriver-test). Just `dnf install chromium` in latest Fedora.
+* Google Chrome (as [default](https://github.com/nkonev/blog/blob/master/webdriver-test/src/test/resources/config/application.yml#L99) browser for webdriver-test). Just `dnf install chromium` in latest Fedora.
 * disable SELinux
 
 # FAQ
