@@ -125,10 +125,9 @@
                 this.startSending();
 
                 const sendPost = () => {
-                    this.editPostDTO.removeTitleImage = this.$refs.cropperInstance.isRemoveImage();
                     if (this.editPostDTO.id) {
                         // edit / update
-                        this.$http.put(API_POST, this.editPostDTO, {}).then(response => {
+                        this.$http.put(API_POST, {...this.editPostDTO, removeTitleImage: this.$refs.cropperInstance.isRemoveImage()}).then(response => {
                             this.finishSending();
                             if (this.$props.onAfterSubmit){
                                 this.$props.onAfterSubmit(response.body);
@@ -140,7 +139,7 @@
                         });
                     } else {
                         // create
-                        this.$http.post(API_POST, this.editPostDTO, {}).then(response => {
+                        this.$http.post(API_POST, {...this.editPostDTO, removeTitleImage: this.$refs.cropperInstance.isRemoveImage()}).then(response => {
                             this.finishSending();
                             if (this.$props.onAfterSubmit){
                                 this.$props.onAfterSubmit(response.body);
