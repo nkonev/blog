@@ -13,7 +13,6 @@ import ResendRegistrationConfirmationToken from './components/ResendRegistration
 import PasswordRestore from './components/PasswordRestore.vue'
 import PasswordReset from './components/PasswordReset.vue'
 import Help from './components/Help.vue'
-import Settings from './components/Settings.vue'
 import ApplicationList from './components/ApplicationList.vue'
 import {root, root_name, users, useProfileName, post} from './routes'
 
@@ -21,6 +20,7 @@ const UserProfile = () => import('./components/UserProfile.vue');
 const Registration = () => import('./components/Registration.vue');
 const PostView = () => import('./components/PostView.vue');
 const PostEdit = () => import('./components/PostEdit.vue');
+const Settings = () => import('./components/Settings.vue');
 
 // This installs <router-view> and <router-link>,
 // and injects $router and $route to all router-enabled child components
