@@ -132,13 +132,14 @@ services:
     networks:
       - backend
   rabbitmq:
-    image: nkonev/rabbitmq-web-stomp:3.7.6
+    image: rabbitmq:3.7.6
     hostname: rabbitmq
     environment:
       - RABBITMQ_DEFAULT_USER=blog
       - RABBITMQ_DEFAULT_PASS=blogPazZw0rd
       - RABBITMQ_NODENAME=my-rabbit
     volumes:
+      - ./rabbitmq_prod/enabled_plugins:/etc/rabbitmq/enabled_plugins
       - rabbitmq_prod_data_dir:/var/lib/rabbitmq/mnesia
     ports:
       - 45602:15672
