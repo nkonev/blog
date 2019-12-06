@@ -5,7 +5,7 @@ version: '3.2'
 services:
   #enviroment
   postgresql:
-    image : postgres:11.4
+    image: postgres:11.4
     hostname: postgresql
     container_name: postgresql-blog-dev
     restart: unless-stopped
@@ -13,7 +13,7 @@ services:
       - 25432:5432
     environment:
       - POSTGRES_PASSWORD=postgresqlPassword
-    volumes :
+    volumes:
       - ./postgresql_dev/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - postgresql_blog_dev_data_dir:/var/lib/postgresql/data
     networks:
@@ -32,7 +32,7 @@ services:
     restart: unless-stopped
     ports:
       - 26379:6379
-    volumes :
+    volumes:
       - redis_blog_dev_data_dir:/data
     networks:
       blog-dev:
@@ -44,7 +44,7 @@ services:
         max-file: "1"
 
   rabbitmq:
-    image : nkonev/rabbitmq-web-stomp:3.7.6
+    image: nkonev/rabbitmq-web-stomp:3.7.6
     hostname: rabbitmq
     container_name: rabbitmq-blog-dev
     restart: unless-stopped
@@ -56,7 +56,7 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=blog
       - RABBITMQ_DEFAULT_PASS=blogPazZw0rd
-    volumes :
+    volumes:
       - rabbitmq_data_dir:/var/lib/rabbitmq/mnesia
     networks:
       blog-dev:
@@ -78,7 +78,7 @@ services:
     - cluster.name=elasticsearch
     - xpack.security.enabled=false
     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    volumes :
+    volumes:
     - es_data_dir:/usr/share/elasticsearch/data
     networks:
       blog-dev:

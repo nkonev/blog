@@ -57,7 +57,7 @@ services:
       - management.health.mail.enabled=false
       # use same cookie for applications
       - server.servlet.session.cookie.domain=blog.test
-    volumes :
+    volumes:
       - ./www:/opt/blog/www
     ports:
       - 8098:8098
@@ -101,7 +101,7 @@ services:
     hostname: postgresql
     environment:
       - POSTGRES_PASSWORD=postgresqlPassword
-    volumes :
+    volumes:
       - ./postgresql_prod/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - postgresql_prod_data_dir:/var/lib/postgresql/data
     ports:
@@ -118,7 +118,7 @@ services:
   redis:
     image: redis:5.0.5
     hostname: redis
-    volumes :
+    volumes:
       - redis_prod_data_dir:/data
     ports:
       - 16379:6379
@@ -138,7 +138,7 @@ services:
       - RABBITMQ_DEFAULT_USER=blog
       - RABBITMQ_DEFAULT_PASS=blogPazZw0rd
       - RABBITMQ_NODENAME=my-rabbit
-    volumes :
+    volumes:
       - rabbitmq_prod_data_dir:/var/lib/rabbitmq/mnesia
     ports:
       - 45602:15672
@@ -160,7 +160,7 @@ services:
     - cluster.name=elasticsearch
     - xpack.security.enabled=false
     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    volumes :
+    volumes:
     - es_prod_data_dir:/usr/share/elasticsearch/data
     ports:
       - 19200:9200
