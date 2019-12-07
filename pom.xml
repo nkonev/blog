@@ -13,6 +13,7 @@
 
 
     <properties>
+        <!-- use with conjunction flatten-maven-plugin and overrides with -Drevision= in .travis.yml -->
         <revision>0.0.0</revision>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
