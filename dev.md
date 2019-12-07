@@ -22,6 +22,11 @@ mvn -N io.takari:maven:wrapper
 ./mvnw clean package
 ```
 
+# Building with frontend and without tests using default goal
+```bash
+./mvnw -Pfrontend -DskipTests
+```
+
 # Documentation
 
  * https://github.com/Swagger2Markup/spring-swagger2markup-demo
