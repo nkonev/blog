@@ -16,7 +16,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
         exclude = {RestClientAutoConfiguration.class}
 )
 @EnableConfigurationProperties({ApplicationConfig.class})
-public class Launcher {
+public class BlogApplication {
 
     static {
         System.setProperty("es.set.netty.runtime.available.processors", "false");
@@ -24,6 +24,6 @@ public class Launcher {
     }
 
     public static void main(String[] args) throws Exception {
-        SpringApplication.run(Launcher.class, args);
+        SpringApplication.run(BlogApplication.class, args);
     }
 }

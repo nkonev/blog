@@ -7,7 +7,7 @@ package com.github.nkonev.blog.integration;
 import com.codeborne.selenide.Condition;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.nkonev.blog.CommonTestConstants;
-import com.github.nkonev.blog.Launcher;
+import com.github.nkonev.blog.BlogApplication;
 import com.github.nkonev.blog.webdriver.IntegrationTestConstants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,11 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static com.codeborne.selenide.Selenide.clearBrowserCookies;
@@ -30,7 +27,7 @@ import static com.github.nkonev.blog.util.FileUtils.getExistsFile;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
-        classes = {Launcher.class},
+        classes = {BlogApplication.class},
         webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT
 )
 public abstract class AbstractItTestRunner {

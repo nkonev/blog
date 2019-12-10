@@ -40,7 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
-        classes = {Launcher.class, SwaggerConfig.class, UtConfig.class},
+        classes = {BlogApplication.class, SwaggerConfig.class, UtConfig.class},
         webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT
 )
 @AutoConfigureMockMvc(printOnlyOnFailure = false, print = MockMvcPrint.LOG_DEBUG)

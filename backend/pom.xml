@@ -138,7 +138,7 @@
                             <goal>repackage</goal>
                         </goals>
                         <configuration>
-                            <mainClass>com.github.nkonev.blog.Launcher</mainClass>
+                            <mainClass>com.github.nkonev.blog.BlogApplication</mainClass>
                             <!-- Need because repackaged jar with original name not applicable for including -->
                             <!-- Also *-exec.jar used in Dockerfile -->
                             <classifier>exec</classifier>
