@@ -60,8 +60,9 @@ public class SettingsController {
         Collection<RuntimeSettings> runtimeSettings = runtimeSettingsRepository.findAll();
 
         SettingsDTO settingsDTOPartial = runtimeSettings.stream()
-                .reduce(new SettingsDTO(), (
-                        settingsDTO, runtimeSettings1) -> {
+                .reduce(
+                        new SettingsDTO(),
+                        (settingsDTO, runtimeSettings1) -> {
                             if (runtimeSettings1.getKey() == null) {
                                 throw new RuntimeException("Null key is not supported");
                             }
