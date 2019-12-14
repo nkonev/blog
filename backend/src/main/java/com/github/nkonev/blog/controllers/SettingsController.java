@@ -57,8 +57,7 @@ public class SettingsController {
     @GetMapping(API+CONFIG)
     public SettingsDTO getConfig(@AuthenticationPrincipal UserAccountDetailsDTO userAccount){
 
-        Collection<RuntimeSettings> runtimeSettings = runtimeSettingsRepository
-                .findByKeyIn(Set.of(IMAGE_BACKGROUND, HEADER, SUB_HEADER, TITLE_TEMPLATE, BACKGROUND_COLOR));
+        Collection<RuntimeSettings> runtimeSettings = runtimeSettingsRepository.findAll();
 
         SettingsDTO settingsDTOPartial = runtimeSettings.stream()
                 .reduce(new SettingsDTO(), (
