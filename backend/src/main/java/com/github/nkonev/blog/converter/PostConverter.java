@@ -10,7 +10,13 @@ import com.github.nkonev.blog.security.BlogSecurityService;
 import com.github.nkonev.blog.security.permissions.PostPermissions;
 import com.github.nkonev.blog.services.XssSanitizerService;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -25,6 +31,11 @@ public class PostConverter {
 
     @Autowired
     private XssSanitizerService xssSanitizerService;
+
+    @Value("${custom.set.first.image.as.title:true}")
+    boolean setFirstImageAsTitle;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PostConverter.class);
 
     public PostDTOWithAuthorization convertToDto(Post saved, UserAccountDetailsDTO userAccount) {
         Assert.notNull(saved, "Post can't be null");
@@ -62,10 +73,29 @@ public class PostConverter {
         if (Boolean.TRUE.equals(postDTO.getRemoveTitleImage())) {
             forUpdate.setTitleImg(null);
         } else {
-            forUpdate.setTitleImg(postDTO.getTitleImg());
+            String titleImg = getTitleImg(postDTO);
+            forUpdate.setTitleImg(titleImg);
         }
         forUpdate.setDraft(postDTO.isDraft());
         return forUpdate;
+    }
+
+    private String getTitleImg(PostDTO postDTO) {
+        String titleImg = postDTO.getTitleImg();
+        if (setFirstImageAsTitle && StringUtils.isEmpty(titleImg)) {
+            try {
+                Document document = Jsoup.parse(postDTO.getText());
+                Elements images = document.getElementsByTag("img");
+                if (!images.isEmpty()) {
+                    Element element = images.get(0);
+                    return element.attr("src");
+                }
+            } catch (RuntimeException e) {
+                LOGGER.warn("Error during parse image from content: {}", e.getMessage());
+                return null;
+            }
+        }
+        return titleImg;
     }
 
     public IndexPost toElasticsearchPost(com.github.nkonev.blog.entity.jpa.Post jpaPost) {

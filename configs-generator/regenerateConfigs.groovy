@@ -163,6 +163,8 @@ custom.image:
    - image/jpeg
   # value in seconds, passed in Cache-Control header
   max-age: 31536000
+# If post title image is empty - it set first image from content to title automatically
+custom.set.first.image.as.title: true
 """
 }
 

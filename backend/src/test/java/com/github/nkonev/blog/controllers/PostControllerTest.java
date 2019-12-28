@@ -122,6 +122,11 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 postDTO.setText(s);
                 return this;
             }
+
+            public Instance titleImg(String o) {
+                postDTO.setTitleImg(o);
+                return this;
+            }
         }
 
         public static Instance startBuilding() {
@@ -357,6 +362,30 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andReturn();
 
         mockServer.verify();
+    }
+
+    @WithUserDetails(TestConstants.USER_ALICE)
+    @Test
+    public void testPostWithoutTitleImageWillSetAutoFromContent() throws Exception {
+        final String newPostRendered = "<body>Post Rendered</body>";
+        mockServer.expect(requestTo(new StringStartsWith(true, "http://rendertron.example.com:3000/"+customConfig.getBaseUrl()+"/post/")))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess(newPostRendered, MediaType.TEXT_HTML));
+
+        final String newIndexRendered = "<body>Index Rendered</body>";
+        mockServer.expect(requestTo("http://rendertron.example.com:3000/"+customConfig.getBaseUrl()))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess(newIndexRendered, MediaType.TEXT_HTML));
+
+        MvcResult addPostRequest = mockMvc.perform(
+                post(Constants.Urls.API+ Constants.Urls.POST)
+                        .content(objectMapper.writeValueAsString(PostDtoBuilder.startBuilding().text("Lorem ipsum <img src=\"/api/image/post/content/uuid.jpeg\" />").titleImg(null).build()))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .with(csrf())
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.titleImg").value("/api/image/post/content/uuid.jpeg"))
+                .andReturn();
     }
 
     @Test
