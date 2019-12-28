@@ -91,8 +91,7 @@ docker exec $(docker inspect --format "{{.Status.ContainerStatus.ContainerID}}" 
 
 # Restore dump
 ```bash
-echo 'drop database blog;' | docker exec -i postgresql-blog-dev psql -U postgres
-cat ~/blog/$(ls ~/blog | grep backup- | sort | tail -n 1)/blog.sql | docker exec -i postgresql-blog-dev psql -U postgres
+cat <(echo -n "drop database blog;") ~/blog/$(ls ~/blog | grep backup- | sort | tail -n 1)/blog.sql | docker exec -i postgresql-blog-dev psql -U postgres
 ```
 
 # Install
