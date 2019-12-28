@@ -120,7 +120,6 @@
             },
             finishSending() {
                 this.submitting = false;
-                localStorage.removeItem(localStorageKey);
             },
             onBtnSave() {
                 this.startSending();
@@ -130,6 +129,7 @@
                         // edit / update
                         this.$http.put(API_POST, {...this.editPostDTO, removeTitleImage: this.$refs.cropperInstance.isRemoveImage()}).then(response => {
                             this.finishSending();
+                            localStorage.removeItem(localStorageKey);
                             if (this.$props.onAfterSubmit){
                                 this.$props.onAfterSubmit(response.body);
                             }
