@@ -35,6 +35,7 @@
                 <button v-if="!submitting" class="blog-btn ok-btn" @click="onBtnSave" v-bind:disabled="!isPostValid()">Save</button>
             </div>
             <button v-if="!submitting" class="blog-btn cancel-btn" @click="onBtnCancel">Cancel</button>
+            <button v-if="!submitting && canRestore()" class="blog-btn restore-btn" @click="restorePost">Restore</button>
 
             <div class="draft">
                 <input type="checkbox" id="draft" name="draft" v-model="editPostDTO.draft">
@@ -179,7 +180,6 @@
                 this.$refs.cropperInstance.onCreateBlob(composition);
             },
             onBtnCancel() {
-                localStorage.removeItem(localStorageKey);
                 if (this.$props.onCancel){
                     this.$props.onCancel();
                 }
@@ -216,8 +216,26 @@
                     .catch((err) => {
                         console.log(err);
                     })
-            }
-
+            },
+            canRestore() {
+                if (localStorage.getItem(localStorageKey)) {
+                    return true
+                } else {
+                    return false
+                }
+            },
+            restorePost() {
+                if (localStorage.getItem(localStorageKey)) {
+                    try {
+                        this.editPostDTO = JSON.parse(localStorage.getItem(localStorageKey));
+                    } catch(e) {
+                        console.error("Exception during parsing localstorage value - will delete this value", e);
+                        localStorage.removeItem(localStorageKey);
+                    }
+                } else {
+                    console.log("There is not post for restore");
+                }
+            },
         },
         components: {
             VueEditor,
@@ -228,21 +246,13 @@
         watch: {
             'editPostDTO': {
                 handler: function (val, oldVal) {
-                    // console.log("PostEdit changing editPostDTO", val.title, val.text);
-                    const parsed = JSON.stringify(this.editPostDTO);
-                    localStorage.setItem(localStorageKey, parsed);
+                    if (val && (val.text || val.title)) {
+                        const parsed = JSON.stringify(val);
+                        console.log("Saving post", parsed);
+                        localStorage.setItem(localStorageKey, parsed);
+                    }
                 },
                 deep: true
-            }
-        },
-        mounted(){
-            if (localStorage.getItem(localStorageKey)) {
-                try {
-                    this.editPostDTO = JSON.parse(localStorage.getItem(localStorageKey));
-                } catch(e) {
-                    console.error("Exception during parsing localstorage value - will delete this value", e);
-                    localStorage.removeItem(localStorageKey);
-                }
             }
         },
         created(){

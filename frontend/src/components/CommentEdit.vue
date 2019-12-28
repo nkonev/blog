@@ -27,7 +27,6 @@
                 editContent: '',
                 submitting: false,
                 errorMessage: '',
-                localStorageKey: null
             }
         },
         props: ['commentDTO', 'isAdd'],
@@ -38,25 +37,13 @@
             const prevText = this.commentDTO.text;
             this.editContent = prevText ? prevText.replace(brRegexp, '\n') : '';
             bus.$on(LOGIN, this.clearErrorMessage);
-            this.localStorageKey = 'commentDto_' + (this.isAdd ? 'new' : this.commentDTO.id);
         },
         destroyed(){
             bus.$off(LOGIN, this.clearErrorMessage);
         },
-        mounted(){
-            if (localStorage.getItem(this.localStorageKey)) {
-                try {
-                    this.editContent = localStorage.getItem(this.localStorageKey);
-                } catch(e) {
-                    console.error("Exception during parsing localstorage value - will delete this value", e);
-                    localStorage.removeItem(this.localStorageKey);
-                }
-            }
-        },
         methods:{
             clearData(){
                 this.editContent = '';
-                localStorage.removeItem(this.localStorageKey);
             },
             clearErrorMessage(){
                 this.errorMessage = '';
@@ -94,14 +81,6 @@
                 bus.$emit(COMMENT_CANCELED);
             },
         },
-        watch:{
-            'editContent':{
-                handler: function (val, oldVal) {
-                    localStorage.setItem(this.localStorageKey, this.editContent);
-                },
-                deep: true
-            }
-        }
 
     }
 </script>
