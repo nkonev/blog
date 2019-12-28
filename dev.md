@@ -33,12 +33,16 @@ mvn -N io.takari:maven:wrapper
  * http://docs.spring.io/spring-restdocs/docs/1.2.1.RELEASE/reference/html5/
  * https://springfox.github.io/springfox/docs/current/
 
-# execute frontend plugin goal
+# Execute frontend plugin goal
 
 ```bash
 ./mvnw -pl frontend frontend:install-node-and-npm
 ```
 
+# Build only frontend with maven
+```bash
+./mvnw -pl frontend -P frontend  generate-resources
+```
 
 For get cli analogs of any `<configuration>` property see its Expression (Ctrl + Q in IntelliJ IDEA)
 and pass it with `-D`:

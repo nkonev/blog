@@ -11,6 +11,9 @@
 
     <packaging>pom</packaging>
 
+    <prerequisites>
+        <maven>3.6.0</maven>
+    </prerequisites>
 
     <properties>
         <!-- use with conjunction flatten-maven-plugin and overrides with -Drevision= in .travis.yml - see https://maven.apache.org/maven-ci-friendly.html-->
@@ -24,12 +27,11 @@
         <maven.surefire.report.plugin.version>2.22.2</maven.surefire.report.plugin.version>
         <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
         <maven.jxr.report.plugin.version>3.0.0</maven.jxr.report.plugin.version>
-        <maven.clean.plugin.version>3.0.0</maven.clean.plugin.version>
         <java.version>13</java.version>
-	    <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
-        <maven-jar-plugin.version>3.1.2</maven-jar-plugin.version>
+        <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
+        <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
         <maven.install.plugin.version>2.5.2</maven.install.plugin.version>
-        <jacoco-maven-plugin.version>0.8.4</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
 
         <spring.boot.version>2.2.0.RELEASE</spring.boot.version>
         <spring.security.oauth2.version>2.1.5.RELEASE</spring.security.oauth2.version>
@@ -112,7 +114,7 @@
     <build>
         <defaultGoal>clean package</defaultGoal>
         <pluginManagement>
-              <plugins>
+            <plugins>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
@@ -125,52 +127,44 @@
                     </configuration>
                 </plugin>
 
-                  <plugin>
-                      <groupId>org.codehaus.mojo</groupId>
-                      <artifactId>versions-maven-plugin</artifactId>
-                      <version>2.5</version>
-                  </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>versions-maven-plugin</artifactId>
+                    <version>2.7</version>
+                </plugin>
 
-                  <plugin>
-                      <groupId>org.apache.maven.plugins</groupId>
-                      <artifactId>maven-deploy-plugin</artifactId>
-                      <version>2.7</version>
-                      <executions>
-                          <execution>
-                              <id>default-deploy</id>
-                              <phase>none</phase>
-                          </execution>
-                      </executions>
-                  </plugin>
-                  <plugin>
-                      <groupId>org.jacoco</groupId>
-                      <artifactId>jacoco-maven-plugin</artifactId>
-                      <version>${jacoco-maven-plugin.version}</version>
-                      <executions>
-                          <execution>
-                              <id>default-prepare-agent</id>
-                              <goals>
-                                  <goal>prepare-agent</goal>
-                              </goals>
-                          </execution>
-                          <!--<execution>
-                              <id>default-report</id>
-                              <goals>
-                                  <goal>report</goal>
-                              </goals>
-                              <phase>test</phase>
-                          </execution>-->
-                          <execution>
-                              <id>default-check</id>
-                              <goals>
-                                  <goal>check</goal>
-                              </goals>
-                              <configuration>
-                              </configuration>
-                          </execution>
-                      </executions>
-                  </plugin>
-              </plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>default-deploy</id>
+                            <phase>none</phase>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${jacoco-maven-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>default-prepare-agent</id>
+                            <goals>
+                                <goal>prepare-agent</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>default-check</id>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                            <configuration>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
         </pluginManagement>
 
         <plugins>
@@ -305,6 +299,12 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-test</artifactId>
                 <version>${spring.boot.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.junit.vintage</groupId>
+                        <artifactId>junit-vintage-engine</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
 
