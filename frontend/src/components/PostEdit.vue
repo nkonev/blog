@@ -227,7 +227,9 @@
             restorePost() {
                 if (localStorage.getItem(localStorageKey)) {
                     try {
-                        this.editPostDTO = JSON.parse(localStorage.getItem(localStorageKey));
+                        const loaded = JSON.parse(localStorage.getItem(localStorageKey));
+                        //console.log("Restoring post", loaded);
+                        this.editPostDTO = loaded;
                     } catch(e) {
                         console.error("Exception during parsing localstorage value - will delete this value", e);
                         localStorage.removeItem(localStorageKey);
@@ -248,7 +250,7 @@
                 handler: function (val, oldVal) {
                     if (val && (val.text || val.title)) {
                         const parsed = JSON.stringify(val);
-                        console.log("Saving post", parsed);
+                        //console.log("Saving post", parsed);
                         localStorage.setItem(localStorageKey, parsed);
                     }
                 },
