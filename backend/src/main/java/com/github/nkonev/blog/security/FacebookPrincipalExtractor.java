@@ -8,6 +8,7 @@ import com.github.nkonev.blog.entity.jpa.UserAccount;
 import com.github.nkonev.blog.exception.OauthIdConflictException;
 import com.github.nkonev.blog.exception.UserAlreadyPresentException;
 import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
+import com.github.nkonev.blog.utils.ImageDownloader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +33,10 @@ public class FacebookPrincipalExtractor extends AbstractPrincipalExtractor imple
     private UserAccountRepository userAccountRepository;
 
     @Autowired
-    private RestTemplate restTemplate;
+    private ImageUserAvatarUploadController imageUserAvatarUploadController;
 
     @Autowired
-    private ImageUserAvatarUploadController imageUserAvatarUploadController;
+    private ImageDownloader imageDownloader;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FacebookPrincipalExtractor.class);
 
@@ -44,12 +45,7 @@ public class FacebookPrincipalExtractor extends AbstractPrincipalExtractor imple
     private String getAvatarUrl(Map<String, Object> map){
         try {
             String url = (String) ((Map<String, Object>) ((Map<String, Object>) map.get("picture")).get("data")).get("url");
-            ResponseEntity<byte[]> forEntity = restTemplate.getForEntity(url, byte[].class);
-            byte[] body = forEntity.getBody();
-            try(InputStream is = new ByteArrayInputStream(body);) {
-                AbstractImageUploadController.ImageResponse imageResponse = imageUserAvatarUploadController.postImage(body.length, forEntity.getHeaders().getContentType().toString(), is);
-                return imageResponse.getRelativeUrl();
-            }
+            return imageDownloader.downloadImageAndSave(url, imageUserAvatarUploadController);
         } catch (Exception e){
             LOGGER.info("Cannot get image url from {}, returning null", map);
             return null;

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.UUID;
 
@@ -28,16 +29,32 @@ public class ImagePostContentUploadController extends AbstractImageUploadControl
     public ImageResponse postImage(
             @RequestPart(value = IMAGE_PART) MultipartFile imagePart,
             @NotNull @AuthenticationPrincipal UserAccountDetailsDTO userAccount
-    ) throws SQLException, IOException {
-        return super.postImage(
-            "INSERT INTO images.post_content_image(img, content_type) VALUES (?, ?) RETURNING id;",
-            GET_TEMPLATE,
-            imagePart.getSize(),
-            imagePart.getContentType(),
-            imagePart.getInputStream()
+    ) throws IOException {
+        return insertImage(
+                imagePart.getSize(),
+                imagePart.getContentType(),
+                imagePart.getInputStream()
         );
     }
 
+    @Override
+    public ImageResponse insertImage(
+            long contentLength,
+            String contentType,
+            InputStream inputStream
+    )  {
+        try {
+            return super.postImage(
+                    "INSERT INTO images.post_content_image(img, content_type) VALUES (?, ?) RETURNING id;",
+                    GET_TEMPLATE,
+                    contentLength,
+                    contentType,
+                    inputStream
+            );
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     ///////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////

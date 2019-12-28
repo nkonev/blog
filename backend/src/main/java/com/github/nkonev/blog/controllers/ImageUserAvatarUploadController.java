@@ -29,26 +29,31 @@ public class ImageUserAvatarUploadController extends AbstractImageUploadControll
     public ImageResponse postImage(
             @RequestPart(value = IMAGE_PART) MultipartFile imagePart,
             @NotNull @AuthenticationPrincipal UserAccountDetailsDTO userAccount
-    ) throws SQLException, IOException {
-        return postImage(
+    ) throws IOException {
+        return insertImage(
                 imagePart.getSize(),
                 imagePart.getContentType(),
                 imagePart.getInputStream()
         );
     }
 
-    public ImageResponse postImage(
+    @Override
+    public ImageResponse insertImage(
         long contentLength,
         String contentType,
         InputStream inputStream
-    ) throws SQLException {
-        return super.postImage(
-                "INSERT INTO images.user_avatar_image(img, content_type) VALUES (?, ?) RETURNING id",
-                GET_TEMPLATE,
-                contentLength,
-                contentType,
-                inputStream
-        );
+    )  {
+        try {
+            return super.postImage(
+                    "INSERT INTO images.user_avatar_image(img, content_type) VALUES (?, ?) RETURNING id",
+                    GET_TEMPLATE,
+                    contentLength,
+                    contentType,
+                    inputStream
+            );
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     ///////////////////////////////////////////////////////////////////

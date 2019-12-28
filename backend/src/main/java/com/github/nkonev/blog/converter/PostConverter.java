@@ -1,5 +1,6 @@
 package com.github.nkonev.blog.converter;
 
+import com.github.nkonev.blog.controllers.ImagePostTitleUploadController;
 import com.github.nkonev.blog.dto.PostDTO;
 import com.github.nkonev.blog.dto.PostDTOWithAuthorization;
 import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
@@ -9,6 +10,7 @@ import com.github.nkonev.blog.exception.BadRequestException;
 import com.github.nkonev.blog.security.BlogSecurityService;
 import com.github.nkonev.blog.security.permissions.PostPermissions;
 import com.github.nkonev.blog.services.XssSanitizerService;
+import com.github.nkonev.blog.utils.ImageDownloader;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -20,6 +22,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.List;
 
 @Service
 public class PostConverter {
@@ -34,6 +40,12 @@ public class PostConverter {
 
     @Value("${custom.set.first.image.as.title:true}")
     boolean setFirstImageAsTitle;
+
+    @Autowired
+    private ImageDownloader imageDownloader;
+
+    @Autowired
+    private ImagePostTitleUploadController imagePostTitleUploadController;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PostConverter.class);
 
@@ -85,17 +97,42 @@ public class PostConverter {
         if (setFirstImageAsTitle && StringUtils.isEmpty(titleImg)) {
             try {
                 Document document = Jsoup.parse(postDTO.getText());
+
+                // try to get title url from post content's images
                 Elements images = document.getElementsByTag("img");
                 if (!images.isEmpty()) {
                     Element element = images.get(0);
                     return element.attr("src");
                 }
+
+                // try to get title url from post content's videos
+                Elements iframes = document.getElementsByTag("iframe");
+                if (!iframes.isEmpty()) {
+                    Element element = iframes.get(0);
+                    String iframeSrcUrl = element.attr("src");
+                    if (iframeSrcUrl.contains("youtube.com")) {
+                        String youtubeVideoId = getYouTubeVideoId(iframeSrcUrl);
+                        String youtubeThumbnailUrl = "https://img.youtube.com/vi/"+youtubeVideoId+"/hqdefault.jpg";
+                        return imageDownloader.downloadImageAndSave(youtubeThumbnailUrl, imagePostTitleUploadController);
+                    }
+                }
+
             } catch (RuntimeException e) {
-                LOGGER.warn("Error during parse image from content: {}", e.getMessage());
+                if (LOGGER.isDebugEnabled()){
+                    LOGGER.warn("Error during parse image from content: {}", e.getMessage(), e);
+                } else {
+                    LOGGER.warn("Error during parse image from content: {}", e.getMessage());
+                }
                 return null;
             }
         }
         return titleImg;
+    }
+
+    public static String getYouTubeVideoId(String iframeSrcUrl) {
+        UriComponents build = UriComponentsBuilder.fromHttpUrl(iframeSrcUrl).build();
+        List<String> pathSegments = build.getPathSegments();
+        return pathSegments.get(pathSegments.size() - 1);
     }
 
     public IndexPost toElasticsearchPost(com.github.nkonev.blog.entity.jpa.Post jpaPost) {
