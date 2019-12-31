@@ -281,7 +281,7 @@ public class PostService {
         return post;
     }
 
-    private AbstractQueryBuilder noDraftFilterElastic(UserAccountDetailsDTO userAccountDetailsDTO){
+    private AbstractQueryBuilder noDraftFilterElasticsearch(UserAccountDetailsDTO userAccountDetailsDTO){
         if (userAccountDetailsDTO==null) {
             return termQuery(FIELD_DRAFT, false);
         } else {
@@ -368,7 +368,7 @@ public class PostService {
                     .withSort(new FieldSortBuilder(FIELD_ID).order(SortOrder.DESC))
                     .withIndices(INDEX)
                     .withQuery(boolQuery()
-                            .must(noDraftFilterElastic(currentUser))
+                            .must(noDraftFilterElasticsearch(currentUser))
                     )
                     .withPageable(pageRequest)
                     .build();
@@ -389,7 +389,7 @@ public class PostService {
                                             .should(matchPhrasePrefixQuery(FIELD_TITLE, searchString).slop(searchFieldTextSlop))
                             )
 
-                            .must(noDraftFilterElastic(currentUser))
+                            .must(noDraftFilterElasticsearch(currentUser))
                     )
                     .withHighlightFields(
                             new HighlightBuilder.Field(FIELD_TEXT).preTags("<b>").postTags("</b>").numOfFragments(highlightFieldTextNumOfFragments).fragmentSize(highlightFieldTextFragmentSize),
@@ -403,7 +403,7 @@ public class PostService {
 
         NativeSearchQuery countQuery = new NativeSearchQueryBuilder()
                 .withIndices(INDEX)
-                .withQuery(boolQuery().must(noDraftFilterElastic(currentUser)))
+                .withQuery(boolQuery().must(noDraftFilterElasticsearch(currentUser)))
                 .build();
         long totalCount = elasticsearchTemplate.count(countQuery);
 

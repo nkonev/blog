@@ -1,22 +1,17 @@
 package com.github.nkonev.blog.controllers;
 
 import com.github.nkonev.blog.Constants;
-import com.github.nkonev.blog.converter.PostConverter;
 import com.github.nkonev.blog.dto.*;
 import com.github.nkonev.blog.exception.DataNotFoundException;
-import com.github.nkonev.blog.repo.jpa.CommentRepository;
 import com.github.nkonev.blog.repo.jpa.PostRepository;
-import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
 import com.github.nkonev.blog.services.PostService;
 import com.github.nkonev.blog.utils.PageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,19 +22,6 @@ public class PostController {
 
     @Autowired
     private PostRepository postRepository;
-
-    @Autowired
-    private UserAccountRepository userAccountRepository;
-
-    @Autowired
-    private PostConverter postConverter;
-
-    @Autowired
-    private CommentRepository commentRepository;
-
-    @Autowired
-    private NamedParameterJdbcTemplate jdbcTemplate;
-
 
     @Autowired
     private PostService postService;
@@ -53,24 +35,6 @@ public class PostController {
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount // null if not authenticated
     ) {
         return postService.getPosts(page, size, searchString, userAccount);
-    }
-
-    public static class RandomPostDTO {
-        private long id;
-        private String title;
-
-        public RandomPostDTO(long id, String title) {
-            this.id = id;
-            this.title = title;
-        }
-
-        public long getId() {
-            return id;
-        }
-
-        public String getTitle() {
-            return title;
-        }
     }
 
     @GetMapping(Constants.Urls.API + Constants.Urls.POST + Constants.Urls.POST_ID)
