@@ -3,17 +3,22 @@ package com.github.nkonev.blog.dto;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 /**
  * Internal class for Spring Security, it shouldn't be passed to browser via Rest API
  */
-public class UserAccountDetailsDTO extends UserAccountDTO implements UserDetails {
+public class UserAccountDetailsDTO extends UserAccountDTO implements UserDetails, OAuth2User {
     private static final long serialVersionUID = -3271989114498135073L;
+
+    private Map<String, Object> oauth2Attributes = new HashMap<>();
 
     private String password; // password hash
     private boolean expired;
@@ -78,8 +83,18 @@ public class UserAccountDetailsDTO extends UserAccountDTO implements UserDetails
     }
 
     @Override
+    public Map<String, Object> getAttributes() {
+        return oauth2Attributes;
+    }
+
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles;
+    }
+
+    @Override
+    public String getName() {
+        return login;
     }
 
     public void setPassword(String password) {
@@ -121,4 +136,13 @@ public class UserAccountDetailsDTO extends UserAccountDTO implements UserDetails
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public Map<String, Object> getOauth2Attributes() {
+        return oauth2Attributes;
+    }
+
+    public void setOauth2Attributes(Map<String, Object> oauth2Attributes) {
+        this.oauth2Attributes = oauth2Attributes;
+    }
+
 }

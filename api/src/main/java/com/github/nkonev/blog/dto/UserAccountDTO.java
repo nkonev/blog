@@ -17,7 +17,7 @@ public class UserAccountDTO implements Serializable {
     private Long id;
 
     @NotEmpty
-    private String login;
+    protected String login;
 
     private String avatar;
 

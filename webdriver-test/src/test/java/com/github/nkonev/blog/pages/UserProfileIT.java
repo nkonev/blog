@@ -5,7 +5,7 @@ import com.codeborne.selenide.Selenide;
 import com.github.nkonev.blog.CommonTestConstants;
 import com.github.nkonev.blog.FailoverUtils;
 import com.github.nkonev.blog.entity.jdbc.UserAccount;
-import com.github.nkonev.blog.integration.SocialEmulatorTests;
+import com.github.nkonev.blog.integration.OAuth2EmulatorTests;
 import com.github.nkonev.blog.pages.object.*;
 import com.github.nkonev.blog.util.FileUtils;
 import com.github.nkonev.blog.webdriver.IntegrationTestConstants;
@@ -40,7 +40,7 @@ import static org.hamcrest.Matchers.is;
  * Тест на страницу профиля
  * Created by nik on 06.06.17.
  */
-public class UserProfileIT extends SocialEmulatorTests {
+public class UserProfileIT extends OAuth2EmulatorTests {
 
     @Value(IntegrationTestConstants.USER_ID)
     private int userId;
@@ -132,7 +132,8 @@ public class UserProfileIT extends SocialEmulatorTests {
             Dialog.clickYes();
         }
 
-        public static final String PROFILE_EDIT_FORM_BINDING = ".profile-edit-info-form-binding";
+        public static final String PROFILE_EDIT_FORM_BINDING = ".profile-edit-info-form-binding .bind";
+        public static final String PROFILE_EDIT_FORM_UNBINDING = ".profile-edit-info-form-binding .unbind";
 
         public void bindFacebook() {
             $(PROFILE_EDIT_FORM_BINDING).find(FB).click();
@@ -144,9 +145,26 @@ public class UserProfileIT extends SocialEmulatorTests {
         public void assertHasFacebook() {
             $(USER_PROFILE_VIEW_INFO_DATA).find("a.oauth-fb").shouldHave(Condition.exist);
         }
+        public void assertNotHasFacebook() {
+            $(USER_PROFILE_VIEW_INFO_DATA).find("a.oauth-fb").shouldNot(Condition.exist);
+        }
+
         public void assertHasVkontakte() {
             $(USER_PROFILE_VIEW_INFO_DATA).find("a.oauth-vk").shouldHave(Condition.exist);
         }
+
+        public void assertNotHasVkontakte() {
+            $(USER_PROFILE_VIEW_INFO_DATA).find("a.oauth-vk").shouldNot(Condition.exist);
+        }
+
+        public void unBindFacebook() {
+            $(PROFILE_EDIT_FORM_UNBINDING).find(FB).click();
+        }
+
+        public void unBindVkontakte() {
+            $(PROFILE_EDIT_FORM_UNBINDING).find(VK).click();
+        }
+
     }
 
     @org.junit.jupiter.api.Test
@@ -385,6 +403,11 @@ public class UserProfileIT extends SocialEmulatorTests {
         Assertions.assertEquals(countInitial, countAfter);
         loginModal600.logout();
 
+        // check that binding is preserved
+        Selenide.refresh();
+        userPage.openPage(userAccount.getId().intValue());
+        userPage.assertHasFacebook();
+
         {
             LoginModal loginModalVk = new LoginModal();
             loginModalVk.openLoginModal();
@@ -400,5 +423,49 @@ public class UserProfileIT extends SocialEmulatorTests {
         userPage.edit();
         userPage.bindVkontakte();
         $("body").has(Condition.text("Somebody already taken this vkontakte id"));
+    }
+
+    @Test
+    public void checkUnbindFacebook() throws Exception {
+        IndexPage indexPage = new IndexPage(urlPrefix);
+        indexPage.openPage();
+
+        UserProfilePage userPage = new UserProfilePage(urlPrefix, driver);
+        final String login600 = "generated_user_550";
+
+        LoginModal loginModal600 = new LoginModal(login600, COMMON_PASSWORD);
+        loginModal600.openLoginModal();
+        loginModal600.login();
+        UserAccount userAccount = userAccountRepository.findByUsername(login600).orElseThrow();
+        userPage.openPage(userAccount.getId().intValue());
+        userPage.assertThisIsYou();
+        userPage.edit();
+
+        userPage.bindFacebook();
+        userPage.openPage(userAccount.getId().intValue());
+        userPage.assertHasFacebook();
+        Selenide.refresh();
+        userPage.assertHasFacebook();
+
+        loginModal600.logout();
+
+        loginModal600.openLoginModal();
+        loginModal600.login();
+
+        userPage.openPage(userAccount.getId().intValue());
+        userPage.assertThisIsYou();
+        userPage.edit();
+
+        userPage.unBindFacebook();
+        userPage.assertNotHasFacebook();
+        Selenide.refresh();
+        loginModal600.logout();
+        Selenide.refresh();
+        loginModal600.openLoginModal();
+        loginModal600.login();
+        userPage.openPage(userAccount.getId().intValue());
+        userPage.assertThisIsYou();
+        userPage.assertNotHasFacebook();
+
     }
 }

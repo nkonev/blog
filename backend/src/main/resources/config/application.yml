@@ -168,26 +168,27 @@ management:
     add-application-context-header: false
 
 
-facebook:
-  client:
-    clientId: 1684113965162824
-    clientSecret: provide-it
-    userAuthorizationUri: https://www.facebook.com/dialog/oauth
-    accessTokenUri: https://graph.facebook.com/oauth/access_token
-    tokenName: oauth_token
-    authenticationScheme: query
-    clientAuthenticationScheme: form
-  resource:
-    userInfoUri: https://graph.facebook.com/me?fields=id,name,picture
-
-vkontakte:
-  client:
-    clientId: 6805077
-    clientSecret: provide-it
-    userAuthorizationUri: https://oauth.vk.com/authorize
-    accessTokenUri: https://oauth.vk.com/access_token
-    tokenName: access_token
-    authenticationScheme: query
-    clientAuthenticationScheme: form
-  resource:
-    userInfoUri: https://api.vk.com/method/users.get?v=5.92
+spring.security:
+    oauth2:
+      client:
+        registration:
+          vkontakte:
+            client-id: 6805077
+            client-secret: your-app-client-secret
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/api/login/oauth2/code/{registrationId}"
+            client-authentication-method: post
+          facebook:
+            client-name: "facebook" # use in BlogOAuth2UserService
+            client-id: 1684113965162824
+            client-secret: your-app-client-secret
+            redirect-uri: "{baseUrl}/api/login/oauth2/code/{registrationId}"
+        provider:
+          vkontakte:
+            authorization-uri: https://oauth.vk.com/authorize
+            token-uri: https://oauth.vk.com/access_token
+            user-info-uri: https://api.vk.com/method/users.get?v=5.92
+            user-info-authentication-method: form
+            user-name-attribute: response
+          facebook:
+            user-info-uri: "https://graph.facebook.com/me?fields=id,name,picture"

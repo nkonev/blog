@@ -23,20 +23,20 @@
 
                 <div class="profile-edit-info-form-binding">
                     <template>
-                        <form v-if="!model.oauthIdentifiers.facebookId" class="social form-fb" @submit.prevent="submitOauthFb">
+                        <form v-if="!model.oauthIdentifiers.facebookId" class="social form-fb bind" @submit.prevent="submitOauthFb">
                             <ButtonFacebook>Bind Facebook</ButtonFacebook>
                         </form>
-                        <div v-else class="social">
-                            <ButtonFacebook @click="unbindFacebook">Unind Facebook</ButtonFacebook>
-                        </div>
+                        <form v-else class="social unbind" @submit.prevent="unbindFacebook">
+                            <ButtonFacebook>Unbind Facebook</ButtonFacebook>
+                        </form>
                     </template>
                     <template>
-                        <form v-if="!model.oauthIdentifiers.vkontakteId" class="social form-vk" @submit.prevent="submitOauthVk">
+                        <form v-if="!model.oauthIdentifiers.vkontakteId" class="social form-vk bind" @submit.prevent="submitOauthVk">
                             <ButtonVkontakte>Bind Vkontakte</ButtonVkontakte>
                         </form>
-                        <div v-else class="social">
-                            <ButtonVkontakte @click="unbindVkontakte">Unbind Vkontakte</ButtonVkontakte>
-                        </div>
+                        <form v-else class="social unbind" @submit.prevent="unbindVkontakte">
+                            <ButtonVkontakte>Unbind Vkontakte</ButtonVkontakte>
+                        </form>
                     </template>
                 </div>
             </div>

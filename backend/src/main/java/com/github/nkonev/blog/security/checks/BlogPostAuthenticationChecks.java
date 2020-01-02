@@ -9,7 +9,9 @@ import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.SpringSecurityMessageSource;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsChecker;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BlogPostAuthenticationChecks implements UserDetailsChecker, MessageSourceAware {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BlogPostAuthenticationChecks.class);

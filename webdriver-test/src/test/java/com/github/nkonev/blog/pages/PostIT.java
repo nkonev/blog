@@ -3,7 +3,7 @@ package com.github.nkonev.blog.pages;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
 import com.github.nkonev.blog.FailoverUtils;
-import com.github.nkonev.blog.integration.SocialEmulatorTests;
+import com.github.nkonev.blog.integration.OAuth2EmulatorTests;
 import com.github.nkonev.blog.pages.object.*;
 import com.github.nkonev.blog.repo.jdbc.PostRepository;
 import com.github.nkonev.blog.webdriver.IntegrationTestConstants;
@@ -27,7 +27,7 @@ import static com.codeborne.selenide.Selenide.$$;
 import static com.codeborne.selenide.Selenide.open;
 
 
-public class PostIT extends SocialEmulatorTests {
+public class PostIT extends OAuth2EmulatorTests {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PostIT.class);
 

@@ -8,8 +8,8 @@ import com.github.nkonev.blog.dto.UserRole;
 import com.github.nkonev.blog.exception.BadRequestException;
 import com.github.nkonev.blog.repo.jdbc.UserAccountRepository;
 import com.github.nkonev.blog.security.BlogSecurityService;
-import com.github.nkonev.blog.security.FacebookPrincipalExtractor;
-import com.github.nkonev.blog.security.VkontaktePrincipalExtractor;
+import com.github.nkonev.blog.security.FacebookOAuth2UserService;
+import com.github.nkonev.blog.security.VkontakteOAuth2UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -198,8 +198,8 @@ public class UserAccountConverter {
         Assert.notNull(login, "login cannot be null");
         login = login.trim();
         Assert.hasLength(login, "login should have length");
-        Assert.isTrue(!login.startsWith(FacebookPrincipalExtractor.LOGIN_PREFIX), "not allowed prefix");
-        Assert.isTrue(!login.startsWith(VkontaktePrincipalExtractor.LOGIN_PREFIX), "not allowed prefix");
+        Assert.isTrue(!login.startsWith(FacebookOAuth2UserService.LOGIN_PREFIX), "not allowed prefix");
+        Assert.isTrue(!login.startsWith(VkontakteOAuth2UserService.LOGIN_PREFIX), "not allowed prefix");
 
         return login;
     }

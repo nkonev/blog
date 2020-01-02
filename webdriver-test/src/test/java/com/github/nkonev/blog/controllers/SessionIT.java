@@ -6,7 +6,7 @@ import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.dto.LockDTO;
 import com.github.nkonev.blog.dto.SuccessfulLoginDTO;
 import com.github.nkonev.blog.entity.jdbc.UserAccount;
-import com.github.nkonev.blog.integration.SocialEmulatorTests;
+import com.github.nkonev.blog.integration.OAuth2EmulatorTests;
 import com.github.nkonev.blog.pages.object.IndexPage;
 import com.github.nkonev.blog.pages.object.LoginModal;
 import com.github.nkonev.blog.util.ContextPathHelper;
@@ -39,7 +39,7 @@ import static com.github.nkonev.blog.security.SecurityConfig.*;
 import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.HttpHeaders.COOKIE;
 
-public class SessionIT extends SocialEmulatorTests {
+public class SessionIT extends OAuth2EmulatorTests {
 
 
     @Autowired

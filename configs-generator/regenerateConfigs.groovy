@@ -240,32 +240,62 @@ spring.resources.static-locations: file:backend/src/main/resources/static/, clas
 ${DATA_STORE_SNIPPET(false)}
 ${MANAGEMENT_SNIPPET(false)}
 
-facebook:
-  client:
-    clientId: 1684113965162824
-    clientSecret: provide-it
-    userAuthorizationUri: https://www.facebook.com/dialog/oauth
-    accessTokenUri: https://graph.facebook.com/oauth/access_token
-    tokenName: oauth_token
-    authenticationScheme: query
-    clientAuthenticationScheme: form
-  resource:
-    userInfoUri: https://graph.facebook.com/me?fields=id,name,picture
-
-vkontakte:
-  client:
-    clientId: 6805077
-    clientSecret: provide-it
-    userAuthorizationUri: https://oauth.vk.com/authorize
-    accessTokenUri: https://oauth.vk.com/access_token
-    tokenName: access_token
-    authenticationScheme: query
-    clientAuthenticationScheme: form
-  resource:
-    userInfoUri: https://api.vk.com/method/users.get?v=5.92
+spring.security:
+    oauth2:
+      client:
+        registration:
+          vkontakte:
+            client-id: 6805077
+            client-secret: your-app-client-secret
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/api/login/oauth2/code/{registrationId}"
+            client-authentication-method: post
+          facebook:
+            client-name: "facebook" # use in BlogOAuth2UserService
+            client-id: 1684113965162824
+            client-secret: your-app-client-secret
+            redirect-uri: "{baseUrl}/api/login/oauth2/code/{registrationId}"
+        provider:
+          vkontakte:
+            authorization-uri: https://oauth.vk.com/authorize
+            token-uri: https://oauth.vk.com/access_token
+            user-info-uri: https://api.vk.com/method/users.get?v=5.92
+            user-info-authentication-method: form
+            user-name-attribute: response
+          facebook:
+            user-info-uri: "https://graph.facebook.com/me?fields=id,name,picture"
 """;
 writeAndLog(BACKEND_MAIN_YML_FILE, BACKEND_MAIN_YML_CONTENT);
 
+def BACKEND_TEST_SECURITY_SNIPPET =
+"""
+spring.security:
+    oauth2:
+      client:
+        registration:
+          vkontakte:
+            client-id: 6805077
+            client-secret: your-app-client-secret
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/api/login/oauth2/code/{registrationId}"
+            client-authentication-method: post
+          facebook:
+            client-name: "facebook" # use in BlogOAuth2UserService
+            client-id: 1684113965162824
+            client-secret: your-app-client-secret
+            redirect-uri: "{baseUrl}/api/login/oauth2/code/{registrationId}"
+        provider:
+          vkontakte:
+            authorization-uri: http://127.0.0.1:10081/mock/vkontakte/authorize
+            token-uri: http://127.0.0.1:10081/mock/vkontakte/access_token
+            user-info-uri: http://127.0.0.1:10081/mock/vkontakte/method/users.get?v=5.92
+            user-info-authentication-method: form
+            user-name-attribute: response
+          facebook:
+            authorization-uri: http://127.0.0.1:10080/mock/facebook/dialog/oauth
+            token-uri: http://127.0.0.1:10080/mock/facebook/oauth/access_token
+            user-info-uri: http://127.0.0.1:10080/mock/facebook/me?fields=id,name,picture
+"""
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 def BACKEND_TEST_YML_CONTENT =
@@ -282,6 +312,7 @@ ${DATA_STORE_SNIPPET(true)}
 ${MANAGEMENT_SNIPPET(true)}
 custom.rendertron.enable: true
 custom.rendertron.enable.async.cache.refresh: false
+${BACKEND_TEST_SECURITY_SNIPPET}
 """;
 writeAndLog(BACKEND_TEST_YML_FILE, BACKEND_TEST_YML_CONTENT);
 
@@ -314,27 +345,6 @@ ${TEST_USERS_SNIPPET}
 ${DATA_STORE_SNIPPET(true)}
 ${MANAGEMENT_SNIPPET(true)}
 custom.rendertron.enable.async.cache.refresh: false
-facebook:
-  client:
-    clientId: 1684113965162824
-    clientSecret: provide-it
-    userAuthorizationUri: http://127.0.0.1:10080/mock/facebook/dialog/oauth
-    accessTokenUri: http://127.0.0.1:10080/mock/facebook/oauth/access_token
-    tokenName: oauth_token
-    authenticationScheme: query
-    clientAuthenticationScheme: form
-  resource:
-    userInfoUri: http://127.0.0.1:10080/mock/facebook/me?fields=id,name,picture
-vkontakte:
-  client:
-    clientId: 6805077
-    clientSecret: provide-it
-    userAuthorizationUri: http://127.0.0.1:10081/mock/vkontakte/authorize
-    accessTokenUri: http://127.0.0.1:10081/mock/vkontakte/access_token
-    tokenName: access_token
-    authenticationScheme: query
-    clientAuthenticationScheme: form
-  resource:
-    userInfoUri: http://127.0.0.1:10081/mock/vkontakte/method/users.get?v=5.92
+${BACKEND_TEST_SECURITY_SNIPPET}
 """;
 writeAndLog(INTEGRATION_TEST_YML_FILE, WEBDRIVER_TEST_YML_CONTENT);

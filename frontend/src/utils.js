@@ -134,9 +134,9 @@ export const fixScroll = () => {
 };
 
 export const submitOauthVkontakte = () => {
-    window.location.href = '/api/login/vkontakte';
+    window.location.href = '/api/login/oauth2/vkontakte';
 };
 
 export const submitOauthFacebook = () => {
-    window.location.href = '/api/login/facebook';
+    window.location.href = '/api/login/oauth2/facebook';
 };

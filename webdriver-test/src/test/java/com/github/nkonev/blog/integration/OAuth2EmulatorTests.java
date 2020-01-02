@@ -20,7 +20,7 @@ import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
-public abstract class SocialEmulatorTests extends AbstractItTestRunner {
+public abstract class OAuth2EmulatorTests extends AbstractItTestRunner {
     private static final int MOCK_SERVER_FACEBOOK_PORT = 10080;
     private static final int MOCK_SERVER_VKONTAKTE_PORT = 10081;
 
@@ -61,7 +61,7 @@ public abstract class SocialEmulatorTests extends AbstractItTestRunner {
             String state = httpRequest.getQueryStringParameters().getEntries().stream().filter(parameter -> "state".equals(parameter.getName().getValue())).findFirst().get().getValues().get(0).getValue();
             return response().withHeaders(
                     new Header(HttpHeaderNames.CONTENT_TYPE.toString(), "text/html; charset=\"utf-8\""),
-                    new Header(HttpHeaderNames.LOCATION.toString(), urlPrefix+"/api/login/facebook?code=fake_code&state="+state)
+                    new Header(HttpHeaderNames.LOCATION.toString(), urlPrefix+"/api/login/oauth2/code/facebook?code=fake_code&state="+state)
             ).withStatusCode(302);
         });
 
@@ -93,7 +93,7 @@ public abstract class SocialEmulatorTests extends AbstractItTestRunner {
 
         userAccountRepository.findByUsername(facebookLogin).ifPresent(userAccount -> {
             userAccount.setLocked(false);
-            userAccountRepository.save(userAccount);
+            userAccount = userAccountRepository.save(userAccount);
         });
 
         clearOauthBindingsInDb();
@@ -128,7 +128,7 @@ public abstract class SocialEmulatorTests extends AbstractItTestRunner {
             String state = httpRequest.getQueryStringParameters().getEntries().stream().filter(parameter -> "state".equals(parameter.getName().getValue())).findFirst().get().getValues().get(0).getValue();
             return response().withHeaders(
                     new Header(HttpHeaderNames.CONTENT_TYPE.toString(), "text/html; charset=\"utf-8\""),
-                    new Header(HttpHeaderNames.LOCATION.toString(), urlPrefix+"/api/login/vkontakte?code=fake_code&state="+state)
+                    new Header(HttpHeaderNames.LOCATION.toString(), urlPrefix+"/api/login/oauth2/code/vkontakte?code=fake_code&state="+state)
             ).withStatusCode(302);
         });
 

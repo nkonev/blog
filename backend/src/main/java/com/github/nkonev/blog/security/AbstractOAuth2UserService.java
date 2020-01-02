@@ -6,11 +6,15 @@ import com.github.nkonev.blog.entity.jdbc.UserAccount;
 import com.github.nkonev.blog.exception.OauthIdConflictException;
 import org.slf4j.Logger;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 
 import java.util.Map;
 import java.util.Optional;
 
-public abstract class AbstractPrincipalExtractor {
+public abstract class AbstractOAuth2UserService {
+
+    final DefaultOAuth2UserService delegate = new DefaultOAuth2UserService();
+
     private boolean isAlreadyAuthenticated(){
         return SecurityContextHolder.getContext().getAuthentication()!=null && SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof UserAccountDetailsDTO;
     }
@@ -29,16 +33,14 @@ public abstract class AbstractPrincipalExtractor {
 
     protected abstract void setOauthIdToEntity(Long id, String oauthId);
 
-    protected abstract UserAccount saveEntity(String oauthId, String login, Map<String, Object> oauthResourceServerResponse);
+    protected abstract UserAccount insertEntity(String oauthId, String login, Map<String, Object> oauthResourceServerResponse);
 
     protected abstract String getLoginPrefix();
 
     protected abstract Optional<UserAccount> findByUsername(String login);
 
-    /**
-     *
-     * @return notnull UserAccountDetailsDTO if was merged - so we should return it immediately from Extractor
-     */
+
+    // @return notnull UserAccountDetailsDTO if was merged - so we should return it immediately from Extractor
     protected UserAccountDetailsDTO mergeOauthIdToExistsUser(String oauthId){
         if (isAlreadyAuthenticated()) {
             // we already authenticated - so it' s binding
@@ -73,7 +75,7 @@ public abstract class AbstractPrincipalExtractor {
                 login = getLoginPrefix()+oauthId;
             }
 
-            userAccount = saveEntity(oauthId, login, oauthResourceServerResponse);
+            userAccount = insertEntity(oauthId, login, oauthResourceServerResponse);
         } else {
             userAccount = userAccountOpt.get();
         }

@@ -206,6 +206,7 @@ public class UserProfileController {
         UserAccount userAccount = userAccountRepository.findById(userId).orElseThrow();
         userAccount.getOauthIdentifiers().setFacebookId(null);
         userAccount = userAccountRepository.save(userAccount);
+        blogUserDetailsService.refreshUserDetails(userAccount);
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -215,6 +216,7 @@ public class UserProfileController {
         UserAccount userAccount = userAccountRepository.findById(userId).orElseThrow();
         userAccount.getOauthIdentifiers().setVkontakteId(null);
         userAccount = userAccountRepository.save(userAccount);
+        blogUserDetailsService.refreshUserDetails(userAccount);
     }
 
 }

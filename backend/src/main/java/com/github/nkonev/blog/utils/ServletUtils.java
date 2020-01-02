@@ -1,5 +1,9 @@
 package com.github.nkonev.blog.utils;
 
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
 import javax.servlet.http.HttpServletRequest;
 
 public class ServletUtils {
@@ -28,5 +32,14 @@ public class ServletUtils {
             return s.substring(0, s.length()-1);
         }
         return s;
+    }
+
+
+    public static HttpServletRequest getCurrentHttpRequest(){
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (requestAttributes instanceof ServletRequestAttributes) {
+            return ((ServletRequestAttributes)requestAttributes).getRequest();
+        }
+        return null;
     }
 }

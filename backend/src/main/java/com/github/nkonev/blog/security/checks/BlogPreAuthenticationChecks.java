@@ -11,7 +11,9 @@ import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.SpringSecurityMessageSource;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsChecker;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BlogPreAuthenticationChecks implements UserDetailsChecker, MessageSourceAware {
 
     protected MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();

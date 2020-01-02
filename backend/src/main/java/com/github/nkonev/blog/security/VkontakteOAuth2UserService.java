@@ -1,15 +1,21 @@
 package com.github.nkonev.blog.security;
 
+
 import com.github.nkonev.blog.converter.UserAccountConverter;
 import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
 import com.github.nkonev.blog.entity.jdbc.UserAccount;
 import com.github.nkonev.blog.repo.jdbc.UserAccountRepository;
+import com.github.nkonev.blog.security.checks.BlogPostAuthenticationChecks;
+import com.github.nkonev.blog.security.checks.BlogPreAuthenticationChecks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -21,31 +27,45 @@ import java.util.Optional;
 @Component
 @Transactional
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
-public class VkontaktePrincipalExtractor extends AbstractPrincipalExtractor implements PrincipalExtractor {
+public class VkontakteOAuth2UserService extends AbstractOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     @Autowired
     private UserAccountRepository userAccountRepository;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(VkontaktePrincipalExtractor.class);
+    @Autowired
+    private BlogPreAuthenticationChecks blogPreAuthenticationChecks;
+
+    @Autowired
+    private BlogPostAuthenticationChecks blogPostAuthenticationChecks;
+
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(VkontakteOAuth2UserService.class);
 
     public static final String LOGIN_PREFIX = "vkontakte_";
 
     @Override
-    public Object extractPrincipal(Map<String, Object> map) {
+    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        OAuth2User oAuth2User = delegate.loadUser(userRequest);
+
+        var map = oAuth2User.getAttributes();
         List l = (List) map.get("response");
         Map<String, Object> m = (Map<String, Object>) l.get(0);
 
         String vkontakteId = getId(m);
         Assert.notNull(vkontakteId, "vkontakteId cannot be null");
 
-        UserAccountDetailsDTO mergedPrincipal = mergeOauthIdToExistsUser(vkontakteId);
-        if (mergedPrincipal != null) {
-            return mergedPrincipal;
+        UserAccountDetailsDTO resultPrincipal = mergeOauthIdToExistsUser(vkontakteId);
+        if (resultPrincipal != null) {
+            // ok
+        } else {
+            String login = getLogin(m);
+            resultPrincipal = createOrGetExistsUser(vkontakteId, login, map);
         }
 
-        String login = getLogin(m);
+        blogPreAuthenticationChecks.check(resultPrincipal);
+        blogPostAuthenticationChecks.check(resultPrincipal);
+        return resultPrincipal;
 
-        return createOrGetExistsUser(vkontakteId, login, map);
     }
 
     private String getId(Map<String, Object> m) {
@@ -94,12 +114,14 @@ public class VkontaktePrincipalExtractor extends AbstractPrincipalExtractor impl
     protected void setOauthIdToEntity(Long id, String oauthId) {
         UserAccount userAccount = userAccountRepository.findById(id).orElseThrow();
         userAccount.getOauthIdentifiers().setVkontakteId(oauthId);
+        userAccount = userAccountRepository.save(userAccount);
     }
 
     @Override
-    protected UserAccount saveEntity(String oauthId, String login, Map<String, Object> oauthResourceServerResponse) {
+    protected UserAccount insertEntity(String oauthId, String login, Map<String, Object> oauthResourceServerResponse) {
         UserAccount userAccount = UserAccountConverter.buildUserAccountEntityForVkontakteInsert(oauthId, login);
         userAccount = userAccountRepository.save(userAccount);
+        LOGGER.info("Created vkontakte user id={} login='{}'", oauthId, login);
 
         return userAccount;
 
