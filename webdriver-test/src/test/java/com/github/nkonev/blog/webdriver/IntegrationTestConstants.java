@@ -13,7 +13,7 @@ public class IntegrationTestConstants {
     public static final String PASSWORD = CommonTestConstants.PASSWORD;
     public static final String USER_ID = CommonTestConstants.USER_ID;
 
-    public static final long POST_WITH_COMMENTS = 102;
+    public static final long POST_WITH_COMMENTS = 103;
 
     public static class Pages {
         public static final String INDEX_HTML = "/";

@@ -2,6 +2,13 @@
   "properties": {
     "text": {
       "type": "text",
+      "fields": {
+        "std": {
+          "type":     "text",
+          "analyzer": "rebuilt_standard",
+          "term_vector" : "with_positions_offsets_payloads"
+        }
+      },
       "index": true,
       "search_analyzer": "my_analyzer",
       "analyzer": "my_analyzer",
@@ -9,6 +16,13 @@
     },
     "title": {
       "type": "text",
+      "fields": {
+        "std": {
+          "type":     "text",
+          "analyzer": "rebuilt_standard",
+          "term_vector" : "with_positions_offsets_payloads"
+        }
+      },
       "index": true,
       "search_analyzer": "my_analyzer",
       "analyzer": "my_analyzer",

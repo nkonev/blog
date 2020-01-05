@@ -143,7 +143,7 @@ java -jar frontend/target/frontend-1.0.3-SNAPSHOT-exec.jar
 java -jar frontend/target/frontend-1.0.3-SNAPSHOT-exec.jar --spring.profiles.active=demo
 ```
 
-Test user credentials can be found in `backend/src/main/resources/db/demo/V32767__demo.sql`:4
+Test user credentials can be found in `backend/src/main/resources/db/demo/V32000__demo.sql`:4
 
 # Development
 ## Changing version

@@ -148,8 +148,8 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.size()").value(PageUtils.DEFAULT_SIZE))
                 .andExpect(jsonPath("$.data[0].commentCount").value(1))
-                .andExpect(jsonPath("$.data[1].commentCount").value(501))
-                .andExpect(jsonPath("$.data[2].commentCount").value(0))
+                .andExpect(jsonPath("$.data[1].commentCount").value(0))
+                .andExpect(jsonPath("$.data[2].commentCount").value(501))
                 .andReturn();
         String getStr = getPostsRequest.getResponse().getContentAsString();
         LOGGER.info(getStr);
@@ -175,7 +175,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.size()").value(PageUtils.DEFAULT_SIZE))
                 .andExpect(jsonPath("$.data[0].title").value("generated_post_100"))
-                .andExpect(jsonPath("$.data[0].text").value("Lorem Ipsum - это текст-\"<b>рыба</b>\", часто используемый в печати и вэб-дизайне.... Lorem Ipsum является стандартной \"<b>рыбой</b>\" для текстов на латинице с начала XVI века."))
+                .andExpect(jsonPath("$.data[0].text").value("Lorem Ipsum - это текст-\"<b>рыба</b>\", часто используемый в печати и вэб-дизайне. Lorem Ipsum является стандартной \"<b>рыбой</b>\" для текстов на латинице с начала XVI"))
                 .andReturn();
     }
 
@@ -189,7 +189,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.size()").value(PageUtils.DEFAULT_SIZE))
                 .andExpect(jsonPath("$.data[0].title").value("generated_post_100"))
-                .andExpect(jsonPath("$.data[0].text").value("Lorem Ipsum - это текст-\"рыба\", часто <b>используемый</b> в печати и вэб-дизайне.... В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, <b>используя</b> Lorem Ipsum для распечатки образцов.... листов Letraset с образцами Lorem Ipsum в 60-х годах и, в более недавнее время, программы электронной вёрстки типа Aldus PageMaker, в шаблонах которых <b>используется</b>"))
+                .andExpect(jsonPath("$.data[0].text").value("Lorem Ipsum - это текст-\"рыба\", часто <b>используемый</b> в печати и вэб-дизайне. Lorem Ipsum является стандартной \"рыбой\" для текстов на латинице с начала XVI... безымянный печатник создал большую коллекцию размеров и форм шрифтов, <b>используя</b> Lorem Ipsum для распечатки образцов. Lorem Ipsum не только успешно пережил... программы электронной вёрстки типа Aldus PageMaker, в шаблонах которых <b>используется</b> Lorem Ipsum."))
                 .andReturn();
     }
 
@@ -202,11 +202,10 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.size()").value(PageUtils.DEFAULT_SIZE))
                 .andExpect(jsonPath("$.data[0].title").value("generated_post_100"))
-                .andExpect(jsonPath("$.data[0].text").value("Lorem Ipsum <b>является</b> стандартной \"рыбой\" для текстов на латинице с <b>начала</b> XVI века."))
+                .andExpect(jsonPath("$.data[0].text").value("используемый в печати и вэб-дизайне. Lorem Ipsum <b>является</b> стандартной \"рыбой\" для текстов на латинице с <b>начала</b> XVI века. В то время некий безымянный печатник"))
                 .andReturn();
     }
 
-    @Disabled
     @Test
     public void testContainsSearch() throws Exception {
         MvcResult getPostsRequest = mockMvc.perform(
@@ -216,7 +215,20 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.size()").value(PageUtils.DEFAULT_SIZE))
                 .andExpect(jsonPath("$.data[0].title").value("generated_post_100"))
-                .andExpect(jsonPath("$.data[0].text").value("Lorem <b>Ipsum</b> - это текст-\"рыба\", часто используемый в печати и вэб-дизайне.... Lorem <b>Ipsum</b> является стандартной \"рыбой\" для текстов на латинице с начала XVI века.... В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem <b>Ipsum</b> для распечатки образцов.... Lorem <b>Ipsum</b> не только успешно пережил без заметных изменений пять веков, но и перешагнул в электронный дизайн.... вёрстки типа Aldus PageMaker, в шаблонах которых используется Lorem <b>Ipsum</b>."))
+                .andExpect(jsonPath("$.data[0].text").value("Lorem <b>Ipsum</b> - это текст-\"рыба\", часто используемый в печати и вэб-дизайне. Lorem <b>Ipsum</b> является стандартной \"рыбой\" для текстов на латинице с начала XVI... большую коллекцию размеров и форм шрифтов, используя Lorem <b>Ipsum</b> для распечатки образцов. Lorem <b>Ipsum</b> не только успешно пережил без заметных изменений пять... Lorem <b>Ipsum</b> в 60-х годах и, в более недавнее время, программы электронной вёрстки типа Aldus PageMaker, в шаблонах которых используется Lorem <b>Ipsum</b>."))
+                .andReturn();
+    }
+
+    @Test
+    public void testContainsSearch2() throws Exception {
+        MvcResult getPostsRequest = mockMvc.perform(
+                get(Constants.Urls.API+ Constants.Urls.POST+"?searchString=CommitFailedException")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.size()").value(1))
+                .andExpect(jsonPath("$.data[0].title").value("Hi from kafka"))
+                .andExpect(jsonPath("$.data[0].text").value("Consumer has failed with exception: <b>org.apache.kafka.clients.consumer.CommitFailedException</b>: Commit cannot be completed due to group rebalance class com... messagehub.consumer.Consumer is shutting down. <b>org.apache.kafka.clients.consumer.CommitFailedException</b>: Commit cannot be completed due to group rebalance"))
                 .andReturn();
     }
 
@@ -242,10 +254,15 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 get(Constants.Urls.API+ Constants.Urls.POST+"?searchString=www.google.com:80")
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
         )
+                .andDo(
+                        mvcResult -> {
+                            LOGGER.info(mvcResult.getResponse().getContentAsString());
+                        }
+                )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.size()").value(1))
                 .andExpect(jsonPath("$.data[0].title").value("edited for search host port"))
-                .andExpect(jsonPath("$.data[0].text").value("A new host for test <b>www.google.com</b>:<b>80</b> with port too"))
+                .andExpect(jsonPath("$.data[0].text").value("A new host for test <b>www.google.com:80</b> with port too"))
                 .andReturn();
     }
 

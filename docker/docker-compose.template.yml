@@ -154,7 +154,7 @@ services:
     networks:
       - backend
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.4.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
     hostname: elasticsearch
     environment:
     - discovery.type=single-node

@@ -19,6 +19,7 @@ import com.github.nkonev.blog.utils.PageUtils;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.text.Text;
 import org.elasticsearch.index.query.AbstractQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
@@ -374,10 +375,11 @@ public class PostService {
                     .build();
             // https://stackoverflow.com/questions/37049764/how-to-provide-highlighting-with-spring-data-elasticsearch/37163711#37163711
             postsResult = getPostDTOS(searchQuery);
-
-
         } else {
             PageRequest pageRequest = PageRequest.of(page, size);
+
+            // need for correct highlight source field e. g. forceSource(true)
+            final String fastVectorHighlighter = "fvh";
 
             SearchQuery searchQuery = new NativeSearchQueryBuilder()
                     .withSort(new FieldSortBuilder(FIELD_ID).order(SortOrder.DESC))
@@ -386,14 +388,16 @@ public class PostService {
                             .must(
                                     boolQuery()
                                             .should(matchPhrasePrefixQuery(FIELD_TEXT, searchString).slop(searchFieldTextSlop))
-                                            .should(matchPhrasePrefixQuery(FIELD_TITLE, searchString).slop(searchFieldTextSlop))
+                                            .should(matchPhrasePrefixQuery(FIELD_TITLE, searchString).slop(searchFieldTitleSlop))
+                                            // https://www.elastic.co/guide/en/elasticsearch/reference/current/multi-fields.html
+                                            .should(QueryBuilders.queryStringQuery("*"+org.apache.lucene.queryparser.classic.QueryParser.escape(searchString)+"*").field(FIELD_TEXT_STD).field(FIELD_TITLE_STD).analyzeWildcard(true))
                             )
 
                             .must(noDraftFilterElasticsearch(currentUser))
                     )
                     .withHighlightFields(
-                            new HighlightBuilder.Field(FIELD_TEXT).preTags("<b>").postTags("</b>").numOfFragments(highlightFieldTextNumOfFragments).fragmentSize(highlightFieldTextFragmentSize),
-                            new HighlightBuilder.Field(FIELD_TITLE).preTags("<u>").postTags("</u>").numOfFragments(highlightFieldTitleNumOfFragments).fragmentSize(highlightFieldTitleFragmentSize)
+                            new HighlightBuilder.Field(FIELD_TEXT).matchedFields(FIELD_TEXT, FIELD_TEXT_STD).forceSource(true).highlighterType(fastVectorHighlighter).preTags("<b>").postTags("</b>").numOfFragments(highlightFieldTextNumOfFragments).fragmentSize(highlightFieldTextFragmentSize),
+                            new HighlightBuilder.Field(FIELD_TITLE).matchedFields(FIELD_TITLE, FIELD_TITLE_STD).forceSource(true).highlighterType(fastVectorHighlighter).preTags("<u>").postTags("</u>").numOfFragments(highlightFieldTitleNumOfFragments).fragmentSize(highlightFieldTitleFragmentSize)
                     )
                     .withPageable(pageRequest)
                     .build();

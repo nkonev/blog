@@ -29,6 +29,12 @@
           "en_stop",
           "en_stemmer"
         ]
+      },
+      "rebuilt_standard": {
+        "tokenizer": "standard",
+        "filter": [
+          "lowercase"
+        ]
       }
     }
   }

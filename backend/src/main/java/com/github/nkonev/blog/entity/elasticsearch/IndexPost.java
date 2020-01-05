@@ -13,6 +13,8 @@ public class IndexPost {
     public static final String FIELD_ID = "id";
     public static final String FIELD_TEXT = "text";
     public static final String FIELD_TITLE = "title";
+    public static final String FIELD_TEXT_STD = "text.std";
+    public static final String FIELD_TITLE_STD = "title.std";
     public static final String TYPE = "_doc";
     public static final String FIELD_DRAFT = "draft";
     public static final String FIELD_OWNER_ID = "ownerId";

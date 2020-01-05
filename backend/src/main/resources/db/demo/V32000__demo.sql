@@ -43,6 +43,30 @@ INSERT INTO posts.comment (text, post_id, owner_id)
     END
 	FROM generate_series(0, 500) AS i;
 
+INSERT INTO posts.post (title, text, owner_id) VALUES
+('Hi from kafka', $$
+Consumer has failed with exception: org.apache.kafka.clients.consumer.CommitFailedException: Commit cannot be completed due to group rebalance
+class com.messagehub.consumer.Consumer is shutting down.
+org.apache.kafka.clients.consumer.CommitFailedException: Commit cannot be completed due to group rebalance
+at org.apache.kafka.clients.consumer.internals.ConsumerCoordinator$OffsetCommitResponseHandler.handle(ConsumerCoordinator.java:546)
+at org.apache.kafka.clients.consumer.internals.ConsumerCoordinator$OffsetCommitResponseHandler.handle(ConsumerCoordinator.java:487)
+at org.apache.kafka.clients.consumer.internals.AbstractCoordinator$CoordinatorResponseHandler.onSuccess(AbstractCoordinator.java:681)
+at org.apache.kafka.clients.consumer.internals.AbstractCoordinator$CoordinatorResponseHandler.onSuccess(AbstractCoordinator.java:654)
+at org.apache.kafka.clients.consumer.internals.RequestFuture$1.onSuccess(RequestFuture.java:167)
+at org.apache.kafka.clients.consumer.internals.RequestFuture.fireSuccess(RequestFuture.java:133)
+at org.apache.kafka.clients.consumer.internals.RequestFuture.complete(RequestFuture.java:107)
+at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient$RequestFutureCompletionHandler.onComplete(ConsumerNetworkClient.java:350)
+at org.apache.kafka.clients.NetworkClient.poll(NetworkClient.java:288)
+at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.clientPoll(ConsumerNetworkClient.java:303)
+at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.poll(ConsumerNetworkClient.java:197)
+at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.poll(ConsumerNetworkClient.java:187)
+at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.poll(ConsumerNetworkClient.java:157)
+at org.apache.kafka.clients.consumer.internals.ConsumerCoordinator.commitOffsetsSync(ConsumerCoordinator.java:352)
+at org.apache.kafka.clients.consumer.KafkaConsumer.commitSync(KafkaConsumer.java:936)
+at org.apache.kafka.clients.consumer.KafkaConsumer.commitSync(KafkaConsumer.java:905)
+$$, (SELECT id FROM auth.users WHERE username = 'John Smith'));
+
+
 -- insert additional post with comment and images for delete
 INSERT INTO posts.post (title, text, title_img, owner_id) VALUES
 	('for delete with comments', 'text. This post will be deleted.', 'https://postgrespro.ru/img/logo_mono.png', (SELECT id FROM auth.users WHERE username = 'nikita'));

@@ -20,6 +20,8 @@ import org.springframework.util.StringUtils;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
+
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 import static com.codeborne.selenide.Selenide.open;
@@ -259,10 +261,15 @@ public class PostIT extends SocialEmulatorTests {
         FailoverUtils.retry(3, () -> {
             postViewPage.delete();
             postViewPage.confirmDelete();
+            try {
+                TimeUnit.SECONDS.sleep(2);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             String urlAfter = driver.getCurrentUrl();
             Assertions.assertNotEquals(urlBefore, urlAfter);
             return null;
-        });
+        }, 6);
 
         FailoverUtils.assertPoll(()-> !postRepository.findById(id).isPresent(), 15);
         FailoverUtils.assertPoll(()-> !deletablePageUrl.equals(driver.getCurrentUrl()), 10);
