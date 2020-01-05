@@ -67,7 +67,7 @@ services:
       options:
         max-size: "50m"
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.4.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
     hostname: elasticsearch
     container_name: elasticsearch-blog-dev
     restart: unless-stopped
