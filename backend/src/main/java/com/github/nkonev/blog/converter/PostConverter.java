@@ -112,7 +112,7 @@ public class PostConverter {
                     String iframeSrcUrl = element.attr("src");
                     if (iframeSrcUrl.contains("youtube.com")) {
                         String youtubeVideoId = getYouTubeVideoId(iframeSrcUrl);
-                        String youtubeThumbnailUrl = "https://img.youtube.com/vi/"+youtubeVideoId+"/hqdefault.jpg";
+                        String youtubeThumbnailUrl = "https://i.ytimg.com/vi/"+youtubeVideoId+"/maxresdefault.jpg";
                         return imageDownloader.downloadImageAndSave(youtubeThumbnailUrl, imagePostTitleUploadController);
                     }
                 }
