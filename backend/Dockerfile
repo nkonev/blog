@@ -1,6 +1,6 @@
 # docker build -t blog:latest .
 # docker run blog:latest
-FROM openjdk:13-jdk-oraclelinux7
+FROM adoptopenjdk:13.0.1_9-jre-hotspot-bionic
 ARG APP_HOME=/opt/blog
 RUN mkdir -p ${APP_HOME}
 WORKDIR ${APP_HOME}
