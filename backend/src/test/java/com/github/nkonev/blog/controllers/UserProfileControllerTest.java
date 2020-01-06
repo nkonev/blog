@@ -8,12 +8,12 @@ import com.github.nkonev.blog.TestConstants;
 import com.github.nkonev.blog.converter.UserAccountConverter;
 import com.github.nkonev.blog.dto.EditUserDTO;
 import com.github.nkonev.blog.dto.LockDTO;
-import com.github.nkonev.blog.entity.jpa.CreationType;
-import com.github.nkonev.blog.entity.jpa.Post;
-import com.github.nkonev.blog.entity.jpa.UserAccount;
+import com.github.nkonev.blog.entity.jdbc.CreationType;
+import com.github.nkonev.blog.entity.jdbc.Post;
+import com.github.nkonev.blog.entity.jdbc.UserAccount;
 import com.github.nkonev.blog.dto.UserRole;
-import com.github.nkonev.blog.repo.jpa.PostRepository;
-import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
+import com.github.nkonev.blog.repo.jdbc.PostRepository;
+import com.github.nkonev.blog.repo.jdbc.UserAccountRepository;
 import com.github.nkonev.blog.security.BlogUserDetailsService;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Assertions;
@@ -33,6 +33,7 @@ import java.net.URI;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.github.nkonev.blog.utils.TimeUtil.getNowUTC;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -459,7 +460,8 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
                 UserRole.ROLE_USER, login+"@example.com", null);
         userAccount = userAccountRepository.save(userAccount);
         Post post = new Post(null, "title_"+login, "text", "");
-        post.setOwner(userAccount);
+        post.setOwnerId(userAccount.getId());
+        post.setCreateDateTime(getNowUTC());
         post = postRepository.save(post);
         return userAccount.getId();
     }

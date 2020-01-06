@@ -1,28 +1,16 @@
-package com.github.nkonev.blog.entity.jpa;
+package com.github.nkonev.blog.entity.jdbc;
 
 import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.dto.UserRole;
-import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
-import org.hibernate.annotations.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Embedded;
+import org.springframework.data.relational.core.mapping.Table;
 
-import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-@TypeDefs({
-        @TypeDef(
-                name = "pgsql_enum",
-                typeClass = PostgreSQLEnumType.class
-        )
-})
-@Entity
-@Table(name = "users", schema = Constants.Schemas.AUTH)
-@DynamicInsert
-@DynamicUpdate
+@Table(Constants.Schemas.AUTH+".users")
 public class UserAccount {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
     private String username;
@@ -34,26 +22,14 @@ public class UserAccount {
     private String email;
 
     @NotNull
-    @Enumerated(EnumType.STRING)
-    @Type(type = "pgsql_enum")
-    @Column(
-            name = "creation_type",
-            columnDefinition = "user_creation_type"
-    )
     private CreationType creationType;
 
     @NotNull
-    @Enumerated(EnumType.STRING)
-    @Type(type = "pgsql_enum")
-    @Column(
-            name = "role",
-            columnDefinition = "user_role"
-    )
     private UserRole role; // synonym to "authority"
 
     private LocalDateTime lastLoginDateTime;
 
-    @Embedded
+    @Embedded(onEmpty = Embedded.OnEmpty.USE_EMPTY)
     private OauthIdentifiers oauthIdentifiers = new OauthIdentifiers();
 
     public UserAccount() { }
@@ -86,7 +62,6 @@ public class UserAccount {
         this.oauthIdentifiers = oauthIdentifiers;
     }
 
-    @Embeddable
     public static class OauthIdentifiers {
         private String facebookId;
         private String vkontakteId;

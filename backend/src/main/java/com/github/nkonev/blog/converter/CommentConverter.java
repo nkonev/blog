@@ -4,7 +4,7 @@ import com.github.nkonev.blog.dto.CommentDTO;
 import com.github.nkonev.blog.dto.CommentDTOExtended;
 import com.github.nkonev.blog.dto.CommentDTOWithAuthorization;
 import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
-import com.github.nkonev.blog.entity.jpa.Comment;
+import com.github.nkonev.blog.entity.jdbc.Comment;
 import com.github.nkonev.blog.exception.BadRequestException;
 import com.github.nkonev.blog.security.BlogSecurityService;
 import com.github.nkonev.blog.security.permissions.CommentPermissions;
@@ -51,7 +51,7 @@ public class CommentConverter {
         return new CommentDTOWithAuthorization(
                 comment.getId(),
                 comment.getText(),
-                userAccountConverter.convertToUserAccountDTO(comment.getOwner()),
+                userAccountConverter.convertToUserAccountDTO(comment.getOwnerId()),
                 blogSecurityService.hasCommentPermission(comment, userAccount, CommentPermissions.EDIT),
                 blogSecurityService.hasCommentPermission(comment, userAccount, CommentPermissions.DELETE),
                 comment.getCreateDateTime(),
@@ -75,7 +75,7 @@ public class CommentConverter {
         return new CommentDTOExtended(
                 comment.getId(),
                 comment.getText(),
-                userAccountConverter.convertToUserAccountDTO(comment.getOwner()),
+                userAccountConverter.convertToUserAccountDTO(comment.getOwnerId()),
                 blogSecurityService.hasCommentPermission(comment, userAccount, CommentPermissions.EDIT),
                 blogSecurityService.hasCommentPermission(comment, userAccount, CommentPermissions.DELETE),
                 countInPost,

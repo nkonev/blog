@@ -1,22 +1,16 @@
-package com.github.nkonev.blog.entity.jpa;
+package com.github.nkonev.blog.entity.jdbc;
 
 import com.github.nkonev.blog.Constants;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
-import javax.persistence.*;
+import org.springframework.data.annotation.*;
+import org.springframework.data.relational.core.mapping.Table;
+
 import java.time.LocalDateTime;
 
 /**
  * This entity "Post" don't have comments because there isn't always need to get Post with Collection<Comment>
  */
-@Entity
-@Table(name = "post", schema = Constants.Schemas.POSTS)
-@DynamicInsert
-@DynamicUpdate
+@Table(Constants.Schemas.POSTS+ ".post")
 public class Post {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
 
@@ -24,11 +18,8 @@ public class Post {
     private String text;
     private String titleImg;
 
-    @ManyToOne
-    @JoinColumn(name="owner_id")
-    private UserAccount owner;
+    private Long ownerId;
 
-    @Generated(GenerationTime.INSERT)
     private LocalDateTime createDateTime;
 
     private LocalDateTime editDateTime;
@@ -42,11 +33,6 @@ public class Post {
         this.title = title;
         this.text = text;
         this.titleImg = titleImg;
-    }
-
-    public Post(Long id, String title, String text, String titleImg, UserAccount owner) {
-        this(id, title, text, titleImg);
-        this.owner = owner;
     }
 
     public Long getId() {
@@ -81,14 +67,6 @@ public class Post {
         this.titleImg = titleImg;
     }
 
-    public UserAccount getOwner() {
-        return owner;
-    }
-
-    public void setOwner(UserAccount owner) {
-        this.owner = owner;
-    }
-
     public LocalDateTime getCreateDateTime() {
         return createDateTime;
     }
@@ -111,5 +89,13 @@ public class Post {
 
     public void setDraft(boolean draft) {
         this.draft = draft;
+    }
+
+    public Long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
 }

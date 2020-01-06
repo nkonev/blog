@@ -3,11 +3,11 @@ package com.github.nkonev.blog.controllers;
 import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.converter.CommentConverter;
 import com.github.nkonev.blog.dto.*;
-import com.github.nkonev.blog.entity.jpa.Comment;
-import com.github.nkonev.blog.entity.jpa.UserAccount;
+import com.github.nkonev.blog.entity.jdbc.Comment;
+import com.github.nkonev.blog.entity.jdbc.UserAccount;
 import com.github.nkonev.blog.exception.BadRequestException;
-import com.github.nkonev.blog.repo.jpa.CommentRepository;
-import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
+import com.github.nkonev.blog.repo.jdbc.CommentRepository;
+import com.github.nkonev.blog.repo.jdbc.UserAccountRepository;
 import com.github.nkonev.blog.utils.PageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -17,8 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,7 +53,7 @@ public class CommentController {
         PageRequest springDataPage = PageRequest.of(PageUtils.fixPage(page), PageUtils.fixSize(size));
 
         long count = commentRepository.countByPostId(postId);
-        List<Comment> comments = commentRepository.findCommentByPostIdOrderByIdAsc(springDataPage, postId);
+        List<Comment> comments = commentRepository.findCommentByPostIdOrderByIdAsc(springDataPage.getPageSize(), springDataPage.getOffset(), postId);
 
         Collection<CommentDTOWithAuthorization> commentsCollection =  comments
                 .stream()
@@ -79,9 +77,10 @@ public class CommentController {
 
         long count = commentRepository.countByPostId(postId);
         Comment comment = commentConverter.convertFromDto(commentDTO, postId, null);
+        comment.setCreateDateTime(getNowUTC());
 
         UserAccount ua = userAccountRepository.findById(userAccount.getId()).orElseThrow(()->new IllegalArgumentException("User account not found")); // Hibernate caches it
-        comment.setOwner(ua);
+        comment.setOwnerId(ua.getId());
         Comment saved = commentRepository.save(comment);
 
         return commentConverter.convertToDtoExtended(saved, userAccount, count);

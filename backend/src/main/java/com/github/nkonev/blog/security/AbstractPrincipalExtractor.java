@@ -2,7 +2,7 @@ package com.github.nkonev.blog.security;
 
 import com.github.nkonev.blog.converter.UserAccountConverter;
 import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
-import com.github.nkonev.blog.entity.jpa.UserAccount;
+import com.github.nkonev.blog.entity.jdbc.UserAccount;
 import com.github.nkonev.blog.exception.OauthIdConflictException;
 import org.slf4j.Logger;
 import org.springframework.security.core.context.SecurityContextHolder;

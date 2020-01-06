@@ -7,13 +7,11 @@ import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.TestConstants;
 import com.github.nkonev.blog.config.CustomConfig;
 import com.github.nkonev.blog.dto.*;
-import com.github.nkonev.blog.entity.jpa.Post;
-import com.github.nkonev.blog.repo.jpa.PostRepository;
-import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
+import com.github.nkonev.blog.repo.jdbc.PostRepository;
+import com.github.nkonev.blog.repo.jdbc.UserAccountRepository;
 import com.github.nkonev.blog.services.PostService;
 import com.github.nkonev.blog.services.SeoCacheService;
 import com.github.nkonev.blog.utils.PageUtils;
-import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 import org.hamcrest.core.StringStartsWith;
 import org.junit.jupiter.api.*;
@@ -31,8 +29,7 @@ import org.springframework.test.web.client.ExpectedCount;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -41,7 +38,6 @@ import java.util.function.Predicate;
 import static com.github.nkonev.blog.utils.SeoCacheKeyUtils.RENDERTRON_HTML;
 import static com.github.nkonev.blog.utils.SeoCacheKeyUtils.getRedisKeyForIndex;
 import static com.github.nkonev.blog.utils.SeoCacheKeyUtils.getRedisKeyHtmlForPost;
-import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
@@ -248,7 +244,6 @@ public class PostControllerTest extends AbstractUtTestRunner {
 
         UserAccountDetailsDTO userAccountDetailsDTO = (UserAccountDetailsDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         postController.updatePost(userAccountDetailsDTO, new PostDTO(50L, "edited for search host port", "A new host for test www.google.com:80 with port too", "", null, null, null, false));
-        postRepository.flush();
 
         MvcResult getPostsRequest = mockMvc.perform(
                 get(Constants.Urls.API+ Constants.Urls.POST+"?searchString=www.google.com:80")

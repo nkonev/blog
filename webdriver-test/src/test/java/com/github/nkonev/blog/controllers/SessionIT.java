@@ -5,7 +5,7 @@ import com.github.nkonev.blog.CommonTestConstants;
 import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.dto.LockDTO;
 import com.github.nkonev.blog.dto.SuccessfulLoginDTO;
-import com.github.nkonev.blog.entity.jpa.UserAccount;
+import com.github.nkonev.blog.entity.jdbc.UserAccount;
 import com.github.nkonev.blog.integration.SocialEmulatorTests;
 import com.github.nkonev.blog.pages.object.IndexPage;
 import com.github.nkonev.blog.pages.object.LoginModal;

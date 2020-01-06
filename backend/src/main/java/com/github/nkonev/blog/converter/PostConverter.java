@@ -5,7 +5,7 @@ import com.github.nkonev.blog.dto.PostDTO;
 import com.github.nkonev.blog.dto.PostDTOWithAuthorization;
 import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
 import com.github.nkonev.blog.entity.elasticsearch.IndexPost;
-import com.github.nkonev.blog.entity.jpa.Post;
+import com.github.nkonev.blog.entity.jdbc.Post;
 import com.github.nkonev.blog.exception.BadRequestException;
 import com.github.nkonev.blog.security.BlogSecurityService;
 import com.github.nkonev.blog.security.permissions.PostPermissions;
@@ -57,7 +57,7 @@ public class PostConverter {
                 saved.getTitle(),
                 (saved.getText()),
                 saved.getTitleImg(),
-                userAccountConverter.convertToOwnerDTO(saved.getOwner()),
+                userAccountConverter.convertToOwnerDTO(saved.getOwnerId()),
                 blogSecurityService.hasPostPermission(saved, userAccount, PostPermissions.EDIT),
                 blogSecurityService.hasPostPermission(saved, userAccount, PostPermissions.DELETE),
                 saved.getCreateDateTime(),
@@ -135,9 +135,9 @@ public class PostConverter {
         return pathSegments.get(pathSegments.size() - 1);
     }
 
-    public IndexPost toElasticsearchPost(com.github.nkonev.blog.entity.jpa.Post jpaPost) {
+    public IndexPost toElasticsearchPost(com.github.nkonev.blog.entity.jdbc.Post jpaPost) {
         String sanitizedHtml = xssSanitizerService.sanitize(jpaPost.getText());
-        return new IndexPost(jpaPost.getId(), jpaPost.getTitle(), cleanHtmlTags(sanitizedHtml), jpaPost.isDraft(), jpaPost.getOwner().getId());
+        return new IndexPost(jpaPost.getId(), jpaPost.getTitle(), cleanHtmlTags(sanitizedHtml), jpaPost.isDraft(), jpaPost.getOwnerId());
     }
 
     public static void cleanTags(PostDTO postDTO) {
@@ -166,7 +166,7 @@ public class PostConverter {
                 post.getTitleImg(),
                 post.getCreateDateTime(),
                 post.getEditDateTime(),
-                userAccountConverter.convertToOwnerDTO(post.getOwner()),
+                userAccountConverter.convertToOwnerDTO(post.getOwnerId()),
                 post.isDraft()
         );
     }

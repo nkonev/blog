@@ -2,10 +2,11 @@ package com.github.nkonev.blog.converter;
 
 import com.github.nkonev.blog.ApiConstants;
 import com.github.nkonev.blog.dto.*;
-import com.github.nkonev.blog.entity.jpa.CreationType;
-import com.github.nkonev.blog.entity.jpa.UserAccount;
+import com.github.nkonev.blog.entity.jdbc.CreationType;
+import com.github.nkonev.blog.entity.jdbc.UserAccount;
 import com.github.nkonev.blog.dto.UserRole;
 import com.github.nkonev.blog.exception.BadRequestException;
+import com.github.nkonev.blog.repo.jdbc.UserAccountRepository;
 import com.github.nkonev.blog.security.BlogSecurityService;
 import com.github.nkonev.blog.security.FacebookPrincipalExtractor;
 import com.github.nkonev.blog.security.VkontaktePrincipalExtractor;
@@ -28,6 +29,9 @@ public class UserAccountConverter {
 
     @Autowired
     private BlogSecurityService blogSecurityService;
+
+    @Autowired
+    private UserAccountRepository userAccountRepository;
 
     private static OauthIdentifiersDTO convertOauth(UserAccount.OauthIdentifiers oauthIdentifiers){
         if (oauthIdentifiers==null) return null;
@@ -98,13 +102,26 @@ public class UserAccountConverter {
         );
     }
 
-    public OwnerDTO convertToOwnerDTO(UserAccount userAccount) {
-        if (userAccount == null) { return null; }
-        return new OwnerDTO(
+    // TODO consider replace to convertToOwnerDTO with change contract
+    public UserAccountDTO convertToUserAccountDTO(long ownerId) {
+        Optional<UserAccount> byId = userAccountRepository.findById(ownerId);
+        return byId.map(userAccount -> new UserAccountDTO(
+                userAccount.getId(),
+                userAccount.getUsername(),
+                userAccount.getAvatar(),
+                userAccount.getLastLoginDateTime(),
+                convertOauth(userAccount.getOauthIdentifiers())
+        )).orElse(null);
+    }
+
+    public OwnerDTO convertToOwnerDTO(Long ownerId) {
+        if (ownerId == null) { return null; }
+        Optional<UserAccount> byId = userAccountRepository.findById(ownerId);
+        return byId.map(userAccount -> new OwnerDTO(
                 userAccount.getId(),
                 userAccount.getUsername(),
                 userAccount.getAvatar()
-        );
+        )).orElse(null);
     }
 
     public UserAccountDTOExtended convertToUserAccountDTOExtended(UserAccountDetailsDTO currentUser, UserAccount userAccount) {

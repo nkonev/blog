@@ -3,7 +3,7 @@ package com.github.nkonev.blog.services;
 import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.config.CustomConfig;
 import com.github.nkonev.blog.config.RendertronConfig;
-import com.github.nkonev.blog.repo.jpa.PostRepository;
+import com.github.nkonev.blog.repo.jdbc.PostRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

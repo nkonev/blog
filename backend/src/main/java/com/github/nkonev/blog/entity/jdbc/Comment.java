@@ -1,31 +1,22 @@
-package com.github.nkonev.blog.entity.jpa;
+package com.github.nkonev.blog.entity.jdbc;
 
 import com.github.nkonev.blog.Constants;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
-import javax.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
+
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "comment", schema = Constants.Schemas.POSTS)
-@DynamicInsert
-@DynamicUpdate
+@Table(Constants.Schemas.POSTS+".comment")
 public class Comment {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
 
     private String text;
 
-    @ManyToOne
-    @JoinColumn(name="owner_id")
-    private UserAccount owner;
+    private long ownerId;
 
     private long postId;
 
-    @Generated(GenerationTime.INSERT)
     private LocalDateTime createDateTime;
 
     private LocalDateTime editDateTime;
@@ -35,11 +26,6 @@ public class Comment {
     public Comment(Long id, String text, long postId) {
         this.id = id;
         this.text = text;
-    }
-
-    public Comment(Long id, String text, long postId, UserAccount owner) {
-        this(id, text, postId);
-        this.owner = owner;
     }
 
     public Long getId() {
@@ -56,14 +42,6 @@ public class Comment {
 
     public void setText(String text) {
         this.text = text;
-    }
-
-    public UserAccount getOwner() {
-        return owner;
-    }
-
-    public void setOwner(UserAccount owner) {
-        this.owner = owner;
     }
 
     public long getPostId() {
@@ -88,5 +66,13 @@ public class Comment {
 
     public void setEditDateTime(LocalDateTime editDateTime) {
         this.editDateTime = editDateTime;
+    }
+
+    public long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(long ownerId) {
+        this.ownerId = ownerId;
     }
 }

@@ -3,7 +3,7 @@ package com.github.nkonev.blog.controllers;
 import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.dto.*;
 import com.github.nkonev.blog.exception.DataNotFoundException;
-import com.github.nkonev.blog.repo.jpa.PostRepository;
+import com.github.nkonev.blog.repo.jdbc.PostRepository;
 import com.github.nkonev.blog.services.PostService;
 import com.github.nkonev.blog.utils.PageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Transactional
@@ -62,7 +63,7 @@ public class PostController {
         PageRequest springDataPage = PageRequest.of(PageUtils.fixPage(page), PageUtils.fixSize(size));
 
         return postRepository
-                .findMyPosts(springDataPage).getContent()
+                .findMyPosts(springDataPage.getPageSize(), springDataPage.getOffset(), Optional.ofNullable(userAccount).map(u-> userAccount.getId()).orElse(null))
                 .stream()
                 .map(postService::convertToPostDTOWithCleanTags)
                 .collect(Collectors.toList());

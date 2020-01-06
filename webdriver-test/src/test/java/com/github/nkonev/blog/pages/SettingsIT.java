@@ -1,13 +1,12 @@
 package com.github.nkonev.blog.pages;
 
-import com.codeborne.selenide.Selenide;
 import com.github.nkonev.blog.FailoverUtils;
-import com.github.nkonev.blog.entity.jpa.RuntimeSettings;
+import com.github.nkonev.blog.entity.jdbc.RuntimeSettings;
 import com.github.nkonev.blog.integration.AbstractItTestRunner;
 import com.github.nkonev.blog.pages.object.IndexPage;
 import com.github.nkonev.blog.pages.object.LoginModal;
 import com.github.nkonev.blog.pages.object.SettingsPage;
-import com.github.nkonev.blog.repo.jpa.RuntimeSettingsRepository;
+import com.github.nkonev.blog.repo.jdbc.RuntimeSettingsRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;

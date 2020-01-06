@@ -1,20 +1,13 @@
-package com.github.nkonev.blog.entity.jpa;
+package com.github.nkonev.blog.entity.jdbc;
 
 import com.github.nkonev.blog.Constants;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
-
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 
 /**
  * Insert data only from migration
  */
-@Entity
-@Table(name = "runtime_settings", schema = Constants.Schemas.SETTINGS)
-@DynamicInsert
-@DynamicUpdate
+@Table(Constants.Schemas.SETTINGS + ".runtime_settings")
 public class RuntimeSettings {
     @Id
     private String key;

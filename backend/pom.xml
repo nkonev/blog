@@ -31,7 +31,6 @@
         <swagger.input>${swagger.output.dir}/swagger.json</swagger.input>
         <swagger-annotations.version>1.5.17</swagger-annotations.version>
         <!-- /swagger stuff -->
-        <hibernate-types.version>2.7.1</hibernate-types.version>
         <html.sanitizer.version>20190610.1</html.sanitizer.version>
 
         <git-template-json>git.template.json</git-template-json>
@@ -296,7 +295,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <artifactId>spring-boot-starter-data-jdbc</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>com.zaxxer</groupId>
@@ -403,17 +402,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-messaging</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-data</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.vladmihalcea</groupId>
-            <artifactId>hibernate-types-52</artifactId>
-            <version>${hibernate-types.version}</version>
         </dependency>
 
         <dependency>

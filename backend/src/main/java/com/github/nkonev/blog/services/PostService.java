@@ -4,15 +4,15 @@ import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.converter.PostConverter;
 import com.github.nkonev.blog.dto.*;
 import com.github.nkonev.blog.entity.elasticsearch.IndexPost;
-import com.github.nkonev.blog.entity.jpa.Post;
-import com.github.nkonev.blog.entity.jpa.UserAccount;
+import com.github.nkonev.blog.entity.jdbc.Post;
+import com.github.nkonev.blog.entity.jdbc.UserAccount;
 import com.github.nkonev.blog.dto.UserRole;
 import com.github.nkonev.blog.exception.BadRequestException;
 import com.github.nkonev.blog.exception.DataNotFoundException;
 import com.github.nkonev.blog.repo.elasticsearch.IndexPostRepository;
-import com.github.nkonev.blog.repo.jpa.CommentRepository;
-import com.github.nkonev.blog.repo.jpa.PostRepository;
-import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
+import com.github.nkonev.blog.repo.jdbc.CommentRepository;
+import com.github.nkonev.blog.repo.jdbc.PostRepository;
+import com.github.nkonev.blog.repo.jdbc.UserAccountRepository;
 import com.github.nkonev.blog.security.BlogSecurityService;
 import com.github.nkonev.blog.security.permissions.PostPermissions;
 import com.github.nkonev.blog.utils.PageUtils;
@@ -241,9 +241,10 @@ public class PostService {
             throw new BadRequestException("id cannot be set");
         }
         Post fromWeb = postConverter.convertToPost(postDTO, null);
+        fromWeb.setCreateDateTime(getNowUTC());
         UserAccount ua = userAccountRepository.findById(userAccount.getId()).orElseThrow(()->new IllegalArgumentException("User account not found")); // Hibernate caches it
-        fromWeb.setOwner(ua);
-        Post saved = postRepository.saveAndFlush(fromWeb);
+        fromWeb.setOwnerId(ua.getId());
+        Post saved = postRepository.save(fromWeb);
         indexPostRepository.save(postConverter.toElasticsearchPost(saved));
 
         webSocketService.sendInsertPostEvent(postDTO);
@@ -258,7 +259,7 @@ public class PostService {
         Post found = postRepository.findById(postDTO.getId()).orElseThrow(()->new IllegalArgumentException("Post with id " + postDTO.getId() + " not found"));
         Post updatedEntity = postConverter.convertToPost(postDTO, found);
         updatedEntity.setEditDateTime(getNowUTC());
-        Post saved = postRepository.saveAndFlush(updatedEntity);
+        Post saved = postRepository.save(updatedEntity);
         indexPostRepository.save(postConverter.toElasticsearchPost(saved));
 
         webSocketService.sendUpdatePostEvent(postDTO);
@@ -474,7 +475,6 @@ public class PostService {
         Assert.notNull(userAccount, "UserAccountDetailsDTO can't be null");
         commentRepository.deleteByPostId(postId);
         postRepository.deleteById(postId);
-        postRepository.flush();
         indexPostRepository.deleteById(postId);
 
         webSocketService.sendDeletePostEvent(postId);
@@ -494,9 +494,9 @@ public class PostService {
 
         final Collection<IndexPost> toSave = new ArrayList<>();
         for (Long id: postIds) {
-            Optional<com.github.nkonev.blog.entity.jpa.Post> post = postRepository.findById(id);
+            Optional<com.github.nkonev.blog.entity.jdbc.Post> post = postRepository.findById(id);
             if (post.isPresent()) {
-                com.github.nkonev.blog.entity.jpa.Post jpaPost = post.get();
+                com.github.nkonev.blog.entity.jdbc.Post jpaPost = post.get();
                 LOGGER.debug("Converting PostgreSQL -> Elasticsearch post id={}", id);
                 IndexPost indexPost = postConverter.toElasticsearchPost(jpaPost);
                 toSave.add(indexPost);

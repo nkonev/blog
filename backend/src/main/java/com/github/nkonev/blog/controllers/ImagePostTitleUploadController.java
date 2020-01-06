@@ -1,6 +1,8 @@
 package com.github.nkonev.blog.controllers;
 
 import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,7 @@ import static com.github.nkonev.blog.Constants.Urls.API;
 import static com.github.nkonev.blog.Constants.Urls.IMAGE;
 
 @RestController
+@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class ImagePostTitleUploadController extends AbstractImageUploadController {
 
     public static final String POST_TEMPLATE = API+IMAGE+"/post/title";

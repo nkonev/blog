@@ -42,18 +42,8 @@ def writeAndLog(filePath, content) {
 ////////////////////////////////////////////////////////////// common snippets //////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-def DATA_STORE_SNIPPET = {boolean dropFirst, String ddlAuto ->
+def DATA_STORE_SNIPPET = {boolean dropFirst ->
 return """
-spring.jpa:
-  database-platform: org.hibernate.dialect.PostgreSQL10Dialect
-  open-in-view: false
-  properties:
-    hibernate.use_sql_comments: true
-    hibernate.format_sql: true
-    hibernate.generate_statistics: false
-    hibernate.temp.use_jdbc_metadata_defaults: false
-  hibernate.ddl-auto: ${ddlAuto}
-
 spring.datasource:
     name: blog_ds
     type: org.apache.tomcat.jdbc.pool.DataSource
@@ -245,7 +235,7 @@ spring.mvc.static-path-pattern: /**
 # first element - for eliminate manual restart app in IntelliJ for copy compiled js to target/classes, last slash is important,, second element - for documentation
 spring.resources.static-locations: file:backend/src/main/resources/static/, classpath:/static/
 
-${DATA_STORE_SNIPPET(false, 'validate')}
+${DATA_STORE_SNIPPET(false)}
 ${MANAGEMENT_SNIPPET(false)}
 
 facebook:
@@ -286,7 +276,7 @@ ${custom(true)}
 server.port: ${ExportedConstants.TEST_PORT}
 ${WEBSERVER_SNIPPET}
 ${TEST_USERS_SNIPPET}
-${DATA_STORE_SNIPPET(true, 'validate')}
+${DATA_STORE_SNIPPET(true)}
 ${MANAGEMENT_SNIPPET(true)}
 custom.rendertron.enable: true
 custom.rendertron.enable.async.cache.refresh: false
@@ -319,7 +309,7 @@ custom.selenium.selenide-collections-timeout: 10
 custom.it.url.prefix: ${ExportedConstants.SCHEME}://localhost:\${server.port}
 custom.it.user.id: 1
 ${TEST_USERS_SNIPPET}
-${DATA_STORE_SNIPPET(true, 'none')}
+${DATA_STORE_SNIPPET(true)}
 ${MANAGEMENT_SNIPPET(true)}
 custom.rendertron.enable.async.cache.refresh: false
 facebook:

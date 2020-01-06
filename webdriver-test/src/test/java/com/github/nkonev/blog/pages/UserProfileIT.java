@@ -4,8 +4,7 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import com.github.nkonev.blog.CommonTestConstants;
 import com.github.nkonev.blog.FailoverUtils;
-import com.github.nkonev.blog.controllers.UserProfileController;
-import com.github.nkonev.blog.entity.jpa.UserAccount;
+import com.github.nkonev.blog.entity.jdbc.UserAccount;
 import com.github.nkonev.blog.integration.SocialEmulatorTests;
 import com.github.nkonev.blog.pages.object.*;
 import com.github.nkonev.blog.util.FileUtils;
@@ -28,7 +27,6 @@ import org.springframework.util.StringUtils;
 import org.junit.jupiter.api.Assumptions;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;

@@ -3,10 +3,10 @@ package com.github.nkonev.blog.controllers;
 import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.converter.UserAccountConverter;
 import com.github.nkonev.blog.dto.EditUserDTO;
-import com.github.nkonev.blog.entity.jpa.UserAccount;
+import com.github.nkonev.blog.entity.jdbc.UserAccount;
 import com.github.nkonev.blog.entity.redis.UserConfirmationToken;
 import com.github.nkonev.blog.exception.UserAlreadyPresentException;
-import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
+import com.github.nkonev.blog.repo.jdbc.UserAccountRepository;
 import com.github.nkonev.blog.repo.redis.UserConfirmationTokenRepository;
 import com.github.nkonev.blog.services.EmailService;
 import org.slf4j.Logger;
@@ -100,6 +100,7 @@ public class RegistrationController {
         }
 
         userAccount.setEnabled(true);
+        userAccount = userAccountRepository.save(userAccount);
 
         userConfirmationTokenRepository.deleteById(stringUuid);
 

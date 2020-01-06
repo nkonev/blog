@@ -2,13 +2,12 @@ package com.github.nkonev.blog.controllers;
 
 import com.github.nkonev.blog.ApiConstants;
 import com.github.nkonev.blog.Constants;
-import com.github.nkonev.blog.entity.jpa.UserAccount;
+import com.github.nkonev.blog.entity.jdbc.UserAccount;
 import com.github.nkonev.blog.entity.redis.PasswordResetToken;
 import com.github.nkonev.blog.exception.PasswordResetTokenNotFoundException;
-import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
+import com.github.nkonev.blog.repo.jdbc.UserAccountRepository;
 import com.github.nkonev.blog.repo.redis.PasswordResetTokenRepository;
 import com.github.nkonev.blog.services.EmailService;
-import com.github.nkonev.blog.utils.TimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,6 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -125,7 +123,7 @@ public class PasswordResetController {
         UserAccount userAccount = userAccountOptional.get();
 
         userAccount.setPassword(passwordEncoder.encode(passwordResetDto.getNewPassword()));
-
+        userAccount = userAccountRepository.save(userAccount);
         return;
     }
 }

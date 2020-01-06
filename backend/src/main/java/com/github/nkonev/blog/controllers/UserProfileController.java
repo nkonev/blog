@@ -3,13 +3,9 @@ package com.github.nkonev.blog.controllers;
 import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.converter.UserAccountConverter;
 import com.github.nkonev.blog.dto.*;
-import com.github.nkonev.blog.entity.jpa.Post;
-import com.github.nkonev.blog.entity.jpa.UserAccount;
+import com.github.nkonev.blog.entity.jdbc.UserAccount;
 import com.github.nkonev.blog.exception.UserAlreadyPresentException;
-import com.github.nkonev.blog.repo.jpa.CommentRepository;
-import com.github.nkonev.blog.repo.jpa.PostRepository;
-import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
-import com.github.nkonev.blog.security.BlogSecurityService;
+import com.github.nkonev.blog.repo.jdbc.UserAccountRepository;
 import com.github.nkonev.blog.security.BlogUserDetailsService;
 import com.github.nkonev.blog.services.PostService;
 import com.github.nkonev.blog.services.UserDeleteService;
@@ -17,20 +13,17 @@ import com.github.nkonev.blog.utils.PageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.session.Session;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
-import java.net.MalformedURLException;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -83,11 +76,13 @@ public class UserProfileController {
         PageRequest springDataPage = PageRequest.of(PageUtils.fixPage(page), PageUtils.fixSize(size), Sort.Direction.ASC, "id");
         searchString = searchString.trim();
 
-        Page<UserAccount> resultPage = userAccountRepository.findByUsernameContainsIgnoreCase(springDataPage, searchString);
+        final String forDbSearch = "%" + searchString + "%";
+        List<UserAccount> resultPage = userAccountRepository.findByUsernameContainsIgnoreCase(springDataPage.getPageSize(), springDataPage.getOffset(), forDbSearch);
+        long resultPageCount = userAccountRepository.findByUsernameContainsIgnoreCaseCount(springDataPage.getPageSize(), springDataPage.getOffset(), forDbSearch);
 
         return new Wrapper<UserAccountDTO>(
-                resultPage.getContent().stream().map(getConvertToUserAccountDTO(userAccount)).collect(Collectors.toList()),
-                resultPage.getTotalElements()
+                resultPage.stream().map(getConvertToUserAccountDTO(userAccount)).collect(Collectors.toList()),
+                resultPageCount
         );
     }
 
@@ -177,6 +172,7 @@ public class UserProfileController {
             blogUserDetailsService.killSessions(lockDTO.getUserId());
         }
         userAccount.setLocked(lockDTO.isLock());
+        userAccount = userAccountRepository.save(userAccount);
 
         return userAccountConverter.convertToUserAccountDTOExtended(userAccountDetailsDTO, userAccount);
     }
@@ -192,6 +188,7 @@ public class UserProfileController {
     public UserAccountDTOExtended setRole(@AuthenticationPrincipal UserAccountDetailsDTO userAccountDetailsDTO, @RequestParam long userId, @RequestParam UserRole role){
         UserAccount userAccount = userAccountRepository.findById(userId).orElseThrow();
         userAccount.setRole(role);
+        userAccount = userAccountRepository.save(userAccount);
         return userAccountConverter.convertToUserAccountDTOExtended(userAccountDetailsDTO, userAccount);
     }
 
@@ -208,6 +205,7 @@ public class UserProfileController {
         long userId = userAccountDetailsDTO.getId();
         UserAccount userAccount = userAccountRepository.findById(userId).orElseThrow();
         userAccount.getOauthIdentifiers().setFacebookId(null);
+        userAccount = userAccountRepository.save(userAccount);
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -216,6 +214,7 @@ public class UserProfileController {
         long userId = userAccountDetailsDTO.getId();
         UserAccount userAccount = userAccountRepository.findById(userId).orElseThrow();
         userAccount.getOauthIdentifiers().setVkontakteId(null);
+        userAccount = userAccountRepository.save(userAccount);
     }
 
 }

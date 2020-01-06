@@ -3,8 +3,8 @@ package com.github.nkonev.blog.controllers;
 import com.github.nkonev.blog.dto.SettingsDTO;
 import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
 import com.github.nkonev.blog.dto.UserRole;
-import com.github.nkonev.blog.entity.jpa.RuntimeSettings;
-import com.github.nkonev.blog.repo.jpa.RuntimeSettingsRepository;
+import com.github.nkonev.blog.entity.jdbc.RuntimeSettings;
+import com.github.nkonev.blog.repo.jdbc.RuntimeSettingsRepository;
 import com.github.nkonev.blog.security.BlogSecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,8 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Set;
+import java.util.stream.StreamSupport;
 
 import static com.github.nkonev.blog.Constants.Urls.API;
 import static com.github.nkonev.blog.Constants.Urls.CONFIG;
@@ -57,9 +56,9 @@ public class SettingsController {
     @GetMapping(API+CONFIG)
     public SettingsDTO getConfig(@AuthenticationPrincipal UserAccountDetailsDTO userAccount){
 
-        Collection<RuntimeSettings> runtimeSettings = runtimeSettingsRepository.findAll();
+        Iterable<RuntimeSettings> runtimeSettings = runtimeSettingsRepository.findAll();
 
-        SettingsDTO settingsDTOPartial = runtimeSettings.stream()
+        SettingsDTO settingsDTOPartial = StreamSupport.stream(runtimeSettings.spliterator(), false)
                 .reduce(
                         new SettingsDTO(),
                         (settingsDTO, runtimeSettings1) -> {

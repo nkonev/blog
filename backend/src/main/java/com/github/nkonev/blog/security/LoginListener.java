@@ -1,7 +1,6 @@
 package com.github.nkonev.blog.security;
 
-import com.github.nkonev.blog.entity.jpa.UserAccount;
-import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
+import com.github.nkonev.blog.repo.jdbc.UserAccountRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +9,6 @@ import org.springframework.security.authentication.event.AuthenticationSuccessEv
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-
 import static com.github.nkonev.blog.utils.TimeUtil.getNowUTC;
 
 /**
@@ -32,7 +27,6 @@ public class LoginListener implements ApplicationListener<AuthenticationSuccessE
     public void onApplicationEvent(AuthenticationSuccessEvent event) {
         UserDetails userDetails = (UserDetails) event.getAuthentication().getPrincipal();
         LOGGER.info("User '{}' logged in", userDetails.getUsername());
-        UserAccount userAccount = userAccountRepository.findByUsername(userDetails.getUsername()).orElseThrow();
-        userAccount.setLastLoginDateTime(getNowUTC());
+        userAccountRepository.updateLastLogin(userDetails.getUsername(), getNowUTC());
     }
 }

@@ -2,15 +2,14 @@ package com.github.nkonev.blog.security;
 
 import com.github.nkonev.blog.converter.UserAccountConverter;
 import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
-import com.github.nkonev.blog.entity.jpa.UserAccount;
-import com.github.nkonev.blog.exception.OauthIdConflictException;
-import com.github.nkonev.blog.exception.UserAlreadyPresentException;
-import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
+import com.github.nkonev.blog.entity.jdbc.UserAccount;
+import com.github.nkonev.blog.repo.jdbc.UserAccountRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -21,6 +20,7 @@ import java.util.Optional;
 
 @Component
 @Transactional
+@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class VkontaktePrincipalExtractor extends AbstractPrincipalExtractor implements PrincipalExtractor {
 
     @Autowired

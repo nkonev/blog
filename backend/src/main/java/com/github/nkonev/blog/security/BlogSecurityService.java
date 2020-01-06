@@ -5,13 +5,13 @@ import com.github.nkonev.blog.dto.CommentDTO;
 import com.github.nkonev.blog.dto.LockDTO;
 import com.github.nkonev.blog.dto.PostDTO;
 import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
-import com.github.nkonev.blog.entity.jpa.Comment;
-import com.github.nkonev.blog.entity.jpa.Post;
-import com.github.nkonev.blog.entity.jpa.UserAccount;
+import com.github.nkonev.blog.entity.jdbc.Comment;
+import com.github.nkonev.blog.entity.jdbc.Post;
+import com.github.nkonev.blog.entity.jdbc.UserAccount;
 import com.github.nkonev.blog.dto.UserRole;
-import com.github.nkonev.blog.repo.jpa.CommentRepository;
-import com.github.nkonev.blog.repo.jpa.PostRepository;
-import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
+import com.github.nkonev.blog.repo.jdbc.CommentRepository;
+import com.github.nkonev.blog.repo.jdbc.PostRepository;
+import com.github.nkonev.blog.repo.jdbc.UserAccountRepository;
 import com.github.nkonev.blog.security.permissions.CommentPermissions;
 import com.github.nkonev.blog.security.permissions.PostPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +77,7 @@ public class BlogSecurityService {
         if (roleHierarchy.getReachableGrantedAuthorities(userAccount.getAuthorities()).contains(new SimpleGrantedAuthority(UserRole.ROLE_MODERATOR.name()))){
             return true;
         }
-        if (post.getOwner().getId().equals(userAccount.getId()) && permission==PostPermissions.EDIT){
+        if (post.getOwnerId().equals(userAccount.getId()) && permission==PostPermissions.EDIT){
             return true;
         }
         return false;
@@ -117,7 +117,7 @@ public class BlogSecurityService {
         if (roleHierarchy.getReachableGrantedAuthorities(userAccount.getAuthorities()).contains(new SimpleGrantedAuthority(UserRole.ROLE_MODERATOR.name()))){
             return true;
         }
-        if (comment.getOwner().getId().equals(userAccount.getId())){
+        if (Long.valueOf(comment.getOwnerId()).equals(userAccount.getId())){
             return true;
         }
 

@@ -1,4 +1,4 @@
-package com.github.nkonev.blog.entity.jpa;
+package com.github.nkonev.blog.entity.jdbc;
 
 public enum CreationType {
     REGISTRATION,

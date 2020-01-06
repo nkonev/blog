@@ -1,10 +1,10 @@
 package com.github.nkonev.blog.services;
 
 import com.github.nkonev.blog.Constants;
-import com.github.nkonev.blog.entity.jpa.UserAccount;
-import com.github.nkonev.blog.repo.jpa.CommentRepository;
-import com.github.nkonev.blog.repo.jpa.PostRepository;
-import com.github.nkonev.blog.repo.jpa.UserAccountRepository;
+import com.github.nkonev.blog.entity.jdbc.UserAccount;
+import com.github.nkonev.blog.repo.jdbc.CommentRepository;
+import com.github.nkonev.blog.repo.jdbc.PostRepository;
+import com.github.nkonev.blog.repo.jdbc.UserAccountRepository;
 import com.github.nkonev.blog.security.BlogSecurityService;
 import com.github.nkonev.blog.security.BlogUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
