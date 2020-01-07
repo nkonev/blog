@@ -120,7 +120,7 @@
                     if (maybeBlob) {
                         formData.append('image', maybeBlob); // multipart part with name 'image'
                     }
-                    this.$http.put('/api/config', formData)
+                    this.$http.post('/api/config', formData)
                         .then(successResp => {
                             console.log("successfully set config", successResp);
                             this.finishSending();

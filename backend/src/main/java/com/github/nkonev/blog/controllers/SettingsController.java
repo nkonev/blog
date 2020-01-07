@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -99,7 +96,7 @@ public class SettingsController {
     }
 
     @Transactional
-    @PutMapping(value = API+CONFIG, consumes = {"multipart/form-data"})
+    @PostMapping(value = API+CONFIG, consumes = {"multipart/form-data"})
     @PreAuthorize("@blogSecurityService.hasSettingsPermission(#userAccount)")
     public SettingsDTO putConfig(
             @AuthenticationPrincipal UserAccountDetailsDTO userAccount,
@@ -107,34 +104,37 @@ public class SettingsController {
             @RequestPart(value = IMAGE_PART, required = false) MultipartFile imagePart
     ) throws SQLException, IOException {
         var runtimeSettingsBackgroundImage = runtimeSettingsRepository.findById(IMAGE_BACKGROUND).orElseThrow();
-
         // update image
-        if (imagePart!= null && !imagePart.isEmpty()) {
+        if (imagePart != null && !imagePart.isEmpty()) {
             var imageResponse = imageSettingsUploadController.postImage(imagePart, userAccount);
             String relativeUrl = imageResponse.getRelativeUrl();
             runtimeSettingsBackgroundImage.setValue(relativeUrl);
         }
-
         // remove image
         if (Boolean.TRUE.equals(dto.getRemoveImageBackground())) {
             runtimeSettingsBackgroundImage.setValue(null);
         }
+        runtimeSettingsBackgroundImage = runtimeSettingsRepository.save(runtimeSettingsBackgroundImage);
 
         // update header
         var runtimeSettingsHeader = runtimeSettingsRepository.findById(HEADER).orElseThrow();
         runtimeSettingsHeader.setValue(dto.getHeader());
+        runtimeSettingsHeader = runtimeSettingsRepository.save(runtimeSettingsHeader);
 
         // update subheader
         var runtimeSettingsSubHeader = runtimeSettingsRepository.findById(SUB_HEADER).orElseThrow();
         runtimeSettingsSubHeader.setValue(dto.getSubHeader());
+        runtimeSettingsSubHeader = runtimeSettingsRepository.save(runtimeSettingsSubHeader);
 
         // update title
         var runtimeTitleTemplate = runtimeSettingsRepository.findById(TITLE_TEMPLATE).orElseThrow();
         runtimeTitleTemplate.setValue(dto.getTitleTemplate());
+        runtimeTitleTemplate = runtimeSettingsRepository.save(runtimeTitleTemplate);
 
         // background color
         var backgroundColor = runtimeSettingsRepository.findById(BACKGROUND_COLOR).orElseThrow();
         backgroundColor.setValue(dto.getBackgroundColor());
+        backgroundColor = runtimeSettingsRepository.save(backgroundColor);
 
         return getConfig(userAccount);
     }

@@ -26,9 +26,9 @@ public abstract class AbstractImageUploadControllerTest extends AbstractUtTestRu
 
     protected abstract String postTemplate();
 
-    protected String postImage(String putUrlTemplate, MockMultipartFile mpf) throws Exception {
+    protected String postImage(String postUrlTemplate, MockMultipartFile mpf) throws Exception {
         MvcResult mvcResult = mockMvc.perform(
-                MockMvcRequestBuilders.multipart(putUrlTemplate)
+                MockMvcRequestBuilders.multipart(postUrlTemplate)
                         .file(mpf).with(csrf())
         )
                 .andExpect(status().isOk())
