@@ -37,7 +37,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/blog?connectTimeout=10&socketTimeout=40
       - SPRING_FLYWAY_OUT-OF-ORDER=false
       - SPRING_REDIS_URL=redis://redis:6379/0
-      - SPRING_DATA_ELASTICSEARCH_CLUSTER-NODES=elasticsearch:9300
+      - SPRING_ELASTICSEARCH_REST_URIS=elasticsearch:9200
       - SPRING_RESOURCES_STATIC-LOCATIONS=file:/opt/blog/www/, classpath:/static/
       - CUSTOM_RENDERTRON_ENABLE=true
       - CUSTOM_RENDERTRON_SERVICE-URL=http://rendertron:3000/render/

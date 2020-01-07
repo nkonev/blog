@@ -3,7 +3,6 @@ package com.github.nkonev.blog;
 import com.github.nkonev.blog.config.ApplicationConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.elasticsearch.rest.RestClientAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.scheduling.annotation.EnableAsync;
 
@@ -12,16 +11,10 @@ import org.springframework.scheduling.annotation.EnableAsync;
  */
 @EnableAsync
 @SpringBootApplication(
-        scanBasePackages = {"com.github.nkonev.blog"},
-        exclude = {RestClientAutoConfiguration.class}
+        scanBasePackages = {"com.github.nkonev.blog"}
 )
 @EnableConfigurationProperties({ApplicationConfig.class})
 public class BlogApplication {
-
-    static {
-        System.setProperty("es.set.netty.runtime.available.processors", "false");
-        System.setProperty("hibernate.types.print.banner", "false");
-    }
 
     public static void main(String[] args) throws Exception {
         SpringApplication.run(BlogApplication.class, args);

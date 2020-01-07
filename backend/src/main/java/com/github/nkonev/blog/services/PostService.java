@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.SearchResultMapper;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
@@ -94,7 +95,7 @@ public class PostService {
     private IndexPostRepository indexPostRepository;
 
     @Autowired
-    private ElasticsearchTemplate elasticsearchTemplate;
+    private ElasticsearchRestTemplate elasticsearchTemplate;
 
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;

@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.data.redis.core.RedisTemplate;
 
@@ -37,7 +37,7 @@ public class ElasticsearchConfig {
     public static final String ELASTICSEARCH_CONFIG = "elasticsearchConfig";
 
     @Autowired
-    private ElasticsearchTemplate elasticsearchTemplate;
+    private ElasticsearchRestTemplate elasticsearchTemplate;
 
     @Autowired
     private PostConverter postConverter;
