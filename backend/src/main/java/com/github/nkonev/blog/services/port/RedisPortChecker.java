@@ -27,8 +27,7 @@ public class RedisPortChecker extends AbstractPortChecker{
     @PostConstruct
     public void checkPorts(){
         LOGGER.info("Will check redis connection");
-        String cleanURI = redisProperties.getUrl().substring(6);
-        URI uri = URI.create(cleanURI);
+        URI uri = URI.create(redisProperties.getUrl());
         check(maxCount, uri.getHost(), uri.getPort());
         LOGGER.info("Redis connection is ok");
     }
