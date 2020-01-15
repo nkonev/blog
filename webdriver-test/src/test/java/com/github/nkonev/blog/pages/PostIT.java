@@ -9,6 +9,7 @@ import com.github.nkonev.blog.repo.jdbc.PostRepository;
 import com.github.nkonev.blog.webdriver.IntegrationTestConstants;
 import com.github.nkonev.blog.webdriver.configuration.SeleniumConfiguration;
 import com.github.nkonev.blog.webdriver.selenium.Browser;
+import com.google.common.util.concurrent.Uninterruptibles;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
@@ -261,11 +262,7 @@ public class PostIT extends OAuth2EmulatorTests {
         FailoverUtils.retry(3, () -> {
             postViewPage.delete();
             postViewPage.confirmDelete();
-            try {
-                TimeUnit.SECONDS.sleep(2);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            Uninterruptibles.sleepUninterruptibly(2, TimeUnit.SECONDS);
             String urlAfter = driver.getCurrentUrl();
             Assertions.assertNotEquals(urlBefore, urlAfter);
             return null;
