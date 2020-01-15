@@ -102,18 +102,6 @@ public class UserAccountConverter {
         );
     }
 
-    // TODO consider replace to convertToOwnerDTO with change contract
-    public UserAccountDTO convertToUserAccountDTO(long ownerId) {
-        Optional<UserAccount> byId = userAccountRepository.findById(ownerId);
-        return byId.map(userAccount -> new UserAccountDTO(
-                userAccount.getId(),
-                userAccount.getUsername(),
-                userAccount.getAvatar(),
-                userAccount.getLastLoginDateTime(),
-                convertOauth(userAccount.getOauthIdentifiers())
-        )).orElse(null);
-    }
-
     public OwnerDTO convertToOwnerDTO(Long ownerId) {
         if (ownerId == null) { return null; }
         Optional<UserAccount> byId = userAccountRepository.findById(ownerId);

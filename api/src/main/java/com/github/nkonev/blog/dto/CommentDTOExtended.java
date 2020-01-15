@@ -10,7 +10,7 @@ public class CommentDTOExtended extends CommentDTOWithAuthorization {
     public CommentDTOExtended(
             long id,
             String text,
-            UserAccountDTO owner,
+            OwnerDTO owner,
             boolean canEdit,
             boolean canDelete,
             long commentsInPost,

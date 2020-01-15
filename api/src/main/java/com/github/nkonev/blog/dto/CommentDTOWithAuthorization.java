@@ -3,7 +3,7 @@ package com.github.nkonev.blog.dto;
 import java.time.LocalDateTime;
 
 public class CommentDTOWithAuthorization extends CommentDTO {
-    private UserAccountDTO owner;
+    private OwnerDTO owner;
     private boolean canEdit;
     private boolean canDelete;
 
@@ -12,7 +12,7 @@ public class CommentDTOWithAuthorization extends CommentDTO {
     public CommentDTOWithAuthorization(
             long id,
             String text,
-            UserAccountDTO owner,
+            OwnerDTO owner,
             boolean canEdit,
             boolean canDelete,
             LocalDateTime createDateTime,
@@ -24,11 +24,11 @@ public class CommentDTOWithAuthorization extends CommentDTO {
         this.canDelete = canDelete;
     }
 
-    public UserAccountDTO getOwner() {
+    public OwnerDTO getOwner() {
         return owner;
     }
 
-    public void setOwner(UserAccountDTO owner) {
+    public void setOwner(OwnerDTO owner) {
         this.owner = owner;
     }
 

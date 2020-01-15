@@ -51,7 +51,7 @@ public class CommentConverter {
         return new CommentDTOWithAuthorization(
                 comment.getId(),
                 comment.getText(),
-                userAccountConverter.convertToUserAccountDTO(comment.getOwnerId()),
+                userAccountConverter.convertToOwnerDTO(comment.getOwnerId()),
                 blogSecurityService.hasCommentPermission(comment, userAccount, CommentPermissions.EDIT),
                 blogSecurityService.hasCommentPermission(comment, userAccount, CommentPermissions.DELETE),
                 comment.getCreateDateTime(),
@@ -75,7 +75,7 @@ public class CommentConverter {
         return new CommentDTOExtended(
                 comment.getId(),
                 comment.getText(),
-                userAccountConverter.convertToUserAccountDTO(comment.getOwnerId()),
+                userAccountConverter.convertToOwnerDTO(comment.getOwnerId()),
                 blogSecurityService.hasCommentPermission(comment, userAccount, CommentPermissions.EDIT),
                 blogSecurityService.hasCommentPermission(comment, userAccount, CommentPermissions.DELETE),
                 countInPost,
