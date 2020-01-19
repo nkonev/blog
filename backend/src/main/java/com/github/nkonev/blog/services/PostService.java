@@ -270,13 +270,25 @@ public class PostService {
         return postConverter.convertToDto(saved, userAccount);
     }
 
-    public PostDTO convertToPostDTOWithCleanTags(Post post) {
+    private PostDTO convertToPostDTOWithCleanTags(Post post) {
         PostDTO postDTO = postConverter.convertToPostDTO(post);
         IndexPost byId = indexPostRepository
                 .findById(post.getId())
                 .orElseThrow(()->new DataNotFoundException("post "+post.getId()+" not found in fulltext store"));
         postDTO.setText(byId.getText());
         return postDTO;
+    }
+
+    public List<PostDTO> getMyPosts(int page, int size, @Nullable UserAccountDetailsDTO userAccount) {
+        page = PageUtils.fixPage(page);
+        size = PageUtils.fixSize(size);
+        PageRequest springDataPage = PageRequest.of(PageUtils.fixPage(page), PageUtils.fixSize(size));
+
+        return postRepository
+                .findMyPosts(springDataPage.getPageSize(), springDataPage.getOffset(), Optional.ofNullable(userAccount).map(u-> userAccount.getId()).orElse(null))
+                .stream()
+                .map(this::convertToPostDTOWithCleanTags)
+                .collect(Collectors.toList());
     }
 
     private AbstractQueryBuilder noDraftFilterElasticsearch(UserAccountDetailsDTO userAccountDetailsDTO){

@@ -59,14 +59,7 @@ public class PostController {
             @RequestParam(value = "size", required = false, defaultValue = "0") int size,
             @RequestParam(value = "searchString", required = false, defaultValue = "") String searchString // TODO implement
     ) {
-
-        PageRequest springDataPage = PageRequest.of(PageUtils.fixPage(page), PageUtils.fixSize(size));
-
-        return postRepository
-                .findMyPosts(springDataPage.getPageSize(), springDataPage.getOffset(), Optional.ofNullable(userAccount).map(u-> userAccount.getId()).orElse(null))
-                .stream()
-                .map(postService::convertToPostDTOWithCleanTags)
-                .collect(Collectors.toList());
+        return postService.getMyPosts(page, size, userAccount);
     }
 
     // https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#el-common-built-in
