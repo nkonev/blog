@@ -25,7 +25,6 @@ script:
   # if there isn't pointed explicitly Chrome will be used by default for both webdriver integration test and js unit test
   # We use 'install' phase because of use jars in subsequent tests
   - DATE_VERSION=`date +%Y%m%d.%H.%M`
-  - "rm ~/.m2/settings.xml"
   - ./mvnw -q -Drevision=$DATE_VERSION -P frontend -P jacoco -P docker -P webdriver-chrome -P webdriver-firefox -Dcustom.selenium.headless=true clean install --no-snapshot-updates
   - (cd docker; docker-compose down)
 
