@@ -279,11 +279,6 @@ public class PostService {
         return postDTO;
     }
 
-    public PostDTO convertToPostDTOWithCleanTags(PostDTO post) {
-        PostConverter.cleanTags(post);
-        return post;
-    }
-
     private AbstractQueryBuilder noDraftFilterElasticsearch(UserAccountDetailsDTO userAccountDetailsDTO){
         if (userAccountDetailsDTO==null) {
             return termQuery(FIELD_DRAFT, false);
@@ -463,7 +458,7 @@ public class PostService {
         );
 
         List<PostDTO> list = postsResult.stream()
-                .map(this::convertToPostDTOWithCleanTags)
+                .peek(PostConverter::cleanTags)
                 .collect(Collectors.toList());
         var countParams = new HashMap<String, Object>();
         countParams.put("userId", userId);

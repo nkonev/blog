@@ -141,7 +141,7 @@ public class PostConverter {
     }
 
     public static void cleanTags(PostDTO postDTO) {
-        postDTO.setText(cleanHtmlTags(postDTO.getText()));;
+        postDTO.setText(cleanHtmlTags(postDTO.getText()));
     }
 
     /**
