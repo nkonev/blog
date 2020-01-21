@@ -53,6 +53,7 @@ custom.image:
   max-age: 31536000
 # If post title image is empty - it set first image from content to title automatically
 custom.set.first.image.as.title: true
+spring.session.timeout: 2d
 
 
 custom:
