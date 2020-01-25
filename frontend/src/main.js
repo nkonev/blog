@@ -6,7 +6,7 @@ import App from './App.vue'
 import router from './router.js'
 import Notifications from './notifications'
 import store from './store'
-import {UNSET_USER} from './store'
+import {UNSET_USER, FETCH_USER_PROFILE} from './store'
 import {LOGIN_MODAL, PROFILE_URL} from './constants'
 import bus from './bus'
 import {UNAUTHORIZED} from './bus'
@@ -54,6 +54,10 @@ Vue.http.interceptors.push((request, next) => {
     });
 });
 
+window.addEventListener("load", function(){
+    console.log("On load");
+    store.dispatch(FETCH_USER_PROFILE);
+});
 
 /* eslint-disable no-new */
 const vm = new Vue({

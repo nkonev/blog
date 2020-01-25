@@ -45,7 +45,7 @@
                         this.$http.post('/api/logout').then(
                             response => {
                                 // ok
-                                store.commit(UNSET_USER); // todo elaborate expired session handling
+                                store.commit(UNSET_USER);
                                 store.dispatch(FETCH_CONFIG);
                                 bus.$emit(LOGOUT, null);
                             },
