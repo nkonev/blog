@@ -2,6 +2,7 @@ package com.github.nkonev.blog.dto;
 
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collection;
 
 /**
@@ -15,12 +16,18 @@ public class UserSelfProfileDTO extends UserAccountDTO {
 
     private Collection<UserRole> roles;
 
+    private Long expiresAt;
+
+    private ZoneId expiresTimezone;
+
     public UserSelfProfileDTO() { }
 
-    public UserSelfProfileDTO(Long id, String login, String avatar, String email, LocalDateTime lastLoginDateTime, OauthIdentifiersDTO oauthIdentifiers, Collection<UserRole> roles) {
+    public UserSelfProfileDTO(Long id, String login, String avatar, String email, LocalDateTime lastLoginDateTime, OauthIdentifiersDTO oauthIdentifiers, Collection<UserRole> roles, Long expiresAt, ZoneId expiresTimezone) {
         super(id, login, avatar, lastLoginDateTime, oauthIdentifiers);
         this.email = email;
         this.roles = roles;
+        this.expiresAt = expiresAt;
+        this.expiresTimezone = expiresTimezone;
     }
 
     public String getEmail() {
@@ -37,5 +44,21 @@ public class UserSelfProfileDTO extends UserAccountDTO {
 
     public void setRoles(Collection<UserRole> roles) {
         this.roles = roles;
+    }
+
+    public Long getExpiresAt() {
+        return expiresAt;
+    }
+
+    public void setExpiresAt(Long expiresAt) {
+        this.expiresAt = expiresAt;
+    }
+
+    public ZoneId getExpiresTimezone() {
+        return expiresTimezone;
+    }
+
+    public void setExpiresTimezone(ZoneId expiresTimezone) {
+        this.expiresTimezone = expiresTimezone;
     }
 }

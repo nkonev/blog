@@ -13,6 +13,7 @@ import com.github.nkonev.blog.utils.PageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.session.SessionProperties;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,7 +22,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.session.Session;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -53,6 +60,9 @@ public class UserProfileController {
     @Autowired
     private UserDeleteService userDeleteService;
 
+    @Autowired
+    private SessionProperties sessionProperties;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(UserProfileController.class);
 
     /**
@@ -62,8 +72,14 @@ public class UserProfileController {
      */
     @PreAuthorize("isAuthenticated()")
     @GetMapping(value = Constants.Urls.PROFILE)
-    public UserAccountDTO checkAuthenticated(@AuthenticationPrincipal UserAccountDetailsDTO userAccount) {
-        return UserAccountConverter.getUserSelfProfile(userAccount, null);
+    public UserAccountDTO checkAuthenticated(@AuthenticationPrincipal UserAccountDetailsDTO userAccount, HttpSession session) {
+        Long expiresAt = null;
+        ZoneId expiresTimezone = null;
+        if (session!=null && sessionProperties.getTimeout()!=null) {
+            expiresAt = session.getCreationTime() + sessionProperties.getTimeout().toMillis() ;
+            expiresTimezone = ZoneId.systemDefault();
+        }
+        return UserAccountConverter.getUserSelfProfile(userAccount, null, expiresAt, expiresTimezone);
     }
 
     @GetMapping(value = Constants.Urls.USER)
@@ -110,7 +126,7 @@ public class UserProfileController {
         ) {
         UserAccount userAccountEntity = userAccountRepository.findById(userId).orElseThrow(() -> new RuntimeException("user with id="+ userId + " not found"));
         if (userAccount!=null && userAccount.getId().equals(userAccountEntity.getId())){
-            return UserAccountConverter.getUserSelfProfile(userAccount, userAccountEntity.getLastLoginDateTime());
+            return UserAccountConverter.getUserSelfProfile(userAccount, userAccountEntity.getLastLoginDateTime(), null, null);
         } else {
             return userAccountConverter.convertToUserAccountDTO(userAccountEntity);
         }

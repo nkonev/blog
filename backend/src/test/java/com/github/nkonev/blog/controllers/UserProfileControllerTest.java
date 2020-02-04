@@ -63,6 +63,8 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.login").value(TestConstants.USER_ALICE))
                 .andExpect(jsonPath("$.password").doesNotExist())
+                .andExpect(jsonPath("$.expiresTimezone").exists())
+                .andExpect(jsonPath("$.expiresAt").exists())
                 .andReturn();
     }
 

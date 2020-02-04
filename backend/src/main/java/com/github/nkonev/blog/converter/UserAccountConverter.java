@@ -19,6 +19,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -60,7 +61,7 @@ public class UserAccountConverter {
         );
     }
 
-    public static UserSelfProfileDTO getUserSelfProfile(UserAccountDetailsDTO userAccount, LocalDateTime lastLoginDateTime) {
+    public static UserSelfProfileDTO getUserSelfProfile(UserAccountDetailsDTO userAccount, LocalDateTime lastLoginDateTime, Long expiresAt, ZoneId expiresTimezone) {
         if (userAccount == null) { return null; }
         return new UserSelfProfileDTO (
                 userAccount.getId(),
@@ -69,7 +70,9 @@ public class UserAccountConverter {
                 userAccount.getEmail(),
                 lastLoginDateTime,
                 userAccount.getOauthIdentifiers(),
-                convertRoles2Enum(userAccount.getRoles())
+                convertRoles2Enum(userAccount.getRoles()),
+                expiresAt,
+                expiresTimezone
         );
     }
 
