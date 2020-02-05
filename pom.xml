@@ -308,9 +308,8 @@
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-oauth2-client</artifactId>
-                <version>5.3.0.M1</version>
+                <version>5.2.2.RELEASE</version>
             </dependency>
-
             <!-- https://docs.spring.io/spring-boot/docs/2.0.0.M7/reference/htmlsingle/#using-boot-maven-without-a-parent -->
             <dependency>
                 <!-- Import dependency management from Spring Boot -->
