@@ -22,13 +22,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.session.Session;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -74,12 +69,10 @@ public class UserProfileController {
     @GetMapping(value = Constants.Urls.PROFILE)
     public UserAccountDTO checkAuthenticated(@AuthenticationPrincipal UserAccountDetailsDTO userAccount, HttpSession session) {
         Long expiresAt = null;
-        ZoneId expiresTimezone = null;
         if (session!=null && sessionProperties.getTimeout()!=null) {
             expiresAt = session.getCreationTime() + sessionProperties.getTimeout().toMillis() ;
-            expiresTimezone = ZoneId.systemDefault();
         }
-        return UserAccountConverter.getUserSelfProfile(userAccount, null, expiresAt, expiresTimezone);
+        return UserAccountConverter.getUserSelfProfile(userAccount, null, expiresAt);
     }
 
     @GetMapping(value = Constants.Urls.USER)
@@ -126,7 +119,7 @@ public class UserProfileController {
         ) {
         UserAccount userAccountEntity = userAccountRepository.findById(userId).orElseThrow(() -> new RuntimeException("user with id="+ userId + " not found"));
         if (userAccount!=null && userAccount.getId().equals(userAccountEntity.getId())){
-            return UserAccountConverter.getUserSelfProfile(userAccount, userAccountEntity.getLastLoginDateTime(), null, null);
+            return UserAccountConverter.getUserSelfProfile(userAccount, userAccountEntity.getLastLoginDateTime(), null);
         } else {
             return userAccountConverter.convertToUserAccountDTO(userAccountEntity);
         }
