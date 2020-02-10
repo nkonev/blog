@@ -33,7 +33,7 @@
         <maven.install.plugin.version>2.5.2</maven.install.plugin.version>
         <jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
 
-        <spring.boot.version>2.2.3.RELEASE</spring.boot.version>
+        <spring.boot.version>2.3.0.M2</spring.boot.version>
         <selenium.override.version>3.14.0</selenium.override.version>
         <selenide.version>4.14.2</selenide.version>
         <shedlock.version>2.1.0</shedlock.version>
@@ -55,13 +55,6 @@
     <url>https://github.com/nkonev/blog.git</url>
 
     <repositories>
-        <repository>
-            <id>central</id>
-            <url>https://repo.maven.apache.org/maven2</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
         <repository>
             <id>repository.spring.release</id>
             <name>Spring GA Repository</name>
@@ -171,7 +164,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
-                <version>1.1.0</version>
+                <version>1.2.1</version>
                 <configuration>
                     <updatePomFile>true</updatePomFile>
                     <flattenMode>resolveCiFriendliesOnly</flattenMode>
@@ -304,11 +297,6 @@
                         <artifactId>junit-vintage-engine</artifactId>
                     </exclusion>
                 </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-oauth2-client</artifactId>
-                <version>5.2.2.RELEASE</version>
             </dependency>
             <!-- https://docs.spring.io/spring-boot/docs/2.0.0.M7/reference/htmlsingle/#using-boot-maven-without-a-parent -->
             <dependency>

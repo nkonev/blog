@@ -6,7 +6,6 @@ import com.github.nkonev.blog.dto.*;
 import com.github.nkonev.blog.entity.elasticsearch.IndexPost;
 import com.github.nkonev.blog.entity.jdbc.Post;
 import com.github.nkonev.blog.entity.jdbc.UserAccount;
-import com.github.nkonev.blog.dto.UserRole;
 import com.github.nkonev.blog.exception.BadRequestException;
 import com.github.nkonev.blog.exception.DataNotFoundException;
 import com.github.nkonev.blog.repo.elasticsearch.IndexPostRepository;
@@ -16,31 +15,24 @@ import com.github.nkonev.blog.repo.jdbc.UserAccountRepository;
 import com.github.nkonev.blog.security.BlogSecurityService;
 import com.github.nkonev.blog.security.permissions.PostPermissions;
 import com.github.nkonev.blog.utils.PageUtils;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.common.text.Text;
 import org.elasticsearch.index.query.AbstractQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
-import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.core.SearchResultMapper;
-import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
-import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
+import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilter;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
-import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
@@ -53,16 +45,13 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
-
 import javax.validation.constraints.NotNull;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
 import static com.github.nkonev.blog.entity.elasticsearch.IndexPost.*;
 import static com.github.nkonev.blog.utils.TimeUtil.getNowUTC;
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -202,40 +191,6 @@ public class PostService {
     private final PostRowMapper rowMapperWithoutTextTitle = new PostRowMapper(false, false);
     private final PostRowMapper rowMapper = new PostRowMapper(true, true);
 
-    private final SearchResultMapper searchResultMapper = new SearchResultMapper() {
-        private String getHighlightedOrOriginalField(SearchHit searchHit, String fieldName){
-            String field = (String) searchHit.getSourceAsMap().get(fieldName);;
-            HighlightField highlightedField = searchHit.getHighlightFields().get(fieldName);
-            if (highlightedField!=null && highlightedField.getFragments()!=null && highlightedField.getFragments().length>0){
-                field = Arrays.stream(highlightedField.getFragments()).map(Text::toString).collect(Collectors.joining("... "));
-            }
-            return field;
-        }
-
-        @Override
-        public <T> AggregatedPage<T> mapResults(SearchResponse response, Class<T> clazz, Pageable pageable) {
-            List<IndexPost> list = new ArrayList<>();
-            for (SearchHit searchHit : response.getHits()) {
-                if (response.getHits().getHits().length <= 0) {
-                    return new AggregatedPageImpl<T>((List<T>) list);
-                }
-                IndexPost tempPost = new IndexPost();
-                tempPost.setId(Long.valueOf(searchHit.getId()));
-                tempPost.setTitle(getHighlightedOrOriginalField(searchHit, FIELD_TITLE));
-                tempPost.setText(getHighlightedOrOriginalField(searchHit, FIELD_TEXT));
-                tempPost.setDraft((boolean) searchHit.getSourceAsMap().get(FIELD_DRAFT));
-                tempPost.setOwnerId((int) searchHit.getSourceAsMap().get(FIELD_OWNER_ID));
-                list.add(tempPost);
-            }
-            return new AggregatedPageImpl<T>((List<T>) list);
-        }
-
-        @Override
-        public <T> T mapSearchHit(SearchHit searchHit, Class<T> type) {
-            return null;
-        }
-    };
-
     public PostDTOWithAuthorization addPost(UserAccountDetailsDTO userAccount, @NotNull PostDTO postDTO){
         Assert.notNull(userAccount, "UserAccountDetailsDTO can't be null");
         if (postDTO.getId() != 0) {
@@ -374,9 +329,8 @@ public class PostService {
         if (StringUtils.isEmpty(searchString)) {
             PageRequest pageRequest = PageRequest.of(page, size);
 
-            SearchQuery searchQuery = new NativeSearchQueryBuilder()
+            NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
                     .withSort(new FieldSortBuilder(FIELD_ID).order(SortOrder.DESC))
-                    .withIndices(INDEX)
                     .withQuery(boolQuery()
                             .must(noDraftFilterElasticsearch(currentUser))
                     )
@@ -390,9 +344,8 @@ public class PostService {
             // need for correct highlight source field e. g. forceSource(true)
             final String fastVectorHighlighter = "fvh";
 
-            SearchQuery searchQuery = new NativeSearchQueryBuilder()
+            NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
                     .withSort(new FieldSortBuilder(FIELD_ID).order(SortOrder.DESC))
-                    .withIndices(INDEX)
                     .withQuery(boolQuery()
                             .must(
                                     boolQuery()
@@ -415,21 +368,21 @@ public class PostService {
         }
 
         NativeSearchQuery countQuery = new NativeSearchQueryBuilder()
-                .withIndices(INDEX)
                 .withQuery(boolQuery().must(noDraftFilterElasticsearch(currentUser)))
                 .build();
-        long totalCount = elasticsearchTemplate.count(countQuery);
+        long totalCount = elasticsearchTemplate.count(countQuery, IndexCoordinates.of(INDEX));
 
         return new Wrapper<>(postsResult, totalCount);
     }
 
-    private List<PostDTO> getPostDTOS(SearchQuery searchQuery) {
+    private List<PostDTO> getPostDTOS(NativeSearchQuery searchQuery) {
         List<PostDTO> postsResult;
-        Page<IndexPost> fulltextResult = elasticsearchTemplate.queryForPage(searchQuery, IndexPost.class, searchResultMapper);
+        SearchHits<IndexPost> fulltextResult = elasticsearchTemplate.search(searchQuery, IndexPost.class, IndexCoordinates.of(INDEX));
 
         postsResult = new ArrayList<>();
-        for (IndexPost fulltextPost: fulltextResult){
+        for (SearchHit<IndexPost> fulltextPost0: fulltextResult.getSearchHits()){
 
+            final IndexPost fulltextPost = fulltextPost0.getContent();
             var params = new HashMap<String, Object>();
             params.put("postId", fulltextPost.getId());
             LOGGER.debug("Will search in postgres by id="+fulltextPost.getId());
@@ -441,12 +394,19 @@ public class PostService {
             if (postDTO == null){
                 throw new DataNotFoundException("post not found in db");
             }
-            postDTO.setText(fulltextPost.getText());
-            postDTO.setTitle(fulltextPost.getTitle());
+
+            final String text = getHighlightOrText(fulltextPost0, FIELD_TEXT, fulltextPost0.getContent().getText());
+            postDTO.setText(text);
+            final String title = getHighlightOrText(fulltextPost0, FIELD_TITLE, fulltextPost0.getContent().getTitle());
+            postDTO.setTitle(title);
 
             postsResult.add(postDTO);
         }
         return postsResult;
+    }
+
+    private String getHighlightOrText(SearchHit<IndexPost> fulltextPost0, String fieldText, String nonHighlightedText) {
+        return Optional.ofNullable(fulltextPost0.getHighlightFields().get(fieldText)).map(strings -> String.join("... ", strings)).orElse(nonHighlightedText);
     }
 
     public Wrapper<PostDTO> findByOwnerId(Pageable springDataPage, Long userId, UserAccountDetailsDTO userAccountDetailsDTO) {
@@ -533,13 +493,14 @@ public class PostService {
         for(int page=0; ;page++) {
             PageRequest pageRequest = PageRequest.of(page, chunkSize);
             final String[] includes = {"_"};
-            SearchQuery searchQuery = new NativeSearchQueryBuilder()
-                    .withIndices(INDEX)
+            NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
                     .withQuery(matchAllQuery())
                     .withPageable(pageRequest)
                     .withSourceFilter(new FetchSourceFilter(includes, null))
                     .build();
-            List<String> idsString = elasticsearchTemplate.queryForIds(searchQuery);
+            List<String> idsString = elasticsearchTemplate
+                    .search(searchQuery, IndexPost.class, IndexCoordinates.of(INDEX))
+                    .map(SearchHit::getId).toList();
             LOGGER.info("Get {} index ids", idsString.size());
             if (idsString.isEmpty()) {
                 break;

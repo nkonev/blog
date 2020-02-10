@@ -43,7 +43,7 @@ public abstract class AbstractImageUploadControllerTest extends AbstractUtTestRu
                 MockMvcRequestBuilders.get(urlResponse)
         )
                 .andExpect(status().isOk())
-                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, mpf.getContentType()+";charset=UTF-8"))
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, mpf.getContentType()))
                 .andReturn()
                 ;
         byte[] content = result.getResponse().getContentAsByteArray();

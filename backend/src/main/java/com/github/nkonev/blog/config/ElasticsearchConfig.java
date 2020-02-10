@@ -1,7 +1,6 @@
 package com.github.nkonev.blog.config;
 
 import com.github.nkonev.blog.Constants;
-import com.github.nkonev.blog.converter.PostConverter;
 import com.github.nkonev.blog.entity.elasticsearch.IndexPost;
 import com.github.nkonev.blog.services.PostService;
 import com.github.nkonev.blog.utils.ResourceUtils;
@@ -14,17 +13,14 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.data.redis.core.RedisTemplate;
-
 import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeUnit;
-
 import static com.github.nkonev.blog.utils.TimeUtil.getNowUTC;
 
 @Qualifier(ElasticsearchConfig.ELASTICSEARCH_CONFIG)
@@ -38,9 +34,6 @@ public class ElasticsearchConfig {
 
     @Autowired
     private ElasticsearchRestTemplate elasticsearchTemplate;
-
-    @Autowired
-    private PostConverter postConverter;
 
     @Value(Constants.CUSTOM_ELASTICSEARCH_DROP_FIRST)
     private boolean dropFirst;
@@ -88,10 +81,10 @@ public class ElasticsearchConfig {
             try {
                 LOGGER.info("Creating elasticsearch index");
                 final String settings = ResourceUtils.stringFromResource(indexSettings);
-                elasticsearchTemplate.createIndex(IndexPost.INDEX, settings);
+                elasticsearchTemplate.getIndexOperations().createIndex(IndexPost.INDEX, settings);
 
                 final String mapping = ResourceUtils.stringFromResource(postMapping);
-                elasticsearchTemplate.putMapping(IndexPost.INDEX, IndexPost.TYPE, mapping);
+                elasticsearchTemplate.getIndexOperations().putMapping(IndexCoordinates.of(IndexPost.INDEX), mapping);
                 LOGGER.info("Successfully created elasticsearch index");
             } catch (Exception e) {
                 if (LOGGER.isDebugEnabled()) {

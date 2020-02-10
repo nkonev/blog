@@ -141,7 +141,6 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
     @org.junit.jupiter.api.Test
     public void fullyAuthenticatedUserCannotChangeHerProfileWithoutUsername() throws Exception {
         UserAccount userAccount = getUserFromBd(TestConstants.USER_ALICE);
-        final String newLogin = "new_alice12";
         final String newPassword = "new_alice_password";
 
         EditUserDTO edit = UserAccountConverter.convertToEditUserDto(userAccount);
