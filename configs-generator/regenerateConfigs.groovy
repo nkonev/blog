@@ -106,8 +106,6 @@ def WEBSERVER_SNIPPET =
 """
 server.tomcat.basedir: \${java.io.tmpdir}/com.github.nkonev.tomcat
 server.servlet.session.store-dir: \${server.tomcat.basedir}/sessions
-# For pretty output in tests
-spring.http.encoding.force-response: true
 spring.servlet.multipart.max-file-size: 6MB
 spring.servlet.multipart.max-request-size: 8MB
 """;
