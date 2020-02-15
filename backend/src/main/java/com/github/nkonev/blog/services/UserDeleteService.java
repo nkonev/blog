@@ -5,7 +5,6 @@ import com.github.nkonev.blog.entity.jdbc.UserAccount;
 import com.github.nkonev.blog.repo.jdbc.CommentRepository;
 import com.github.nkonev.blog.repo.jdbc.PostRepository;
 import com.github.nkonev.blog.repo.jdbc.UserAccountRepository;
-import com.github.nkonev.blog.security.BlogSecurityService;
 import com.github.nkonev.blog.security.BlogUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,12 +13,6 @@ import org.springframework.stereotype.Component;
 public class UserDeleteService {
     @Autowired
     private BlogUserDetailsService blogUserDetailsService;
-
-    @Autowired
-    private BlogSecurityService blogSecurityService;
-
-    @Autowired
-    private PostService postService;
 
     @Autowired
     private CommentRepository commentRepository;

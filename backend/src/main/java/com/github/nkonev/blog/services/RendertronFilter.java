@@ -82,10 +82,6 @@ public class RendertronFilter extends GenericFilterBean {
         return extensionsToIgnore;
     }
 
-
-
-
-
     private boolean isInSearchUserAgent(final String userAgent) {
         if (userAgent == null){ return false;}
         for(String item: getCrawlerUserAgents()){
@@ -95,7 +91,6 @@ public class RendertronFilter extends GenericFilterBean {
         }
         return false;
     }
-
 
     private boolean isInResources(final String url) {
         for(String item: getExtensionsToIgnore()){
