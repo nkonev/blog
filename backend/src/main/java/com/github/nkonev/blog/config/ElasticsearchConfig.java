@@ -104,10 +104,15 @@ public class ElasticsearchConfig {
             LocalDateTime dateTime = LocalDateTime.parse(dateTimeString, formatter);
 
             if (dateTime.plus(Duration.of(timeout, timeUnit.toChronoUnit())).isBefore(getNowUTC()) || firstRun) {
-                LOGGER.info("Condition is successful, so we'll refresh elasticsearch index");
-                postService.refreshFulltextIndex(false);
-                redisTemplate.opsForValue().set(key, getNowUTC().format(formatter));
-                if (dropFirst){
+                try {
+                    LOGGER.info("Condition is successful, so we'll refresh elasticsearch index");
+                    postService.refreshFulltextIndex(false);
+                    redisTemplate.opsForValue().set(key, getNowUTC().format(formatter));
+                    if (dropFirst) {
+                        redisTemplate.delete(key);
+                    }
+                } catch (Exception e) {
+                    LOGGER.info("Got exception probably in refreshFulltextIndex(), removing {} from redis", key, e);
                     redisTemplate.delete(key);
                 }
             } else {
