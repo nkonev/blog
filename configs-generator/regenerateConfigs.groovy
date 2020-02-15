@@ -108,6 +108,7 @@ server.tomcat.basedir: \${java.io.tmpdir}/com.github.nkonev.tomcat
 server.servlet.session.store-dir: \${server.tomcat.basedir}/sessions
 spring.servlet.multipart.max-file-size: 6MB
 spring.servlet.multipart.max-request-size: 8MB
+server.servlet.encoding.force-response: true
 """;
 
 def TEST_USERS_SNIPPET=

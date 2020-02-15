@@ -58,11 +58,11 @@ public abstract class AbstractImageUploadControllerTest extends AbstractUtTestRu
     public void postImage() throws Exception {
 
         byte[] img0 = {(byte)0xFF, (byte)0x01, (byte)0x1A};
-        MockMultipartFile mf0 = new MockMultipartFile(ImagePostTitleUploadController.IMAGE_PART, "lol-content.png", "image/png", img0);
+        MockMultipartFile mf0 = new MockMultipartFile(ImagePostTitleUploadController.IMAGE_PART, "lol-content.png", "image/png;charset=UTF-8", img0);
         String url0 = postImage(postTemplate(), mf0);
 
         byte[] img1 = {(byte)0xAA, (byte)0xBB, (byte)0xCC, (byte)0xDD, (byte)0xCC};
-        MockMultipartFile mf1 = new MockMultipartFile(ImagePostTitleUploadController.IMAGE_PART, "lol-content.png", "image/png", img1);
+        MockMultipartFile mf1 = new MockMultipartFile(ImagePostTitleUploadController.IMAGE_PART, "lol-content.png", "image/png;charset=UTF-8", img1);
         String url1 = postImage(postTemplate(), mf1);
 
         Assertions.assertNotEquals(url0, url1);

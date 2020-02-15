@@ -1,6 +1,5 @@
 package com.github.nkonev.blog.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.catalina.Valve;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +13,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -22,7 +20,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer, ApplicationContextAware {
@@ -91,11 +88,4 @@ public class WebConfig implements WebMvcConfigurer, ApplicationContextAware {
         return tomcat;
     }
 
-    // For pretty output in tests
-    @Bean
-    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(ObjectMapper objectMapper) {
-        MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter(objectMapper);
-        jsonConverter.setDefaultCharset(StandardCharsets.UTF_8);
-        return jsonConverter;
-    }
 }
