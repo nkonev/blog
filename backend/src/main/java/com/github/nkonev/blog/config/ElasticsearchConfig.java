@@ -71,7 +71,7 @@ public class ElasticsearchConfig {
         if (dropFirst) {
             try {
                 LOGGER.info("Dropping elasticsearch index");
-                elasticsearchTemplate.deleteIndex(IndexPost.INDEX);
+                elasticsearchTemplate.getIndexOperations().deleteIndex(IndexPost.INDEX);
             } catch (Exception e) {
                 LOGGER.error("Error during dropping elasticsearch index");
             }
