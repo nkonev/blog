@@ -25,7 +25,7 @@ import static com.github.nkonev.blog.utils.TimeUtil.getNowUTC;
 
 @Qualifier(ElasticsearchConfig.ELASTICSEARCH_CONFIG)
 @Configuration
-@EnableElasticsearchRepositories(basePackages = "com.github.nkonev.blog.repo.elasticsearch")
+@EnableElasticsearchRepositories(basePackages = "com.github.nkonev.blog.repository.elasticsearch")
 @EntityScan(basePackages = "com.github.nkonev.blog.entity.elasticsearch")
 public class ElasticsearchConfig {
 

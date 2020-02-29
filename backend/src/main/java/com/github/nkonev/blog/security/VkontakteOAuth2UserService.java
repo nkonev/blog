@@ -4,7 +4,7 @@ package com.github.nkonev.blog.security;
 import com.github.nkonev.blog.converter.UserAccountConverter;
 import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
 import com.github.nkonev.blog.entity.jdbc.UserAccount;
-import com.github.nkonev.blog.repo.jdbc.UserAccountRepository;
+import com.github.nkonev.blog.repository.jdbc.UserAccountRepository;
 import com.github.nkonev.blog.security.checks.BlogPostAuthenticationChecks;
 import com.github.nkonev.blog.security.checks.BlogPreAuthenticationChecks;
 import org.slf4j.Logger;

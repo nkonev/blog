@@ -6,7 +6,7 @@ import com.github.nkonev.blog.integration.AbstractItTestRunner;
 import com.github.nkonev.blog.pages.object.IndexPage;
 import com.github.nkonev.blog.pages.object.LoginModal;
 import com.github.nkonev.blog.pages.object.SettingsPage;
-import com.github.nkonev.blog.repo.jdbc.RuntimeSettingsRepository;
+import com.github.nkonev.blog.repository.jdbc.RuntimeSettingsRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;

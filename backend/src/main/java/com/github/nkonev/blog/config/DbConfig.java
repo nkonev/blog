@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @Configuration
 @EntityScan(basePackages = "com.github.nkonev.blog.entity.jdbc")
-@EnableJdbcRepositories(basePackages = "com.github.nkonev.blog.repo.jdbc")
+@EnableJdbcRepositories(basePackages = "com.github.nkonev.blog.repository.jdbc")
 @EnableTransactionManagement
 public class DbConfig extends AbstractJdbcConfiguration {
 

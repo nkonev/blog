@@ -3,7 +3,7 @@ package com.github.nkonev.blog.security;
 import com.github.nkonev.blog.converter.UserAccountConverter;
 import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
 import com.github.nkonev.blog.entity.jdbc.UserAccount;
-import com.github.nkonev.blog.exception.OauthIdConflictException;
+import com.github.nkonev.blog.exception.OAuth2IdConflictException;
 import org.slf4j.Logger;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -50,7 +50,7 @@ public abstract class AbstractOAuth2UserService {
             Optional<UserAccount> maybeUserAccount = findByOauthId(oauthId);
             if (maybeUserAccount.isPresent() && !maybeUserAccount.get().getId().equals(principal.getId())){
                 logger().error("With {}Id={} already present another user '{}', id={}", getOauthName(), oauthId, maybeUserAccount.get().getUsername(), maybeUserAccount.get().getId());
-                throw new OauthIdConflictException("Somebody already taken this "+getOauthName()+" id="+oauthId+". " +
+                throw new OAuth2IdConflictException("Somebody already taken this "+getOauthName()+" id="+oauthId+". " +
                         "If this is you and you want to merge your profiles please delete another profile and bind "+getOauthName()+" to this. If not please contact administrator.");
             }
 

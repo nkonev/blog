@@ -2,9 +2,9 @@ package com.github.nkonev.blog.services;
 
 import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.entity.jdbc.UserAccount;
-import com.github.nkonev.blog.repo.jdbc.CommentRepository;
-import com.github.nkonev.blog.repo.jdbc.PostRepository;
-import com.github.nkonev.blog.repo.jdbc.UserAccountRepository;
+import com.github.nkonev.blog.repository.jdbc.CommentRepository;
+import com.github.nkonev.blog.repository.jdbc.PostRepository;
+import com.github.nkonev.blog.repository.jdbc.UserAccountRepository;
 import com.github.nkonev.blog.security.BlogUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

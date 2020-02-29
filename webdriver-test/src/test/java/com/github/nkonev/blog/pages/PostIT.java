@@ -5,7 +5,7 @@ import com.codeborne.selenide.SelenideElement;
 import com.github.nkonev.blog.FailoverUtils;
 import com.github.nkonev.blog.integration.OAuth2EmulatorTests;
 import com.github.nkonev.blog.pages.object.*;
-import com.github.nkonev.blog.repo.jdbc.PostRepository;
+import com.github.nkonev.blog.repository.jdbc.PostRepository;
 import com.github.nkonev.blog.webdriver.IntegrationTestConstants;
 import com.github.nkonev.blog.webdriver.configuration.SeleniumConfiguration;
 import com.github.nkonev.blog.webdriver.selenium.Browser;

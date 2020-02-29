@@ -1,4 +1,4 @@
-package com.github.nkonev.blog.repo.redis;
+package com.github.nkonev.blog.repository.redis;
 
 import com.github.nkonev.blog.entity.redis.PasswordResetToken;
 import org.springframework.data.repository.CrudRepository;

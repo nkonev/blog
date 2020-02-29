@@ -18,6 +18,7 @@ import java.io.IOException;
 
 @Configuration
 public class BlogConfig {
+
     @Autowired
     private ObjectMapper objectMapper;
 

@@ -6,6 +6,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Config for admin-defined applications.
+ */
 @ConfigurationProperties("custom")
 public class ApplicationConfig {
     private boolean enableApplications = true;

@@ -1,6 +1,6 @@
 package com.github.nkonev.blog.security;
 
-import com.github.nkonev.blog.repo.jdbc.UserAccountRepository;
+import com.github.nkonev.blog.repository.jdbc.UserAccountRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

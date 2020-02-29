@@ -1,6 +1,6 @@
 package com.github.nkonev.blog.integration;
 
-import com.github.nkonev.blog.repo.jdbc.UserAccountRepository;
+import com.github.nkonev.blog.repository.jdbc.UserAccountRepository;
 import com.github.nkonev.blog.services.UserDeleteService;
 import com.github.nkonev.blog.webdriver.configuration.SeleniumConfiguration;
 import io.netty.handler.codec.http.HttpHeaderNames;

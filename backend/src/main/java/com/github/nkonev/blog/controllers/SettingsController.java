@@ -4,7 +4,7 @@ import com.github.nkonev.blog.dto.SettingsDTO;
 import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
 import com.github.nkonev.blog.dto.UserRole;
 import com.github.nkonev.blog.entity.jdbc.RuntimeSettings;
-import com.github.nkonev.blog.repo.jdbc.RuntimeSettingsRepository;
+import com.github.nkonev.blog.repository.jdbc.RuntimeSettingsRepository;
 import com.github.nkonev.blog.security.BlogSecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package com.github.nkonev.blog.repo.elasticsearch;
+package com.github.nkonev.blog.repository.elasticsearch;
 
 import com.github.nkonev.blog.entity.elasticsearch.IndexPost;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;

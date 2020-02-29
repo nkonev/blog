@@ -4,7 +4,7 @@ import com.github.nkonev.blog.converter.UserAccountConverter;
 import com.github.nkonev.blog.dto.UserAccountDetailsDTO;
 import com.github.nkonev.blog.entity.jdbc.UserAccount;
 import com.github.nkonev.blog.exception.DataNotFoundException;
-import com.github.nkonev.blog.repo.jdbc.UserAccountRepository;
+import com.github.nkonev.blog.repository.jdbc.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

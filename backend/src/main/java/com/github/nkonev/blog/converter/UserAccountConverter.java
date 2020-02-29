@@ -6,7 +6,7 @@ import com.github.nkonev.blog.entity.jdbc.CreationType;
 import com.github.nkonev.blog.entity.jdbc.UserAccount;
 import com.github.nkonev.blog.dto.UserRole;
 import com.github.nkonev.blog.exception.BadRequestException;
-import com.github.nkonev.blog.repo.jdbc.UserAccountRepository;
+import com.github.nkonev.blog.repository.jdbc.UserAccountRepository;
 import com.github.nkonev.blog.security.BlogSecurityService;
 import com.github.nkonev.blog.security.FacebookOAuth2UserService;
 import com.github.nkonev.blog.security.VkontakteOAuth2UserService;
@@ -21,8 +21,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.github.nkonev.blog.security.AuthorityUtils.getDefaultUserRole;
-
 @Component
 public class UserAccountConverter {
 
@@ -31,6 +29,10 @@ public class UserAccountConverter {
 
     @Autowired
     private UserAccountRepository userAccountRepository;
+
+    private static UserRole getDefaultUserRole(){
+        return UserRole.ROLE_USER;
+    }
 
     private static OauthIdentifiersDTO convertOauth(UserAccount.OauthIdentifiers oauthIdentifiers){
         if (oauthIdentifiers==null) return null;

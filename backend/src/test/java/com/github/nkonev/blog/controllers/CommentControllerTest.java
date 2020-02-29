@@ -7,7 +7,7 @@ import com.github.nkonev.blog.TestConstants;
 import com.github.nkonev.blog.converter.CommentConverter;
 import com.github.nkonev.blog.dto.CommentDTO;
 import com.github.nkonev.blog.entity.jdbc.Comment;
-import com.github.nkonev.blog.repo.jdbc.CommentRepository;
+import com.github.nkonev.blog.repository.jdbc.CommentRepository;
 import com.github.nkonev.blog.utils.PageUtils;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;

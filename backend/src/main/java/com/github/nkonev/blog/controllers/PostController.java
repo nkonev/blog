@@ -3,19 +3,15 @@ package com.github.nkonev.blog.controllers;
 import com.github.nkonev.blog.Constants;
 import com.github.nkonev.blog.dto.*;
 import com.github.nkonev.blog.exception.DataNotFoundException;
-import com.github.nkonev.blog.repo.jdbc.PostRepository;
+import com.github.nkonev.blog.repository.jdbc.PostRepository;
 import com.github.nkonev.blog.services.PostService;
-import com.github.nkonev.blog.utils.PageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Transactional
 @RestController

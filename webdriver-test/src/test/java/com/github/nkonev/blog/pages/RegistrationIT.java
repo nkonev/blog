@@ -7,7 +7,7 @@ import com.github.nkonev.blog.extensions.GreenMailExtension;
 import com.github.nkonev.blog.extensions.GreenMailExtensionFactory;
 import com.github.nkonev.blog.integration.AbstractItTestRunner;
 import com.github.nkonev.blog.pages.object.LoginModal;
-import com.github.nkonev.blog.repo.redis.UserConfirmationTokenRepository;
+import com.github.nkonev.blog.repository.redis.UserConfirmationTokenRepository;
 import com.github.nkonev.blog.util.UrlParser;
 import com.icegreen.greenmail.util.Retriever;
 import com.sun.mail.imap.IMAPMessage;

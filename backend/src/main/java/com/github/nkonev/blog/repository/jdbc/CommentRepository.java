@@ -1,4 +1,4 @@
-package com.github.nkonev.blog.repo.jdbc;
+package com.github.nkonev.blog.repository.jdbc;
 
 import com.github.nkonev.blog.entity.jdbc.Comment;
 import org.springframework.data.jdbc.repository.query.Modifying;

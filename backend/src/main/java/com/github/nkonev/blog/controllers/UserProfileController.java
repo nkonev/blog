@@ -5,7 +5,7 @@ import com.github.nkonev.blog.converter.UserAccountConverter;
 import com.github.nkonev.blog.dto.*;
 import com.github.nkonev.blog.entity.jdbc.UserAccount;
 import com.github.nkonev.blog.exception.UserAlreadyPresentException;
-import com.github.nkonev.blog.repo.jdbc.UserAccountRepository;
+import com.github.nkonev.blog.repository.jdbc.UserAccountRepository;
 import com.github.nkonev.blog.security.BlogUserDetailsService;
 import com.github.nkonev.blog.services.PostService;
 import com.github.nkonev.blog.services.UserDeleteService;

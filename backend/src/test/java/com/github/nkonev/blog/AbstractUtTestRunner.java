@@ -7,7 +7,7 @@ package com.github.nkonev.blog;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.nkonev.blog.config.UtConfig;
 import com.github.nkonev.blog.dto.PostDTO;
-import com.github.nkonev.blog.repo.redis.UserConfirmationTokenRepository;
+import com.github.nkonev.blog.repository.redis.UserConfirmationTokenRepository;
 import com.github.nkonev.blog.security.SecurityConfig;
 import com.github.nkonev.blog.util.ContextPathHelper;
 import org.junit.jupiter.api.BeforeEach;

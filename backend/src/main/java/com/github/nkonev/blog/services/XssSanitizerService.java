@@ -1,10 +1,10 @@
 package com.github.nkonev.blog.services;
 
-import com.github.nkonev.blog.utils.IpUtil;
 import com.github.nkonev.blog.utils.XssHtmlChangeListener;
 import org.owasp.html.PolicyFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import static com.github.nkonev.blog.utils.ServletUtils.getIpAddressFromRequestContext;
 
 @Service
 public class XssSanitizerService {
@@ -19,7 +19,7 @@ public class XssSanitizerService {
         return policyFactory.sanitize(
                 html,
                 xssHtmlChangeListener,
-                "ip='"+ IpUtil.getIpAddressFromRequestContext()+"'"
+                "ip='"+ getIpAddressFromRequestContext()+"'"
         );
     }
 
