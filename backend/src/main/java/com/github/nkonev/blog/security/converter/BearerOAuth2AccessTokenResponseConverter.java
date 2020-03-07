@@ -13,7 +13,8 @@ public class BearerOAuth2AccessTokenResponseConverter implements Converter<Map<S
 
     @Override
     public OAuth2AccessTokenResponse convert(Map<String, String> tokenResponseParameters) {
-        tokenResponseParameters.put(OAuth2ParameterNames.TOKEN_TYPE, OAuth2AccessToken.TokenType.BEARER.getValue());
+        // vkontakte doesn't pass token type in response so I add it manually
+        tokenResponseParameters.putIfAbsent(OAuth2ParameterNames.TOKEN_TYPE, OAuth2AccessToken.TokenType.BEARER.getValue());
         return delegate.convert(tokenResponseParameters);
     }
 }
