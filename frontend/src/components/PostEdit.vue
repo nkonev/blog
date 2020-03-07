@@ -35,7 +35,6 @@
                 <button v-if="!submitting" class="blog-btn ok-btn" @click="onBtnSave" v-bind:disabled="!isPostValid()">Save</button>
             </div>
             <button v-if="!submitting" class="blog-btn cancel-btn" @click="onBtnCancel">Cancel</button>
-            <button v-if="!submitting && canRestore()" class="blog-btn restore-btn" @click="restorePost">Restore</button>
 
             <div class="draft">
                 <input type="checkbox" id="draft" name="draft" v-model="editPostDTO.draft">
@@ -73,8 +72,6 @@
         tmp.innerHTML = html;
         return tmp.textContent || tmp.innerText || "";
     }
-
-    const localStorageKey = 'postDto';
 
     // https://quilljs.com/docs/modules/toolbar/
     const toolbarOptions = [
@@ -129,7 +126,6 @@
                         // edit / update
                         this.$http.put(API_POST, {...this.editPostDTO, removeTitleImage: this.$refs.cropperInstance.isRemoveImage()}).then(response => {
                             this.finishSending();
-                            localStorage.removeItem(localStorageKey);
                             if (this.$props.onAfterSubmit){
                                 this.$props.onAfterSubmit(response.body);
                             }
@@ -217,45 +213,12 @@
                         console.log(err);
                     })
             },
-            canRestore() {
-                if (localStorage.getItem(localStorageKey)) {
-                    return true
-                } else {
-                    return false
-                }
-            },
-            restorePost() {
-                if (localStorage.getItem(localStorageKey)) {
-                    try {
-                        const loaded = JSON.parse(localStorage.getItem(localStorageKey));
-                        //console.log("Restoring post", loaded);
-                        this.editPostDTO = loaded;
-                    } catch(e) {
-                        console.error("Exception during parsing localstorage value - will delete this value", e);
-                        localStorage.removeItem(localStorageKey);
-                    }
-                } else {
-                    console.log("There is not post for restore");
-                }
-            },
         },
         components: {
             VueEditor,
             BlogSpinner,
             CropperWrapper,
             Error,
-        },
-        watch: {
-            'editPostDTO': {
-                handler: function (val, oldVal) {
-                    if (val && (val.text || val.title)) {
-                        const parsed = JSON.stringify(val);
-                        //console.log("Saving post", parsed);
-                        localStorage.setItem(localStorageKey, parsed);
-                    }
-                },
-                deep: true
-            }
         },
         created(){
             this.editPostDTO = Vue.util.extend({}, this.postDTO); // deep copy prevent parent postDTO mutations
