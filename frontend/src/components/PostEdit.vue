@@ -248,7 +248,7 @@
         watch: {
             'editPostDTO': {
                 handler: function (val, oldVal) {
-                    if (val && (val.text || val.title) && val != oldVal) {
+                    if (val && (val.text || val.title)) {
                         const parsed = JSON.stringify(val);
                         //console.log("Saving post", parsed);
                         localStorage.setItem(localStorageKey, parsed);
