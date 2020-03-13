@@ -13,6 +13,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.core.document.Document;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -71,7 +72,7 @@ public class ElasticsearchConfig {
         if (dropFirst) {
             try {
                 LOGGER.info("Dropping elasticsearch index");
-                elasticsearchTemplate.getIndexOperations().deleteIndex(IndexPost.INDEX);
+                elasticsearchTemplate.indexOps(IndexPost.class).delete();
             } catch (Exception e) {
                 LOGGER.error("Error during dropping elasticsearch index");
             }
@@ -81,10 +82,10 @@ public class ElasticsearchConfig {
             try {
                 LOGGER.info("Creating elasticsearch index");
                 final String settings = ResourceUtils.stringFromResource(indexSettings);
-                elasticsearchTemplate.getIndexOperations().createIndex(IndexPost.INDEX, settings);
+                elasticsearchTemplate.indexOps(IndexPost.class).create(Document.parse(settings));
 
                 final String mapping = ResourceUtils.stringFromResource(postMapping);
-                elasticsearchTemplate.getIndexOperations().putMapping(IndexCoordinates.of(IndexPost.INDEX), mapping);
+                elasticsearchTemplate.indexOps(IndexPost.class).putMapping(Document.parse(mapping));
                 LOGGER.info("Successfully created elasticsearch index");
             } catch (Exception e) {
                 if (LOGGER.isDebugEnabled()) {
