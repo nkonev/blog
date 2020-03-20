@@ -98,7 +98,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
                         0,
                         "default new post title",
                         "default new post text",
-                        "https://postgrespro.ru/img/logo_mono.png",
+                        "/logo_mono.png",
                         null,
                         null,
                         new OwnerDTO(),
