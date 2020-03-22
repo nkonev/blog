@@ -118,6 +118,7 @@ public abstract class OAuth2EmulatorTests extends AbstractItTestRunner {
     @AfterEach
     public void resetFacebookEmulator(){
         mockServerFacebook.reset();
+        mockServerVkontakte.reset();
     }
 
 
