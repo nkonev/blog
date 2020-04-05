@@ -50,15 +50,10 @@
     import Vue from 'vue'
     import BlogSpinner from './BlogSpinner.vue'
     import {API_POST} from '../constants'
-    import {isLargeScreen, computedCropper} from "../utils";
+    import {computedCropper} from "../utils";
     import CropperWrapper from "./CropperWrapper";
     import Error from './Error.vue'
-
-    if (isLargeScreen()) {
-        require("quill/dist/quill.bubble.css");
-    } else {
-        require("quill/dist/quill.snow.css");
-    }
+    import "quill/dist/quill.snow.css";
 
     const MIN_LENGTH = 1;
 
@@ -98,7 +93,7 @@
                 errorMessage: '',
                 submitting: false,
                 editorOptions: {
-                    theme: isLargeScreen() ? 'bubble' : 'snow',
+                    theme: 'snow',
                     modules: {
                         // https://github.com/surmon-china/vue-quill-editor/issues/39#issuecomment-353725408
                         syntax: {
@@ -196,10 +191,6 @@
                 return "Lorem ipsum dolor sit amet..."
             },
             handleImageAdded: function(file, Editor, cursorLocation) {
-                // An example of using FormData
-                // NOTE: Your key could be different such as:
-                // formData.append('file', file)
-
                 var formData = new FormData();
                 formData.append('image', file);
 
@@ -259,23 +250,15 @@
     @import "../constants.styl"
     @import "../lib/QuillVideo.styl"
 
-    // fix scroll changing on paste https://github.com/quilljs/quill/issues/1374#issuecomment-415333651
-    .ql-clipboard {
-        position: fixed;
-    }
-
-    .ql-editor {
-        font-size $postBodyFontSize
-        font-family $postBodyFontFamily
-
-        margin-top $postBodyMarginTop
-        margin-bottom $postBodyMarginBottom
-    }
-
-    // larger screens
-    @media screen and (min-width: $contentWidth) {
+    .post-edit {
         .ql-editor {
-            overflow-y unset
+            font-size $postBodyFontSize
+            font-family $postBodyFontFamily
+
+            margin-top $postBodyMarginTop
+            margin-bottom $postBodyMarginBottom
+
+            height: 480px
         }
     }
 
