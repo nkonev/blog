@@ -43,8 +43,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-import reactor.util.function.Tuple2;
-import reactor.util.function.Tuples;
 import javax.validation.constraints.NotNull;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -141,6 +139,24 @@ public class PostService {
     private RedisTemplate<String, String> redisTemplate;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PostService.class);
+
+    static class Tuple2<T1, T2> {
+        private T1 t1;
+        private T2 t2;
+
+        public Tuple2(T1 t1, T2 t2) {
+            this.t1 = t1;
+            this.t2 = t2;
+        }
+
+        public T1 getT1() {
+            return t1;
+        }
+
+        public T2 getT2() {
+            return t2;
+        }
+    }
 
     private static class PostRowMapper implements RowMapper<PostDTO> {
 
@@ -274,7 +290,7 @@ public class PostService {
             countParams.put("currentUserId", userAccountDetailsDTO.getId());
             countParams.put("isAdmin", roleHierarchy.getReachableGrantedAuthorities(userAccountDetailsDTO.getAuthorities()).contains(new SimpleGrantedAuthority(UserRole.ROLE_ADMIN.name())));
         }
-        return Tuples.of("(p.draft = FALSE OR ((:currentUserId\\:\\:bigint) = p.owner_id) OR :isAdmin = TRUE)", countParams);
+        return new Tuple2<>("(p.draft = FALSE OR ((:currentUserId\\:\\:bigint) = p.owner_id) OR :isAdmin = TRUE)", countParams);
     }
 
     private PostDTOExtended convertToDtoExtended(PostDTO saved, UserAccountDetailsDTO userAccount, Tuple2<String, Map<String, Object>> noDraftFilterJdbc) {
