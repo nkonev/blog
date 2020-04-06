@@ -3,19 +3,16 @@ package com.github.nkonev.blog.services;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.nkonev.blog.dto.PostDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
 import static com.github.nkonev.blog.converter.PostConverter.cleanHtmlTags;
 
 @Service
 public class WebSocketService {
-    private final SimpMessagingTemplate template;
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public WebSocketService(SimpMessagingTemplate template, ObjectMapper objectMapper) {
-        this.template = template;
+    public WebSocketService(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
@@ -31,16 +28,16 @@ public class WebSocketService {
     public void sendInsertPostEvent(PostDTO postDTO) {
         PostDTO copy = deepCopy(postDTO);
         copy.setText(cleanHtmlTags(postDTO.getText()));
-        template.convertAndSend("/topic/posts.insert", copy);
+        //template.convertAndSend("/topic/posts.insert", copy);
     }
 
     public void sendUpdatePostEvent(PostDTO postDTO) {
         PostDTO copy = deepCopy(postDTO);
         copy.setText(cleanHtmlTags(postDTO.getText()));
-        template.convertAndSend("/topic/posts.update", copy);
+        //template.convertAndSend("/topic/posts.update", copy);
     }
 
     public void sendDeletePostEvent(long id) {
-        template.convertAndSend("/topic/posts.delete", id);
+        //template.convertAndSend("/topic/posts.delete", id);
     }
 }
