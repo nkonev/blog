@@ -41,8 +41,6 @@ custom.image:
    - image/jpeg
   # value in seconds, passed in Cache-Control header
   max-age: 31536000
-# If post title image is empty - it set first image from content to title automatically
-custom.set.first.image.as.title: true
 spring.session.timeout: 2d
 
 
@@ -150,6 +148,7 @@ management:
 
 custom.rendertron.enable: true
 custom.rendertron.enable.async.cache.refresh: false
+custom.post.title.image.youtube.thumbnail.template: http://localhost:9080/__VIDEO_ID__.png
 
 spring.security:
     oauth2:

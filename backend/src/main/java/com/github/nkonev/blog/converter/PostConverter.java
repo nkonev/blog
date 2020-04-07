@@ -38,7 +38,7 @@ public class PostConverter {
     @Autowired
     private XssSanitizerService xssSanitizerService;
 
-    @Value("${custom.set.first.image.as.title:true}")
+    @Value("${custom.post.title.image.set.first.content.image.as.title:true}")
     boolean setFirstImageAsTitle;
 
     @Autowired
@@ -46,6 +46,9 @@ public class PostConverter {
 
     @Autowired
     private ImagePostTitleUploadController imagePostTitleUploadController;
+
+    @Value("${custom.post.title.image.youtube.thumbnail.template:https://i.ytimg.com/vi/__VIDEO_ID__/maxresdefault.jpg}")
+    private String youtubeThumbnailUrlTemplate;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PostConverter.class);
 
@@ -92,7 +95,7 @@ public class PostConverter {
         return forUpdate;
     }
 
-    private String getTitleImg(PostDTO postDTO) {
+    String getTitleImg(PostDTO postDTO) {
         String titleImg = postDTO.getTitleImg();
         if (setFirstImageAsTitle && StringUtils.isEmpty(titleImg)) {
             try {
@@ -112,7 +115,7 @@ public class PostConverter {
                     String iframeSrcUrl = element.attr("src");
                     if (iframeSrcUrl.contains("youtube.com")) {
                         String youtubeVideoId = getYouTubeVideoId(iframeSrcUrl);
-                        String youtubeThumbnailUrl = "https://i.ytimg.com/vi/"+youtubeVideoId+"/maxresdefault.jpg";
+                        String youtubeThumbnailUrl = youtubeThumbnailUrlTemplate.replace("__VIDEO_ID__", youtubeVideoId);
                         return imageDownloader.downloadImageAndSave(youtubeThumbnailUrl, imagePostTitleUploadController);
                     }
                 }

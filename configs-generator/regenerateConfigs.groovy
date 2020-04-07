@@ -154,8 +154,6 @@ custom.image:
    - image/jpeg
   # value in seconds, passed in Cache-Control header
   max-age: 31536000
-# If post title image is empty - it set first image from content to title automatically
-custom.set.first.image.as.title: true
 spring.session.timeout: 2d
 """
 }
@@ -309,6 +307,7 @@ ${DATA_STORE_SNIPPET(true)}
 ${MANAGEMENT_SNIPPET(true)}
 custom.rendertron.enable: true
 custom.rendertron.enable.async.cache.refresh: false
+custom.post.title.image.youtube.thumbnail.template: http://localhost:${ExportedConstants.TEST_PORT}/__VIDEO_ID__.png
 ${BACKEND_TEST_SECURITY_SNIPPET}
 """;
 writeAndLog(BACKEND_TEST_YML_FILE, BACKEND_TEST_YML_CONTENT);
