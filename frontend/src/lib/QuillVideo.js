@@ -12,6 +12,9 @@ class Video extends BlockEmbed {
         iframe.setAttribute('allowfullscreen', true);
         iframe.setAttribute('src', value);
         node.appendChild(iframe);
+
+        let p = document.createElement('p');
+        node.appendChild(p);
         return node;
     }
 
