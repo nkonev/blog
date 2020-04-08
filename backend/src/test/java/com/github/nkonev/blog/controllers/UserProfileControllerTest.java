@@ -249,13 +249,6 @@ public class UserProfileControllerTest extends AbstractUtTestRunner {
 
     }
 
-
-    @org.junit.jupiter.api.Test
-    @Disabled
-    public void adminCanChangeAnyProfile() {
-
-    }
-
     @org.junit.jupiter.api.Test
     @Disabled
     public void adminCanSeeAnybodyProfileEmail() {
