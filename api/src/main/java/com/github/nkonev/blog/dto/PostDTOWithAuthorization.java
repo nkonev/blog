@@ -17,9 +17,10 @@ public class PostDTOWithAuthorization extends PostDTO {
             boolean canDelete,
             LocalDateTime createDateTime,
             LocalDateTime editDateTime,
-            boolean draft
+            boolean draft,
+            String metaDescription
     ) {
-        super(id, title, text, titleImg, createDateTime, editDateTime, userAccountDTO, draft);
+        super(id, title, text, titleImg, createDateTime, editDateTime, userAccountDTO, draft, metaDescription);
         this.canEdit = canEdit;
         this.canDelete = canDelete;
     }

@@ -9,7 +9,8 @@ const def = () => {
         left: null,
         right: null,
         createDateTime: null,
-        editDateTime: null
+        editDateTime: null,
+        metaDescription: null
     }
 };
 

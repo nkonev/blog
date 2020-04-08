@@ -155,6 +155,7 @@ public class PostService {
                     (setPost ? "p.text, "  : "") +
                     "p.create_date_time," +
                     "p.edit_date_time," +
+                    "p.meta_description," +
                     "u.id as owner_id," +
                     "u.username as owner_login," +
                     "u.avatar as owner_avatar, " +
@@ -183,12 +184,16 @@ public class PostService {
                             resultSet.getString("owner_login"),
                             resultSet.getString("owner_avatar")
                     ),
-                    resultSet.getBoolean("draft")
-            );
+                    resultSet.getBoolean("draft"),
+                    resultSet.getString("meta_description")
+                    );
         }
     }
 
+    // Row mapper which doesn't get title and text from Postgres. Used on main feed page, because title and text are loaded from Elasticsearch there
     private final PostRowMapper rowMapperWithoutTextTitle = new PostRowMapper(false, false);
+
+    // Regular row mapper, used in post page
     private final PostRowMapper rowMapper = new PostRowMapper(true, true);
 
     public PostDTOWithAuthorization addPost(UserAccountDetailsDTO userAccount, @NotNull PostDTO postDTO){
@@ -296,7 +301,8 @@ public class PostService {
                 right != null ? new PostPreview(right.getId(), right.getTitle()) : null,
                 saved.getCreateDateTime(),
                 saved.getEditDateTime(),
-                saved.isDraft()
+                saved.isDraft(),
+                saved.getMetaDescription()
         );
     }
 

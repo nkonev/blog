@@ -18,15 +18,16 @@ public class PostDTO {
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern= ApiConstants.DATE_FORMAT)
     private LocalDateTime editDateTime;
     private boolean draft;
+    private String metaDescription;
 
     public PostDTO() { }
 
-    public PostDTO(long id, String title, String text, String titleImg, LocalDateTime createDateTime, LocalDateTime editDateTime, Integer commentCount, OwnerDTO owner, boolean draft) {
-        this(id, title, text, titleImg, createDateTime, editDateTime, owner, draft);
+    public PostDTO(long id, String title, String text, String titleImg, LocalDateTime createDateTime, LocalDateTime editDateTime, Integer commentCount, OwnerDTO owner, boolean draft, String metaDescription) {
+        this(id, title, text, titleImg, createDateTime, editDateTime, owner, draft, metaDescription);
         this.commentCount = commentCount;
     }
 
-    public PostDTO(long id, String title, String text, String titleImg, LocalDateTime createDateTime, LocalDateTime editDateTime, OwnerDTO owner, boolean draft) {
+    public PostDTO(long id, String title, String text, String titleImg, LocalDateTime createDateTime, LocalDateTime editDateTime, OwnerDTO owner, boolean draft,  String metaDescription) {
         this.id = id;
         this.title = title;
         this.text = text;
@@ -35,6 +36,7 @@ public class PostDTO {
         this.editDateTime = editDateTime;
         this.owner = owner;
         this.draft = draft;
+        this.metaDescription = metaDescription;
     }
 
 
@@ -116,5 +118,13 @@ public class PostDTO {
 
     public void setDraft(boolean draft) {
         this.draft = draft;
+    }
+
+    public String getMetaDescription() {
+        return metaDescription;
+    }
+
+    public void setMetaDescription(String metaDescription) {
+        this.metaDescription = metaDescription;
     }
 }

@@ -249,6 +249,9 @@
         metaInfo () {
             return {
                 title: this.postDTO.title,
+                meta: [
+                    { name: 'description', content: this.postDTO.metaDescription }
+                ]
             }
         }
     }

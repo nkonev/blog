@@ -65,7 +65,8 @@ public class PostConverter {
                 blogSecurityService.hasPostPermission(saved, userAccount, PostPermissions.DELETE),
                 saved.getCreateDateTime(),
                 saved.getEditDateTime(),
-                saved.isDraft()
+                saved.isDraft(),
+                saved.getMetaDescription()
         );
     }
 
@@ -170,7 +171,8 @@ public class PostConverter {
                 post.getCreateDateTime(),
                 post.getEditDateTime(),
                 userAccountConverter.convertToOwnerDTO(post.getOwnerId()),
-                post.isDraft()
+                post.isDraft(),
+                post.getMetaDescription()
         );
     }
 

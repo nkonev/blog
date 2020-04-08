@@ -26,6 +26,8 @@ public class Post {
 
     private boolean draft;
 
+    private String metaDescription;
+
     public Post() { }
 
     public Post(Long id, String title, String text, String titleImg) {
@@ -97,5 +99,13 @@ public class Post {
 
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public String getMetaDescription() {
+        return metaDescription;
+    }
+
+    public void setMetaDescription(String metaDescription) {
+        this.metaDescription = metaDescription;
     }
 }

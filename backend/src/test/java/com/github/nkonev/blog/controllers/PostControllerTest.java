@@ -102,7 +102,8 @@ public class PostControllerTest extends AbstractUtTestRunner {
                         null,
                         null,
                         new OwnerDTO(),
-                        false
+                        false,
+                        null
                 );
             }
             public PostDTO build() {
@@ -243,7 +244,7 @@ public class PostControllerTest extends AbstractUtTestRunner {
                 .andRespond(withSuccess(newIndexRendered, MediaType.TEXT_HTML));
 
         UserAccountDetailsDTO userAccountDetailsDTO = (UserAccountDetailsDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        postController.updatePost(userAccountDetailsDTO, new PostDTO(50L, "edited for search host port", "A new host for test www.google.com:80 with port too", "", null, null, null, false));
+        postController.updatePost(userAccountDetailsDTO, new PostDTO(50L, "edited for search host port", "A new host for test www.google.com:80 with port too", "", null, null, null, false, null));
 
         MvcResult getPostsRequest = mockMvc.perform(
                 get(Constants.Urls.API+ Constants.Urls.POST+"?searchString=www.google.com:80")
