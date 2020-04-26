@@ -175,13 +175,15 @@ public class UserProfileController {
 
     @PreAuthorize("@blogSecurityService.canLock(#userAccountDetailsDTO, #lockDTO)")
     @PostMapping(Constants.Urls.USER + Constants.Urls.LOCK)
-    public void setLocked(@AuthenticationPrincipal UserAccountDetailsDTO userAccountDetailsDTO, @RequestBody LockDTO lockDTO){
+    public UserAccountDTOExtended setLocked(@AuthenticationPrincipal UserAccountDetailsDTO userAccountDetailsDTO, @RequestBody LockDTO lockDTO){
         UserAccount userAccount = blogUserDetailsService.getUserAccount(lockDTO.getUserId());
         if (lockDTO.isLock()){
             blogUserDetailsService.killSessions(lockDTO.getUserId());
         }
         userAccount.setLocked(lockDTO.isLock());
         userAccount = userAccountRepository.save(userAccount);
+
+        return userAccountConverter.convertToUserAccountDTOExtended(userAccountDetailsDTO, userAccount);
     }
 
     @PreAuthorize("@blogSecurityService.canDelete(#userAccountDetailsDTO, #userId)")
