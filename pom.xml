@@ -38,7 +38,7 @@
         <selenide.version>4.14.2</selenide.version>
         <shedlock.version>2.1.0</shedlock.version>
         <greenmail.version>1.5.10</greenmail.version>
-        <mockserver.version>5.6.1</mockserver.version>
+        <mockserver.version>5.10.0</mockserver.version>
     </properties>
 
     <modules>

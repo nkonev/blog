@@ -147,7 +147,7 @@ public abstract class OAuth2EmulatorTests extends AbstractItTestRunner {
         mockServerVkontakte
                 .when(request().withPath("/mock/vkontakte/method/users.get"))
                 .respond(response().withHeaders(
-                        new Header(HttpHeaderNames.CONTENT_TYPE.toString(), "application/json")
+                        new Header(HttpHeaderNames.CONTENT_TYPE.toString(), "application/json; charset=\"utf-8\"")
                         ).withStatusCode(200).withBody("{\"response\": [{\"id\": 1212, \"first_name\": \"Никита\", \"last_name\": \"Конев\"}]}")
                 );
 
