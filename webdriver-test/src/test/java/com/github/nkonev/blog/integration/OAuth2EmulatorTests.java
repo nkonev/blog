@@ -115,13 +115,6 @@ public abstract class OAuth2EmulatorTests extends AbstractItTestRunner {
         namedParameterJdbcTemplate.update("UPDATE auth.users SET vkontakte_id=NULL, facebook_id=NULL", new HashMap<>());
     }
 
-    @AfterEach
-    public void resetFacebookEmulator(){
-        mockServerFacebook.reset();
-        mockServerVkontakte.reset();
-    }
-
-
     @BeforeEach
     public void configureVkontakteEmulator(){
         mockServerVkontakte
@@ -155,6 +148,12 @@ public abstract class OAuth2EmulatorTests extends AbstractItTestRunner {
             userAccount.setLocked(false);
             userAccountRepository.save(userAccount);
         });
+    }
+
+
+    @AfterEach
+    public void resetFacebookEmulator(){
+        mockServerFacebook.reset();
     }
 
     @AfterEach
