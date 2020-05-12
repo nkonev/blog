@@ -31,7 +31,7 @@ export const getTimestampFromUtc = (utcString) => {
 export const cutPost = (obj) => {
     let temp = obj.text.substring(0, 700);
     const last = temp.slice(-1);
-    if (!(last == '.')){
+    if (!(last == '.' || temp.length == obj.text.length)){
         temp += '...';
     }
     obj.text = temp;
