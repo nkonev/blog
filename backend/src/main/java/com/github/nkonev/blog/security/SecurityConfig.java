@@ -142,7 +142,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         })
         );
 
-        http.headers().frameOptions().disable();
+        http.headers().frameOptions().deny();
         http.headers().cacheControl().disable(); // see also com.github.nkonev.blog.controllers.AbstractImageUploadController#shouldReturnLikeCache
     }
 
