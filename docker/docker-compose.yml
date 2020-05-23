@@ -67,7 +67,7 @@ services:
       options:
         max-size: "50m"
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.2
     hostname: elasticsearch
     container_name: elasticsearch-blog-dev
     restart: unless-stopped
@@ -78,6 +78,11 @@ services:
     - discovery.type=single-node
     - cluster.name=elasticsearch
     - xpack.security.enabled=false
+    - xpack.enrich.enabled=false
+    - xpack.graph.enabled=false
+    - xpack.watcher.enabled=false
+    - xpack.monitoring.enabled=false
+    - xpack.ml.enabled=false
     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     volumes:
     - es_data_dir:/usr/share/elasticsearch/data

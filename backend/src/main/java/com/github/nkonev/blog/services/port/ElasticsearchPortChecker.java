@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.elasticsearch.rest.RestClientProperties;
+import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchRestClientProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -19,7 +19,7 @@ public class ElasticsearchPortChecker extends AbstractPortChecker {
     private int maxCount;
 
     @Autowired
-    private RestClientProperties elasticsearchProperties;
+    private ElasticsearchRestClientProperties elasticsearchProperties;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ElasticsearchPortChecker.class);
 
