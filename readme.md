@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.com/nkonev/blog.svg?branch=master)](https://travis-ci.com/nkonev/blog)
 [![codecov](https://codecov.io/gh/nkonev/blog/branch/master/graph/badge.svg)](https://codecov.io/gh/nkonev/blog)
+[![Docker Image Version (latest semver)](https://img.shields.io/docker/v/nkonev/blog)](https://hub.docker.com/r/nkonev/blog/tags)
 
 # Features
 * Zero-downtime update deployment
