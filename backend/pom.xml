@@ -202,7 +202,7 @@
                 <version>${maven-resources-plugin.version}</version>
                 <executions>
                     <execution>
-                        <id>copy-resources</id>
+                        <id>copy-documentation-resources</id>
                         <phase>test</phase>
                         <goals>
                             <goal>copy-resources</goal>
@@ -212,6 +212,21 @@
                             <resources>
                                 <resource>
                                     <directory>${project.build.directory}/asciidoc/html</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-demo-resources</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}/static</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.basedir}/../common-test/src/main/resources/static</directory>
                                 </resource>
                             </resources>
                         </configuration>

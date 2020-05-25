@@ -285,3 +285,5 @@ curl -X GET    -H "Content-Type:application/json"    -d '{
 ```
 ./mvnw -pl common-test clean install
 ```
+
+./mvnw resources:copy-resources@copy-demo-resources -pl backend
