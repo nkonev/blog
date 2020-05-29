@@ -182,7 +182,7 @@ services:
     - backend
 
   rendertron:
-    image: nkonev/rendertron-docker:0.0.3
+    image: nkonev/rendertron-docker:0.0.4
     hostname: rendertron
     logging:
       driver: "json-file"
