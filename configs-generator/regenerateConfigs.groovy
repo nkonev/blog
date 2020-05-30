@@ -230,7 +230,7 @@ ${WEBSERVER_SNIPPET}
 spring.mvc.static-path-pattern: /**
 # You need to remove "file:..." element for production or you can to remove spring.resources.static-locations
 # first element - for eliminate manual restart app in IntelliJ for copy compiled js to target/classes, last slash is important,, second element - for documentation
-spring.resources.static-locations: file:backend/src/main/resources/static/, classpath:/static/
+spring.resources.static-locations: file:backend/src/main/resources/static/, classpath:/static/, file:common-test/target/classes/static
 
 ${DATA_STORE_SNIPPET(false)}
 ${MANAGEMENT_SNIPPET(false)}
