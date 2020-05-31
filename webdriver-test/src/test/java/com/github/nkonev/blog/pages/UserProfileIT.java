@@ -422,7 +422,7 @@ public class UserProfileIT extends OAuth2EmulatorTests {
         loginModal600.login();
         userPage.edit();
         userPage.bindVkontakte();
-        $("body").has(Condition.text("Somebody already taken this vkontakte id"));
+        Assertions.assertTrue($("body").has(Condition.text("Somebody already taken this vkontakte id")));
     }
 
     @Test
