@@ -325,25 +325,34 @@ public class PostService {
         }
     }
 
+    private List<PostDTO> getPostDTOSFromDb(PageRequest pageRequest, Tuple2<String, Map<String, Object>> tuple2) {
+        var params = new HashMap<String, Object>();
+        params.put("limit", pageRequest.getPageSize());
+        params.put("offset", pageRequest.getOffset());
+        params.putAll(tuple2.getT2());
+        List<PostDTO> postsResult = jdbcTemplate.query(rowMapper.getBaseSql() + " WHERE " + tuple2.getT1() + " ORDER BY p.id DESC limit :limit offset :offset", params, rowMapper);
+        List<PostDTO> list = postsResult.stream()
+            .peek(PostConverter::cleanTags)
+            .collect(Collectors.toList());
+        return list;
+    }
+
+
     public Wrapper<PostDTO> getPosts(int page, int size, String searchString, @Nullable UserAccountDetailsDTO currentUser){
         page = PageUtils.fixPage(page);
         size = PageUtils.fixSize(size);
         searchString = StringUtils.trimWhitespace(searchString);
 
         List<PostDTO> postsResult;
-
+        long totalCount;
         if (StringUtils.isEmpty(searchString)) {
             PageRequest pageRequest = PageRequest.of(page, size);
+            Tuple2<String, Map<String, Object>> tuple2 = noDraftFilterJdbc(currentUser);
+            postsResult = getPostDTOSFromDb(pageRequest, tuple2);
 
-            NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
-                    .withSort(new FieldSortBuilder(FIELD_ID).order(SortOrder.DESC))
-                    .withQuery(boolQuery()
-                            .must(noDraftFilterElasticsearch(currentUser))
-                    )
-                    .withPageable(pageRequest)
-                    .build();
-            // https://stackoverflow.com/questions/37049764/how-to-provide-highlighting-with-spring-data-elasticsearch/37163711#37163711
-            postsResult = getPostDTOS(searchQuery);
+            var countParams = new HashMap<String, Object>();
+            countParams.putAll(tuple2.getT2());
+            totalCount = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM posts.post p WHERE "+tuple2.getT1(), countParams, long.class);
         } else {
             PageRequest pageRequest = PageRequest.of(page, size);
 
@@ -371,12 +380,12 @@ public class PostService {
                     .build();
             // https://stackoverflow.com/questions/37049764/how-to-provide-highlighting-with-spring-data-elasticsearch/37163711#37163711
             postsResult = getPostDTOS(searchQuery);
-        }
 
-        NativeSearchQuery countQuery = new NativeSearchQueryBuilder()
+            NativeSearchQuery countQuery = new NativeSearchQueryBuilder()
                 .withQuery(boolQuery().must(noDraftFilterElasticsearch(currentUser)))
                 .build();
-        long totalCount = elasticsearchTemplate.count(countQuery, IndexCoordinates.of(INDEX));
+            totalCount = elasticsearchTemplate.count(countQuery, IndexCoordinates.of(INDEX));
+        }
 
         return new Wrapper<>(postsResult, totalCount);
     }
