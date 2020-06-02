@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
+import org.springframework.util.StringUtils;
 
 import static com.github.nkonev.blog.utils.SeoCacheKeyUtils.RENDERTRON_HTML;
 import static com.github.nkonev.blog.utils.SeoCacheKeyUtils.getRedisKeyForIndex;
@@ -479,13 +480,18 @@ public class PostControllerTest extends AbstractUtTestRunner {
     }
 
     private List<PostDTO> getAllPosts(String urlPrefix) throws Exception {
+        return getAllPosts(urlPrefix, null);
+    }
+
+    private List<PostDTO> getAllPosts(String urlPrefix, String search) throws Exception {
         final int pageSize = 20;
         final List<PostDTO> allPosts = new ArrayList<>();
         int lastSize;
         int p = 0;
+        String maybeQ = !StringUtils.isEmpty(search) ? "&searchString="+search : "";
         do {
             MvcResult getPostRequest = mockMvc.perform(
-                    get(urlPrefix + "?page=" + p + "&size=" + pageSize)
+                    get(urlPrefix + "?page=" + p + "&size=" + pageSize + maybeQ)
             )
                     .andExpect(status().isOk())
                     .andReturn();
@@ -500,6 +506,50 @@ public class PostControllerTest extends AbstractUtTestRunner {
         return allPosts;
     }
 
+    private Long getUserId(String userName){
+        return userAccountRepository.findByUsername(userName).orElseThrow().getId();
+    }
+
+
+
+
+
+    @WithUserDetails(TestConstants.USER_ALICE)
+    @Test
+    public void testUserCannotSeeForeignDraftsInSearch() throws Exception {
+        Assertions.assertFalse(getAllPosts(Constants.Urls.API + Constants.Urls.POST, "generated").stream().anyMatch(hasDraftPostPredicate));
+    }
+
+    @WithUserDetails(TestConstants.USER_NIKITA)
+    @Test
+    public void testUserCanSeeHisDraftsInSearch() throws Exception {
+        Assertions.assertTrue(getAllPosts(Constants.Urls.API + Constants.Urls.POST, "generated").stream().anyMatch(hasDraftPostPredicate));
+    }
+
+    @WithUserDetails(TestConstants.USER_ALICE)
+    @Test // actually not need because search still not supported
+    public void testUserCannotSeeForeignDraftsInSearchInUsersPosts() throws Exception {
+        Long id = getUserId(TestConstants.USER_ALICE);
+        Assertions.assertFalse(getAllPosts(Constants.Urls.API+Constants.Urls.USER + "/" + id + Constants.Urls.POSTS, "generated").stream().anyMatch(hasDraftPostPredicate));
+    }
+
+    @Test // actually not need because search still not supported
+    public void testAnonymousCannotSeeForeignDraftsInSearchInUsersPosts() throws Exception {
+        Long id = getUserId(TestConstants.USER_ALICE);
+        Assertions.assertFalse(getAllPosts(Constants.Urls.API+Constants.Urls.USER + "/" + id + Constants.Urls.POSTS, "generated").stream().anyMatch(hasDraftPostPredicate));
+    }
+
+    @WithUserDetails(TestConstants.USER_NIKITA)
+    @Test // actually not need because search still not supported
+    public void testUserCanSeeHisDraftsInSearchInUsersPosts() throws Exception {
+        Long id = getUserId(TestConstants.USER_NIKITA);
+        Assertions.assertTrue(getAllPosts(Constants.Urls.API+Constants.Urls.USER + "/" + id + Constants.Urls.POSTS, "generated").stream().anyMatch(hasDraftPostPredicate));
+    }
+
+
+
+
+
     @WithUserDetails(TestConstants.USER_ALICE)
     @Test
     public void testUserCannotSeeForeignDrafts() throws Exception {
@@ -510,10 +560,6 @@ public class PostControllerTest extends AbstractUtTestRunner {
     @Test
     public void testUserCanSeeHisDrafts() throws Exception {
         Assertions.assertTrue(getAllPosts(Constants.Urls.API + Constants.Urls.POST).stream().anyMatch(hasDraftPostPredicate));
-    }
-
-    private Long getUserId(String userName){
-        return userAccountRepository.findByUsername(userName).orElseThrow().getId();
     }
 
     @WithUserDetails(TestConstants.USER_ALICE)
@@ -535,6 +581,12 @@ public class PostControllerTest extends AbstractUtTestRunner {
         Long id = getUserId(TestConstants.USER_NIKITA);
         Assertions.assertTrue(getAllPosts(Constants.Urls.API+Constants.Urls.USER + "/" + id + Constants.Urls.POSTS).stream().anyMatch(hasDraftPostPredicate));
     }
+
+
+
+
+
+
 
     @WithUserDetails(TestConstants.USER_ALICE)
     @Test
