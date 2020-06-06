@@ -15,15 +15,12 @@ public class UserSelfProfileDTO extends UserAccountDTO {
 
     private Collection<UserRole> roles;
 
-    private Long expiresAt;
-
     public UserSelfProfileDTO() { }
 
-    public UserSelfProfileDTO(Long id, String login, String avatar, String email, LocalDateTime lastLoginDateTime, OauthIdentifiersDTO oauthIdentifiers, Collection<UserRole> roles, Long expiresAt) {
+    public UserSelfProfileDTO(Long id, String login, String avatar, String email, LocalDateTime lastLoginDateTime, OauthIdentifiersDTO oauthIdentifiers, Collection<UserRole> roles) {
         super(id, login, avatar, lastLoginDateTime, oauthIdentifiers);
         this.email = email;
         this.roles = roles;
-        this.expiresAt = expiresAt;
     }
 
     public String getEmail() {
@@ -40,13 +37,5 @@ public class UserSelfProfileDTO extends UserAccountDTO {
 
     public void setRoles(Collection<UserRole> roles) {
         this.roles = roles;
-    }
-
-    public Long getExpiresAt() {
-        return expiresAt;
-    }
-
-    public void setExpiresAt(Long expiresAt) {
-        this.expiresAt = expiresAt;
     }
 }

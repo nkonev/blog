@@ -55,9 +55,6 @@ public class UserProfileController {
     @Autowired
     private UserDeleteService userDeleteService;
 
-    @Autowired
-    private SessionProperties sessionProperties;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(UserProfileController.class);
 
     /**
@@ -67,12 +64,8 @@ public class UserProfileController {
      */
     @PreAuthorize("isAuthenticated()")
     @GetMapping(value = Constants.Urls.PROFILE)
-    public UserAccountDTO checkAuthenticated(@AuthenticationPrincipal UserAccountDetailsDTO userAccount, HttpSession session) {
-        Long expiresAt = null;
-        if (session!=null && sessionProperties.getTimeout()!=null) {
-            expiresAt = session.getCreationTime() + sessionProperties.getTimeout().toMillis() ;
-        }
-        return UserAccountConverter.getUserSelfProfile(userAccount, null, expiresAt);
+    public UserAccountDTO checkAuthenticated(@AuthenticationPrincipal UserAccountDetailsDTO userAccount) {
+        return UserAccountConverter.getUserSelfProfile(userAccount, null);
     }
 
     @GetMapping(value = Constants.Urls.USER)
@@ -119,7 +112,7 @@ public class UserProfileController {
         ) {
         UserAccount userAccountEntity = userAccountRepository.findById(userId).orElseThrow(() -> new RuntimeException("user with id="+ userId + " not found"));
         if (userAccount!=null && userAccount.getId().equals(userAccountEntity.getId())){
-            return UserAccountConverter.getUserSelfProfile(userAccount, userAccountEntity.getLastLoginDateTime(), null);
+            return UserAccountConverter.getUserSelfProfile(userAccount, userAccountEntity.getLastLoginDateTime());
         } else {
             return userAccountConverter.convertToUserAccountDTO(userAccountEntity);
         }

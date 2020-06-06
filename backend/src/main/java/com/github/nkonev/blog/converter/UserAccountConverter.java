@@ -61,7 +61,7 @@ public class UserAccountConverter {
         );
     }
 
-    public static UserSelfProfileDTO getUserSelfProfile(UserAccountDetailsDTO userAccount, LocalDateTime lastLoginDateTime, Long expiresAt) {
+    public static UserSelfProfileDTO getUserSelfProfile(UserAccountDetailsDTO userAccount, LocalDateTime lastLoginDateTime) {
         if (userAccount == null) { return null; }
         return new UserSelfProfileDTO (
                 userAccount.getId(),
@@ -70,8 +70,7 @@ public class UserAccountConverter {
                 userAccount.getEmail(),
                 lastLoginDateTime,
                 userAccount.getOauthIdentifiers(),
-                convertRoles2Enum(userAccount.getRoles()),
-                expiresAt
+                convertRoles2Enum(userAccount.getRoles())
         );
     }
 
