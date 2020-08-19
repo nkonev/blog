@@ -259,6 +259,7 @@
             margin-bottom $postBodyMarginBottom
 
             height: 480px
+            overflow-y auto
         }
     }
 
