@@ -26,9 +26,10 @@ script:
   # We use 'install' phase because of use jars in subsequent tests
   - DATE_VERSION=`date +%Y%m%d.%H.%M`
   - "rm ~/.m2/settings.xml"
-  - ./mvnw -U -q -Drevision=$DATE_VERSION -P frontend -P jacoco -P docker -P webdriver-chrome -P webdriver-firefox -Dcustom.selenium.headless=true clean install
+#  - ./mvnw -U -q -Drevision=$DATE_VERSION -P frontend -P jacoco -P docker -P webdriver-chrome -P webdriver-firefox -Dcustom.selenium.headless=true clean install
+  - ./mvnw -U -q -Drevision=$DATE_VERSION -P frontend -P docker -DskipTests clean install
   - (cd docker; docker-compose down)
-  - ./mvnw -U -q -Drevision=$DATE_VERSION -pl deploy-test -P deploy-test clean test
+#  - ./mvnw -U -q -Drevision=$DATE_VERSION -pl deploy-test -P deploy-test clean test
   - rm -rf ~/.m2/repository/com/github/nkonev/blog
   - rm -rf $TRAVIS_BUILD_DIR/frontend/node_modules/.cache
   - bash <(curl -s https://codecov.io/bash)
