@@ -5,7 +5,7 @@ on:
 
 jobs:
   blog:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-16.04
     steps:
       - uses: actions/checkout@v2
       - name: Install software
@@ -29,6 +29,7 @@ jobs:
       - name: Build with Maven
         run: |
           DATE_VERSION=`date +%Y%m%d.%H.%M`
+          rm ~/.m2/settings.xml
           ./mvnw -U -q -Drevision=$DATE_VERSION -P frontend -P docker -P jacoco -P webdriver-chrome -P webdriver-firefox -Dcustom.selenium.headless=true clean install
           (cd docker; docker-compose down)
           ./mvnw -U -q -Drevision=$DATE_VERSION -pl deploy-test -P deploy-test clean test
