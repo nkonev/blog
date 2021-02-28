@@ -28,6 +28,7 @@ jobs:
           (cd docker; docker-compose up -d)
       - name: Build with Maven
         run: |
+          DATE_VERSION=`date +%Y%m%d.%H.%M`
           ./mvnw -U -q -Drevision=$DATE_VERSION -P frontend -P docker -P jacoco -P webdriver-chrome -P webdriver-firefox -Dcustom.selenium.headless=true clean install
           (cd docker; docker-compose down)
           ./mvnw -U -q -Drevision=$DATE_VERSION -pl deploy-test -P deploy-test clean test
@@ -38,7 +39,6 @@ jobs:
       - name: Deploy
         if: github.ref == 'refs/heads/master'
         run: |
-          DATE_VERSION=`date +%Y%m%d.%H.%M`
           mkdir -p ~/.ssh && openssl aes-256-cbc -K ${{ secrets.EncryptedKey }} -iv ${{ secrets.EncryptedIv }} -in ./.secret_keys/id_rsa.enc -out ~/.ssh/id_rsa -d
           chmod 600 ~/.ssh/id_rsa
 
