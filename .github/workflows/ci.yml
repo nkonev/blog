@@ -1,0 +1,51 @@
+name: CI jobs
+
+on:
+  push:
+
+jobs:
+  blog:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install software
+        run: |
+          sudo apt update
+          sudo apt install -y chromium-browser firefox
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Cache local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Start & wait docker-compose environment
+        run: |
+          (cd docker; docker-compose up -d)
+      - name: Build with Maven
+        run: |
+          ./mvnw -U -q -Drevision=$DATE_VERSION -P frontend -P docker -P jacoco -P webdriver-chrome -P webdriver-firefox -Dcustom.selenium.headless=true clean install
+          (cd docker; docker-compose down)
+          ./mvnw -U -q -Drevision=$DATE_VERSION -pl deploy-test -P deploy-test clean test
+          rm -rf ~/.m2/repository/com/github/nkonev/blog
+          rm -rf ~/frontend/node_modules/.cache
+          bash <(curl -s https://codecov.io/bash)
+
+      - name: Deploy
+        if: github.ref == 'refs/heads/master'
+        run: |
+          DATE_VERSION=`date +%Y%m%d.%H.%M`
+          mkdir -p ~/.ssh && openssl aes-256-cbc -K ${{ secrets.EncryptedKey }} -iv ${{ secrets.EncryptedIv }} -in ./.secret_keys/id_rsa.enc -out ~/.ssh/id_rsa -d
+          chmod 600 ~/.ssh/id_rsa
+
+          echo "Will login to docker" &&
+          docker login -u="nkonev" -p="${{ secrets.DockerPassword }}" &&
+          echo "Will push docker image" &&
+          docker push nkonev/blog:latest &&
+          echo "Will deploy blog" &&
+          ssh -o "BatchMode yes" -o StrictHostKeyChecking=no -q ${{ secrets.ConnectLine }} ${{ secrets.BlogUpdateCommand }}
+
