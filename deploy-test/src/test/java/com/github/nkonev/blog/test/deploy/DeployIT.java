@@ -125,21 +125,6 @@ public class DeployIT {
         Assert.assertFalse(version.isEmpty());
     }
 
-    @Test
-    @Parameters({"hostHeader"})
-    public void testDocumentationIsPresent(String hostHeader) throws Exception {
-        final Request request = new Request.Builder()
-                .header("Host", hostHeader)
-                .url(baseUrl+"/docs/index.html")
-                .build();
-
-        final Response response = client.newCall(request).execute();
-        final String html = response.body().string();
-        LOGGER.debug("docs html response: {}", html);
-        Assert.assertTrue(html.contains("Blog API Reference"));
-    }
-
-
     @Parameters({"testStack", "hostHeader"})
     @Test
     public void testPrerenderWorks(String testStack, String hostHeader) throws IOException, InterruptedException {

@@ -12,7 +12,6 @@
             <nav id="header-nav">
                 <router-link class="router-link" to="/" exact>Posts</router-link>
                 <router-link class="router-link" to="/users">Users</router-link>
-                <a class="router-link" id="a-doc" href="/docs/index.html">API</a>
                 <router-link class="router-link" to="/help">Help</router-link>
                 <router-link v-show="config.canShowSettings" class="router-link" to="/settings">Settings</router-link>
                 <router-link v-show="config.canShowApplications" class="router-link" to="/applications">Applications</router-link>
