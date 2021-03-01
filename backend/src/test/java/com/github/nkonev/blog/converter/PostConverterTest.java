@@ -38,8 +38,6 @@ public class PostConverterTest extends AbstractUtTestRunner {
         Assertions.assertEquals("http://example.com/image1.png", titleImg);
     }
 
-    // TODO not working in Github CI
-    @Disabled
     @Test
     public void shouldDownloadYoutubePreviewWhenTitleImgEmptyAndContentHasNotImages() {
         PostDTO postDTO = new PostDTO();
