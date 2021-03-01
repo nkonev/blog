@@ -26,12 +26,10 @@ jobs:
       - name: Start & wait docker-compose environment
         run: |
           (cd docker; docker-compose up -d)
-      # `./mvnw -U -Drevision=$DATE_VERSION -DskipTests clean install` is required by PostConverterTest.shouldDownloadYoutubePreviewWhenTitleImgEmptyAndContentHasNotImages, because test refers to resource ava.png
       - name: Build with Maven
         run: |
           DATE_VERSION=`date +%Y%m%d.%H.%M`
           rm ~/.m2/settings.xml
-          ./mvnw -U -Drevision=$DATE_VERSION -DskipTests clean install
           ./mvnw -U -Drevision=$DATE_VERSION -P frontend -P docker -P jacoco -P webdriver-chrome -Dcustom.selenium.headless=true clean install
           (cd docker; docker-compose down)
           ./mvnw -U -Drevision=$DATE_VERSION -pl deploy-test -P deploy-test clean test
