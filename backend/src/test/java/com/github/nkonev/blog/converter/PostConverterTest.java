@@ -4,14 +4,17 @@ import com.github.nkonev.blog.AbstractUtTestRunner;
 import com.github.nkonev.blog.dto.PostDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.util.StringUtils;
 
 import java.util.Map;
 
 public class PostConverterTest extends AbstractUtTestRunner {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PostConverterTest.class);
 
     @Autowired
     private PostConverter postConverter;
@@ -36,19 +39,26 @@ public class PostConverterTest extends AbstractUtTestRunner {
 
     @Test
     public void shouldDownloadYoutubePreviewWhenTitleImgEmptyAndContentHasNotImages() {
-        PostDTO postDTO = new PostDTO();
-        postDTO.setText("Hello, I contains youtube videos. " +
-                " This is first. <iframe allowfullscreen=\"true\" src=\"https://www.youtube.com/embed/ava?showinfo=0\" frameborder=\"0\"></iframe>" +
+        try {
+            PostDTO postDTO = new PostDTO();
+            postDTO.setText("Hello, I contains youtube videos. " +
+                " This is first. <iframe allowfullscreen=\"true\" src=\"https://www.youtube.com/embed/ava?showinfo=0\" frameborder=\"0\"></iframe>"
+                +
                 " This is second. <iframe allowfullscreen=\"true\" src=\"https://www.youtube.com/embed/ava?showinfo=0\" frameborder=\"0\"></iframe>");
-        postDTO.setTitle("Title");
-        String titleImg = postConverter.getTitleImg(postDTO);
-        Assertions.assertNotNull(titleImg);
-        String imageId = titleImg
+            postDTO.setTitle("Title");
+            String titleImg = postConverter.getTitleImg(postDTO);
+            Assertions.assertNotNull(titleImg);
+            String imageId = titleImg
                 .replace("/api/image/post/title/", "")
                 .replace(".png", "");
-        Assertions.assertFalse(StringUtils.isEmpty(imageId));
+            Assertions.assertFalse(StringUtils.isEmpty(imageId));
 
-        Integer integer = jdbcTemplate.queryForObject("select count(*) from images.post_title_image where id = :id\\:\\:uuid", Map.of("id", imageId), Integer.class);
-        Assertions.assertEquals(1, integer);
+            Integer integer = jdbcTemplate.queryForObject(
+                "select count(*) from images.post_title_image where id = :id\\:\\:uuid",
+                Map.of("id", imageId), Integer.class);
+            Assertions.assertEquals(1, integer);
+        } catch (Throwable t) {
+            LOGGER.error("Error in download test", t);
+        }
     }
 }

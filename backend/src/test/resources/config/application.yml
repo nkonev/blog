@@ -129,10 +129,6 @@ spring.redis.url: redis://172.22.0.3:6379/0
 spring.data.redis.repositories.enabled: false
 
 spring:
-  test:
-    context:
-      cache:
-        maxSize: 1
   elasticsearch:
     rest:
       uris: 172.22.0.5:9200
