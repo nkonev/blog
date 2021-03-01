@@ -1,6 +1,6 @@
 # docker build -t blog:latest .
 # docker run blog:latest
-FROM adoptopenjdk:13.0.1_9-jre-hotspot-bionic
+FROM adoptopenjdk:14.0.2_12-jre-hotspot-focal
 ARG APP_HOME=/opt/blog
 RUN mkdir -p ${APP_HOME}
 WORKDIR ${APP_HOME}
