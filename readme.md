@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/nkonev/blog.svg?branch=master)](https://travis-ci.com/nkonev/blog)
+[![Build Status](https://github.com/nkonev/blog/workflows/CI%20jobs/badge.svg)](https://github.com/nkonev/blog/actions)
 [![codecov](https://codecov.io/gh/nkonev/blog/branch/master/graph/badge.svg)](https://codecov.io/gh/nkonev/blog)
 [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/nkonev/blog)](https://hub.docker.com/r/nkonev/blog/tags)
 
@@ -56,7 +56,7 @@ It will download java dependencies and nodejs with frontend dependencies.
 
 Q: Why does blog wait for PostgreSQL, Elasticsearch, Redis, RabbltMQ port availability on boot?
 
-A: Primarily for deploy tests runned inside Travis. When there isn' t these waits, I had spirously tests fails due inpredictable time of Elasticsearch boot.
+A: Primarily for deploy tests run inside Github CI. When there isn' t these waits, I had spuriously tests fails due to unpredictable time of Elasticsearch boot.
 
 
 ## Embedded API documentation

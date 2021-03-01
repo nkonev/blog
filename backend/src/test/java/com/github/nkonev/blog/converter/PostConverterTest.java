@@ -37,7 +37,8 @@ public class PostConverterTest extends AbstractUtTestRunner {
         Assertions.assertEquals("http://example.com/image1.png", titleImg);
     }
 
-
+    // it requires
+    // ./mvnw -U -Drevision=$DATE_VERSION -DskipTests clean install
     @Test
     public void shouldDownloadYoutubePreviewWhenTitleImgEmptyAndContentHasNotImages() {
         PostDTO postDTO = new PostDTO();
