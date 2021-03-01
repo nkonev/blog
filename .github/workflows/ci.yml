@@ -26,6 +26,7 @@ jobs:
       - name: Start & wait docker-compose environment
         run: |
           (cd docker; docker-compose up -d)
+      # `./mvnw -U -Drevision=$DATE_VERSION -DskipTests clean install` is required by PostConverterTest.shouldDownloadYoutubePreviewWhenTitleImgEmptyAndContentHasNotImages, because test refers to resource ava.png
       - name: Build with Maven
         run: |
           DATE_VERSION=`date +%Y%m%d.%H.%M`
