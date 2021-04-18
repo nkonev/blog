@@ -52,11 +52,6 @@ public class BlogErrorController extends AbstractErrorController {
         super(errorAttributes, errorViewResolvers);
     }
 
-    @Override
-    public String getErrorPath() {
-        return PATH;
-    }
-
     @RequestMapping(value = PATH)
     public ModelAndView error(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
