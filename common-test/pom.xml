@@ -21,7 +21,8 @@
         </dependency>
         <dependency>
             <groupId>com.icegreen</groupId>
-            <artifactId>greenmail</artifactId>
+            <artifactId>greenmail-junit5</artifactId>
+            <version>${greenmail.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

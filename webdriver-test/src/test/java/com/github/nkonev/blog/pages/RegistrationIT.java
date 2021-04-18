@@ -3,13 +3,14 @@ package com.github.nkonev.blog.pages;
 import com.codeborne.selenide.Condition;
 import com.github.nkonev.blog.CommonTestConstants;
 import com.github.nkonev.blog.Constants;
-import com.github.nkonev.blog.extensions.GreenMailExtension;
-import com.github.nkonev.blog.extensions.GreenMailExtensionFactory;
 import com.github.nkonev.blog.integration.AbstractItTestRunner;
 import com.github.nkonev.blog.pages.object.LoginModal;
 import com.github.nkonev.blog.repository.redis.UserConfirmationTokenRepository;
 import com.github.nkonev.blog.util.UrlParser;
+import com.icegreen.greenmail.configuration.GreenMailConfiguration;
+import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.util.Retriever;
+import com.icegreen.greenmail.util.ServerSetupTest;
 import com.sun.mail.imap.IMAPMessage;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,8 @@ public class RegistrationIT extends AbstractItTestRunner {
     private static final Logger LOGGER = LoggerFactory.getLogger(RegistrationIT.class);
 
     @RegisterExtension
-    protected GreenMailExtension greenMail = GreenMailExtensionFactory.build();
+    protected GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP_IMAP).withConfiguration(
+        GreenMailConfiguration.aConfig().withDisabledAuthentication());
 
     @Test
     public void testConfirmationSuccess() throws Exception {

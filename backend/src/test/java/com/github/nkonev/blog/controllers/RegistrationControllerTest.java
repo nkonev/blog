@@ -6,13 +6,14 @@ import com.github.nkonev.blog.TestConstants;
 import com.github.nkonev.blog.dto.EditUserDTO;
 import com.github.nkonev.blog.entity.jdbc.UserAccount;
 import com.github.nkonev.blog.entity.redis.UserConfirmationToken;
-import com.github.nkonev.blog.extensions.GreenMailExtension;
-import com.github.nkonev.blog.extensions.GreenMailExtensionFactory;
 import com.github.nkonev.blog.repository.jdbc.UserAccountRepository;
 import com.github.nkonev.blog.repository.redis.PasswordResetTokenRepository;
 import com.github.nkonev.blog.security.SecurityConfig;
 import com.github.nkonev.blog.util.UrlParser;
+import com.icegreen.greenmail.configuration.GreenMailConfiguration;
+import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.util.Retriever;
+import com.icegreen.greenmail.util.ServerSetupTest;
 import com.sun.mail.imap.IMAPMessage;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -47,7 +48,8 @@ public class RegistrationControllerTest extends AbstractUtTestRunner {
     private static final Logger LOGGER = LoggerFactory.getLogger(RegistrationControllerTest.class);
 
     @RegisterExtension
-    protected GreenMailExtension greenMail = GreenMailExtensionFactory.build();
+    protected GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP_IMAP).withConfiguration(
+        GreenMailConfiguration.aConfig().withDisabledAuthentication());
 
     @Test
     public void testConfirmationSuccess() throws Exception {
