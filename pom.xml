@@ -37,7 +37,7 @@
         <selenium.override.version>3.14.0</selenium.override.version>
         <selenide.version>4.14.2</selenide.version>
         <shedlock.version>2.1.0</shedlock.version>
-        <greenmail.version>1.5.10</greenmail.version>
+        <greenmail.version>1.6.2</greenmail.version>
         <mockserver.version>5.10.0</mockserver.version>
     </properties>
 
@@ -255,18 +255,19 @@
 
             <dependency>
                 <groupId>com.icegreen</groupId>
-                <artifactId>greenmail</artifactId>
+                <artifactId>greenmail-junit5</artifactId>
                 <version>${greenmail.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>com.sun.mail</groupId>
-                        <artifactId>javax.mail</artifactId>
+                        <artifactId>jakarta.mail</artifactId>
                     </exclusion>
                     <exclusion>
                         <groupId>junit</groupId>
                         <artifactId>junit</artifactId>
                     </exclusion>
                 </exclusions>
+
             </dependency>
             <dependency>
                 <groupId>net.javacrumbs.shedlock</groupId>
