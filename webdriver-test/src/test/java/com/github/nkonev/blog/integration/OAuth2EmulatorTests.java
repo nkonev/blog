@@ -21,8 +21,8 @@ import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
 public abstract class OAuth2EmulatorTests extends AbstractItTestRunner {
-    private static final int MOCK_SERVER_FACEBOOK_PORT = 10080;
-    private static final int MOCK_SERVER_VKONTAKTE_PORT = 10081;
+    public static final int MOCK_SERVER_FACEBOOK_PORT = 10080;
+    public static final int MOCK_SERVER_VKONTAKTE_PORT = 10081;
 
     private static ClientAndServer mockServerFacebook;
     private static ClientAndServer mockServerVkontakte;

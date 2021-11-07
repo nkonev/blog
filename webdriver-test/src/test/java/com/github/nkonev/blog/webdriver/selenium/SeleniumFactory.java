@@ -19,6 +19,9 @@ import org.springframework.beans.factory.FactoryBean;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
+import static com.github.nkonev.blog.integration.OAuth2EmulatorTests.MOCK_SERVER_FACEBOOK_PORT;
+import static com.github.nkonev.blog.integration.OAuth2EmulatorTests.MOCK_SERVER_VKONTAKTE_PORT;
+
 /**
  * Created by nik on 07.08.16.
  */
@@ -83,6 +86,7 @@ public class SeleniumFactory implements FactoryBean<WebDriver> {
                 WebDriverManager.getInstance(DriverManagerType.CHROME).version(CHROME_DRIVER_VERSION).setup(); // download executables if need and set System.properties
                 // https://developers.google.com/web/updates/2017/04/headless-chrome
                 ChromeOptions chromeOptions = new ChromeOptions();
+                chromeOptions.addArguments("--explicitly-allowed-ports="+MOCK_SERVER_FACEBOOK_PORT+","+MOCK_SERVER_VKONTAKTE_PORT);
                 if (seleniumConfiguration.isHeadless()) {
                     chromeOptions.addArguments("--headless");
                 }

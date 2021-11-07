@@ -320,3 +320,9 @@ Set Instant
 * LDAP
 * Google OAuth2 login
 * search by comments
+
+
+# Generate configs
+```
+./mvnw -pl configs-generator generate-sources
+```

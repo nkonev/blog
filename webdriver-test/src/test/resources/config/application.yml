@@ -24,8 +24,8 @@ spring.mail:
     mail.smtp.writetimeout: 5000
 
 custom.stomp.broker:
-  host: "172.22.0.4"
-  port: 61613
+  host: "127.0.0.1"
+  port: 60613
   virtual-host: /
   client-login: blog
   client-password: blogPazZw0rd
@@ -112,7 +112,7 @@ spring.datasource:
     name: blog_ds
     type: org.apache.tomcat.jdbc.pool.DataSource
     # https://jdbc.postgresql.org/documentation/head/connect.html#connection-parameters
-    url: jdbc:postgresql://172.22.0.2:5432/blog?connectTimeout=10&socketTimeout=40
+    url: jdbc:postgresql://127.0.0.1:25432/blog?connectTimeout=10&socketTimeout=40
     username: blog
     password: "blogPazZw0rd"
     driverClassName: org.postgresql.Driver
@@ -140,13 +140,13 @@ spring.flyway:
   schemas: migrations, auth, posts, images, settings
   out-of-order: true
 
-spring.redis.url: redis://172.22.0.3:6379/0
+spring.redis.url: redis://127.0.0.1:26379/0
 spring.data.redis.repositories.enabled: false
 
 spring:
   elasticsearch:
     rest:
-      uris: 172.22.0.5:9200
+      uris: 127.0.0.1:29200
       read-timeout: 30s
       connection-timeout: 5s
 spring.data.elasticsearch.repositories.enabled: false
