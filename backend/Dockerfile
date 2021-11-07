@@ -1,6 +1,6 @@
 # docker build -t blog:latest .
 # docker run blog:latest
-FROM bellsoft/liberica-openjdk-centost:11.0.13-8
+FROM bellsoft/liberica-openjdk-centos:11.0.13-8
 ARG APP_HOME=/opt/blog
 RUN mkdir -p ${APP_HOME}
 WORKDIR ${APP_HOME}
